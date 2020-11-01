@@ -7,7 +7,7 @@
     config:
       df_print: kable
       highlight: pygments
-      edit: https://github.com/m-clark/model-demos/blob/master/%s
+      edit: https://github.com/m-clark/models-by-example/blob/master/%s
       download: null
       search: yes
       sharing:
@@ -23,7 +23,7 @@
         collapse: section
         scroll_highlight: yes
         before: |
-          <li class='before'><a href="./">Models by Example</a></li>
+          <li class='before'><a href="./">Model Estimation by Example</a></li>
         after: |
          <li class='after'">
             <a href="https://m-clark.github.io/">

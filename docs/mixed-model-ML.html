@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>Mixed Model via ML | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="Mixed Model via ML | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="Mixed Model via ML | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="mixed-model-two-factor.html"/>
+<link rel="next" href="probit.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -347,23 +347,173 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production. Almost everything here has a package/module that would do it far better and efficiently. The document itself is also not an introduction to any of these methods, and in fact contains very little expository text. This document is merely a learning tool for those wanting to dive a little deeper.</p>
-<p>The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a></p>
-<p>While I’m happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="mixed-model-via-ml" class="section level1">
+<h1>Mixed Model via ML</h1>
+<div id="introduction-1" class="section level2">
+<h2>Introduction</h2>
+<p>The following is based on the <span class="citation">@Wood</span> text on additive models, chapter 6 in particular. It assumes familiarity with standard regression from a matrix perspective and at least passing familiarity with mixed models. The full document this chapter is based on can be found <a href="https://m-clark.github.io/docs/mixedModels/mixedModelML.html">here</a>, and contains more detail and exposition.</p>
+</div>
+<div id="maximum-likelihood-estimation" class="section level2">
+<h2>Maximum Likelihood Estimation</h2>
+<p>For this we’ll use the sleepstudy data from the <span style="color:#1e90ff">lme4</span> package. The data has reaction times for 18 individuals over 10 days each (see the help file for the sleepstudy object for more details).</p>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="mixed-model-ML.html#cb51-1"></a><span class="kw">data</span>(sleepstudy, <span class="dt">package =</span> <span class="st">&#39;lme4&#39;</span>)</span>
+<span id="cb51-2"><a href="mixed-model-ML.html#cb51-2"></a></span>
+<span id="cb51-3"><a href="mixed-model-ML.html#cb51-3"></a>X =<span class="st"> </span><span class="kw">model.matrix</span>( <span class="op">~</span><span class="st"> </span>Days, sleepstudy)</span>
+<span id="cb51-4"><a href="mixed-model-ML.html#cb51-4"></a>Z =<span class="st"> </span><span class="kw">model.matrix</span>( <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(sleepstudy<span class="op">$</span>Subject) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</span>
+<span id="cb51-5"><a href="mixed-model-ML.html#cb51-5"></a></span>
+<span id="cb51-6"><a href="mixed-model-ML.html#cb51-6"></a><span class="kw">colnames</span>(Z) =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;Subject_&#39;</span>, <span class="kw">unique</span>(sleepstudy<span class="op">$</span>Subject))  <span class="co"># for cleaner presentation later</span></span>
+<span id="cb51-7"><a href="mixed-model-ML.html#cb51-7"></a><span class="kw">rownames</span>(Z) =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;Subject_&#39;</span>, sleepstudy<span class="op">$</span>Subject)</span>
+<span id="cb51-8"><a href="mixed-model-ML.html#cb51-8"></a></span>
+<span id="cb51-9"><a href="mixed-model-ML.html#cb51-9"></a>y =<span class="st"> </span>sleepstudy<span class="op">$</span>Reaction</span></code></pre></div>
+</div>
+<div id="ml-function" class="section level3">
+<h3>ML function</h3>
+<p>The following is based on the code in Wood (6.2.2), with a couple modifications for consistent nomenclature and presentation. We use <span style="color:#8b0000">optim</span> and a minimizing function, in this case the negative log likelihood, to estimate the parameters of interest, collectively <span class="math inline">\(\theta\)</span>, in the code below. The (square root of the) variances will be estimated on the log scale. In Wood, he simply extracts the ‘fixed effects’ for the intercept and days effects using lm (6.2.3), and we’ll do the same.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="mixed-model-ML.html#cb52-1"></a>llMixed =<span class="st"> </span><span class="cf">function</span>(y, X, Z, theta){</span>
+<span id="cb52-2"><a href="mixed-model-ML.html#cb52-2"></a>  tau   =<span class="st"> </span><span class="kw">exp</span>(theta[<span class="dv">1</span>])</span>
+<span id="cb52-3"><a href="mixed-model-ML.html#cb52-3"></a>  sigma =<span class="st"> </span><span class="kw">exp</span>(theta[<span class="dv">2</span>])</span>
+<span id="cb52-4"><a href="mixed-model-ML.html#cb52-4"></a>  n =<span class="st"> </span><span class="kw">length</span>(y)</span>
+<span id="cb52-5"><a href="mixed-model-ML.html#cb52-5"></a>  </span>
+<span id="cb52-6"><a href="mixed-model-ML.html#cb52-6"></a>  <span class="co"># evaluate covariance matrix for y</span></span>
+<span id="cb52-7"><a href="mixed-model-ML.html#cb52-7"></a>  e =<span class="st"> </span><span class="kw">tcrossprod</span>(Z)<span class="op">*</span>tau<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(n)<span class="op">*</span>sigma<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb52-8"><a href="mixed-model-ML.html#cb52-8"></a>  L =<span class="st"> </span><span class="kw">chol</span>(e)  <span class="co"># L&#39;L = e</span></span>
+<span id="cb52-9"><a href="mixed-model-ML.html#cb52-9"></a>  </span>
+<span id="cb52-10"><a href="mixed-model-ML.html#cb52-10"></a>  <span class="co"># transform dependent linear model to independent</span></span>
+<span id="cb52-11"><a href="mixed-model-ML.html#cb52-11"></a>  y =<span class="st"> </span><span class="kw">backsolve</span>(L, y, <span class="dt">transpose=</span><span class="ot">TRUE</span>)</span>
+<span id="cb52-12"><a href="mixed-model-ML.html#cb52-12"></a>  X =<span class="st"> </span><span class="kw">backsolve</span>(L, X, <span class="dt">transpose=</span><span class="ot">TRUE</span>)</span>
+<span id="cb52-13"><a href="mixed-model-ML.html#cb52-13"></a>  b =<span class="st"> </span><span class="kw">coef</span>(<span class="kw">lm</span>(y<span class="op">~</span>X<span class="dv">-1</span>))</span>
+<span id="cb52-14"><a href="mixed-model-ML.html#cb52-14"></a>  LP =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>b</span>
+<span id="cb52-15"><a href="mixed-model-ML.html#cb52-15"></a>  </span>
+<span id="cb52-16"><a href="mixed-model-ML.html#cb52-16"></a>  ll =<span class="st"> </span><span class="op">-</span>n<span class="op">/</span><span class="dv">2</span><span class="op">*</span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) <span class="op">-</span><span class="kw">sum</span>(<span class="kw">log</span>(<span class="kw">diag</span>(L))) <span class="op">-</span><span class="st"> </span><span class="kw">crossprod</span>(y<span class="op">-</span>LP)<span class="op">/</span><span class="dv">2</span></span>
+<span id="cb52-17"><a href="mixed-model-ML.html#cb52-17"></a>  <span class="op">-</span>ll</span>
+<span id="cb52-18"><a href="mixed-model-ML.html#cb52-18"></a>}</span></code></pre></div>
+<p>Here is an alternative function using a multivariate normal approach that doesn’t use the transformation to independent, and might provide additional perspective.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="mixed-model-ML.html#cb53-1"></a>llMixedMV =<span class="st"> </span><span class="cf">function</span>(y, X, Z, theta){</span>
+<span id="cb53-2"><a href="mixed-model-ML.html#cb53-2"></a>  tau   =<span class="st"> </span><span class="kw">exp</span>(theta[<span class="dv">1</span>])</span>
+<span id="cb53-3"><a href="mixed-model-ML.html#cb53-3"></a>  sigma =<span class="st"> </span><span class="kw">exp</span>(theta[<span class="dv">2</span>])</span>
+<span id="cb53-4"><a href="mixed-model-ML.html#cb53-4"></a>  n =<span class="st"> </span><span class="kw">length</span>(y)</span>
+<span id="cb53-5"><a href="mixed-model-ML.html#cb53-5"></a>  </span>
+<span id="cb53-6"><a href="mixed-model-ML.html#cb53-6"></a>  <span class="co"># evaluate covariance matrix for y</span></span>
+<span id="cb53-7"><a href="mixed-model-ML.html#cb53-7"></a>  e  =<span class="st"> </span><span class="kw">tcrossprod</span>(Z)<span class="op">*</span>tau<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(n)<span class="op">*</span>sigma<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb53-8"><a href="mixed-model-ML.html#cb53-8"></a>  b  =<span class="st"> </span><span class="kw">coef</span>(<span class="kw">lm.fit</span>(X, y))</span>
+<span id="cb53-9"><a href="mixed-model-ML.html#cb53-9"></a>  mu =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>b</span>
+<span id="cb53-10"><a href="mixed-model-ML.html#cb53-10"></a></span>
+<span id="cb53-11"><a href="mixed-model-ML.html#cb53-11"></a>  ll =<span class="st"> </span>mvtnorm<span class="op">::</span><span class="kw">dmvnorm</span>(y, mu, e, <span class="dt">log=</span>T)</span>
+<span id="cb53-12"><a href="mixed-model-ML.html#cb53-12"></a>  <span class="op">-</span>ll</span>
+<span id="cb53-13"><a href="mixed-model-ML.html#cb53-13"></a>}</span></code></pre></div>
+</div>
+<div id="results" class="section level3">
+<h3>Results</h3>
+<p>Now we’re ready to use the <span class="func">optim</span> function for estimation. A slight change to tolerance is included to get closer estimates to <span class="pack">lme4</span>, which we will compare shortly.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="mixed-model-ML.html#cb54-1"></a>paramInit =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb54-2"><a href="mixed-model-ML.html#cb54-2"></a><span class="kw">names</span>(paramInit) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;tau&#39;</span>, <span class="st">&#39;sigma&#39;</span>)</span>
+<span id="cb54-3"><a href="mixed-model-ML.html#cb54-3"></a></span>
+<span id="cb54-4"><a href="mixed-model-ML.html#cb54-4"></a>modelResults =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb54-5"><a href="mixed-model-ML.html#cb54-5"></a>  <span class="dt">fn  =</span> llMixed,</span>
+<span id="cb54-6"><a href="mixed-model-ML.html#cb54-6"></a>  <span class="dt">X   =</span> X,</span>
+<span id="cb54-7"><a href="mixed-model-ML.html#cb54-7"></a>  <span class="dt">y   =</span> y,</span>
+<span id="cb54-8"><a href="mixed-model-ML.html#cb54-8"></a>  <span class="dt">Z   =</span> Z,</span>
+<span id="cb54-9"><a href="mixed-model-ML.html#cb54-9"></a>  <span class="dt">par =</span> paramInit,</span>
+<span id="cb54-10"><a href="mixed-model-ML.html#cb54-10"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">reltol =</span> <span class="fl">1e-10</span>)</span>
+<span id="cb54-11"><a href="mixed-model-ML.html#cb54-11"></a>)</span>
+<span id="cb54-12"><a href="mixed-model-ML.html#cb54-12"></a></span>
+<span id="cb54-13"><a href="mixed-model-ML.html#cb54-13"></a>modelResultsMV =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb54-14"><a href="mixed-model-ML.html#cb54-14"></a>  <span class="dt">fn  =</span> llMixedMV,</span>
+<span id="cb54-15"><a href="mixed-model-ML.html#cb54-15"></a>  <span class="dt">X   =</span> X,</span>
+<span id="cb54-16"><a href="mixed-model-ML.html#cb54-16"></a>  <span class="dt">y   =</span> y,</span>
+<span id="cb54-17"><a href="mixed-model-ML.html#cb54-17"></a>  <span class="dt">Z   =</span> Z,</span>
+<span id="cb54-18"><a href="mixed-model-ML.html#cb54-18"></a>  <span class="dt">par =</span> paramInit,</span>
+<span id="cb54-19"><a href="mixed-model-ML.html#cb54-19"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">reltol =</span> <span class="fl">1e-10</span>)</span>
+<span id="cb54-20"><a href="mixed-model-ML.html#cb54-20"></a>)</span>
+<span id="cb54-21"><a href="mixed-model-ML.html#cb54-21"></a></span>
+<span id="cb54-22"><a href="mixed-model-ML.html#cb54-22"></a><span class="kw">rbind</span>(</span>
+<span id="cb54-23"><a href="mixed-model-ML.html#cb54-23"></a>  <span class="kw">c</span>(<span class="kw">exp</span>(modelResults<span class="op">$</span>par), <span class="dt">negLogLik =</span> modelResults<span class="op">$</span>value, <span class="kw">coef</span>(<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>X <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))),</span>
+<span id="cb54-24"><a href="mixed-model-ML.html#cb54-24"></a>  <span class="kw">c</span>(<span class="kw">exp</span>(modelResultsMV<span class="op">$</span>par), <span class="dt">negLogLik =</span> modelResultsMV<span class="op">$</span>value, <span class="kw">coef</span>(<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>X <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)))</span>
+<span id="cb54-25"><a href="mixed-model-ML.html#cb54-25"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb54-26"><a href="mixed-model-ML.html#cb54-26"></a><span class="st">  </span><span class="kw">round</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>       tau sigma negLogLik X(Intercept) XDays
+[1,] 36.02  30.9    897.04       251.41 10.47
+[2,] 36.02  30.9    897.04       251.41 10.47</code></pre>
+<p>As we can see, both formulations produce identical results. We can now compare those results to the <span class="pack" style="">lme4</span> output for the same model, and see that we’re getting what we should.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="mixed-model-ML.html#cb56-1"></a><span class="kw">library</span>(lme4)</span>
+<span id="cb56-2"><a href="mixed-model-ML.html#cb56-2"></a></span>
+<span id="cb56-3"><a href="mixed-model-ML.html#cb56-3"></a>lmeMod =<span class="st"> </span><span class="kw">lmer</span>(Reaction <span class="op">~</span><span class="st"> </span>Days <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Subject), sleepstudy, <span class="dt">REML =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb56-4"><a href="mixed-model-ML.html#cb56-4"></a></span>
+<span id="cb56-5"><a href="mixed-model-ML.html#cb56-5"></a>lmeMod</span></code></pre></div>
+<pre><code>Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
+Formula: Reaction ~ Days + (1 | Subject)
+   Data: sleepstudy
+      AIC       BIC    logLik  deviance  df.resid 
+1802.0786 1814.8505 -897.0393 1794.0786       176 
+Random effects:
+ Groups   Name        Std.Dev.
+ Subject  (Intercept) 36.01   
+ Residual             30.90   
+Number of obs: 180, groups:  Subject, 18
+Fixed Effects:
+(Intercept)         Days  
+     251.41        10.47  </code></pre>
+<p>We can also predict the random effects (Wood, 6.2.4), and after doing so again compare the results to the <span class="pack" style="">lme4</span> estimates.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="mixed-model-ML.html#cb58-1"></a>tau =<span class="st"> </span><span class="kw">exp</span>(modelResults<span class="op">$</span>par)[<span class="dv">1</span>]</span>
+<span id="cb58-2"><a href="mixed-model-ML.html#cb58-2"></a>tausq   =<span class="st"> </span>tau<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb58-3"><a href="mixed-model-ML.html#cb58-3"></a>sigma   =<span class="st"> </span><span class="kw">exp</span>(modelResults<span class="op">$</span>par)[<span class="dv">2</span>]</span>
+<span id="cb58-4"><a href="mixed-model-ML.html#cb58-4"></a>sigmasq =<span class="st"> </span>sigma<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb58-5"><a href="mixed-model-ML.html#cb58-5"></a>Sigma   =<span class="st"> </span><span class="kw">tcrossprod</span>(Z)<span class="op">*</span>tausq<span class="op">/</span>sigmasq <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(<span class="kw">length</span>(y))</span>
+<span id="cb58-6"><a href="mixed-model-ML.html#cb58-6"></a>ranefEstimated =<span class="st"> </span>tausq<span class="op">*</span><span class="kw">t</span>(Z)<span class="op">%*%</span><span class="kw">solve</span>(Sigma) <span class="op">%*%</span><span class="st"> </span><span class="kw">resid</span>(<span class="kw">lm</span>(y<span class="op">~</span>X<span class="dv">-1</span>))<span class="op">/</span>sigmasq</span>
+<span id="cb58-7"><a href="mixed-model-ML.html#cb58-7"></a></span>
+<span id="cb58-8"><a href="mixed-model-ML.html#cb58-8"></a><span class="kw">data.frame</span>(</span>
+<span id="cb58-9"><a href="mixed-model-ML.html#cb58-9"></a>  ranefEstimated, </span>
+<span id="cb58-10"><a href="mixed-model-ML.html#cb58-10"></a>  <span class="dt">lme4 =</span> <span class="kw">ranef</span>(lmeMod)<span class="op">$</span>Subject[[<span class="dv">1</span>]]</span>
+<span id="cb58-11"><a href="mixed-model-ML.html#cb58-11"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb58-12"><a href="mixed-model-ML.html#cb58-12"></a><span class="st">  </span><span class="kw">round</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>            ranefEstimated   lme4
+Subject_308          40.64  40.64
+Subject_309         -77.57 -77.57
+Subject_310         -62.88 -62.88
+Subject_330           4.39   4.39
+Subject_331          10.18  10.18
+Subject_332           8.19   8.19
+Subject_333          16.44  16.44
+Subject_334          -2.99  -2.99
+Subject_335         -45.12 -45.12
+Subject_337          71.92  71.92
+Subject_349         -21.12 -21.12
+Subject_350          14.06  14.06
+Subject_351          -7.83  -7.83
+Subject_352          36.25  36.25
+Subject_369           7.01   7.01
+Subject_370          -6.34  -6.34
+Subject_371          -3.28  -3.28
+Subject_372          18.05  18.05</code></pre>
+</div>
+<div id="issues-with-ml-estimation" class="section level3">
+<h3>Issues with ML estimation</h3>
+<p>Situations arise in which using maximum likelihood for mixed models would result in notably biased estimates (e.g. small N, lots of fixed effects), and so it is typically not used. Standard software usually defaults to <em>restricted</em> maximum likelihood. However, our purpose here has been served, so we will not dwell further on mixed model estimation.</p>
+</div>
+<div id="link-with-penalized-regression" class="section level3">
+<h3>Link with penalized regression</h3>
+<p>A link exists between mixed models and a penalized likelihood approach. For a penalized approach with the SLiM, the objective function we want to minimize can be expressed as follows:</p>
+<p><span class="math display">\[ \lVert y- X\beta \rVert^2 + \beta^\intercal\beta \]</span></p>
+<p>The added component to the sum of the squared residuals is the penalty. By adding the sum of the squared coefficients, we end up keeping them from getting too big, and this helps to avoid <em>overfitting</em>. Another interesting aspect of this approach is that it is comparable to using a specific <em>prior</em> on the coefficients in a Bayesian framework.</p>
+<p>We can now see mixed models as a penalized technique. If we knew <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\psi_\theta\)</span>, then the predicted random effects <span class="math inline">\(g\)</span> and estimates for the fixed effects <span class="math inline">\(\beta\)</span> are those that minimize the following objective function:</p>
+<p><span class="math display">\[ \frac{1}{\sigma^2}\lVert y - X\beta - Zg \rVert^2 + g^\intercal\psi_\theta^{-1}g \]</span></p>
+</div>
+</div>
+<div id="source-4" class="section level2">
+<h2>Source</h2>
+<p>Main doc found at <a href="https://m-clark.github.io/docs/mixedModels/mixedModelML.html" class="uri">https://m-clark.github.io/docs/mixedModels/mixedModelML.html</a></p>
 
 </div>
-
-
-
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="mixed-model-two-factor.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="probit.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -396,7 +546,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/mixed-model-ML.Rmd",
 "text": "Edit"
 },
 "history": {

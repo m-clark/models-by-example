@@ -6,13 +6,19 @@ output_dir: 'docs'
 delete_merged_file: true
 
 rmd_files: [
-  'index.Rmd',
-  'introduction.Rmd',
+  index.Rmd,
+  introduction.Rmd,
   
   # Models
-  'linear-regression.Rmd',
-  'logistic-regression.Rmd',
-  
+  linear-regression.Rmd,
+  logistic-regression.Rmd,
+  mixed-model-one-factor.Rmd,
+  mixed-model-two-factor.Rmd,
+  mixed-model-ML.Rmd,
+  probit.Rmd,
+  heckman-selection.Rmd,
+  tobit.Rmd,
+  naive-bayes.Rmd,
   
   # Algos
   penalized-maximum-likelihood.Rmd,
@@ -22,5 +28,7 @@ rmd_files: [
   nelder-mead.Rmd,
   gradient-descent.Rmd,
   stochastic-gradient-descent.Rmd,
-  # 'appendix.Rmd'
+  
+  # Other
+  supplemental.Rmd
 ]

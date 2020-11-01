@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Gradient Descent | Models by Example</title>
+  <title>Gradient Descent | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Gradient Descent | Models by Example" />
+  <meta property="og:title" content="Gradient Descent | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Gradient Descent | Models by Example" />
+  <meta name="twitter:title" content="Gradient Descent | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -133,7 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class='before'><a href="./">Models by Example</a></li>
+<li class='before'><a href="./">Model Estimation by Example</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
@@ -146,7 +146,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic Rodels</a>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic</a>
 <ul>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
@@ -154,26 +154,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html"><i class="fa fa-check"></i>One-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#main-function"><i class="fa fa-check"></i>Main function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#data-set-up"><i class="fa fa-check"></i>Data set up</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#estimation"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html"><i class="fa fa-check"></i>Two-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#main-function-1"><i class="fa fa-check"></i>Main function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#data-set-up-1"><i class="fa fa-check"></i>Data set up</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#estimation-1"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html"><i class="fa fa-check"></i>Mixed Model via ML</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#introduction-1"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#data"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#ml-function"><i class="fa fa-check"></i>ML function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#results"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#issues-with-ml-estimation"><i class="fa fa-check"></i>Issues with ML estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#link-with-penalized-regression"><i class="fa fa-check"></i>Link with penalized regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html"><i class="fa fa-check"></i>Probit &amp; Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#standard-probit"><i class="fa fa-check"></i>standard probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#examples"><i class="fa fa-check"></i>Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#bivariate-probit"><i class="fa fa-check"></i>Bivariate probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html"><i class="fa fa-check"></i>Heckman Selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-approach"><i class="fa fa-check"></i>2 step approach</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-1-probit-model"><i class="fa fa-check"></i>Step 1: Probit Model</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-2-estimate-via-linear-regression"><i class="fa fa-check"></i>Step 2: Estimate via linear regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#maximum-likelihood"><i class="fa fa-check"></i>Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-an-upper-limit"><i class="fa fa-check"></i>Demonstrate Censoring with an Upper Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#data-setup-3"><i class="fa fa-check"></i>Data setup</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-a-lower-limit"><i class="fa fa-check"></i>Demonstrate censoring with a Lower Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-6"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html"><i class="fa fa-check"></i>Naive Bayes</a>
+<ul>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#initialization"><i class="fa fa-check"></i>Initialization</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
 <li class="part"><span><b>Algorithms</b></span></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
 <ul>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-4"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#obtain-model-estimates-2"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-5"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
 <ul>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-3"><i class="fa fa-check"></i>Data setup</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-5"><i class="fa fa-check"></i>Data setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-6"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
 <ul>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-7"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
 <ul>
@@ -184,50 +254,58 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s method</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-8"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First version</a>
 <ul>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-1"><i class="fa fa-check"></i>Example</a></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second version</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example function</a></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-9"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
 <ul>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-7"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a>
 <ul>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#run"><i class="fa fa-check"></i>Run</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-10"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
 <ul>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#stochastic-gradient-descent-algorithm"><i class="fa fa-check"></i>Stochastic Gradient Descent Algorithm</a>
 <ul>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-1"><i class="fa fa-check"></i>Run</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
 <ul>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-2"><i class="fa fa-check"></i>Run</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-16"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-11"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Other</b></span></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#algorithms"><i class="fa fa-check"></i>Algorithms</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li class='after'">
@@ -261,7 +339,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Models by Example</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Model Estimation by Example</a>
           </h1>
         </div>
 
@@ -276,86 +354,86 @@ arguments starting points for the parameters to be estimated, a tolerance or
 maximum iteration value to provide a stopping point, stepsize (or starting
 stepsize for adaptive approach), whether to print out iterations, and whether
 to plot the loss over each iteration.</p>
-<div id="data-setup-5" class="section level2">
+<div id="data-setup-7" class="section level2">
 <h2>Data Setup</h2>
 <p>Create some basic data for standard regression.</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="gradient-descent.html#cb95-1"></a><span class="kw">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb95-2"><a href="gradient-descent.html#cb95-2"></a></span>
-<span id="cb95-3"><a href="gradient-descent.html#cb95-3"></a>n  =<span class="st"> </span><span class="dv">1000</span></span>
-<span id="cb95-4"><a href="gradient-descent.html#cb95-4"></a>x1 =<span class="st"> </span><span class="kw">rnorm</span>(n)</span>
-<span id="cb95-5"><a href="gradient-descent.html#cb95-5"></a>x2 =<span class="st"> </span><span class="kw">rnorm</span>(n)</span>
-<span id="cb95-6"><a href="gradient-descent.html#cb95-6"></a>y  =<span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="fl">.5</span><span class="op">*</span>x1 <span class="op">+</span><span class="st"> </span><span class="fl">.2</span><span class="op">*</span>x2 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n)</span>
-<span id="cb95-7"><a href="gradient-descent.html#cb95-7"></a>X  =<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">Intercept =</span> <span class="dv">1</span>, x1, x2)  <span class="co"># model matrix</span></span></code></pre></div>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="gradient-descent.html#cb187-1"></a><span class="kw">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb187-2"><a href="gradient-descent.html#cb187-2"></a></span>
+<span id="cb187-3"><a href="gradient-descent.html#cb187-3"></a>n  =<span class="st"> </span><span class="dv">1000</span></span>
+<span id="cb187-4"><a href="gradient-descent.html#cb187-4"></a>x1 =<span class="st"> </span><span class="kw">rnorm</span>(n)</span>
+<span id="cb187-5"><a href="gradient-descent.html#cb187-5"></a>x2 =<span class="st"> </span><span class="kw">rnorm</span>(n)</span>
+<span id="cb187-6"><a href="gradient-descent.html#cb187-6"></a>y  =<span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="fl">.5</span><span class="op">*</span>x1 <span class="op">+</span><span class="st"> </span><span class="fl">.2</span><span class="op">*</span>x2 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n)</span>
+<span id="cb187-7"><a href="gradient-descent.html#cb187-7"></a>X  =<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">Intercept =</span> <span class="dv">1</span>, x1, x2)  <span class="co"># model matrix</span></span></code></pre></div>
 </div>
 <div id="gradient-descent-algorithm" class="section level2">
 <h2>Gradient Descent Algorithm</h2>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="gradient-descent.html#cb96-1"></a>gd =<span class="st"> </span><span class="cf">function</span>(</span>
-<span id="cb96-2"><a href="gradient-descent.html#cb96-2"></a>  par,</span>
-<span id="cb96-3"><a href="gradient-descent.html#cb96-3"></a>  X,</span>
-<span id="cb96-4"><a href="gradient-descent.html#cb96-4"></a>  y,</span>
-<span id="cb96-5"><a href="gradient-descent.html#cb96-5"></a>  <span class="dt">tolerance =</span> <span class="fl">1e-3</span>,</span>
-<span id="cb96-6"><a href="gradient-descent.html#cb96-6"></a>  <span class="dt">maxit     =</span> <span class="dv">1000</span>,</span>
-<span id="cb96-7"><a href="gradient-descent.html#cb96-7"></a>  <span class="dt">stepsize  =</span> <span class="fl">1e-3</span>,</span>
-<span id="cb96-8"><a href="gradient-descent.html#cb96-8"></a>  <span class="dt">adapt     =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb96-9"><a href="gradient-descent.html#cb96-9"></a>  <span class="dt">verbose   =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb96-10"><a href="gradient-descent.html#cb96-10"></a>  <span class="dt">plotLoss  =</span> <span class="ot">TRUE</span></span>
-<span id="cb96-11"><a href="gradient-descent.html#cb96-11"></a>  ) {</span>
-<span id="cb96-12"><a href="gradient-descent.html#cb96-12"></a>  </span>
-<span id="cb96-13"><a href="gradient-descent.html#cb96-13"></a>  <span class="co"># initialize</span></span>
-<span id="cb96-14"><a href="gradient-descent.html#cb96-14"></a>  beta =<span class="st"> </span>par; <span class="kw">names</span>(beta) =<span class="st"> </span><span class="kw">colnames</span>(X)</span>
-<span id="cb96-15"><a href="gradient-descent.html#cb96-15"></a>  loss =<span class="st"> </span><span class="kw">crossprod</span>(X <span class="op">%*%</span><span class="st"> </span>beta <span class="op">-</span><span class="st"> </span>y)</span>
-<span id="cb96-16"><a href="gradient-descent.html#cb96-16"></a>  tol  =<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb96-17"><a href="gradient-descent.html#cb96-17"></a>  iter =<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb96-18"><a href="gradient-descent.html#cb96-18"></a>  </span>
-<span id="cb96-19"><a href="gradient-descent.html#cb96-19"></a>  <span class="cf">while</span>(tol <span class="op">&gt;</span><span class="st"> </span>tolerance <span class="op">&amp;&amp;</span><span class="st"> </span>iter <span class="op">&lt;</span><span class="st"> </span>maxit){</span>
-<span id="cb96-20"><a href="gradient-descent.html#cb96-20"></a>    </span>
-<span id="cb96-21"><a href="gradient-descent.html#cb96-21"></a>    LP   =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta</span>
-<span id="cb96-22"><a href="gradient-descent.html#cb96-22"></a>    grad =<span class="st"> </span><span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>(LP <span class="op">-</span><span class="st"> </span>y)</span>
-<span id="cb96-23"><a href="gradient-descent.html#cb96-23"></a>    betaCurrent =<span class="st"> </span>beta <span class="op">-</span><span class="st"> </span>stepsize <span class="op">*</span><span class="st"> </span>grad</span>
-<span id="cb96-24"><a href="gradient-descent.html#cb96-24"></a>    tol  =<span class="st"> </span><span class="kw">max</span>(<span class="kw">abs</span>(betaCurrent <span class="op">-</span><span class="st"> </span>beta))</span>
-<span id="cb96-25"><a href="gradient-descent.html#cb96-25"></a>    beta =<span class="st"> </span>betaCurrent</span>
-<span id="cb96-26"><a href="gradient-descent.html#cb96-26"></a>    loss =<span class="st"> </span><span class="kw">append</span>(loss, <span class="kw">crossprod</span>(LP <span class="op">-</span><span class="st"> </span>y))</span>
-<span id="cb96-27"><a href="gradient-descent.html#cb96-27"></a>    iter =<span class="st"> </span>iter <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
-<span id="cb96-28"><a href="gradient-descent.html#cb96-28"></a>    </span>
-<span id="cb96-29"><a href="gradient-descent.html#cb96-29"></a>    <span class="cf">if</span> (adapt)</span>
-<span id="cb96-30"><a href="gradient-descent.html#cb96-30"></a>      stepsize =<span class="st"> </span><span class="kw">ifelse</span>(</span>
-<span id="cb96-31"><a href="gradient-descent.html#cb96-31"></a>        loss[iter] <span class="op">&lt;</span><span class="st"> </span>loss[iter <span class="op">-</span><span class="st"> </span><span class="dv">1</span>],  </span>
-<span id="cb96-32"><a href="gradient-descent.html#cb96-32"></a>        stepsize <span class="op">*</span><span class="st"> </span><span class="fl">1.2</span>, </span>
-<span id="cb96-33"><a href="gradient-descent.html#cb96-33"></a>        stepsize <span class="op">*</span><span class="st"> </span><span class="fl">.8</span></span>
-<span id="cb96-34"><a href="gradient-descent.html#cb96-34"></a>      )</span>
-<span id="cb96-35"><a href="gradient-descent.html#cb96-35"></a>    </span>
-<span id="cb96-36"><a href="gradient-descent.html#cb96-36"></a>    <span class="cf">if</span> (verbose <span class="op">&amp;&amp;</span><span class="st"> </span>iter <span class="op">%%</span><span class="st"> </span><span class="dv">10</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</span>
-<span id="cb96-37"><a href="gradient-descent.html#cb96-37"></a>      <span class="kw">message</span>(<span class="kw">paste</span>(<span class="st">&#39;Iteration:&#39;</span>, iter))</span>
-<span id="cb96-38"><a href="gradient-descent.html#cb96-38"></a>  }</span>
-<span id="cb96-39"><a href="gradient-descent.html#cb96-39"></a>  </span>
-<span id="cb96-40"><a href="gradient-descent.html#cb96-40"></a>  <span class="cf">if</span> (plotLoss)</span>
-<span id="cb96-41"><a href="gradient-descent.html#cb96-41"></a>    <span class="kw">plot</span>(loss, <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>, <span class="dt">bty =</span> <span class="st">&#39;n&#39;</span>)</span>
-<span id="cb96-42"><a href="gradient-descent.html#cb96-42"></a>  </span>
-<span id="cb96-43"><a href="gradient-descent.html#cb96-43"></a>  <span class="kw">list</span>(</span>
-<span id="cb96-44"><a href="gradient-descent.html#cb96-44"></a>    <span class="dt">par    =</span> beta,</span>
-<span id="cb96-45"><a href="gradient-descent.html#cb96-45"></a>    <span class="dt">loss   =</span> loss,</span>
-<span id="cb96-46"><a href="gradient-descent.html#cb96-46"></a>    <span class="dt">RSE    =</span> <span class="kw">sqrt</span>(<span class="kw">crossprod</span>(LP <span class="op">-</span><span class="st"> </span>y) <span class="op">/</span><span class="st"> </span>(<span class="kw">nrow</span>(X) <span class="op">-</span><span class="st"> </span><span class="kw">ncol</span>(X))), </span>
-<span id="cb96-47"><a href="gradient-descent.html#cb96-47"></a>    <span class="dt">iter   =</span> iter,</span>
-<span id="cb96-48"><a href="gradient-descent.html#cb96-48"></a>    <span class="dt">fitted =</span> LP</span>
-<span id="cb96-49"><a href="gradient-descent.html#cb96-49"></a>  )</span>
-<span id="cb96-50"><a href="gradient-descent.html#cb96-50"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="gradient-descent.html#cb188-1"></a>gd =<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb188-2"><a href="gradient-descent.html#cb188-2"></a>  par,</span>
+<span id="cb188-3"><a href="gradient-descent.html#cb188-3"></a>  X,</span>
+<span id="cb188-4"><a href="gradient-descent.html#cb188-4"></a>  y,</span>
+<span id="cb188-5"><a href="gradient-descent.html#cb188-5"></a>  <span class="dt">tolerance =</span> <span class="fl">1e-3</span>,</span>
+<span id="cb188-6"><a href="gradient-descent.html#cb188-6"></a>  <span class="dt">maxit     =</span> <span class="dv">1000</span>,</span>
+<span id="cb188-7"><a href="gradient-descent.html#cb188-7"></a>  <span class="dt">stepsize  =</span> <span class="fl">1e-3</span>,</span>
+<span id="cb188-8"><a href="gradient-descent.html#cb188-8"></a>  <span class="dt">adapt     =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb188-9"><a href="gradient-descent.html#cb188-9"></a>  <span class="dt">verbose   =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb188-10"><a href="gradient-descent.html#cb188-10"></a>  <span class="dt">plotLoss  =</span> <span class="ot">TRUE</span></span>
+<span id="cb188-11"><a href="gradient-descent.html#cb188-11"></a>  ) {</span>
+<span id="cb188-12"><a href="gradient-descent.html#cb188-12"></a>  </span>
+<span id="cb188-13"><a href="gradient-descent.html#cb188-13"></a>  <span class="co"># initialize</span></span>
+<span id="cb188-14"><a href="gradient-descent.html#cb188-14"></a>  beta =<span class="st"> </span>par; <span class="kw">names</span>(beta) =<span class="st"> </span><span class="kw">colnames</span>(X)</span>
+<span id="cb188-15"><a href="gradient-descent.html#cb188-15"></a>  loss =<span class="st"> </span><span class="kw">crossprod</span>(X <span class="op">%*%</span><span class="st"> </span>beta <span class="op">-</span><span class="st"> </span>y)</span>
+<span id="cb188-16"><a href="gradient-descent.html#cb188-16"></a>  tol  =<span class="st"> </span><span class="dv">1</span></span>
+<span id="cb188-17"><a href="gradient-descent.html#cb188-17"></a>  iter =<span class="st"> </span><span class="dv">1</span></span>
+<span id="cb188-18"><a href="gradient-descent.html#cb188-18"></a>  </span>
+<span id="cb188-19"><a href="gradient-descent.html#cb188-19"></a>  <span class="cf">while</span>(tol <span class="op">&gt;</span><span class="st"> </span>tolerance <span class="op">&amp;&amp;</span><span class="st"> </span>iter <span class="op">&lt;</span><span class="st"> </span>maxit){</span>
+<span id="cb188-20"><a href="gradient-descent.html#cb188-20"></a>    </span>
+<span id="cb188-21"><a href="gradient-descent.html#cb188-21"></a>    LP   =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta</span>
+<span id="cb188-22"><a href="gradient-descent.html#cb188-22"></a>    grad =<span class="st"> </span><span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>(LP <span class="op">-</span><span class="st"> </span>y)</span>
+<span id="cb188-23"><a href="gradient-descent.html#cb188-23"></a>    betaCurrent =<span class="st"> </span>beta <span class="op">-</span><span class="st"> </span>stepsize <span class="op">*</span><span class="st"> </span>grad</span>
+<span id="cb188-24"><a href="gradient-descent.html#cb188-24"></a>    tol  =<span class="st"> </span><span class="kw">max</span>(<span class="kw">abs</span>(betaCurrent <span class="op">-</span><span class="st"> </span>beta))</span>
+<span id="cb188-25"><a href="gradient-descent.html#cb188-25"></a>    beta =<span class="st"> </span>betaCurrent</span>
+<span id="cb188-26"><a href="gradient-descent.html#cb188-26"></a>    loss =<span class="st"> </span><span class="kw">append</span>(loss, <span class="kw">crossprod</span>(LP <span class="op">-</span><span class="st"> </span>y))</span>
+<span id="cb188-27"><a href="gradient-descent.html#cb188-27"></a>    iter =<span class="st"> </span>iter <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb188-28"><a href="gradient-descent.html#cb188-28"></a>    </span>
+<span id="cb188-29"><a href="gradient-descent.html#cb188-29"></a>    <span class="cf">if</span> (adapt)</span>
+<span id="cb188-30"><a href="gradient-descent.html#cb188-30"></a>      stepsize =<span class="st"> </span><span class="kw">ifelse</span>(</span>
+<span id="cb188-31"><a href="gradient-descent.html#cb188-31"></a>        loss[iter] <span class="op">&lt;</span><span class="st"> </span>loss[iter <span class="op">-</span><span class="st"> </span><span class="dv">1</span>],  </span>
+<span id="cb188-32"><a href="gradient-descent.html#cb188-32"></a>        stepsize <span class="op">*</span><span class="st"> </span><span class="fl">1.2</span>, </span>
+<span id="cb188-33"><a href="gradient-descent.html#cb188-33"></a>        stepsize <span class="op">*</span><span class="st"> </span><span class="fl">.8</span></span>
+<span id="cb188-34"><a href="gradient-descent.html#cb188-34"></a>      )</span>
+<span id="cb188-35"><a href="gradient-descent.html#cb188-35"></a>    </span>
+<span id="cb188-36"><a href="gradient-descent.html#cb188-36"></a>    <span class="cf">if</span> (verbose <span class="op">&amp;&amp;</span><span class="st"> </span>iter <span class="op">%%</span><span class="st"> </span><span class="dv">10</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</span>
+<span id="cb188-37"><a href="gradient-descent.html#cb188-37"></a>      <span class="kw">message</span>(<span class="kw">paste</span>(<span class="st">&#39;Iteration:&#39;</span>, iter))</span>
+<span id="cb188-38"><a href="gradient-descent.html#cb188-38"></a>  }</span>
+<span id="cb188-39"><a href="gradient-descent.html#cb188-39"></a>  </span>
+<span id="cb188-40"><a href="gradient-descent.html#cb188-40"></a>  <span class="cf">if</span> (plotLoss)</span>
+<span id="cb188-41"><a href="gradient-descent.html#cb188-41"></a>    <span class="kw">plot</span>(loss, <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>, <span class="dt">bty =</span> <span class="st">&#39;n&#39;</span>)</span>
+<span id="cb188-42"><a href="gradient-descent.html#cb188-42"></a>  </span>
+<span id="cb188-43"><a href="gradient-descent.html#cb188-43"></a>  <span class="kw">list</span>(</span>
+<span id="cb188-44"><a href="gradient-descent.html#cb188-44"></a>    <span class="dt">par    =</span> beta,</span>
+<span id="cb188-45"><a href="gradient-descent.html#cb188-45"></a>    <span class="dt">loss   =</span> loss,</span>
+<span id="cb188-46"><a href="gradient-descent.html#cb188-46"></a>    <span class="dt">RSE    =</span> <span class="kw">sqrt</span>(<span class="kw">crossprod</span>(LP <span class="op">-</span><span class="st"> </span>y) <span class="op">/</span><span class="st"> </span>(<span class="kw">nrow</span>(X) <span class="op">-</span><span class="st"> </span><span class="kw">ncol</span>(X))), </span>
+<span id="cb188-47"><a href="gradient-descent.html#cb188-47"></a>    <span class="dt">iter   =</span> iter,</span>
+<span id="cb188-48"><a href="gradient-descent.html#cb188-48"></a>    <span class="dt">fitted =</span> LP</span>
+<span id="cb188-49"><a href="gradient-descent.html#cb188-49"></a>  )</span>
+<span id="cb188-50"><a href="gradient-descent.html#cb188-50"></a>}</span></code></pre></div>
 <div id="run" class="section level3">
 <h3>Run</h3>
 <p>Set starting values.</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="gradient-descent.html#cb97-1"></a>init =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="gradient-descent.html#cb189-1"></a>init =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span></code></pre></div>
 <p>For any particular data you’d have to fiddle with the <code>stepsize</code>, which could
 be assessed via cross-validation, or alternatively one can use an
 adaptive approach, a simple one of which is implemented in this function.</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="gradient-descent.html#cb98-1"></a>gd_result =<span class="st"> </span><span class="kw">gd</span>(</span>
-<span id="cb98-2"><a href="gradient-descent.html#cb98-2"></a>  init,</span>
-<span id="cb98-3"><a href="gradient-descent.html#cb98-3"></a>  <span class="dt">X =</span> X,</span>
-<span id="cb98-4"><a href="gradient-descent.html#cb98-4"></a>  <span class="dt">y =</span> y,</span>
-<span id="cb98-5"><a href="gradient-descent.html#cb98-5"></a>  <span class="dt">tolerance =</span> <span class="fl">1e-8</span>,</span>
-<span id="cb98-6"><a href="gradient-descent.html#cb98-6"></a>  <span class="dt">stepsize  =</span> <span class="fl">1e-4</span>,</span>
-<span id="cb98-7"><a href="gradient-descent.html#cb98-7"></a>  <span class="dt">adapt     =</span> <span class="ot">TRUE</span></span>
-<span id="cb98-8"><a href="gradient-descent.html#cb98-8"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="gradient-descent.html#cb190-1"></a>gd_result =<span class="st"> </span><span class="kw">gd</span>(</span>
+<span id="cb190-2"><a href="gradient-descent.html#cb190-2"></a>  init,</span>
+<span id="cb190-3"><a href="gradient-descent.html#cb190-3"></a>  <span class="dt">X =</span> X,</span>
+<span id="cb190-4"><a href="gradient-descent.html#cb190-4"></a>  <span class="dt">y =</span> y,</span>
+<span id="cb190-5"><a href="gradient-descent.html#cb190-5"></a>  <span class="dt">tolerance =</span> <span class="fl">1e-8</span>,</span>
+<span id="cb190-6"><a href="gradient-descent.html#cb190-6"></a>  <span class="dt">stepsize  =</span> <span class="fl">1e-4</span>,</span>
+<span id="cb190-7"><a href="gradient-descent.html#cb190-7"></a>  <span class="dt">adapt     =</span> <span class="ot">TRUE</span></span>
+<span id="cb190-8"><a href="gradient-descent.html#cb190-8"></a>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gd-result-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="gradient-descent.html#cb99-1"></a><span class="kw">str</span>(gd_result)</span></code></pre></div>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="gradient-descent.html#cb191-1"></a><span class="kw">str</span>(gd_result)</span></code></pre></div>
 <pre><code>List of 5
  $ par   : num [1:3, 1] 0.985 0.487 0.218
   ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -366,20 +444,20 @@ adaptive approach, a simple one of which is implemented in this function.</p>
  $ iter  : num 70
  $ fitted: num [1:1000, 1] 0.441 1.061 0.43 2.125 1.858 ...</code></pre>
 </div>
-<div id="comparison-8" class="section level3">
+<div id="comparison-14" class="section level3">
 <h3>Comparison</h3>
 <p>We can compare to standard linear regression.</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="gradient-descent.html#cb101-1"></a><span class="kw">rbind</span>(</span>
-<span id="cb101-2"><a href="gradient-descent.html#cb101-2"></a>  <span class="dt">gd =</span> <span class="kw">round</span>(gd_result<span class="op">$</span>par[, <span class="dv">1</span>], <span class="dv">5</span>),</span>
-<span id="cb101-3"><a href="gradient-descent.html#cb101-3"></a>  <span class="dt">lm =</span> <span class="kw">coef</span>(<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2))</span>
-<span id="cb101-4"><a href="gradient-descent.html#cb101-4"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="gradient-descent.html#cb193-1"></a><span class="kw">rbind</span>(</span>
+<span id="cb193-2"><a href="gradient-descent.html#cb193-2"></a>  <span class="dt">gd =</span> <span class="kw">round</span>(gd_result<span class="op">$</span>par[, <span class="dv">1</span>], <span class="dv">5</span>),</span>
+<span id="cb193-3"><a href="gradient-descent.html#cb193-3"></a>  <span class="dt">lm =</span> <span class="kw">coef</span>(<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2))</span>
+<span id="cb193-4"><a href="gradient-descent.html#cb193-4"></a>)</span></code></pre></div>
 <pre><code>   Intercept        x1        x2
 gd 0.9847800 0.4867900 0.2175200
 lm 0.9847803 0.4867896 0.2175169</code></pre>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="gradient-descent.html#cb103-1"></a><span class="co"># summary(lm(y ~ x1 + x2))</span></span></code></pre></div>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="gradient-descent.html#cb195-1"></a><span class="co"># summary(lm(y ~ x1 + x2))</span></span></code></pre></div>
 </div>
 </div>
-<div id="source-7" class="section level2">
+<div id="source-10" class="section level2">
 <h2>Source</h2>
 <p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/gradient_descent.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/gradient_descent.R</a></p>
 
@@ -424,7 +502,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/model-demos/blob/master/gradient-descent.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/gradient-descent.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -448,6 +526,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

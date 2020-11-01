@@ -5,4 +5,4 @@ This document provides 'by-hand' demonstrations of various models and algorithms
 
 The source code for these demonstrations may be found at their original home here: https://github.com/m-clark/Miscellaneous-R-Code
 
-While I'm happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it.  Perhaps if others would like to add to it via pull requests, I would do so.
+While I'm happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format.  Perhaps if others would like to add to it via pull requests, I would do so.

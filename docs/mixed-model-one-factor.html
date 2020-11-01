@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>One-factor Mixed Model | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="One-factor Mixed Model | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="One-factor Mixed Model | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="logistic-regression.html"/>
+<link rel="next" href="mixed-model-two-factor.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -347,23 +347,141 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production. Almost everything here has a package/module that would do it far better and efficiently. The document itself is also not an introduction to any of these methods, and in fact contains very little expository text. This document is merely a learning tool for those wanting to dive a little deeper.</p>
-<p>The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a></p>
-<p>While I’m happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="one-factor-mixed-model" class="section level1">
+<h1>One-factor Mixed Model</h1>
+<p>An approach for one factor random effects model via maximum likelihood in R Matlab and Julia. It’s based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. Unfortunately I did this before knowing they had both matlab and R code on their website, though the R code here is a little cleaner and has comments. The data regards crop yield from 10 randomly selected locations and three collections at each. See <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.m">one_factor_RE.m</a> and <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.jl">one_factor_RE.jl</a> for the related Matlab and Julia files, and the respective <code>twofactorRE.*</code> for the associated two factor random effects examples.</p>
+<div id="main-function" class="section level2">
+<h2>Main function</h2>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="mixed-model-one-factor.html#cb28-1"></a>one_factor_re  =<span class="st"> </span><span class="cf">function</span>(mu, sigma2_mu, sigma2){</span>
+<span id="cb28-2"><a href="mixed-model-one-factor.html#cb28-2"></a>  <span class="co"># Args -</span></span>
+<span id="cb28-3"><a href="mixed-model-one-factor.html#cb28-3"></a>  <span class="co"># mu: intercept</span></span>
+<span id="cb28-4"><a href="mixed-model-one-factor.html#cb28-4"></a>  <span class="co"># sigma2_mu: variance of intercept</span></span>
+<span id="cb28-5"><a href="mixed-model-one-factor.html#cb28-5"></a>  <span class="co"># sigma2: residual variance of y</span></span>
+<span id="cb28-6"><a href="mixed-model-one-factor.html#cb28-6"></a>  </span>
+<span id="cb28-7"><a href="mixed-model-one-factor.html#cb28-7"></a>  <span class="co"># I follow their notation for consistency</span></span>
+<span id="cb28-8"><a href="mixed-model-one-factor.html#cb28-8"></a>  d  =<span class="st"> </span><span class="kw">nrow</span>(y)</span>
+<span id="cb28-9"><a href="mixed-model-one-factor.html#cb28-9"></a>  ni =<span class="st"> </span><span class="kw">ncol</span>(y)</span>
+<span id="cb28-10"><a href="mixed-model-one-factor.html#cb28-10"></a>  </span>
+<span id="cb28-11"><a href="mixed-model-one-factor.html#cb28-11"></a>  <span class="co"># covariance matrix of observations</span></span>
+<span id="cb28-12"><a href="mixed-model-one-factor.html#cb28-12"></a>  Sigmai =<span class="st"> </span>sigma2 <span class="op">*</span><span class="st"> </span><span class="kw">diag</span>(ni) <span class="op">+</span><span class="st"> </span>sigma2_mu <span class="op">*</span><span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>, ni, ni)</span>
+<span id="cb28-13"><a href="mixed-model-one-factor.html#cb28-13"></a>  </span>
+<span id="cb28-14"><a href="mixed-model-one-factor.html#cb28-14"></a>  <span class="co"># log likelihood</span></span>
+<span id="cb28-15"><a href="mixed-model-one-factor.html#cb28-15"></a>  l =<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="dv">10</span>)</span>
+<span id="cb28-16"><a href="mixed-model-one-factor.html#cb28-16"></a>  <span class="co"># iterate over the rows</span></span>
+<span id="cb28-17"><a href="mixed-model-one-factor.html#cb28-17"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>d){</span>
+<span id="cb28-18"><a href="mixed-model-one-factor.html#cb28-18"></a>    l[i] =<span class="st"> </span><span class="fl">.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">t</span>(y[i, ] <span class="op">-</span><span class="st"> </span>mu) <span class="op">%*%</span><span class="st"> </span><span class="kw">chol2inv</span>(<span class="kw">chol</span>(Sigmai)) <span class="op">%*%</span><span class="st"> </span>(y[i, ] <span class="op">-</span><span class="st"> </span>mu)  </span>
+<span id="cb28-19"><a href="mixed-model-one-factor.html#cb28-19"></a>  }</span>
+<span id="cb28-20"><a href="mixed-model-one-factor.html#cb28-20"></a>  </span>
+<span id="cb28-21"><a href="mixed-model-one-factor.html#cb28-21"></a>  ll =<span class="st">  </span><span class="op">-</span>(ni<span class="op">*</span>d) <span class="op">/</span><span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) <span class="op">-</span><span class="st"> </span>d <span class="op">/</span><span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="kw">log</span>(<span class="kw">det</span>(Sigmai)) <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(l)</span>
+<span id="cb28-22"><a href="mixed-model-one-factor.html#cb28-22"></a>  </span>
+<span id="cb28-23"><a href="mixed-model-one-factor.html#cb28-23"></a>  <span class="kw">return</span>(<span class="op">-</span>ll)</span>
+<span id="cb28-24"><a href="mixed-model-one-factor.html#cb28-24"></a>}</span></code></pre></div>
+</div>
+<div id="data-set-up" class="section level2">
+<h2>Data set up</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="mixed-model-one-factor.html#cb29-1"></a>y =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">22.6</span>,<span class="fl">20.5</span>,<span class="fl">20.8</span>,</span>
+<span id="cb29-2"><a href="mixed-model-one-factor.html#cb29-2"></a>             <span class="fl">22.6</span>,<span class="fl">21.2</span>,<span class="fl">20.5</span>,</span>
+<span id="cb29-3"><a href="mixed-model-one-factor.html#cb29-3"></a>             <span class="fl">17.3</span>,<span class="fl">16.2</span>,<span class="fl">16.6</span>,</span>
+<span id="cb29-4"><a href="mixed-model-one-factor.html#cb29-4"></a>             <span class="fl">21.4</span>,<span class="fl">23.7</span>,<span class="fl">23.2</span>,</span>
+<span id="cb29-5"><a href="mixed-model-one-factor.html#cb29-5"></a>             <span class="fl">20.9</span>,<span class="fl">22.2</span>,<span class="fl">22.6</span>,</span>
+<span id="cb29-6"><a href="mixed-model-one-factor.html#cb29-6"></a>             <span class="fl">14.5</span>,<span class="fl">10.5</span>,<span class="fl">12.3</span>,</span>
+<span id="cb29-7"><a href="mixed-model-one-factor.html#cb29-7"></a>             <span class="fl">20.8</span>,<span class="fl">19.1</span>,<span class="fl">21.3</span>,</span>
+<span id="cb29-8"><a href="mixed-model-one-factor.html#cb29-8"></a>             <span class="fl">17.4</span>,<span class="fl">18.6</span>,<span class="fl">18.6</span>,</span>
+<span id="cb29-9"><a href="mixed-model-one-factor.html#cb29-9"></a>             <span class="fl">25.1</span>,<span class="fl">24.8</span>,<span class="fl">24.9</span>,</span>
+<span id="cb29-10"><a href="mixed-model-one-factor.html#cb29-10"></a>             <span class="fl">14.9</span>,<span class="fl">16.3</span>,<span class="fl">16.6</span>), <span class="dv">10</span>, <span class="dv">3</span>, <span class="dt">byrow=</span>T)</span></code></pre></div>
+</div>
+<div id="estimation" class="section level2">
+<h2>Estimation</h2>
+<p>Starting values</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="mixed-model-one-factor.html#cb30-1"></a>starts =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb30-2"><a href="mixed-model-one-factor.html#cb30-2"></a>  <span class="dt">mu =</span> <span class="kw">mean</span>(y),</span>
+<span id="cb30-3"><a href="mixed-model-one-factor.html#cb30-3"></a>  <span class="dt">sigma2_mu =</span> <span class="kw">var</span>(<span class="kw">rowMeans</span>(y)),</span>
+<span id="cb30-4"><a href="mixed-model-one-factor.html#cb30-4"></a>  <span class="dt">sigma2 =</span> <span class="kw">mean</span>(<span class="kw">apply</span>(y, <span class="dv">1</span>, var))</span>
+<span id="cb30-5"><a href="mixed-model-one-factor.html#cb30-5"></a>)</span></code></pre></div>
+<p>Estimate</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="mixed-model-one-factor.html#cb31-1"></a><span class="kw">one_factor_re</span>(starts[[<span class="dv">1</span>]], starts[[<span class="dv">2</span>]], starts[[<span class="dv">3</span>]])</span></code></pre></div>
+<pre><code>[1] 62.30661</code></pre>
+</div>
+<div id="comparison-2" class="section level2">
+<h2>Comparison</h2>
+<p>Package <span class="pack" style="">bbmle</span> has an <span class="func" style="">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style="">optim.</span> LBFGS-B is used to place lower bounds on the variance estimates.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="mixed-model-one-factor.html#cb33-1"></a><span class="kw">library</span>(bbmle)</span>
+<span id="cb33-2"><a href="mixed-model-one-factor.html#cb33-2"></a></span>
+<span id="cb33-3"><a href="mixed-model-one-factor.html#cb33-3"></a>mlout =<span class="st"> </span><span class="kw">mle2</span>(</span>
+<span id="cb33-4"><a href="mixed-model-one-factor.html#cb33-4"></a>  one_factor_re ,</span>
+<span id="cb33-5"><a href="mixed-model-one-factor.html#cb33-5"></a>  <span class="dt">start =</span> starts,</span>
+<span id="cb33-6"><a href="mixed-model-one-factor.html#cb33-6"></a>  <span class="dt">method =</span> <span class="st">&#39;L-BFGS-B&#39;</span>,</span>
+<span id="cb33-7"><a href="mixed-model-one-factor.html#cb33-7"></a>  <span class="dt">lower =</span> <span class="kw">c</span>(</span>
+<span id="cb33-8"><a href="mixed-model-one-factor.html#cb33-8"></a>    <span class="dt">mu =</span> <span class="op">-</span><span class="ot">Inf</span>,</span>
+<span id="cb33-9"><a href="mixed-model-one-factor.html#cb33-9"></a>    <span class="dt">sigma2_mu =</span> <span class="dv">0</span>,</span>
+<span id="cb33-10"><a href="mixed-model-one-factor.html#cb33-10"></a>    <span class="dt">sigma2 =</span> <span class="dv">0</span></span>
+<span id="cb33-11"><a href="mixed-model-one-factor.html#cb33-11"></a>  ),</span>
+<span id="cb33-12"><a href="mixed-model-one-factor.html#cb33-12"></a>  <span class="dt">trace =</span> T</span>
+<span id="cb33-13"><a href="mixed-model-one-factor.html#cb33-13"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="mixed-model-one-factor.html#cb34-1"></a><span class="kw">library</span>(lme4)</span>
+<span id="cb34-2"><a href="mixed-model-one-factor.html#cb34-2"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb34-3"><a href="mixed-model-one-factor.html#cb34-3"></a></span>
+<span id="cb34-4"><a href="mixed-model-one-factor.html#cb34-4"></a>d =<span class="st"> </span><span class="kw">data.frame</span>(y) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb34-5"><a href="mixed-model-one-factor.html#cb34-5"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">everything</span>(), <span class="dt">names_to =</span> <span class="st">&#39;x&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb34-6"><a href="mixed-model-one-factor.html#cb34-6"></a><span class="st">  </span><span class="kw">arrange</span>(x) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb34-7"><a href="mixed-model-one-factor.html#cb34-7"></a><span class="st">  </span><span class="kw">group_by</span>(x) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb34-8"><a href="mixed-model-one-factor.html#cb34-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">group =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">n</span>())</span>
+<span id="cb34-9"><a href="mixed-model-one-factor.html#cb34-9"></a></span>
+<span id="cb34-10"><a href="mixed-model-one-factor.html#cb34-10"></a>lme =<span class="st"> </span><span class="kw">lmer</span>(value <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>group, <span class="dt">data =</span> d, <span class="dt">REML =</span> F)</span>
+<span id="cb34-11"><a href="mixed-model-one-factor.html#cb34-11"></a></span>
+<span id="cb34-12"><a href="mixed-model-one-factor.html#cb34-12"></a><span class="kw">summary</span>(mlout)</span></code></pre></div>
+<pre><code>Maximum likelihood estimation
+
+Call:
+mle2(minuslogl = one_factor_re, start = starts, method = &quot;L-BFGS-B&quot;, 
+    trace = T, lower = c(mu = -Inf, sigma2_mu = 0, sigma2 = 0))
+
+Coefficients:
+          Estimate Std. Error z value     Pr(z)    
+mu        19.60000    1.12173 17.4729 &lt; 2.2e-16 ***
+sigma2_mu 12.19400    5.62858  2.1664  0.030277 *  
+sigma2     1.16667    0.36893  3.1623  0.001565 ** 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+-2 log L: 124.5288 </code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="mixed-model-one-factor.html#cb36-1"></a><span class="kw">summary</span>(lme)</span></code></pre></div>
+<pre><code>Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
+Formula: value ~ 1 | group
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+   130.5    134.7    -62.3    124.5       27 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.9950 -0.6555  0.1782  0.4870  1.7083 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ group    (Intercept) 12.194   3.492   
+ Residual              1.167   1.080   
+Number of obs: 30, groups:  group, 10
+
+Fixed effects:
+            Estimate Std. Error t value
+(Intercept)   19.600      1.122   17.47</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="mixed-model-one-factor.html#cb38-1"></a><span class="dv">-2</span> <span class="op">*</span><span class="st"> </span><span class="kw">logLik</span>(lme)</span></code></pre></div>
+<pre><code>&#39;log Lik.&#39; 124.5288 (df=3)</code></pre>
+</div>
+<div id="source-2" class="section level2">
+<h2>Source</h2>
+<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.R</a></p>
 
 </div>
-
-
-
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="logistic-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="mixed-model-two-factor.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -396,7 +514,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/mixed-model-one-factor.Rmd",
 "text": "Edit"
 },
 "history": {

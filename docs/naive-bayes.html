@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>Naive Bayes | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="Naive Bayes | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="Naive Bayes | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="tobit.html"/>
+<link rel="next" href="penalized-maximum-likelihood.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -347,12 +347,95 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production. Almost everything here has a package/module that would do it far better and efficiently. The document itself is also not an introduction to any of these methods, and in fact contains very little expository text. This document is merely a learning tool for those wanting to dive a little deeper.</p>
-<p>The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a></p>
-<p>While I’m happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="naive-bayes" class="section level1">
+<h1>Naive Bayes</h1>
+<div id="initialization" class="section level2">
+<h2>Initialization</h2>
+<p>Demo for binary data. First we generate some data. We gave several binary covariates and a binary target variable <code>y</code>.</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="naive-bayes.html#cb115-1"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb115-2"><a href="naive-bayes.html#cb115-2"></a></span>
+<span id="cb115-3"><a href="naive-bayes.html#cb115-3"></a>x  =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dv">50</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ncol =</span> <span class="dv">5</span>)</span>
+<span id="cb115-4"><a href="naive-bayes.html#cb115-4"></a>xf =<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">lapply</span>(<span class="kw">data.frame</span>(x), factor))</span>
+<span id="cb115-5"><a href="naive-bayes.html#cb115-5"></a>y  =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dv">10</span>, <span class="dt">prob =</span> <span class="kw">c</span>(.<span class="dv">25</span>, <span class="fl">.75</span>), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="comparison-7" class="section level2">
+<h2>Comparison</h2>
+<p>We can use <span class="pack" style="">e1071</span> for comparison.</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="naive-bayes.html#cb116-1"></a><span class="kw">library</span>(e1071)</span>
+<span id="cb116-2"><a href="naive-bayes.html#cb116-2"></a></span>
+<span id="cb116-3"><a href="naive-bayes.html#cb116-3"></a>m =<span class="st"> </span><span class="kw">naiveBayes</span>(xf, y)</span>
+<span id="cb116-4"><a href="naive-bayes.html#cb116-4"></a></span>
+<span id="cb116-5"><a href="naive-bayes.html#cb116-5"></a>m</span></code></pre></div>
+<pre><code>
+Naive Bayes Classifier for Discrete Predictors
 
+Call:
+naiveBayes.default(x = xf, y = y)
+
+A-priori probabilities:
+y
+  0   1 
+0.3 0.7 
+
+Conditional probabilities:
+   X1
+y           0         1
+  0 0.6666667 0.3333333
+  1 0.5714286 0.4285714
+
+   X2
+y           0         1
+  0 0.6666667 0.3333333
+  1 0.4285714 0.5714286
+
+   X3
+y           0         1
+  0 0.6666667 0.3333333
+  1 0.5714286 0.4285714
+
+   X4
+y           0         1
+  0 1.0000000 0.0000000
+  1 0.4285714 0.5714286
+
+   X5
+y           0         1
+  0 0.3333333 0.6666667
+  1 0.8571429 0.1428571</code></pre>
+<p>Using base R for our model, we can easily obtain the ‘predictions’…</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="naive-bayes.html#cb118-1"></a><span class="kw">lapply</span>(xf, <span class="cf">function</span>(var)</span>
+<span id="cb118-2"><a href="naive-bayes.html#cb118-2"></a>  <span class="kw">t</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(<span class="st">&#39; &#39;</span> =<span class="st"> </span>var, y), <span class="dt">margin =</span> <span class="dv">2</span>)))</span></code></pre></div>
+<pre><code>$X1
+    
+y           0         1
+  0 0.6666667 0.3333333
+  1 0.5714286 0.4285714
+
+$X2
+    
+y           0         1
+  0 0.6666667 0.3333333
+  1 0.4285714 0.5714286
+
+$X3
+    
+y           0         1
+  0 0.6666667 0.3333333
+  1 0.5714286 0.4285714
+
+$X4
+    
+y           0         1
+  0 1.0000000 0.0000000
+  1 0.4285714 0.5714286
+
+$X5
+    
+y           0         1
+  0 0.3333333 0.6666667
+  1 0.8571429 0.1428571</code></pre>
+
+</div>
 </div>
 
 
@@ -362,8 +445,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="tobit.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="penalized-maximum-likelihood.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -396,7 +479,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/naive-bayes.Rmd",
 "text": "Edit"
 },
 "history": {

@@ -1,0 +1,28 @@
+# (PART\*)  Other {-}
+
+
+# Supplemental
+
+
+## Other Languages
+
+When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. Not much here but may be useful to some.
+
+#### Julia
+
+##### One-factor Mixed Model
+##### Two-factor Mixed Model
+
+#### Matlab
+
+##### One-factor Mixed Model
+##### Two-factor Mixed Model
+
+
+### Algorithms
+
+#### Python
+
+##### Nelder-Mead
+##### HMM
+

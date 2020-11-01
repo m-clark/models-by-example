@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>Probit &amp; Bivariate Probit | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="Probit &amp; Bivariate Probit | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="Probit &amp; Bivariate Probit | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="mixed-model-ML.html"/>
+<link rel="next" href="heckman-selection.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -347,23 +347,226 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production. Almost everything here has a package/module that would do it far better and efficiently. The document itself is also not an introduction to any of these methods, and in fact contains very little expository text. This document is merely a learning tool for those wanting to dive a little deeper.</p>
-<p>The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a></p>
-<p>While I’m happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="probit-bivariate-probit" class="section level1">
+<h1>Probit &amp; Bivariate Probit</h1>
+<p>Stata’s seems to be the primary audience concerned with these models, but I
+thought I’d play around with one here (I’ve never had reason to use a probit
+model in practice). Stata examples come from the UCLA ATS website and the Stata
+manual so one can investigate the Stata result for comparison.</p>
+<div id="standard-probit" class="section level2">
+<h2>standard probit</h2>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="probit.html#cb60-1"></a>probitLL =<span class="st"> </span><span class="cf">function</span>(beta, X, y){</span>
+<span id="cb60-2"><a href="probit.html#cb60-2"></a>  mu =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta</span>
+<span id="cb60-3"><a href="probit.html#cb60-3"></a>  </span>
+<span id="cb60-4"><a href="probit.html#cb60-4"></a>  <span class="co"># these produce identical results, but the second is the typical depiction</span></span>
+<span id="cb60-5"><a href="probit.html#cb60-5"></a>  ll =<span class="st"> </span><span class="kw">sum</span>(<span class="kw">dbinom</span>(</span>
+<span id="cb60-6"><a href="probit.html#cb60-6"></a>    y,</span>
+<span id="cb60-7"><a href="probit.html#cb60-7"></a>    <span class="dt">size =</span> <span class="dv">1</span>,</span>
+<span id="cb60-8"><a href="probit.html#cb60-8"></a>    <span class="dt">prob =</span> <span class="kw">pnorm</span>(mu),</span>
+<span id="cb60-9"><a href="probit.html#cb60-9"></a>    <span class="dt">log =</span> T</span>
+<span id="cb60-10"><a href="probit.html#cb60-10"></a>  ))</span>
+<span id="cb60-11"><a href="probit.html#cb60-11"></a>  </span>
+<span id="cb60-12"><a href="probit.html#cb60-12"></a>  <span class="co"># ll = sum(y * pnorm(mu, log = T) + (1 - y) * log(1 - pnorm(mu)))</span></span>
+<span id="cb60-13"><a href="probit.html#cb60-13"></a>  </span>
+<span id="cb60-14"><a href="probit.html#cb60-14"></a>  <span class="op">-</span>ll</span>
+<span id="cb60-15"><a href="probit.html#cb60-15"></a>}</span></code></pre></div>
+<div id="examples" class="section level3">
+<h3>Examples</h3>
+<p>Example 1 available at <a href="https://stats.idre.ucla.edu/stata/dae/probit-regression/" class="uri">https://stats.idre.ucla.edu/stata/dae/probit-regression/</a></p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="probit.html#cb61-1"></a>admit =<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_dta</span>(<span class="st">&#39;https://stats.idre.ucla.edu/stat/stata/dae/binary.dta&#39;</span>)</span>
+<span id="cb61-2"><a href="probit.html#cb61-2"></a></span>
+<span id="cb61-3"><a href="probit.html#cb61-3"></a><span class="kw">head</span>(admit)</span></code></pre></div>
+<pre><code># A tibble: 6 x 4
+  admit   gre   gpa  rank
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0   380  3.61     3
+2     1   660  3.67     3
+3     1   800  4        1
+4     1   640  3.19     4
+5     0   520  2.93     4
+6     1   760  3        2</code></pre>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="probit.html#cb63-1"></a>X =<span class="st"> </span><span class="kw">model.matrix</span>(admit<span class="op">~</span><span class="st"> </span>gre <span class="op">+</span><span class="st"> </span>gpa <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(rank), admit)</span>
+<span id="cb63-2"><a href="probit.html#cb63-2"></a>y =<span class="st"> </span>admit<span class="op">$</span>admit</span>
+<span id="cb63-3"><a href="probit.html#cb63-3"></a></span>
+<span id="cb63-4"><a href="probit.html#cb63-4"></a>init =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X))</span>
+<span id="cb63-5"><a href="probit.html#cb63-5"></a></span>
+<span id="cb63-6"><a href="probit.html#cb63-6"></a>optimResult =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb63-7"><a href="probit.html#cb63-7"></a>  <span class="dt">fn  =</span> probitLL,</span>
+<span id="cb63-8"><a href="probit.html#cb63-8"></a>  <span class="dt">par =</span> init,</span>
+<span id="cb63-9"><a href="probit.html#cb63-9"></a>  <span class="dt">X =</span> X,</span>
+<span id="cb63-10"><a href="probit.html#cb63-10"></a>  <span class="dt">y =</span> y,</span>
+<span id="cb63-11"><a href="probit.html#cb63-11"></a>  <span class="dt">method =</span> <span class="st">&#39;BFGS&#39;</span></span>
+<span id="cb63-12"><a href="probit.html#cb63-12"></a>)</span>
+<span id="cb63-13"><a href="probit.html#cb63-13"></a></span>
+<span id="cb63-14"><a href="probit.html#cb63-14"></a>optimResult </span></code></pre></div>
+<pre><code>$par
+[1] -2.2518260555  0.0007915268  0.5453357468 -0.4211611887 -0.8285356685 -0.9457812896
+
+$value
+[1] 229.6227
+
+$counts
+function gradient 
+     140       11 
+
+$convergence
+[1] 0
+
+$message
+NULL</code></pre>
+<p>Example 2 from Stata manual on <a href="http://www.stata.com/manuals13/rprobit.pdf">standard probit</a></p>
+<blockquote>
+<p>We have data on the make, weight, and mileage rating of 22 foreign and 52 domestic automobiles. We wish to fit a probit model explaining whether a car is foreign based on its weight and mileage."</p>
+</blockquote>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="probit.html#cb65-1"></a>auto =<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_dta</span>(<span class="st">&#39;http://www.stata-press.com/data/r13/auto.dta&#39;</span>)</span>
+<span id="cb65-2"><a href="probit.html#cb65-2"></a></span>
+<span id="cb65-3"><a href="probit.html#cb65-3"></a><span class="kw">head</span>(auto)</span></code></pre></div>
+<pre><code># A tibble: 6 x 12
+  make          price   mpg rep78 headroom trunk weight length  turn displacement gear_ratio      foreign
+  &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl+lbl&gt;
+1 AMC Concord    4099    22     3      2.5    11   2930    186    40          121       3.58 0 [Domestic]
+2 AMC Pacer      4749    17     3      3      11   3350    173    40          258       2.53 0 [Domestic]
+3 AMC Spirit     3799    22    NA      3      12   2640    168    35          121       3.08 0 [Domestic]
+4 Buick Century  4816    20     3      4.5    16   3250    196    40          196       2.93 0 [Domestic]
+5 Buick Electra  7827    15     4      4      20   4080    222    43          350       2.41 0 [Domestic]
+6 Buick LeSabre  5788    18     3      4      21   3670    218    43          231       2.73 0 [Domestic]</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="probit.html#cb67-1"></a>X =<span class="st"> </span><span class="kw">model.matrix</span>(foreign<span class="op">~</span><span class="st"> </span>weight <span class="op">+</span><span class="st"> </span>mpg, auto)</span>
+<span id="cb67-2"><a href="probit.html#cb67-2"></a>y =<span class="st"> </span>auto<span class="op">$</span>foreign</span>
+<span id="cb67-3"><a href="probit.html#cb67-3"></a></span>
+<span id="cb67-4"><a href="probit.html#cb67-4"></a>init =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X))</span>
+<span id="cb67-5"><a href="probit.html#cb67-5"></a></span>
+<span id="cb67-6"><a href="probit.html#cb67-6"></a>optimResult =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb67-7"><a href="probit.html#cb67-7"></a>  <span class="dt">fn  =</span> probitLL,</span>
+<span id="cb67-8"><a href="probit.html#cb67-8"></a>  <span class="dt">par =</span> init,</span>
+<span id="cb67-9"><a href="probit.html#cb67-9"></a>  <span class="dt">X =</span> X,</span>
+<span id="cb67-10"><a href="probit.html#cb67-10"></a>  <span class="dt">y =</span> y</span>
+<span id="cb67-11"><a href="probit.html#cb67-11"></a>)</span>
+<span id="cb67-12"><a href="probit.html#cb67-12"></a></span>
+<span id="cb67-13"><a href="probit.html#cb67-13"></a>optimResult</span></code></pre></div>
+<pre><code>$par
+[1]  8.277015097 -0.002335939 -0.103973147
+
+$value
+[1] 26.84419
+
+$counts
+function gradient 
+     380       NA 
+
+$convergence
+[1] 0
+
+$message
+NULL</code></pre>
+</div>
+</div>
+<div id="bivariate-probit" class="section level2">
+<h2>Bivariate probit</h2>
+<p>Main function.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="probit.html#cb69-1"></a>bivariateProbitLL =<span class="st"> </span><span class="cf">function</span>(pars, X, y1, y2) {</span>
+<span id="cb69-2"><a href="probit.html#cb69-2"></a>  rho =<span class="st"> </span>pars[<span class="dv">1</span>]</span>
+<span id="cb69-3"><a href="probit.html#cb69-3"></a>  mu1 =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>pars[<span class="dv">2</span><span class="op">:</span>(<span class="kw">ncol</span>(X) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)]</span>
+<span id="cb69-4"><a href="probit.html#cb69-4"></a>  mu2 =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>pars[(<span class="kw">ncol</span>(X) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)<span class="op">:</span><span class="kw">length</span>(pars)]</span>
+<span id="cb69-5"><a href="probit.html#cb69-5"></a>  q1  =<span class="st"> </span><span class="kw">ifelse</span>(y1 <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb69-6"><a href="probit.html#cb69-6"></a>  q2  =<span class="st"> </span><span class="kw">ifelse</span>(y2 <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb69-7"><a href="probit.html#cb69-7"></a>  </span>
+<span id="cb69-8"><a href="probit.html#cb69-8"></a>  <span class="kw">require</span>(mnormt)</span>
+<span id="cb69-9"><a href="probit.html#cb69-9"></a>  eta1 =<span class="st"> </span>q1 <span class="op">*</span><span class="st"> </span>mu1</span>
+<span id="cb69-10"><a href="probit.html#cb69-10"></a>  eta2 =<span class="st"> </span>q2 <span class="op">*</span><span class="st"> </span>mu2</span>
+<span id="cb69-11"><a href="probit.html#cb69-11"></a>  </span>
+<span id="cb69-12"><a href="probit.html#cb69-12"></a>  ll =<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, <span class="dt">nrow =</span> <span class="kw">nrow</span>(X))</span>
+<span id="cb69-13"><a href="probit.html#cb69-13"></a>  </span>
+<span id="cb69-14"><a href="probit.html#cb69-14"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(ll)) {</span>
+<span id="cb69-15"><a href="probit.html#cb69-15"></a>    corr =<span class="st"> </span>q1[i] <span class="op">*</span><span class="st"> </span>q2[i] <span class="op">*</span><span class="st"> </span>rho</span>
+<span id="cb69-16"><a href="probit.html#cb69-16"></a>    corr =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, corr, corr, <span class="dv">1</span>), <span class="dv">2</span>)</span>
+<span id="cb69-17"><a href="probit.html#cb69-17"></a>    ll[i] =<span class="st"> </span><span class="kw">log</span>(</span>
+<span id="cb69-18"><a href="probit.html#cb69-18"></a>      <span class="kw">pmnorm</span>(</span>
+<span id="cb69-19"><a href="probit.html#cb69-19"></a>        <span class="dt">x =</span> <span class="kw">c</span>(eta1[i], eta2[i]),</span>
+<span id="cb69-20"><a href="probit.html#cb69-20"></a>        <span class="dt">mean =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb69-21"><a href="probit.html#cb69-21"></a>        <span class="dt">varcov =</span> corr</span>
+<span id="cb69-22"><a href="probit.html#cb69-22"></a>      )</span>
+<span id="cb69-23"><a href="probit.html#cb69-23"></a>    )</span>
+<span id="cb69-24"><a href="probit.html#cb69-24"></a>  }</span>
+<span id="cb69-25"><a href="probit.html#cb69-25"></a>  </span>
+<span id="cb69-26"><a href="probit.html#cb69-26"></a>  <span class="co"># the loop is probably clearer, and there is no difference in time, but here&#39;s</span></span>
+<span id="cb69-27"><a href="probit.html#cb69-27"></a>  <span class="co"># a oneliner ll = mapply(function(e1, e2, q1, q2) log(pmnorm(x = c(e1, e2),</span></span>
+<span id="cb69-28"><a href="probit.html#cb69-28"></a>  <span class="co"># varcov = matrix(c(1,q1*q2*rho,q1*q2*rho,1),2))), eta1, eta2, q1, q2)</span></span>
+<span id="cb69-29"><a href="probit.html#cb69-29"></a>  </span>
+<span id="cb69-30"><a href="probit.html#cb69-30"></a>  <span class="op">-</span><span class="kw">sum</span>(ll)</span>
+<span id="cb69-31"><a href="probit.html#cb69-31"></a>}</span></code></pre></div>
+<div id="example" class="section level3">
+<h3>Example</h3>
+<p>From stata manual on bivariate probit:</p>
+<blockquote>
+<p>We wish to model the bivariate outcomes of whether children attend private
+school and whether the head of the household voted for an increase in property
+tax based on the other covariates.</p>
+</blockquote>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="probit.html#cb70-1"></a>school =<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_dta</span>(<span class="st">&#39;http://www.stata-press.com/data/r13/school.dta&#39;</span>)</span>
+<span id="cb70-2"><a href="probit.html#cb70-2"></a></span>
+<span id="cb70-3"><a href="probit.html#cb70-3"></a><span class="kw">head</span>(school)</span></code></pre></div>
+<pre><code># A tibble: 6 x 11
+    obs pub12 pub34  pub5 private years school loginc logptax  vote logeduc
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+1     1     0     1     0       0    10      1   9.77    7.05     1    7.21
+2     2     0     1     0       0     8      0  10.0     7.05     0    7.61
+3     3     1     0     0       0     4      0  10.0     7.05     0    8.28
+4     4     0     1     0       0    13      0   9.43    6.40     0    6.82
+5     5     0     1     0       0     3      1  10.0     7.28     1    7.69
+6     6     1     0     0       0     5      0  10.5     7.05     0    6.91</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="probit.html#cb72-1"></a>X  =<span class="st"> </span><span class="kw">model.matrix</span>(private <span class="op">~</span><span class="st"> </span>years <span class="op">+</span><span class="st"> </span>logptax <span class="op">+</span><span class="st"> </span>loginc, school)</span>
+<span id="cb72-2"><a href="probit.html#cb72-2"></a>y1 =<span class="st"> </span>school<span class="op">$</span>private</span>
+<span id="cb72-3"><a href="probit.html#cb72-3"></a>y2 =<span class="st"> </span>school<span class="op">$</span>vote</span>
+<span id="cb72-4"><a href="probit.html#cb72-4"></a></span>
+<span id="cb72-5"><a href="probit.html#cb72-5"></a>init =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X)<span class="op">*</span><span class="dv">2</span>))</span>
+<span id="cb72-6"><a href="probit.html#cb72-6"></a></span>
+<span id="cb72-7"><a href="probit.html#cb72-7"></a><span class="co"># you&#39;ll probably get a warning or two, ignore; takes a couple seconds</span></span>
+<span id="cb72-8"><a href="probit.html#cb72-8"></a>optimResult =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb72-9"><a href="probit.html#cb72-9"></a>  <span class="dt">fn  =</span> bivariateProbitLL,</span>
+<span id="cb72-10"><a href="probit.html#cb72-10"></a>  <span class="dt">par =</span> init,</span>
+<span id="cb72-11"><a href="probit.html#cb72-11"></a>  <span class="dt">X   =</span> X,</span>
+<span id="cb72-12"><a href="probit.html#cb72-12"></a>  <span class="dt">y1  =</span> y1,</span>
+<span id="cb72-13"><a href="probit.html#cb72-13"></a>  <span class="dt">y2  =</span> y2,</span>
+<span id="cb72-14"><a href="probit.html#cb72-14"></a>  <span class="dt">method =</span> <span class="st">&#39;BFGS&#39;</span></span>
+<span id="cb72-15"><a href="probit.html#cb72-15"></a>)</span>
+<span id="cb72-16"><a href="probit.html#cb72-16"></a></span>
+<span id="cb72-17"><a href="probit.html#cb72-17"></a></span>
+<span id="cb72-18"><a href="probit.html#cb72-18"></a>loglik =<span class="st"> </span>optimResult<span class="op">$</span>value</span>
+<span id="cb72-19"><a href="probit.html#cb72-19"></a>rho =<span class="st"> </span>optimResult<span class="op">$</span>par[<span class="dv">1</span>]</span>
+<span id="cb72-20"><a href="probit.html#cb72-20"></a>coefsPrivate =<span class="st"> </span>optimResult<span class="op">$</span>par[<span class="dv">2</span><span class="op">:</span>(<span class="kw">ncol</span>(X) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)]</span>
+<span id="cb72-21"><a href="probit.html#cb72-21"></a>coefsVote =<span class="st"> </span>optimResult<span class="op">$</span>par[(<span class="kw">ncol</span>(X) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)<span class="op">:</span><span class="kw">length</span>(init)]</span>
+<span id="cb72-22"><a href="probit.html#cb72-22"></a><span class="kw">names</span>(coefsPrivate) =<span class="st"> </span><span class="kw">names</span>(coefsVote) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Int&#39;</span>, <span class="st">&#39;years&#39;</span>, <span class="st">&#39;logptax&#39;</span>, <span class="st">&#39;loginc&#39;</span>)</span>
+<span id="cb72-23"><a href="probit.html#cb72-23"></a></span>
+<span id="cb72-24"><a href="probit.html#cb72-24"></a><span class="kw">list</span>(</span>
+<span id="cb72-25"><a href="probit.html#cb72-25"></a>  <span class="dt">loglik  =</span> loglik,</span>
+<span id="cb72-26"><a href="probit.html#cb72-26"></a>  <span class="dt">rho     =</span> rho,</span>
+<span id="cb72-27"><a href="probit.html#cb72-27"></a>  <span class="dt">Private =</span> coefsPrivate,</span>
+<span id="cb72-28"><a href="probit.html#cb72-28"></a>  <span class="dt">Vote    =</span> coefsVote</span>
+<span id="cb72-29"><a href="probit.html#cb72-29"></a>)</span></code></pre></div>
+<pre><code>$loglik
+[1] 89.25407
+
+$rho
+[1] -0.2695802
+
+$Private
+        Int       years     logptax      loginc 
+-4.14327955 -0.01193699 -0.11030513  0.37459892 
+
+$Vote
+        Int       years     logptax      loginc 
+-0.52933721 -0.01686685 -1.28983223  0.99840976 </code></pre>
 
 </div>
-
-
-
+</div>
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="mixed-model-ML.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="heckman-selection.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -396,7 +599,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/probit.Rmd",
 "text": "Edit"
 },
 "history": {

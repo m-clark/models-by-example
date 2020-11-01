@@ -1,4 +1,4 @@
-# Standard Logistic Rodels
+# Standard Logistic
 
 
 A standard logistic regression model via maximum likelihood or exponential

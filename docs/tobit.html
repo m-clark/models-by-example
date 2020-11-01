@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>Tobit | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="Tobit | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="Tobit | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="heckman-selection.html"/>
+<link rel="next" href="naive-bayes.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -347,23 +347,160 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production. Almost everything here has a package/module that would do it far better and efficiently. The document itself is also not an introduction to any of these methods, and in fact contains very little expository text. This document is merely a learning tool for those wanting to dive a little deeper.</p>
-<p>The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a></p>
-<p>While I’m happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="tobit" class="section level1">
+<h1>Tobit</h1>
+<p>A simple demonstration of tobit regression via maximum likelihood. The issue is one where data is censored such that while we observe the value, it is not the true value, which would extend beyond the range of the observed data. This is very commonly seen in cases where the dependent variable has been given some arbitrary cutoff at the lower or upper end of the range, often resulting in floor or ceiling effects respectively. The conceptual idea is that we are interested in modeling the underlying latent variable that would not have suchrestriction if it was actually observed.</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="tobit.html#cb102-1"></a>tobit &lt;-<span class="st"> </span><span class="cf">function</span>(par, X, y, <span class="dt">ul =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">ll =</span> <span class="ot">Inf</span>) {</span>
+<span id="cb102-2"><a href="tobit.html#cb102-2"></a>  </span>
+<span id="cb102-3"><a href="tobit.html#cb102-3"></a>  <span class="co"># this function only takes a lower OR upper limit</span></span>
+<span id="cb102-4"><a href="tobit.html#cb102-4"></a>  </span>
+<span id="cb102-5"><a href="tobit.html#cb102-5"></a>  <span class="co"># parameters</span></span>
+<span id="cb102-6"><a href="tobit.html#cb102-6"></a>  sigma =<span class="st"> </span><span class="kw">exp</span>(par[<span class="kw">length</span>(par)]) </span>
+<span id="cb102-7"><a href="tobit.html#cb102-7"></a>  beta  =<span class="st"> </span>par[<span class="op">-</span><span class="kw">length</span>(par)]</span>
+<span id="cb102-8"><a href="tobit.html#cb102-8"></a>  </span>
+<span id="cb102-9"><a href="tobit.html#cb102-9"></a>  <span class="co"># create indicator depending on chosen limit</span></span>
+<span id="cb102-10"><a href="tobit.html#cb102-10"></a>  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.infinite</span>(ll)) {</span>
+<span id="cb102-11"><a href="tobit.html#cb102-11"></a>    limit =<span class="st"> </span>ll</span>
+<span id="cb102-12"><a href="tobit.html#cb102-12"></a>    indicator =<span class="st"> </span>y <span class="op">&gt;</span><span class="st"> </span>ll</span>
+<span id="cb102-13"><a href="tobit.html#cb102-13"></a>  } <span class="cf">else</span> {</span>
+<span id="cb102-14"><a href="tobit.html#cb102-14"></a>    limit =<span class="st"> </span>ul</span>
+<span id="cb102-15"><a href="tobit.html#cb102-15"></a>    indicator =<span class="st"> </span>y <span class="op">&lt;</span><span class="st"> </span>ul</span>
+<span id="cb102-16"><a href="tobit.html#cb102-16"></a>  }</span>
+<span id="cb102-17"><a href="tobit.html#cb102-17"></a>  </span>
+<span id="cb102-18"><a href="tobit.html#cb102-18"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb102-19"><a href="tobit.html#cb102-19"></a>  lp =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta</span>
+<span id="cb102-20"><a href="tobit.html#cb102-20"></a>  </span>
+<span id="cb102-21"><a href="tobit.html#cb102-21"></a>  <span class="co"># log likelihood</span></span>
+<span id="cb102-22"><a href="tobit.html#cb102-22"></a>  ll =<span class="st"> </span><span class="kw">sum</span>(indicator <span class="op">*</span><span class="st"> </span><span class="kw">log</span>((<span class="dv">1</span><span class="op">/</span>sigma)<span class="op">*</span><span class="kw">dnorm</span>((y<span class="op">-</span>lp)<span class="op">/</span>sigma)) ) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb102-23"><a href="tobit.html#cb102-23"></a><span class="st">    </span><span class="kw">sum</span>((<span class="dv">1</span><span class="op">-</span>indicator) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">pnorm</span>((lp<span class="op">-</span>limit)<span class="op">/</span>sigma, <span class="dt">lower=</span><span class="kw">is.infinite</span>(ll))))</span>
+<span id="cb102-24"><a href="tobit.html#cb102-24"></a>  </span>
+<span id="cb102-25"><a href="tobit.html#cb102-25"></a>  <span class="op">-</span>ll</span>
+<span id="cb102-26"><a href="tobit.html#cb102-26"></a>}</span></code></pre></div>
+<div id="demonstrate-censoring-with-an-upper-limit" class="section level2">
+<h2>Demonstrate Censoring with an Upper Limit</h2>
+<div id="data-setup-3" class="section level3">
+<h3>Data setup</h3>
+<p>Data regards academic aptitude (GRE scores) with will be modeled using reading and math test scores, as well as the type of program the student is enrolled in (academic, general, or vocational). See this for an applied example and more detail- <a href="https://stats.idre.ucla.edu/r/dae/tobit-models/" class="uri">https://stats.idre.ucla.edu/r/dae/tobit-models/</a></p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="tobit.html#cb103-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb103-2"><a href="tobit.html#cb103-2"></a></span>
+<span id="cb103-3"><a href="tobit.html#cb103-3"></a>acad_apt =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/data/tobit.csv&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb103-4"><a href="tobit.html#cb103-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prog =</span> <span class="kw">factor</span>(prog, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&#39;acad&#39;</span>, <span class="st">&#39;general&#39;</span>, <span class="st">&#39;vocational&#39;</span>)))</span></code></pre></div>
+<p>Setup data and initial values.</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="tobit.html#cb104-1"></a>initmod =<span class="st"> </span><span class="kw">lm</span>(apt <span class="op">~</span><span class="st"> </span>read <span class="op">+</span><span class="st"> </span>math <span class="op">+</span><span class="st"> </span>prog, <span class="dt">data =</span> acad_apt)</span>
+<span id="cb104-2"><a href="tobit.html#cb104-2"></a>X =<span class="st"> </span><span class="kw">model.matrix</span>(initmod)</span>
+<span id="cb104-3"><a href="tobit.html#cb104-3"></a>init =<span class="st"> </span><span class="kw">c</span>(<span class="kw">coef</span>(initmod), <span class="dt">log_sigma =</span> <span class="kw">log</span>(<span class="kw">summary</span>(initmod)<span class="op">$</span>sigma))</span></code></pre></div>
+<p>Estimate via <span class="func" style="">optim</span>.</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="tobit.html#cb105-1"></a>res =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb105-2"><a href="tobit.html#cb105-2"></a>  <span class="dt">par =</span> init,</span>
+<span id="cb105-3"><a href="tobit.html#cb105-3"></a>  tobit,</span>
+<span id="cb105-4"><a href="tobit.html#cb105-4"></a>  <span class="dt">y  =</span> acad_apt<span class="op">$</span>apt,</span>
+<span id="cb105-5"><a href="tobit.html#cb105-5"></a>  <span class="dt">X  =</span> X,</span>
+<span id="cb105-6"><a href="tobit.html#cb105-6"></a>  <span class="dt">ul =</span> <span class="dv">800</span>,</span>
+<span id="cb105-7"><a href="tobit.html#cb105-7"></a>  <span class="dt">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
+<span id="cb105-8"><a href="tobit.html#cb105-8"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">maxit =</span> <span class="dv">2000</span>, <span class="dt">reltol =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb105-9"><a href="tobit.html#cb105-9"></a>)</span>
+<span id="cb105-10"><a href="tobit.html#cb105-10"></a></span>
+<span id="cb105-11"><a href="tobit.html#cb105-11"></a></span>
+<span id="cb105-12"><a href="tobit.html#cb105-12"></a><span class="co"># this would be more akin to the default Stata default approach</span></span>
+<span id="cb105-13"><a href="tobit.html#cb105-13"></a><span class="co"># optim(</span></span>
+<span id="cb105-14"><a href="tobit.html#cb105-14"></a><span class="co">#   par = init,</span></span>
+<span id="cb105-15"><a href="tobit.html#cb105-15"></a><span class="co">#   tobit,</span></span>
+<span id="cb105-16"><a href="tobit.html#cb105-16"></a><span class="co">#   y = acad_apt$apt,</span></span>
+<span id="cb105-17"><a href="tobit.html#cb105-17"></a><span class="co">#   X = X,</span></span>
+<span id="cb105-18"><a href="tobit.html#cb105-18"></a><span class="co">#   ul = 800,</span></span>
+<span id="cb105-19"><a href="tobit.html#cb105-19"></a><span class="co">#   control = list(maxit = 16000, reltol = 1e-15)</span></span>
+<span id="cb105-20"><a href="tobit.html#cb105-20"></a><span class="co"># )</span></span></code></pre></div>
+</div>
+<div id="comparison-5" class="section level3">
+<h3>Comparison</h3>
+<p>Compare to <span class="pack" style="">AER</span> package tobit function.</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="tobit.html#cb106-1"></a><span class="kw">library</span>(survival)</span>
+<span id="cb106-2"><a href="tobit.html#cb106-2"></a></span>
+<span id="cb106-3"><a href="tobit.html#cb106-3"></a>aer_mod =<span class="st"> </span>AER<span class="op">::</span><span class="kw">tobit</span>(</span>
+<span id="cb106-4"><a href="tobit.html#cb106-4"></a>  apt <span class="op">~</span><span class="st"> </span>read <span class="op">+</span><span class="st"> </span>math <span class="op">+</span><span class="st"> </span>prog,</span>
+<span id="cb106-5"><a href="tobit.html#cb106-5"></a>  <span class="dt">data =</span> acad_apt,</span>
+<span id="cb106-6"><a href="tobit.html#cb106-6"></a>  <span class="dt">left =</span> <span class="op">-</span><span class="ot">Inf</span>,</span>
+<span id="cb106-7"><a href="tobit.html#cb106-7"></a>  <span class="dt">right =</span> <span class="dv">800</span></span>
+<span id="cb106-8"><a href="tobit.html#cb106-8"></a>)</span>
+<span id="cb106-9"><a href="tobit.html#cb106-9"></a></span>
+<span id="cb106-10"><a href="tobit.html#cb106-10"></a><span class="kw">rbind</span>(</span>
+<span id="cb106-11"><a href="tobit.html#cb106-11"></a>  <span class="dt">tobit =</span> <span class="kw">c</span>(</span>
+<span id="cb106-12"><a href="tobit.html#cb106-12"></a>    res<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>],</span>
+<span id="cb106-13"><a href="tobit.html#cb106-13"></a>    <span class="dt">sigma   =</span> <span class="kw">exp</span>(res<span class="op">$</span>par[<span class="dv">6</span>]),</span>
+<span id="cb106-14"><a href="tobit.html#cb106-14"></a>    <span class="dt">logLike =</span> <span class="op">-</span>res<span class="op">$</span>value</span>
+<span id="cb106-15"><a href="tobit.html#cb106-15"></a>  ),</span>
+<span id="cb106-16"><a href="tobit.html#cb106-16"></a>  <span class="dt">AER =</span> <span class="kw">c</span>(<span class="kw">coef</span>(aer_mod), aer_mod<span class="op">$</span>scale, <span class="kw">logLik</span>(aer_mod))</span>
+<span id="cb106-17"><a href="tobit.html#cb106-17"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb106-18"><a href="tobit.html#cb106-18"></a><span class="st">  </span><span class="kw">round</span>(<span class="dv">3</span>)</span></code></pre></div>
+<pre><code>      (Intercept)  read  math proggeneral progvocational sigma.log_sigma   logLike
+tobit     209.566 2.698 5.914     -12.716        -46.143          65.677 -1041.063
+AER       209.566 2.698 5.914     -12.715        -46.144          65.677 -1041.063</code></pre>
+<p><span class="pack" style="">AER</span> is actually just using <span class="func" style="">survreg</span> from the <span class="pack" style="">survival</span> package. Survival models are usually for modeling time to some event, e.g. death in medical studies, and the censoring comes from the fact that the observed event does not occur for some people. Like our tobit function, an indicator is needed to denote who is or isn’t censored. In survival models, the indicator is for the event itself, and means they are NOT censored. So we’ll reverse the indicator used in the tobit function for <span class="func" style="">survreg</span>.</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="tobit.html#cb108-1"></a>surv_mod =<span class="st"> </span><span class="kw">survreg</span>(<span class="kw">Surv</span>(apt, apt <span class="op">&lt;</span><span class="st"> </span><span class="dv">800</span>, <span class="dt">type =</span> <span class="st">&#39;right&#39;</span>) <span class="op">~</span><span class="st"> </span>read <span class="op">+</span><span class="st"> </span>math <span class="op">+</span><span class="st"> </span>prog,</span>
+<span id="cb108-2"><a href="tobit.html#cb108-2"></a>                   <span class="dt">data =</span> acad_apt,</span>
+<span id="cb108-3"><a href="tobit.html#cb108-3"></a>                   <span class="dt">dist =</span> <span class="st">&#39;gaussian&#39;</span>)</span></code></pre></div>
+<p>Compare all results.</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="tobit.html#cb109-1"></a><span class="kw">rbind</span>(</span>
+<span id="cb109-2"><a href="tobit.html#cb109-2"></a>  <span class="dt">tobit =</span> <span class="kw">c</span>(</span>
+<span id="cb109-3"><a href="tobit.html#cb109-3"></a>    res<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>],</span>
+<span id="cb109-4"><a href="tobit.html#cb109-4"></a>    <span class="dt">sigma =</span> <span class="kw">exp</span>(res<span class="op">$</span>par[<span class="dv">6</span>]),</span>
+<span id="cb109-5"><a href="tobit.html#cb109-5"></a>    <span class="dt">logLike =</span> <span class="op">-</span>res<span class="op">$</span>value</span>
+<span id="cb109-6"><a href="tobit.html#cb109-6"></a>  ),</span>
+<span id="cb109-7"><a href="tobit.html#cb109-7"></a>  <span class="dt">AER =</span> <span class="kw">c</span>(<span class="kw">coef</span>(aer_mod), aer_mod<span class="op">$</span>scale, <span class="kw">logLik</span>(aer_mod)),</span>
+<span id="cb109-8"><a href="tobit.html#cb109-8"></a>  <span class="dt">survival =</span> <span class="kw">c</span>(<span class="kw">coef</span>(surv_mod), surv_mod<span class="op">$</span>scale, <span class="kw">logLik</span>(surv_mod))</span>
+<span id="cb109-9"><a href="tobit.html#cb109-9"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb109-10"><a href="tobit.html#cb109-10"></a><span class="st">  </span><span class="kw">round</span>(<span class="dv">3</span>)</span></code></pre></div>
+<pre><code>         (Intercept)  read  math proggeneral progvocational sigma.log_sigma   logLike
+tobit        209.566 2.698 5.914     -12.716        -46.143          65.677 -1041.063
+AER          209.566 2.698 5.914     -12.715        -46.144          65.677 -1041.063
+survival     209.566 2.698 5.914     -12.715        -46.144          65.677 -1041.063</code></pre>
+</div>
+</div>
+<div id="demonstrate-censoring-with-a-lower-limit" class="section level2">
+<h2>Demonstrate censoring with a Lower Limit</h2>
+<p>Create a censored data situation for the low end. The scale itself would be censored for anyone scoring a 200, but that basically doesn’t happen. In this data, 15 are less than a score of 500, so we’ll do that.</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="tobit.html#cb111-1"></a>acad_apt =<span class="st"> </span>acad_apt <span class="op">%&gt;%</span></span>
+<span id="cb111-2"><a href="tobit.html#cb111-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">apt2 =</span> apt,</span>
+<span id="cb111-3"><a href="tobit.html#cb111-3"></a>         <span class="dt">apt2 =</span> <span class="kw">if_else</span>(apt2 <span class="op">&lt;</span><span class="st"> </span><span class="dv">500</span>, <span class="dv">500</span>, apt2))</span></code></pre></div>
+<p>Estimate and use <span class="pack" style="">AER</span> for comparison.</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="tobit.html#cb112-1"></a>res =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb112-2"><a href="tobit.html#cb112-2"></a>  <span class="dt">par =</span> init,</span>
+<span id="cb112-3"><a href="tobit.html#cb112-3"></a>  tobit,</span>
+<span id="cb112-4"><a href="tobit.html#cb112-4"></a>  <span class="dt">y  =</span> acad_apt<span class="op">$</span>apt2,</span>
+<span id="cb112-5"><a href="tobit.html#cb112-5"></a>  <span class="dt">X  =</span> X,</span>
+<span id="cb112-6"><a href="tobit.html#cb112-6"></a>  <span class="dt">ll =</span> <span class="dv">400</span>,</span>
+<span id="cb112-7"><a href="tobit.html#cb112-7"></a>  <span class="dt">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
+<span id="cb112-8"><a href="tobit.html#cb112-8"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">maxit =</span> <span class="dv">2000</span>, <span class="dt">reltol =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb112-9"><a href="tobit.html#cb112-9"></a>)</span>
+<span id="cb112-10"><a href="tobit.html#cb112-10"></a></span>
+<span id="cb112-11"><a href="tobit.html#cb112-11"></a>aer_mod =<span class="st"> </span>AER<span class="op">::</span><span class="kw">tobit</span>(apt2 <span class="op">~</span><span class="st"> </span>read <span class="op">+</span><span class="st"> </span>math <span class="op">+</span><span class="st"> </span>prog,</span>
+<span id="cb112-12"><a href="tobit.html#cb112-12"></a>                     <span class="dt">data =</span> acad_apt,</span>
+<span id="cb112-13"><a href="tobit.html#cb112-13"></a>                     <span class="dt">left =</span> <span class="dv">400</span>)</span></code></pre></div>
+<div id="comparison-6" class="section level3">
+<h3>Comparison</h3>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="tobit.html#cb113-1"></a><span class="kw">rbind</span>(</span>
+<span id="cb113-2"><a href="tobit.html#cb113-2"></a>  <span class="dt">tobit =</span> <span class="kw">c</span>(</span>
+<span id="cb113-3"><a href="tobit.html#cb113-3"></a>    res<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>],</span>
+<span id="cb113-4"><a href="tobit.html#cb113-4"></a>    <span class="dt">sigma =</span> <span class="kw">exp</span>(res<span class="op">$</span>par[<span class="dv">6</span>]),</span>
+<span id="cb113-5"><a href="tobit.html#cb113-5"></a>    <span class="dt">logLike =</span> <span class="op">-</span>res<span class="op">$</span>value</span>
+<span id="cb113-6"><a href="tobit.html#cb113-6"></a>  ),</span>
+<span id="cb113-7"><a href="tobit.html#cb113-7"></a>  <span class="dt">AER =</span> <span class="kw">c</span>(<span class="kw">coef</span>(aer_mod), aer_mod<span class="op">$</span>scale, <span class="kw">logLik</span>(aer_mod))</span>
+<span id="cb113-8"><a href="tobit.html#cb113-8"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb113-9"><a href="tobit.html#cb113-9"></a><span class="st">  </span><span class="kw">round</span>(<span class="dv">3</span>)</span></code></pre></div>
+<pre><code>      (Intercept)  read  math proggeneral progvocational sigma.log_sigma   logLike
+tobit     270.408 2.328 5.086     -11.331        -38.606          57.024 -1092.483
+AER       270.409 2.328 5.085     -11.331        -38.606          57.024 -1092.483</code></pre>
 
 </div>
-
-
-
+</div>
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="heckman-selection.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="naive-bayes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -396,7 +533,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/tobit.Rmd",
 "text": "Edit"
 },
 "history": {

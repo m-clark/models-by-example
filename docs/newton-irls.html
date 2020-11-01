@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Newton and IRLS | Models by Example</title>
+  <title>Newton and IRLS | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Newton and IRLS | Models by Example" />
+  <meta property="og:title" content="Newton and IRLS | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Newton and IRLS | Models by Example" />
+  <meta name="twitter:title" content="Newton and IRLS | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -133,7 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class='before'><a href="./">Models by Example</a></li>
+<li class='before'><a href="./">Model Estimation by Example</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
@@ -146,7 +146,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic Rodels</a>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic</a>
 <ul>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
@@ -154,26 +154,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html"><i class="fa fa-check"></i>One-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#main-function"><i class="fa fa-check"></i>Main function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#data-set-up"><i class="fa fa-check"></i>Data set up</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#estimation"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html"><i class="fa fa-check"></i>Two-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#main-function-1"><i class="fa fa-check"></i>Main function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#data-set-up-1"><i class="fa fa-check"></i>Data set up</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#estimation-1"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html"><i class="fa fa-check"></i>Mixed Model via ML</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#introduction-1"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#data"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#ml-function"><i class="fa fa-check"></i>ML function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#results"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#issues-with-ml-estimation"><i class="fa fa-check"></i>Issues with ML estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#link-with-penalized-regression"><i class="fa fa-check"></i>Link with penalized regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html"><i class="fa fa-check"></i>Probit &amp; Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#standard-probit"><i class="fa fa-check"></i>standard probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#examples"><i class="fa fa-check"></i>Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#bivariate-probit"><i class="fa fa-check"></i>Bivariate probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html"><i class="fa fa-check"></i>Heckman Selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-approach"><i class="fa fa-check"></i>2 step approach</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-1-probit-model"><i class="fa fa-check"></i>Step 1: Probit Model</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-2-estimate-via-linear-regression"><i class="fa fa-check"></i>Step 2: Estimate via linear regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#maximum-likelihood"><i class="fa fa-check"></i>Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-an-upper-limit"><i class="fa fa-check"></i>Demonstrate Censoring with an Upper Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#data-setup-3"><i class="fa fa-check"></i>Data setup</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-a-lower-limit"><i class="fa fa-check"></i>Demonstrate censoring with a Lower Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-6"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html"><i class="fa fa-check"></i>Naive Bayes</a>
+<ul>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#initialization"><i class="fa fa-check"></i>Initialization</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
 <li class="part"><span><b>Algorithms</b></span></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
 <ul>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-4"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#obtain-model-estimates-2"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-5"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
 <ul>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-3"><i class="fa fa-check"></i>Data setup</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-5"><i class="fa fa-check"></i>Data setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-6"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
 <ul>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-7"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
 <ul>
@@ -184,50 +254,58 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s method</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-8"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First version</a>
 <ul>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-1"><i class="fa fa-check"></i>Example</a></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second version</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example function</a></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-9"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
 <ul>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-7"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a>
 <ul>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#run"><i class="fa fa-check"></i>Run</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-10"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
 <ul>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#stochastic-gradient-descent-algorithm"><i class="fa fa-check"></i>Stochastic Gradient Descent Algorithm</a>
 <ul>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-1"><i class="fa fa-check"></i>Run</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
 <ul>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-2"><i class="fa fa-check"></i>Run</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-16"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-11"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Other</b></span></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#algorithms"><i class="fa fa-check"></i>Algorithms</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li class='after'">
@@ -261,7 +339,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Models by Example</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Model Estimation by Example</a>
           </h1>
         </div>
 
@@ -286,11 +364,11 @@ implement a line search to find a more optimal stepsize at a given iteration.</p
 (higher=more prestige). See corresponding demo here:
 <a href="https://stats.idre.ucla.edu/stata/dae/logistic-regression/" class="uri">https://stats.idre.ucla.edu/stata/dae/logistic-regression/</a>. The only
 difference is that I treat rank as numeric rather than categorical.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="newton-irls.html#cb51-1"></a>admit =<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_dta</span>(<span class="st">&#39;https://stats.idre.ucla.edu/stat/stata/dae/binary.dta&#39;</span>)</span>
-<span id="cb51-2"><a href="newton-irls.html#cb51-2"></a></span>
-<span id="cb51-3"><a href="newton-irls.html#cb51-3"></a>comparison_model =<span class="st"> </span><span class="kw">glm</span>(admit <span class="op">~</span><span class="st"> </span>gre <span class="op">+</span><span class="st"> </span>gpa <span class="op">+</span><span class="st"> </span>rank, <span class="dt">data =</span> admit, <span class="dt">family =</span> binomial)</span>
-<span id="cb51-4"><a href="newton-irls.html#cb51-4"></a></span>
-<span id="cb51-5"><a href="newton-irls.html#cb51-5"></a><span class="kw">summary</span>(comparison_model)</span></code></pre></div>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="newton-irls.html#cb143-1"></a>admit =<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_dta</span>(<span class="st">&#39;https://stats.idre.ucla.edu/stat/stata/dae/binary.dta&#39;</span>)</span>
+<span id="cb143-2"><a href="newton-irls.html#cb143-2"></a></span>
+<span id="cb143-3"><a href="newton-irls.html#cb143-3"></a>comparison_model =<span class="st"> </span><span class="kw">glm</span>(admit <span class="op">~</span><span class="st"> </span>gre <span class="op">+</span><span class="st"> </span>gpa <span class="op">+</span><span class="st"> </span>rank, <span class="dt">data =</span> admit, <span class="dt">family =</span> binomial)</span>
+<span id="cb143-4"><a href="newton-irls.html#cb143-4"></a></span>
+<span id="cb143-5"><a href="newton-irls.html#cb143-5"></a><span class="kw">summary</span>(comparison_model)</span></code></pre></div>
 <pre><code>
 Call:
 glm(formula = admit ~ gre + gpa + rank, family = binomial, data = admit)
@@ -315,65 +393,65 @@ Residual deviance: 459.44  on 396  degrees of freedom
 AIC: 467.44
 
 Number of Fisher Scoring iterations: 4</code></pre>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="newton-irls.html#cb53-1"></a>X =<span class="st"> </span><span class="kw">model.matrix</span>(comparison_model)</span>
-<span id="cb53-2"><a href="newton-irls.html#cb53-2"></a>y =<span class="st"> </span>comparison_model<span class="op">$</span>y</span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="newton-irls.html#cb145-1"></a>X =<span class="st"> </span><span class="kw">model.matrix</span>(comparison_model)</span>
+<span id="cb145-2"><a href="newton-irls.html#cb145-2"></a>y =<span class="st"> </span>comparison_model<span class="op">$</span>y</span></code></pre></div>
 </div>
 <div id="functions-4" class="section level2">
 <h2>Functions</h2>
 <div id="newtons-method" class="section level3">
 <h3>Newton’s method</h3>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="newton-irls.html#cb54-1"></a>newton &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
-<span id="cb54-2"><a href="newton-irls.html#cb54-2"></a>  X,</span>
-<span id="cb54-3"><a href="newton-irls.html#cb54-3"></a>  y,</span>
-<span id="cb54-4"><a href="newton-irls.html#cb54-4"></a>  <span class="dt">tol  =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb54-5"><a href="newton-irls.html#cb54-5"></a>  <span class="dt">iter =</span> <span class="dv">500</span>,</span>
-<span id="cb54-6"><a href="newton-irls.html#cb54-6"></a>  <span class="dt">stepsize =</span> <span class="fl">.5</span></span>
-<span id="cb54-7"><a href="newton-irls.html#cb54-7"></a>  ) {</span>
-<span id="cb54-8"><a href="newton-irls.html#cb54-8"></a>  </span>
-<span id="cb54-9"><a href="newton-irls.html#cb54-9"></a>  <span class="co"># Args: </span></span>
-<span id="cb54-10"><a href="newton-irls.html#cb54-10"></a>  <span class="co"># X: model matrix</span></span>
-<span id="cb54-11"><a href="newton-irls.html#cb54-11"></a>  <span class="co"># y: target</span></span>
-<span id="cb54-12"><a href="newton-irls.html#cb54-12"></a>  <span class="co"># tol: tolerance</span></span>
-<span id="cb54-13"><a href="newton-irls.html#cb54-13"></a>  <span class="co"># iter: maximum number of iterations</span></span>
-<span id="cb54-14"><a href="newton-irls.html#cb54-14"></a>  <span class="co"># stepsize: (0, 1)</span></span>
-<span id="cb54-15"><a href="newton-irls.html#cb54-15"></a>  </span>
-<span id="cb54-16"><a href="newton-irls.html#cb54-16"></a>  <span class="co"># intialize</span></span>
-<span id="cb54-17"><a href="newton-irls.html#cb54-17"></a>  int     =<span class="st"> </span><span class="kw">log</span>(<span class="kw">mean</span>(y) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(y)))         <span class="co"># intercept</span></span>
-<span id="cb54-18"><a href="newton-irls.html#cb54-18"></a>  beta    =<span class="st"> </span><span class="kw">c</span>(int, <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</span>
-<span id="cb54-19"><a href="newton-irls.html#cb54-19"></a>  currtol =<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb54-20"><a href="newton-irls.html#cb54-20"></a>  it =<span class="st"> </span><span class="dv">0</span></span>
-<span id="cb54-21"><a href="newton-irls.html#cb54-21"></a>  ll =<span class="st"> </span><span class="dv">0</span></span>
-<span id="cb54-22"><a href="newton-irls.html#cb54-22"></a>  </span>
-<span id="cb54-23"><a href="newton-irls.html#cb54-23"></a>  <span class="cf">while</span> (currtol <span class="op">&gt;</span><span class="st"> </span>tol <span class="op">&amp;&amp;</span><span class="st"> </span>it <span class="op">&lt;</span><span class="st"> </span>iter) {</span>
-<span id="cb54-24"><a href="newton-irls.html#cb54-24"></a>    it =<span class="st"> </span>it <span class="op">+</span><span class="dv">1</span></span>
-<span id="cb54-25"><a href="newton-irls.html#cb54-25"></a>    ll_old =<span class="st"> </span>ll</span>
-<span id="cb54-26"><a href="newton-irls.html#cb54-26"></a>    </span>
-<span id="cb54-27"><a href="newton-irls.html#cb54-27"></a>    mu =<span class="st"> </span><span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta)[,<span class="dv">1</span>]</span>
-<span id="cb54-28"><a href="newton-irls.html#cb54-28"></a>    g  =<span class="st"> </span><span class="kw">crossprod</span>(X, mu<span class="op">-</span>y)               <span class="co"># gradient</span></span>
-<span id="cb54-29"><a href="newton-irls.html#cb54-29"></a>    S  =<span class="st"> </span><span class="kw">diag</span>(mu<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>mu)) </span>
-<span id="cb54-30"><a href="newton-irls.html#cb54-30"></a>    H  =<span class="st"> </span><span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>S <span class="op">%*%</span><span class="st"> </span>X                 <span class="co"># hessian</span></span>
-<span id="cb54-31"><a href="newton-irls.html#cb54-31"></a>    beta =<span class="st"> </span>beta <span class="op">-</span><span class="st"> </span>stepsize <span class="op">*</span><span class="st"> </span><span class="kw">solve</span>(H) <span class="op">%*%</span><span class="st"> </span>g</span>
-<span id="cb54-32"><a href="newton-irls.html#cb54-32"></a></span>
-<span id="cb54-33"><a href="newton-irls.html#cb54-33"></a>    ll =<span class="st"> </span><span class="kw">sum</span>(<span class="kw">dbinom</span>(y, <span class="dt">prob =</span> mu, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>))</span>
-<span id="cb54-34"><a href="newton-irls.html#cb54-34"></a>    currtol =<span class="st"> </span><span class="kw">abs</span>(ll <span class="op">-</span><span class="st"> </span>ll_old)</span>
-<span id="cb54-35"><a href="newton-irls.html#cb54-35"></a>  }</span>
-<span id="cb54-36"><a href="newton-irls.html#cb54-36"></a>  </span>
-<span id="cb54-37"><a href="newton-irls.html#cb54-37"></a>  <span class="kw">list</span>(</span>
-<span id="cb54-38"><a href="newton-irls.html#cb54-38"></a>    <span class="dt">beta =</span> beta,</span>
-<span id="cb54-39"><a href="newton-irls.html#cb54-39"></a>    <span class="dt">iter =</span> it,</span>
-<span id="cb54-40"><a href="newton-irls.html#cb54-40"></a>    <span class="dt">tol  =</span> currtol,</span>
-<span id="cb54-41"><a href="newton-irls.html#cb54-41"></a>    <span class="dt">loglik =</span> ll</span>
-<span id="cb54-42"><a href="newton-irls.html#cb54-42"></a>  )</span>
-<span id="cb54-43"><a href="newton-irls.html#cb54-43"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="newton-irls.html#cb146-1"></a>newton &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb146-2"><a href="newton-irls.html#cb146-2"></a>  X,</span>
+<span id="cb146-3"><a href="newton-irls.html#cb146-3"></a>  y,</span>
+<span id="cb146-4"><a href="newton-irls.html#cb146-4"></a>  <span class="dt">tol  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb146-5"><a href="newton-irls.html#cb146-5"></a>  <span class="dt">iter =</span> <span class="dv">500</span>,</span>
+<span id="cb146-6"><a href="newton-irls.html#cb146-6"></a>  <span class="dt">stepsize =</span> <span class="fl">.5</span></span>
+<span id="cb146-7"><a href="newton-irls.html#cb146-7"></a>  ) {</span>
+<span id="cb146-8"><a href="newton-irls.html#cb146-8"></a>  </span>
+<span id="cb146-9"><a href="newton-irls.html#cb146-9"></a>  <span class="co"># Args: </span></span>
+<span id="cb146-10"><a href="newton-irls.html#cb146-10"></a>  <span class="co"># X: model matrix</span></span>
+<span id="cb146-11"><a href="newton-irls.html#cb146-11"></a>  <span class="co"># y: target</span></span>
+<span id="cb146-12"><a href="newton-irls.html#cb146-12"></a>  <span class="co"># tol: tolerance</span></span>
+<span id="cb146-13"><a href="newton-irls.html#cb146-13"></a>  <span class="co"># iter: maximum number of iterations</span></span>
+<span id="cb146-14"><a href="newton-irls.html#cb146-14"></a>  <span class="co"># stepsize: (0, 1)</span></span>
+<span id="cb146-15"><a href="newton-irls.html#cb146-15"></a>  </span>
+<span id="cb146-16"><a href="newton-irls.html#cb146-16"></a>  <span class="co"># intialize</span></span>
+<span id="cb146-17"><a href="newton-irls.html#cb146-17"></a>  int     =<span class="st"> </span><span class="kw">log</span>(<span class="kw">mean</span>(y) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(y)))         <span class="co"># intercept</span></span>
+<span id="cb146-18"><a href="newton-irls.html#cb146-18"></a>  beta    =<span class="st"> </span><span class="kw">c</span>(int, <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</span>
+<span id="cb146-19"><a href="newton-irls.html#cb146-19"></a>  currtol =<span class="st"> </span><span class="dv">1</span></span>
+<span id="cb146-20"><a href="newton-irls.html#cb146-20"></a>  it =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb146-21"><a href="newton-irls.html#cb146-21"></a>  ll =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb146-22"><a href="newton-irls.html#cb146-22"></a>  </span>
+<span id="cb146-23"><a href="newton-irls.html#cb146-23"></a>  <span class="cf">while</span> (currtol <span class="op">&gt;</span><span class="st"> </span>tol <span class="op">&amp;&amp;</span><span class="st"> </span>it <span class="op">&lt;</span><span class="st"> </span>iter) {</span>
+<span id="cb146-24"><a href="newton-irls.html#cb146-24"></a>    it =<span class="st"> </span>it <span class="op">+</span><span class="dv">1</span></span>
+<span id="cb146-25"><a href="newton-irls.html#cb146-25"></a>    ll_old =<span class="st"> </span>ll</span>
+<span id="cb146-26"><a href="newton-irls.html#cb146-26"></a>    </span>
+<span id="cb146-27"><a href="newton-irls.html#cb146-27"></a>    mu =<span class="st"> </span><span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta)[,<span class="dv">1</span>]</span>
+<span id="cb146-28"><a href="newton-irls.html#cb146-28"></a>    g  =<span class="st"> </span><span class="kw">crossprod</span>(X, mu<span class="op">-</span>y)               <span class="co"># gradient</span></span>
+<span id="cb146-29"><a href="newton-irls.html#cb146-29"></a>    S  =<span class="st"> </span><span class="kw">diag</span>(mu<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>mu)) </span>
+<span id="cb146-30"><a href="newton-irls.html#cb146-30"></a>    H  =<span class="st"> </span><span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>S <span class="op">%*%</span><span class="st"> </span>X                 <span class="co"># hessian</span></span>
+<span id="cb146-31"><a href="newton-irls.html#cb146-31"></a>    beta =<span class="st"> </span>beta <span class="op">-</span><span class="st"> </span>stepsize <span class="op">*</span><span class="st"> </span><span class="kw">solve</span>(H) <span class="op">%*%</span><span class="st"> </span>g</span>
+<span id="cb146-32"><a href="newton-irls.html#cb146-32"></a></span>
+<span id="cb146-33"><a href="newton-irls.html#cb146-33"></a>    ll =<span class="st"> </span><span class="kw">sum</span>(<span class="kw">dbinom</span>(y, <span class="dt">prob =</span> mu, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>))</span>
+<span id="cb146-34"><a href="newton-irls.html#cb146-34"></a>    currtol =<span class="st"> </span><span class="kw">abs</span>(ll <span class="op">-</span><span class="st"> </span>ll_old)</span>
+<span id="cb146-35"><a href="newton-irls.html#cb146-35"></a>  }</span>
+<span id="cb146-36"><a href="newton-irls.html#cb146-36"></a>  </span>
+<span id="cb146-37"><a href="newton-irls.html#cb146-37"></a>  <span class="kw">list</span>(</span>
+<span id="cb146-38"><a href="newton-irls.html#cb146-38"></a>    <span class="dt">beta =</span> beta,</span>
+<span id="cb146-39"><a href="newton-irls.html#cb146-39"></a>    <span class="dt">iter =</span> it,</span>
+<span id="cb146-40"><a href="newton-irls.html#cb146-40"></a>    <span class="dt">tol  =</span> currtol,</span>
+<span id="cb146-41"><a href="newton-irls.html#cb146-41"></a>    <span class="dt">loglik =</span> ll</span>
+<span id="cb146-42"><a href="newton-irls.html#cb146-42"></a>  )</span>
+<span id="cb146-43"><a href="newton-irls.html#cb146-43"></a>}</span></code></pre></div>
 <p>Compare to base R <code>glm</code>.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="newton-irls.html#cb55-1"></a>newton_result =<span class="st"> </span><span class="kw">newton</span>(</span>
-<span id="cb55-2"><a href="newton-irls.html#cb55-2"></a>  <span class="dt">X =</span> X,</span>
-<span id="cb55-3"><a href="newton-irls.html#cb55-3"></a>  <span class="dt">y =</span> y,</span>
-<span id="cb55-4"><a href="newton-irls.html#cb55-4"></a>  <span class="dt">stepsize =</span> <span class="fl">.9</span>,</span>
-<span id="cb55-5"><a href="newton-irls.html#cb55-5"></a>  <span class="dt">tol =</span> <span class="fl">1e-8</span>      <span class="co"># tol set to 1e-8 as in glm default</span></span>
-<span id="cb55-6"><a href="newton-irls.html#cb55-6"></a>) </span>
-<span id="cb55-7"><a href="newton-irls.html#cb55-7"></a></span>
-<span id="cb55-8"><a href="newton-irls.html#cb55-8"></a>newton_result</span></code></pre></div>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="newton-irls.html#cb147-1"></a>newton_result =<span class="st"> </span><span class="kw">newton</span>(</span>
+<span id="cb147-2"><a href="newton-irls.html#cb147-2"></a>  <span class="dt">X =</span> X,</span>
+<span id="cb147-3"><a href="newton-irls.html#cb147-3"></a>  <span class="dt">y =</span> y,</span>
+<span id="cb147-4"><a href="newton-irls.html#cb147-4"></a>  <span class="dt">stepsize =</span> <span class="fl">.9</span>,</span>
+<span id="cb147-5"><a href="newton-irls.html#cb147-5"></a>  <span class="dt">tol =</span> <span class="fl">1e-8</span>      <span class="co"># tol set to 1e-8 as in glm default</span></span>
+<span id="cb147-6"><a href="newton-irls.html#cb147-6"></a>) </span>
+<span id="cb147-7"><a href="newton-irls.html#cb147-7"></a></span>
+<span id="cb147-8"><a href="newton-irls.html#cb147-8"></a>newton_result</span></code></pre></div>
 <pre><code>$beta
                     [,1]
 (Intercept) -3.449548577
@@ -389,7 +467,7 @@ $tol
 
 $loglik
 [1] -229.7209</code></pre>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="newton-irls.html#cb57-1"></a>comparison_model</span></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="newton-irls.html#cb149-1"></a>comparison_model</span></code></pre></div>
 <pre><code>
 Call:  glm(formula = admit ~ gre + gpa + rank, family = binomial, data = admit)
 
@@ -400,15 +478,15 @@ Coefficients:
 Degrees of Freedom: 399 Total (i.e. Null);  396 Residual
 Null Deviance:      500 
 Residual Deviance: 459.4    AIC: 467.4</code></pre>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="newton-irls.html#cb59-1"></a><span class="kw">rbind</span>(</span>
-<span id="cb59-2"><a href="newton-irls.html#cb59-2"></a>  <span class="dt">newton =</span> <span class="kw">unlist</span>(newton_result),</span>
-<span id="cb59-3"><a href="newton-irls.html#cb59-3"></a>  <span class="dt">glm_default =</span> <span class="kw">c</span>(</span>
-<span id="cb59-4"><a href="newton-irls.html#cb59-4"></a>    <span class="dt">beta =</span> <span class="kw">coef</span>(comparison_model),</span>
-<span id="cb59-5"><a href="newton-irls.html#cb59-5"></a>    comparison_model<span class="op">$</span>iter,</span>
-<span id="cb59-6"><a href="newton-irls.html#cb59-6"></a>    <span class="dt">tol =</span> <span class="ot">NA</span>,</span>
-<span id="cb59-7"><a href="newton-irls.html#cb59-7"></a>    <span class="dt">loglik =</span> <span class="op">-</span><span class="kw">logLik</span>(comparison_model)</span>
-<span id="cb59-8"><a href="newton-irls.html#cb59-8"></a>  )</span>
-<span id="cb59-9"><a href="newton-irls.html#cb59-9"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="newton-irls.html#cb151-1"></a><span class="kw">rbind</span>(</span>
+<span id="cb151-2"><a href="newton-irls.html#cb151-2"></a>  <span class="dt">newton =</span> <span class="kw">unlist</span>(newton_result),</span>
+<span id="cb151-3"><a href="newton-irls.html#cb151-3"></a>  <span class="dt">glm_default =</span> <span class="kw">c</span>(</span>
+<span id="cb151-4"><a href="newton-irls.html#cb151-4"></a>    <span class="dt">beta =</span> <span class="kw">coef</span>(comparison_model),</span>
+<span id="cb151-5"><a href="newton-irls.html#cb151-5"></a>    comparison_model<span class="op">$</span>iter,</span>
+<span id="cb151-6"><a href="newton-irls.html#cb151-6"></a>    <span class="dt">tol =</span> <span class="ot">NA</span>,</span>
+<span id="cb151-7"><a href="newton-irls.html#cb151-7"></a>    <span class="dt">loglik =</span> <span class="op">-</span><span class="kw">logLik</span>(comparison_model)</span>
+<span id="cb151-8"><a href="newton-irls.html#cb151-8"></a>  )</span>
+<span id="cb151-9"><a href="newton-irls.html#cb151-9"></a>)</span></code></pre></div>
 <pre><code>                beta1       beta2     beta3      beta4 iter          tol    loglik
 newton      -3.449549 0.002293959 0.7770136 -0.5600314    8 2.581544e-10 -229.7209
 glm_default -3.449549 0.002293959 0.7770137 -0.5600314    4           NA  229.7209</code></pre>
@@ -417,50 +495,50 @@ glm_default -3.449549 0.002293959 0.7770137 -0.5600314    4           NA  229.72
 <h3>IRLS</h3>
 <p>Note that <code>glm</code> is actually using IRLS, so the results from this should be
 fairly spot on.</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="newton-irls.html#cb61-1"></a>irls &lt;-<span class="st"> </span><span class="cf">function</span>(X, y, <span class="dt">tol =</span> <span class="fl">1e-12</span>, <span class="dt">iter =</span> <span class="dv">500</span>) {</span>
-<span id="cb61-2"><a href="newton-irls.html#cb61-2"></a>  </span>
-<span id="cb61-3"><a href="newton-irls.html#cb61-3"></a>  <span class="co"># intialize</span></span>
-<span id="cb61-4"><a href="newton-irls.html#cb61-4"></a>  int  =<span class="st"> </span><span class="kw">log</span>(<span class="kw">mean</span>(y) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(y)))   <span class="co"># intercept</span></span>
-<span id="cb61-5"><a href="newton-irls.html#cb61-5"></a>  beta =<span class="st"> </span><span class="kw">c</span>(int, <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</span>
-<span id="cb61-6"><a href="newton-irls.html#cb61-6"></a>  currtol =<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb61-7"><a href="newton-irls.html#cb61-7"></a>  it =<span class="st"> </span><span class="dv">0</span></span>
-<span id="cb61-8"><a href="newton-irls.html#cb61-8"></a>  ll =<span class="st"> </span><span class="dv">0</span></span>
-<span id="cb61-9"><a href="newton-irls.html#cb61-9"></a>  </span>
-<span id="cb61-10"><a href="newton-irls.html#cb61-10"></a>  <span class="cf">while</span> (currtol <span class="op">&gt;</span><span class="st"> </span>tol <span class="op">&amp;&amp;</span><span class="st"> </span>it <span class="op">&lt;</span><span class="st"> </span>iter) {</span>
-<span id="cb61-11"><a href="newton-irls.html#cb61-11"></a>    it =<span class="st"> </span>it <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
-<span id="cb61-12"><a href="newton-irls.html#cb61-12"></a>    ll_old =<span class="st"> </span>ll</span>
-<span id="cb61-13"><a href="newton-irls.html#cb61-13"></a>    </span>
-<span id="cb61-14"><a href="newton-irls.html#cb61-14"></a>    eta  =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta</span>
-<span id="cb61-15"><a href="newton-irls.html#cb61-15"></a>    mu   =<span class="st"> </span><span class="kw">plogis</span>(eta)[,<span class="dv">1</span>]</span>
-<span id="cb61-16"><a href="newton-irls.html#cb61-16"></a>    s    =<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mu)</span>
-<span id="cb61-17"><a href="newton-irls.html#cb61-17"></a>    S    =<span class="st"> </span><span class="kw">diag</span>(s)</span>
-<span id="cb61-18"><a href="newton-irls.html#cb61-18"></a>    z    =<span class="st"> </span>eta <span class="op">+</span><span class="st"> </span>(y<span class="op">-</span>mu)<span class="op">/</span>s</span>
-<span id="cb61-19"><a href="newton-irls.html#cb61-19"></a>    beta =<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>S <span class="op">%*%</span><span class="st"> </span>X) <span class="op">%*%</span><span class="st"> </span>(<span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>(S <span class="op">%*%</span><span class="st"> </span>z))</span>
-<span id="cb61-20"><a href="newton-irls.html#cb61-20"></a>    </span>
-<span id="cb61-21"><a href="newton-irls.html#cb61-21"></a>    ll =<span class="st"> </span><span class="kw">sum</span>(</span>
-<span id="cb61-22"><a href="newton-irls.html#cb61-22"></a>      <span class="kw">dbinom</span>(</span>
-<span id="cb61-23"><a href="newton-irls.html#cb61-23"></a>        y,</span>
-<span id="cb61-24"><a href="newton-irls.html#cb61-24"></a>        <span class="dt">prob =</span> <span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta),</span>
-<span id="cb61-25"><a href="newton-irls.html#cb61-25"></a>        <span class="dt">size =</span> <span class="dv">1</span>,</span>
-<span id="cb61-26"><a href="newton-irls.html#cb61-26"></a>        <span class="dt">log =</span> T</span>
-<span id="cb61-27"><a href="newton-irls.html#cb61-27"></a>      )</span>
-<span id="cb61-28"><a href="newton-irls.html#cb61-28"></a>    )</span>
-<span id="cb61-29"><a href="newton-irls.html#cb61-29"></a>    </span>
-<span id="cb61-30"><a href="newton-irls.html#cb61-30"></a>    currtol =<span class="st"> </span><span class="kw">abs</span>(ll <span class="op">-</span><span class="st"> </span>ll_old)</span>
-<span id="cb61-31"><a href="newton-irls.html#cb61-31"></a>  }</span>
-<span id="cb61-32"><a href="newton-irls.html#cb61-32"></a>  </span>
-<span id="cb61-33"><a href="newton-irls.html#cb61-33"></a>  <span class="kw">list</span>(</span>
-<span id="cb61-34"><a href="newton-irls.html#cb61-34"></a>    <span class="dt">beta =</span> beta,</span>
-<span id="cb61-35"><a href="newton-irls.html#cb61-35"></a>    <span class="dt">iter =</span> it,</span>
-<span id="cb61-36"><a href="newton-irls.html#cb61-36"></a>    <span class="dt">tol  =</span> currtol,</span>
-<span id="cb61-37"><a href="newton-irls.html#cb61-37"></a>    <span class="dt">loglik  =</span> ll,</span>
-<span id="cb61-38"><a href="newton-irls.html#cb61-38"></a>    <span class="dt">weights =</span> <span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta))</span>
-<span id="cb61-39"><a href="newton-irls.html#cb61-39"></a>  )</span>
-<span id="cb61-40"><a href="newton-irls.html#cb61-40"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="newton-irls.html#cb153-1"></a>irls &lt;-<span class="st"> </span><span class="cf">function</span>(X, y, <span class="dt">tol =</span> <span class="fl">1e-12</span>, <span class="dt">iter =</span> <span class="dv">500</span>) {</span>
+<span id="cb153-2"><a href="newton-irls.html#cb153-2"></a>  </span>
+<span id="cb153-3"><a href="newton-irls.html#cb153-3"></a>  <span class="co"># intialize</span></span>
+<span id="cb153-4"><a href="newton-irls.html#cb153-4"></a>  int  =<span class="st"> </span><span class="kw">log</span>(<span class="kw">mean</span>(y) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(y)))   <span class="co"># intercept</span></span>
+<span id="cb153-5"><a href="newton-irls.html#cb153-5"></a>  beta =<span class="st"> </span><span class="kw">c</span>(int, <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</span>
+<span id="cb153-6"><a href="newton-irls.html#cb153-6"></a>  currtol =<span class="st"> </span><span class="dv">1</span></span>
+<span id="cb153-7"><a href="newton-irls.html#cb153-7"></a>  it =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb153-8"><a href="newton-irls.html#cb153-8"></a>  ll =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb153-9"><a href="newton-irls.html#cb153-9"></a>  </span>
+<span id="cb153-10"><a href="newton-irls.html#cb153-10"></a>  <span class="cf">while</span> (currtol <span class="op">&gt;</span><span class="st"> </span>tol <span class="op">&amp;&amp;</span><span class="st"> </span>it <span class="op">&lt;</span><span class="st"> </span>iter) {</span>
+<span id="cb153-11"><a href="newton-irls.html#cb153-11"></a>    it =<span class="st"> </span>it <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb153-12"><a href="newton-irls.html#cb153-12"></a>    ll_old =<span class="st"> </span>ll</span>
+<span id="cb153-13"><a href="newton-irls.html#cb153-13"></a>    </span>
+<span id="cb153-14"><a href="newton-irls.html#cb153-14"></a>    eta  =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta</span>
+<span id="cb153-15"><a href="newton-irls.html#cb153-15"></a>    mu   =<span class="st"> </span><span class="kw">plogis</span>(eta)[,<span class="dv">1</span>]</span>
+<span id="cb153-16"><a href="newton-irls.html#cb153-16"></a>    s    =<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mu)</span>
+<span id="cb153-17"><a href="newton-irls.html#cb153-17"></a>    S    =<span class="st"> </span><span class="kw">diag</span>(s)</span>
+<span id="cb153-18"><a href="newton-irls.html#cb153-18"></a>    z    =<span class="st"> </span>eta <span class="op">+</span><span class="st"> </span>(y<span class="op">-</span>mu)<span class="op">/</span>s</span>
+<span id="cb153-19"><a href="newton-irls.html#cb153-19"></a>    beta =<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>S <span class="op">%*%</span><span class="st"> </span>X) <span class="op">%*%</span><span class="st"> </span>(<span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>(S <span class="op">%*%</span><span class="st"> </span>z))</span>
+<span id="cb153-20"><a href="newton-irls.html#cb153-20"></a>    </span>
+<span id="cb153-21"><a href="newton-irls.html#cb153-21"></a>    ll =<span class="st"> </span><span class="kw">sum</span>(</span>
+<span id="cb153-22"><a href="newton-irls.html#cb153-22"></a>      <span class="kw">dbinom</span>(</span>
+<span id="cb153-23"><a href="newton-irls.html#cb153-23"></a>        y,</span>
+<span id="cb153-24"><a href="newton-irls.html#cb153-24"></a>        <span class="dt">prob =</span> <span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta),</span>
+<span id="cb153-25"><a href="newton-irls.html#cb153-25"></a>        <span class="dt">size =</span> <span class="dv">1</span>,</span>
+<span id="cb153-26"><a href="newton-irls.html#cb153-26"></a>        <span class="dt">log =</span> T</span>
+<span id="cb153-27"><a href="newton-irls.html#cb153-27"></a>      )</span>
+<span id="cb153-28"><a href="newton-irls.html#cb153-28"></a>    )</span>
+<span id="cb153-29"><a href="newton-irls.html#cb153-29"></a>    </span>
+<span id="cb153-30"><a href="newton-irls.html#cb153-30"></a>    currtol =<span class="st"> </span><span class="kw">abs</span>(ll <span class="op">-</span><span class="st"> </span>ll_old)</span>
+<span id="cb153-31"><a href="newton-irls.html#cb153-31"></a>  }</span>
+<span id="cb153-32"><a href="newton-irls.html#cb153-32"></a>  </span>
+<span id="cb153-33"><a href="newton-irls.html#cb153-33"></a>  <span class="kw">list</span>(</span>
+<span id="cb153-34"><a href="newton-irls.html#cb153-34"></a>    <span class="dt">beta =</span> beta,</span>
+<span id="cb153-35"><a href="newton-irls.html#cb153-35"></a>    <span class="dt">iter =</span> it,</span>
+<span id="cb153-36"><a href="newton-irls.html#cb153-36"></a>    <span class="dt">tol  =</span> currtol,</span>
+<span id="cb153-37"><a href="newton-irls.html#cb153-37"></a>    <span class="dt">loglik  =</span> ll,</span>
+<span id="cb153-38"><a href="newton-irls.html#cb153-38"></a>    <span class="dt">weights =</span> <span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">plogis</span>(X <span class="op">%*%</span><span class="st"> </span>beta))</span>
+<span id="cb153-39"><a href="newton-irls.html#cb153-39"></a>  )</span>
+<span id="cb153-40"><a href="newton-irls.html#cb153-40"></a>}</span></code></pre></div>
 <p><code>tol</code> set to 1e-8 as in <code>glm</code> default.</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="newton-irls.html#cb62-1"></a>irls_result =<span class="st"> </span><span class="kw">irls</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">tol =</span> <span class="fl">1e-8</span>) </span>
-<span id="cb62-2"><a href="newton-irls.html#cb62-2"></a></span>
-<span id="cb62-3"><a href="newton-irls.html#cb62-3"></a><span class="kw">str</span>(irls_result)</span></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="newton-irls.html#cb154-1"></a>irls_result =<span class="st"> </span><span class="kw">irls</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">tol =</span> <span class="fl">1e-8</span>) </span>
+<span id="cb154-2"><a href="newton-irls.html#cb154-2"></a></span>
+<span id="cb154-3"><a href="newton-irls.html#cb154-3"></a><span class="kw">str</span>(irls_result)</span></code></pre></div>
 <pre><code>List of 5
  $ beta   : num [1:4, 1] -3.44955 0.00229 0.77701 -0.56003
   ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -473,7 +551,7 @@ fairly spot on.</p>
   ..- attr(*, &quot;dimnames&quot;)=List of 2
   .. ..$ : chr [1:400] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
   .. ..$ : NULL</code></pre>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="newton-irls.html#cb64-1"></a>comparison_model</span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="newton-irls.html#cb156-1"></a>comparison_model</span></code></pre></div>
 <pre><code>
 Call:  glm(formula = admit ~ gre + gpa + rank, family = binomial, data = admit)
 
@@ -486,26 +564,26 @@ Null Deviance:      500
 Residual Deviance: 459.4    AIC: 467.4</code></pre>
 </div>
 </div>
-<div id="comparison-5" class="section level2">
+<div id="comparison-11" class="section level2">
 <h2>Comparison</h2>
 <p>Compare all results.</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="newton-irls.html#cb66-1"></a><span class="kw">rbind</span>(</span>
-<span id="cb66-2"><a href="newton-irls.html#cb66-2"></a>  <span class="dt">newton =</span> <span class="kw">unlist</span>(newton_result),</span>
-<span id="cb66-3"><a href="newton-irls.html#cb66-3"></a>  <span class="dt">irls   =</span> <span class="kw">unlist</span>(irls_result[<span class="op">-</span><span class="kw">length</span>(irls_result)]),</span>
-<span id="cb66-4"><a href="newton-irls.html#cb66-4"></a>  <span class="dt">glm_default =</span> <span class="kw">c</span>(</span>
-<span id="cb66-5"><a href="newton-irls.html#cb66-5"></a>    <span class="dt">beta =</span> <span class="kw">coef</span>(comparison_model),</span>
-<span id="cb66-6"><a href="newton-irls.html#cb66-6"></a>    comparison_model<span class="op">$</span>iter,</span>
-<span id="cb66-7"><a href="newton-irls.html#cb66-7"></a>    <span class="dt">tol =</span> <span class="ot">NA</span>,</span>
-<span id="cb66-8"><a href="newton-irls.html#cb66-8"></a>    <span class="dt">loglik =</span> <span class="kw">logLik</span>(comparison_model)</span>
-<span id="cb66-9"><a href="newton-irls.html#cb66-9"></a>  )</span>
-<span id="cb66-10"><a href="newton-irls.html#cb66-10"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="newton-irls.html#cb158-1"></a><span class="kw">rbind</span>(</span>
+<span id="cb158-2"><a href="newton-irls.html#cb158-2"></a>  <span class="dt">newton =</span> <span class="kw">unlist</span>(newton_result),</span>
+<span id="cb158-3"><a href="newton-irls.html#cb158-3"></a>  <span class="dt">irls   =</span> <span class="kw">unlist</span>(irls_result[<span class="op">-</span><span class="kw">length</span>(irls_result)]),</span>
+<span id="cb158-4"><a href="newton-irls.html#cb158-4"></a>  <span class="dt">glm_default =</span> <span class="kw">c</span>(</span>
+<span id="cb158-5"><a href="newton-irls.html#cb158-5"></a>    <span class="dt">beta =</span> <span class="kw">coef</span>(comparison_model),</span>
+<span id="cb158-6"><a href="newton-irls.html#cb158-6"></a>    comparison_model<span class="op">$</span>iter,</span>
+<span id="cb158-7"><a href="newton-irls.html#cb158-7"></a>    <span class="dt">tol =</span> <span class="ot">NA</span>,</span>
+<span id="cb158-8"><a href="newton-irls.html#cb158-8"></a>    <span class="dt">loglik =</span> <span class="kw">logLik</span>(comparison_model)</span>
+<span id="cb158-9"><a href="newton-irls.html#cb158-9"></a>  )</span>
+<span id="cb158-10"><a href="newton-irls.html#cb158-10"></a>)</span></code></pre></div>
 <pre><code>                beta1       beta2     beta3      beta4 iter          tol    loglik
 newton      -3.449549 0.002293959 0.7770136 -0.5600314    8 2.581544e-10 -229.7209
 irls        -3.449549 0.002293959 0.7770137 -0.5600314    4 5.996583e-09 -229.7209
 glm_default -3.449549 0.002293959 0.7770137 -0.5600314    4           NA -229.7209</code></pre>
 <p>Compare weights.</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="newton-irls.html#cb68-1"></a><span class="kw">head</span>(<span class="kw">cbind</span>(irls_result<span class="op">$</span>weights,</span>
-<span id="cb68-2"><a href="newton-irls.html#cb68-2"></a>           comparison_model<span class="op">$</span>weights))</span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="newton-irls.html#cb160-1"></a><span class="kw">head</span>(<span class="kw">cbind</span>(irls_result<span class="op">$</span>weights,</span>
+<span id="cb160-2"><a href="newton-irls.html#cb160-2"></a>           comparison_model<span class="op">$</span>weights))</span></code></pre></div>
 <pre><code>        [,1]       [,2]
 1 0.15362250 0.15362250
 2 0.21679615 0.21679615
@@ -514,7 +592,7 @@ glm_default -3.449549 0.002293959 0.7770137 -0.5600314    4           NA -229.72
 5 0.08835918 0.08835918
 6 0.23528108 0.23528108</code></pre>
 </div>
-<div id="source-5" class="section level2">
+<div id="source-8" class="section level2">
 <h2>Source</h2>
 <p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/newton_irls.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/newton_irls.R</a></p>
 
@@ -559,7 +637,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/model-demos/blob/master/newton-irls.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/newton-irls.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -583,6 +661,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

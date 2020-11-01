@@ -1,5 +1,5 @@
 ---
-title: Models by Example
+title: Model Estimation by Example
 subtitle: Demonstrations with R and friends.
 author:  |
   <span class="noem">Michael Clark</span> <br>
