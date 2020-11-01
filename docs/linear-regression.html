@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Standard Linear Regression | Models by Example</title>
+  <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Standard Linear Regression | Models by Example" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
+  <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+  <meta property="og:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="github-repo" content="m-clark/models-by-example/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Standard Linear Regression | Models by Example" />
+  
+  <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+
+
+
+<meta name="date" content="2020-11-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="introduction.html"/>
+<link rel="next" href="logistic-regression.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class='before'><a href="./">Models by Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="part"><span><b>Models</b></span></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i>Standard Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#data-setup"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#obtain-model-estimates"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic Rodels</a>
+<ul>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#obtain-model-estimates-1"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Algorithms</b></span></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#obtain-model-estimates-2"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-3"><i class="fa fa-check"></i>Data setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#glm-estimation-examples"><i class="fa fa-check"></i>GLM estimation examples</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-prep"><i class="fa fa-check"></i>Data Prep</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-4"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s method</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example function</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#run"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#stochastic-gradient-descent-algorithm"><i class="fa fa-check"></i>Stochastic Gradient Descent Algorithm</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-1"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-2"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="divider"></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Models by Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="standard-linear-regression" class="section level1">
+<h1>Standard Linear Regression</h1>
+<p>A standard regression model via maximum likelihood or least squares loss.
+Also examples for QR decomposition and normal equations. Can serve as an
+entry point for those starting out to the wider world of computational
+statistics as maximum likelihood is the fundamental approach used in most
+applied statistics, but which is also a key aspect of the Bayesian approach.
+Least squares loss is not confined to the standard lm setting, but is widely
+used in more predictive/‘algorithmic’ approaches e.g. in machine learning and
+elsewhere.</p>
+<div id="data-setup" class="section level2">
+<h2>Data Setup</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="linear-regression.html#cb1-1"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)  <span class="co"># ensures replication</span></span>
+<span id="cb1-2"><a href="linear-regression.html#cb1-2"></a></span>
+<span id="cb1-3"><a href="linear-regression.html#cb1-3"></a><span class="co"># predictors and response</span></span>
+<span id="cb1-4"><a href="linear-regression.html#cb1-4"></a>N =<span class="st"> </span><span class="dv">100</span> <span class="co"># sample size</span></span>
+<span id="cb1-5"><a href="linear-regression.html#cb1-5"></a>k =<span class="st"> </span><span class="dv">2</span>   <span class="co"># number of desired predictors</span></span>
+<span id="cb1-6"><a href="linear-regression.html#cb1-6"></a>X =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(N <span class="op">*</span><span class="st"> </span>k), <span class="dt">ncol =</span> k)  </span>
+<span id="cb1-7"><a href="linear-regression.html#cb1-7"></a>y =<span class="st"> </span><span class="fl">-.5</span> <span class="op">+</span><span class="st"> </span><span class="fl">.2</span><span class="op">*</span>X[, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="fl">.1</span><span class="op">*</span>X[, <span class="dv">2</span>] <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N, <span class="dt">sd =</span> <span class="fl">.5</span>)  <span class="co"># increasing N will get estimated values closer to these</span></span>
+<span id="cb1-8"><a href="linear-regression.html#cb1-8"></a></span>
+<span id="cb1-9"><a href="linear-regression.html#cb1-9"></a>dfXy =<span class="st"> </span><span class="kw">data.frame</span>(X, y)</span></code></pre></div>
+</div>
+<div id="functions" class="section level2">
+<h2>Functions</h2>
+<p>A maximum likelihood approach.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="linear-regression.html#cb2-1"></a>lm_ML =<span class="st"> </span><span class="cf">function</span>(par, X, y) {</span>
+<span id="cb2-2"><a href="linear-regression.html#cb2-2"></a>  <span class="co"># par: parameters to be estimated</span></span>
+<span id="cb2-3"><a href="linear-regression.html#cb2-3"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
+<span id="cb2-4"><a href="linear-regression.html#cb2-4"></a>  <span class="co"># y: response</span></span>
+<span id="cb2-5"><a href="linear-regression.html#cb2-5"></a>  </span>
+<span id="cb2-6"><a href="linear-regression.html#cb2-6"></a>  <span class="co"># setup</span></span>
+<span id="cb2-7"><a href="linear-regression.html#cb2-7"></a>  beta   =<span class="st"> </span>par[<span class="op">-</span><span class="dv">1</span>]                             <span class="co"># coefficients</span></span>
+<span id="cb2-8"><a href="linear-regression.html#cb2-8"></a>  sigma2 =<span class="st"> </span>par[<span class="dv">1</span>]                              <span class="co"># error variance</span></span>
+<span id="cb2-9"><a href="linear-regression.html#cb2-9"></a>  sigma  =<span class="st"> </span><span class="kw">sqrt</span>(sigma2)</span>
+<span id="cb2-10"><a href="linear-regression.html#cb2-10"></a>  N =<span class="st"> </span><span class="kw">nrow</span>(X)</span>
+<span id="cb2-11"><a href="linear-regression.html#cb2-11"></a>  </span>
+<span id="cb2-12"><a href="linear-regression.html#cb2-12"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb2-13"><a href="linear-regression.html#cb2-13"></a>  LP =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta                              <span class="co"># linear predictor</span></span>
+<span id="cb2-14"><a href="linear-regression.html#cb2-14"></a>  mu =<span class="st"> </span>LP                                      <span class="co"># identity link in the glm sense</span></span>
+<span id="cb2-15"><a href="linear-regression.html#cb2-15"></a>  </span>
+<span id="cb2-16"><a href="linear-regression.html#cb2-16"></a>  <span class="co"># calculate likelihood</span></span>
+<span id="cb2-17"><a href="linear-regression.html#cb2-17"></a>  L =<span class="st"> </span><span class="kw">dnorm</span>(y, <span class="dt">mean =</span> mu, <span class="dt">sd =</span> sigma, <span class="dt">log =</span> <span class="ot">TRUE</span>) <span class="co"># log likelihood</span></span>
+<span id="cb2-18"><a href="linear-regression.html#cb2-18"></a>  <span class="co"># L =  -.5*N*log(sigma2) - .5*(1/sigma2)*crossprod(y-mu)    # alternate log likelihood form</span></span>
+<span id="cb2-19"><a href="linear-regression.html#cb2-19"></a></span>
+<span id="cb2-20"><a href="linear-regression.html#cb2-20"></a>  <span class="op">-</span><span class="kw">sum</span>(L)                                      <span class="co"># optim by default is minimization, and we want to maximize the likelihood </span></span>
+<span id="cb2-21"><a href="linear-regression.html#cb2-21"></a>                                               <span class="co"># (see also fnscale in optim.control)</span></span>
+<span id="cb2-22"><a href="linear-regression.html#cb2-22"></a>}</span></code></pre></div>
+<p>An approach via least squares loss function.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="linear-regression.html#cb3-1"></a>lm_LS =<span class="st"> </span><span class="cf">function</span>(par, X, y) {</span>
+<span id="cb3-2"><a href="linear-regression.html#cb3-2"></a>  <span class="co"># arguments- </span></span>
+<span id="cb3-3"><a href="linear-regression.html#cb3-3"></a>  <span class="co"># par: parameters to be estimated</span></span>
+<span id="cb3-4"><a href="linear-regression.html#cb3-4"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
+<span id="cb3-5"><a href="linear-regression.html#cb3-5"></a>  <span class="co"># y: response</span></span>
+<span id="cb3-6"><a href="linear-regression.html#cb3-6"></a>  </span>
+<span id="cb3-7"><a href="linear-regression.html#cb3-7"></a>  <span class="co"># setup</span></span>
+<span id="cb3-8"><a href="linear-regression.html#cb3-8"></a>  beta =<span class="st"> </span>par                                   <span class="co"># coefficients</span></span>
+<span id="cb3-9"><a href="linear-regression.html#cb3-9"></a>  </span>
+<span id="cb3-10"><a href="linear-regression.html#cb3-10"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb3-11"><a href="linear-regression.html#cb3-11"></a>  LP =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta                              <span class="co"># linear predictor</span></span>
+<span id="cb3-12"><a href="linear-regression.html#cb3-12"></a>  mu =<span class="st"> </span>LP                                      <span class="co"># identity link</span></span>
+<span id="cb3-13"><a href="linear-regression.html#cb3-13"></a>  </span>
+<span id="cb3-14"><a href="linear-regression.html#cb3-14"></a>  <span class="co"># calculate least squares loss function</span></span>
+<span id="cb3-15"><a href="linear-regression.html#cb3-15"></a>  L =<span class="st"> </span><span class="kw">crossprod</span>(y <span class="op">-</span><span class="st"> </span>mu)</span>
+<span id="cb3-16"><a href="linear-regression.html#cb3-16"></a>}</span></code></pre></div>
+</div>
+<div id="obtain-model-estimates" class="section level2">
+<h2>Obtain Model Estimates</h2>
+<p>Setup for use with optim.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="linear-regression.html#cb4-1"></a>X =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>, X)</span></code></pre></div>
+<p>Initial values. Note we’d normally want to handle the sigma differently as it’s
+bounded by zero, but we’ll ignore for demonstration. Also <code>sigma2</code> is not
+required for the LS approach as it is the objective function.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="linear-regression.html#cb5-1"></a>init =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">ncol</span>(X)))</span>
+<span id="cb5-2"><a href="linear-regression.html#cb5-2"></a><span class="kw">names</span>(init) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;sigma2&#39;</span>, <span class="st">&#39;intercept&#39;</span>, <span class="st">&#39;b1&#39;</span>, <span class="st">&#39;b2&#39;</span>)</span>
+<span id="cb5-3"><a href="linear-regression.html#cb5-3"></a></span>
+<span id="cb5-4"><a href="linear-regression.html#cb5-4"></a>optlmML =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb5-5"><a href="linear-regression.html#cb5-5"></a>  <span class="dt">par =</span> init,</span>
+<span id="cb5-6"><a href="linear-regression.html#cb5-6"></a>  <span class="dt">fn  =</span> lm_ML,</span>
+<span id="cb5-7"><a href="linear-regression.html#cb5-7"></a>  <span class="dt">X   =</span> X,</span>
+<span id="cb5-8"><a href="linear-regression.html#cb5-8"></a>  <span class="dt">y   =</span> y,</span>
+<span id="cb5-9"><a href="linear-regression.html#cb5-9"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">reltol =</span> <span class="fl">1e-8</span>)</span>
+<span id="cb5-10"><a href="linear-regression.html#cb5-10"></a>)</span>
+<span id="cb5-11"><a href="linear-regression.html#cb5-11"></a></span>
+<span id="cb5-12"><a href="linear-regression.html#cb5-12"></a>optlmLS =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb5-13"><a href="linear-regression.html#cb5-13"></a>  <span class="dt">par =</span> init[<span class="op">-</span><span class="dv">1</span>],</span>
+<span id="cb5-14"><a href="linear-regression.html#cb5-14"></a>  <span class="dt">fn  =</span> lm_LS,</span>
+<span id="cb5-15"><a href="linear-regression.html#cb5-15"></a>  <span class="dt">X   =</span> X,</span>
+<span id="cb5-16"><a href="linear-regression.html#cb5-16"></a>  <span class="dt">y   =</span> y,</span>
+<span id="cb5-17"><a href="linear-regression.html#cb5-17"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">reltol =</span> <span class="fl">1e-8</span>)</span>
+<span id="cb5-18"><a href="linear-regression.html#cb5-18"></a>)</span>
+<span id="cb5-19"><a href="linear-regression.html#cb5-19"></a></span>
+<span id="cb5-20"><a href="linear-regression.html#cb5-20"></a>pars_ML =<span class="st"> </span>optlmML<span class="op">$</span>par</span>
+<span id="cb5-21"><a href="linear-regression.html#cb5-21"></a>pars_LS =<span class="st"> </span><span class="kw">c</span>(<span class="dt">sigma2 =</span> optlmLS<span class="op">$</span>value <span class="op">/</span><span class="st"> </span>(N <span class="op">-</span><span class="st"> </span>k <span class="op">-</span><span class="st"> </span><span class="dv">1</span>), optlmLS<span class="op">$</span>par)  <span class="co"># calculate sigma2 and add</span></span></code></pre></div>
+</div>
+<div id="comparison" class="section level2">
+<h2>Comparison</h2>
+<p>Compare to <code>lm</code> which uses QR decomposition.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="linear-regression.html#cb6-1"></a>modlm =<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>., dfXy)</span></code></pre></div>
+<p>Example of QR.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="linear-regression.html#cb7-1"></a><span class="co"># QRX = qr(X)</span></span>
+<span id="cb7-2"><a href="linear-regression.html#cb7-2"></a><span class="co"># Q = qr.Q(QRX)</span></span>
+<span id="cb7-3"><a href="linear-regression.html#cb7-3"></a><span class="co"># R = qr.R(QRX)</span></span>
+<span id="cb7-4"><a href="linear-regression.html#cb7-4"></a><span class="co"># Bhat = solve(R) %*% crossprod(Q, y)</span></span>
+<span id="cb7-5"><a href="linear-regression.html#cb7-5"></a><span class="co"># alternate: qr.coef(QRX, y)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="linear-regression.html#cb8-1"></a><span class="kw">round</span>(</span>
+<span id="cb8-2"><a href="linear-regression.html#cb8-2"></a>  <span class="kw">rbind</span>(</span>
+<span id="cb8-3"><a href="linear-regression.html#cb8-3"></a>    pars_ML,</span>
+<span id="cb8-4"><a href="linear-regression.html#cb8-4"></a>    pars_LS,</span>
+<span id="cb8-5"><a href="linear-regression.html#cb8-5"></a>    <span class="dt">modlm =</span> <span class="kw">c</span>(<span class="kw">summary</span>(modlm)<span class="op">$</span>sigma<span class="op">^</span><span class="dv">2</span>, <span class="kw">coef</span>(modlm))), </span>
+<span id="cb8-6"><a href="linear-regression.html#cb8-6"></a>  <span class="dt">digits =</span> <span class="dv">3</span></span>
+<span id="cb8-7"><a href="linear-regression.html#cb8-7"></a>)</span></code></pre></div>
+<pre><code>        sigma2 intercept    b1    b2
+pars_ML  0.219    -0.432 0.133 0.112
+pars_LS  0.226    -0.432 0.133 0.112
+modlm    0.226    -0.432 0.133 0.112</code></pre>
+<p>The slight difference in sigma is roughly maxlike dividing by N vs. N-k-1 in the
+traditional least squares approach; diminishes with increasing N as both tend
+toward whatever sd^2 you specify when creating the y response above.</p>
+<p>Compare to glm, which by default assumes gaussian family with identity link
+and uses <code>lm.fit</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="linear-regression.html#cb10-1"></a>modglm =<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> dfXy)</span>
+<span id="cb10-2"><a href="linear-regression.html#cb10-2"></a><span class="kw">summary</span>(modglm)</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = y ~ ., data = dfXy)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-0.93651  -0.33037  -0.06222   0.31068   1.03991  
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.43247    0.04807  -8.997 1.97e-14 ***
+X1           0.13341    0.05243   2.544   0.0125 *  
+X2           0.11191    0.04950   2.261   0.0260 *  
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for gaussian family taken to be 0.2262419)
+
+    Null deviance: 24.444  on 99  degrees of freedom
+Residual deviance: 21.945  on 97  degrees of freedom
+AIC: 140.13
+
+Number of Fisher Scoring iterations: 2</code></pre>
+<p>Via normal equations.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="linear-regression.html#cb12-1"></a>coefs =<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>X) <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>y  <span class="co"># coefficients</span></span></code></pre></div>
+<p>Compare.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="linear-regression.html#cb13-1"></a><span class="kw">sqrt</span>(<span class="kw">crossprod</span>(y <span class="op">-</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>coefs) <span class="op">/</span><span class="st"> </span>(N <span class="op">-</span><span class="st"> </span>k <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</span></code></pre></div>
+<pre><code>          [,1]
+[1,] 0.4756489</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="linear-regression.html#cb15-1"></a><span class="kw">summary</span>(modlm)<span class="op">$</span>sigma</span></code></pre></div>
+<pre><code>[1] 0.4756489</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="linear-regression.html#cb17-1"></a><span class="kw">sqrt</span>(modglm<span class="op">$</span>deviance <span class="op">/</span><span class="st"> </span>modglm<span class="op">$</span>df.residual) </span></code></pre></div>
+<pre><code>[1] 0.4756489</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="linear-regression.html#cb19-1"></a><span class="kw">c</span>(<span class="kw">sqrt</span>(pars_ML[<span class="dv">1</span>]), <span class="kw">sqrt</span>(pars_LS[<span class="dv">1</span>]))</span></code></pre></div>
+<pre><code>   sigma2    sigma2 
+0.4684616 0.4756490 </code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="linear-regression.html#cb21-1"></a><span class="co"># rerun by adding 3-4 zeros to the N</span></span></code></pre></div>
+</div>
+<div id="source" class="section level2">
+<h2>Source</h2>
+<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/standard_lm.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/standard_lm.R</a></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="logistic-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["twitter", "facebook", "linkedin", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/m-clark/model-demos/blob/master/linear-regression.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"depth": 2,
+"scroll_highlight": true
+},
+"df_print": "kable",
+"highlight": "pygments",
+"search": true
+});
+});
+</script>
+
+</body>
+
+</html>

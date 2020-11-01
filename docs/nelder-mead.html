@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Nelder Mead | Models by Example</title>
+  <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Nelder Mead | Models by Example" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
+  <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+  <meta property="og:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="github-repo" content="m-clark/models-by-example/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Nelder Mead | Models by Example" />
+  
+  <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+
+
+
+<meta name="date" content="2020-11-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="newton-irls.html"/>
+<link rel="next" href="gradient-descent.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class='before'><a href="./">Models by Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="part"><span><b>Models</b></span></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i>Standard Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#data-setup"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#obtain-model-estimates"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic Rodels</a>
+<ul>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#obtain-model-estimates-1"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Algorithms</b></span></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#obtain-model-estimates-2"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-3"><i class="fa fa-check"></i>Data setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#glm-estimation-examples"><i class="fa fa-check"></i>GLM estimation examples</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-prep"><i class="fa fa-check"></i>Data Prep</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-4"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s method</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example function</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#run"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#stochastic-gradient-descent-algorithm"><i class="fa fa-check"></i>Stochastic Gradient Descent Algorithm</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-1"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-2"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="divider"></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Models by Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="nelder-mead" class="section level1">
+<h1>Nelder Mead</h1>
+<p>This is based on the pure Python implementation by François Chollet found at
+<a href="https://github.com/fchollet/nelder-mead" class="uri">https://github.com/fchollet/nelder-mead</a> (also in the Miscellaneous R code repo at
+nelder_mead.py). This is mostly just an academic exercise on my part. I’m
+not sure how much one would use the basic NM for many situations. In my
+experience BFGS and other approaches would be faster, more accurate, and less
+sensitive to starting values for the types of problems I’ve played around
+with. Others who actually spend their time researching such things seem to
+agree.</p>
+<p>There were two issues on
+(GitHub)[<a href="https://github.com/fchollet/nelder-mead/issues/2" class="uri">https://github.com/fchollet/nelder-mead/issues/2</a>] regarding the
+original code, and I’ve implemented the suggested corrections with notes. The
+initial function code is not very R-like, as the goal was to keep more
+similar to the original Python for comparison, which used a list approach. I
+also provide a more R-like/cleaner version that uses matrices instead of
+lists, but which still sticks the same approach for the most part.</p>
+<p>For both functions, comparisons are made using the <code>optimx</code> package, but feel
+free to use base R’s <code>optim</code> instead.</p>
+<ul>
+<li><code>f</code> function to optimize, must return a scalar score and operate over
+an array of the same dimensions as x_start</li>
+<li><code>x_start</code> initial position</li>
+<li><code>step</code> look-around radius in initial step</li>
+<li><code>no_improve_thr</code> See no_improv_break</li>
+<li><code>no_improv_break</code> break after no_improv_break iterations with an
+improvement lower than no_improv_thr</li>
+<li><code>max_iter</code> always break after this number of iterations. Set it to 0 to
+loop indefinitely.</li>
+<li><code>alpha</code> parameters of the algorithm (see Wikipedia page for reference)</li>
+<li><code>gamma</code> parameters of the algorithm (see Wikipedia page for reference)</li>
+<li><code>rho</code> parameters of the algorithm (see Wikipedia page for reference)</li>
+<li><code>sigma</code> parameters of the algorithm (see Wikipedia page for reference)</li>
+<li><code>verbose</code> Print iterations?</li>
+</ul>
+<p>This function returns the best parameter array and best score.</p>
+<div id="first-version" class="section level2">
+<h2>First version</h2>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="nelder-mead.html#cb70-1"></a>nelder_mead =<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb70-2"><a href="nelder-mead.html#cb70-2"></a>  f, </span>
+<span id="cb70-3"><a href="nelder-mead.html#cb70-3"></a>  x_start,</span>
+<span id="cb70-4"><a href="nelder-mead.html#cb70-4"></a>  <span class="dt">step =</span> <span class="fl">0.1</span>,</span>
+<span id="cb70-5"><a href="nelder-mead.html#cb70-5"></a>  <span class="dt">no_improve_thr  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb70-6"><a href="nelder-mead.html#cb70-6"></a>  <span class="dt">no_improv_break =</span> <span class="dv">10</span>,</span>
+<span id="cb70-7"><a href="nelder-mead.html#cb70-7"></a>  <span class="dt">max_iter =</span> <span class="dv">0</span>,</span>
+<span id="cb70-8"><a href="nelder-mead.html#cb70-8"></a>  <span class="dt">alpha    =</span> <span class="dv">1</span>,</span>
+<span id="cb70-9"><a href="nelder-mead.html#cb70-9"></a>  <span class="dt">gamma    =</span> <span class="dv">2</span>,</span>
+<span id="cb70-10"><a href="nelder-mead.html#cb70-10"></a>  <span class="dt">rho      =</span> <span class="fl">0.5</span>,</span>
+<span id="cb70-11"><a href="nelder-mead.html#cb70-11"></a>  <span class="dt">sigma    =</span> <span class="fl">0.5</span>,</span>
+<span id="cb70-12"><a href="nelder-mead.html#cb70-12"></a>  <span class="dt">verbose  =</span> <span class="ot">FALSE</span></span>
+<span id="cb70-13"><a href="nelder-mead.html#cb70-13"></a>  ) {</span>
+<span id="cb70-14"><a href="nelder-mead.html#cb70-14"></a>  <span class="co"># init</span></span>
+<span id="cb70-15"><a href="nelder-mead.html#cb70-15"></a>  dim =<span class="st"> </span><span class="kw">length</span>(x_start)</span>
+<span id="cb70-16"><a href="nelder-mead.html#cb70-16"></a>  prev_best =<span class="st"> </span><span class="kw">f</span>(x_start)</span>
+<span id="cb70-17"><a href="nelder-mead.html#cb70-17"></a>  no_improv =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb70-18"><a href="nelder-mead.html#cb70-18"></a>  res =<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">x_start =</span> x_start, <span class="dt">prev_best =</span> prev_best))</span>
+<span id="cb70-19"><a href="nelder-mead.html#cb70-19"></a>  </span>
+<span id="cb70-20"><a href="nelder-mead.html#cb70-20"></a>  </span>
+<span id="cb70-21"><a href="nelder-mead.html#cb70-21"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>dim) {</span>
+<span id="cb70-22"><a href="nelder-mead.html#cb70-22"></a>    x =<span class="st"> </span>x_start</span>
+<span id="cb70-23"><a href="nelder-mead.html#cb70-23"></a>    x[i]  =<span class="st"> </span>x[i] <span class="op">+</span><span class="st"> </span>step</span>
+<span id="cb70-24"><a href="nelder-mead.html#cb70-24"></a>    score =<span class="st"> </span><span class="kw">f</span>(x)</span>
+<span id="cb70-25"><a href="nelder-mead.html#cb70-25"></a>    res =<span class="st"> </span><span class="kw">append</span>(res, <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">x_start =</span> x, <span class="dt">prev_best =</span> score)))</span>
+<span id="cb70-26"><a href="nelder-mead.html#cb70-26"></a>  }</span>
+<span id="cb70-27"><a href="nelder-mead.html#cb70-27"></a>  </span>
+<span id="cb70-28"><a href="nelder-mead.html#cb70-28"></a>  <span class="co"># simplex iter</span></span>
+<span id="cb70-29"><a href="nelder-mead.html#cb70-29"></a>  iters =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb70-30"><a href="nelder-mead.html#cb70-30"></a>  </span>
+<span id="cb70-31"><a href="nelder-mead.html#cb70-31"></a>  <span class="cf">while</span> (<span class="ot">TRUE</span>) {</span>
+<span id="cb70-32"><a href="nelder-mead.html#cb70-32"></a>    <span class="co"># order</span></span>
+<span id="cb70-33"><a href="nelder-mead.html#cb70-33"></a>    idx  =<span class="st"> </span><span class="kw">sapply</span>(res, <span class="st">`</span><span class="dt">[[</span><span class="st">`</span>, <span class="dv">2</span>)</span>
+<span id="cb70-34"><a href="nelder-mead.html#cb70-34"></a>    res  =<span class="st"> </span>res[<span class="kw">order</span>(idx)]   <span class="co"># ascending order</span></span>
+<span id="cb70-35"><a href="nelder-mead.html#cb70-35"></a>    best =<span class="st"> </span>res[[<span class="dv">1</span>]][[<span class="dv">2</span>]]</span>
+<span id="cb70-36"><a href="nelder-mead.html#cb70-36"></a>    </span>
+<span id="cb70-37"><a href="nelder-mead.html#cb70-37"></a>    <span class="co"># break after max_iter</span></span>
+<span id="cb70-38"><a href="nelder-mead.html#cb70-38"></a>    <span class="cf">if</span> (max_iter <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>iters <span class="op">&gt;=</span><span class="st"> </span>max_iter) <span class="kw">return</span>(res[[<span class="dv">1</span>]])</span>
+<span id="cb70-39"><a href="nelder-mead.html#cb70-39"></a>    iters =<span class="st"> </span>iters <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb70-40"><a href="nelder-mead.html#cb70-40"></a>    </span>
+<span id="cb70-41"><a href="nelder-mead.html#cb70-41"></a>    <span class="co"># break after no_improv_break iterations with no improvement</span></span>
+<span id="cb70-42"><a href="nelder-mead.html#cb70-42"></a>    <span class="cf">if</span> (verbose) <span class="kw">message</span>(<span class="kw">paste</span>(<span class="st">&#39;...best so far:&#39;</span>, best))</span>
+<span id="cb70-43"><a href="nelder-mead.html#cb70-43"></a>    </span>
+<span id="cb70-44"><a href="nelder-mead.html#cb70-44"></a>    <span class="cf">if</span> (best <span class="op">&lt;</span><span class="st"> </span>(prev_best <span class="op">-</span><span class="st"> </span>no_improve_thr)) {</span>
+<span id="cb70-45"><a href="nelder-mead.html#cb70-45"></a>      no_improv =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb70-46"><a href="nelder-mead.html#cb70-46"></a>      prev_best =<span class="st"> </span>best</span>
+<span id="cb70-47"><a href="nelder-mead.html#cb70-47"></a>    } <span class="cf">else</span> {</span>
+<span id="cb70-48"><a href="nelder-mead.html#cb70-48"></a>      no_improv =<span class="st"> </span>no_improv <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb70-49"><a href="nelder-mead.html#cb70-49"></a>    }</span>
+<span id="cb70-50"><a href="nelder-mead.html#cb70-50"></a>    </span>
+<span id="cb70-51"><a href="nelder-mead.html#cb70-51"></a>    <span class="cf">if</span> (no_improv <span class="op">&gt;=</span><span class="st"> </span>no_improv_break) <span class="kw">return</span>(res[[<span class="dv">1</span>]])</span>
+<span id="cb70-52"><a href="nelder-mead.html#cb70-52"></a>    </span>
+<span id="cb70-53"><a href="nelder-mead.html#cb70-53"></a>    <span class="co"># centroid</span></span>
+<span id="cb70-54"><a href="nelder-mead.html#cb70-54"></a>    x0 =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, dim)</span>
+<span id="cb70-55"><a href="nelder-mead.html#cb70-55"></a>    <span class="cf">for</span> (tup <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(<span class="kw">length</span>(res)<span class="op">-</span><span class="dv">1</span>)) {</span>
+<span id="cb70-56"><a href="nelder-mead.html#cb70-56"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>dim) {</span>
+<span id="cb70-57"><a href="nelder-mead.html#cb70-57"></a>        x0[i] =<span class="st"> </span>x0[i] <span class="op">+</span><span class="st"> </span>res[[tup]][[<span class="dv">1</span>]][i] <span class="op">/</span><span class="st"> </span>(<span class="kw">length</span>(res)<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb70-58"><a href="nelder-mead.html#cb70-58"></a>      }</span>
+<span id="cb70-59"><a href="nelder-mead.html#cb70-59"></a>    }</span>
+<span id="cb70-60"><a href="nelder-mead.html#cb70-60"></a>    </span>
+<span id="cb70-61"><a href="nelder-mead.html#cb70-61"></a>   <span class="co"># reflection</span></span>
+<span id="cb70-62"><a href="nelder-mead.html#cb70-62"></a>   xr =<span class="st"> </span>x0 <span class="op">+</span><span class="st"> </span>alpha <span class="op">*</span><span class="st"> </span>(x0 <span class="op">-</span><span class="st"> </span>res[[<span class="kw">length</span>(res)]][[<span class="dv">1</span>]])</span>
+<span id="cb70-63"><a href="nelder-mead.html#cb70-63"></a>   rscore =<span class="st"> </span><span class="kw">f</span>(xr)</span>
+<span id="cb70-64"><a href="nelder-mead.html#cb70-64"></a>   <span class="cf">if</span> (res[[<span class="dv">1</span>]][[<span class="dv">2</span>]] <span class="op">&lt;=</span><span class="st"> </span>rscore <span class="op">&amp;</span><span class="st"> </span></span>
+<span id="cb70-65"><a href="nelder-mead.html#cb70-65"></a><span class="st">       </span>rscore <span class="op">&lt;</span><span class="st"> </span>res[[<span class="kw">length</span>(res)<span class="op">-</span><span class="dv">1</span>]][[<span class="dv">2</span>]]) {</span>
+<span id="cb70-66"><a href="nelder-mead.html#cb70-66"></a>     res[[<span class="kw">length</span>(res)]] =<span class="st"> </span><span class="kw">list</span>(xr, rscore)</span>
+<span id="cb70-67"><a href="nelder-mead.html#cb70-67"></a>     <span class="cf">next</span></span>
+<span id="cb70-68"><a href="nelder-mead.html#cb70-68"></a>   }</span>
+<span id="cb70-69"><a href="nelder-mead.html#cb70-69"></a>     </span>
+<span id="cb70-70"><a href="nelder-mead.html#cb70-70"></a>   <span class="co"># expansion</span></span>
+<span id="cb70-71"><a href="nelder-mead.html#cb70-71"></a>   <span class="cf">if</span> (rscore <span class="op">&lt;</span><span class="st"> </span>res[[<span class="dv">1</span>]][[<span class="dv">2</span>]]) {</span>
+<span id="cb70-72"><a href="nelder-mead.html#cb70-72"></a>     <span class="co"># xe = x0 + gamma*(x0 - res[[length(res)]][[1]])   # issue with this</span></span>
+<span id="cb70-73"><a href="nelder-mead.html#cb70-73"></a>     xe =<span class="st"> </span>x0 <span class="op">+</span><span class="st"> </span>gamma <span class="op">*</span><span class="st"> </span>(xr <span class="op">-</span><span class="st"> </span>x0)   </span>
+<span id="cb70-74"><a href="nelder-mead.html#cb70-74"></a>     escore =<span class="st"> </span><span class="kw">f</span>(xe)</span>
+<span id="cb70-75"><a href="nelder-mead.html#cb70-75"></a>     <span class="cf">if</span> (escore <span class="op">&lt;</span><span class="st"> </span>rscore) {</span>
+<span id="cb70-76"><a href="nelder-mead.html#cb70-76"></a>       res[[<span class="kw">length</span>(res)]] =<span class="st"> </span><span class="kw">list</span>(xe, escore)</span>
+<span id="cb70-77"><a href="nelder-mead.html#cb70-77"></a>       <span class="cf">next</span></span>
+<span id="cb70-78"><a href="nelder-mead.html#cb70-78"></a>     } <span class="cf">else</span> {</span>
+<span id="cb70-79"><a href="nelder-mead.html#cb70-79"></a>       res[[<span class="kw">length</span>(res)]] =<span class="st"> </span><span class="kw">list</span>(xr, rscore)</span>
+<span id="cb70-80"><a href="nelder-mead.html#cb70-80"></a>       <span class="cf">next</span></span>
+<span id="cb70-81"><a href="nelder-mead.html#cb70-81"></a>     }</span>
+<span id="cb70-82"><a href="nelder-mead.html#cb70-82"></a>   }</span>
+<span id="cb70-83"><a href="nelder-mead.html#cb70-83"></a>   </span>
+<span id="cb70-84"><a href="nelder-mead.html#cb70-84"></a>   <span class="co"># contraction</span></span>
+<span id="cb70-85"><a href="nelder-mead.html#cb70-85"></a>   <span class="co"># xc = x0 + rho*(x0 - res[[length(res)]][[1]])  # issue with wiki consistency for rho values (and optim)</span></span>
+<span id="cb70-86"><a href="nelder-mead.html#cb70-86"></a>   xc =<span class="st"> </span>x0 <span class="op">+</span><span class="st"> </span>rho <span class="op">*</span><span class="st"> </span>(res[[<span class="kw">length</span>(res)]][[<span class="dv">1</span>]] <span class="op">-</span><span class="st"> </span>x0)</span>
+<span id="cb70-87"><a href="nelder-mead.html#cb70-87"></a>   cscore =<span class="st"> </span><span class="kw">f</span>(xc)</span>
+<span id="cb70-88"><a href="nelder-mead.html#cb70-88"></a>   <span class="cf">if</span> (cscore <span class="op">&lt;</span><span class="st"> </span>res[[<span class="kw">length</span>(res)]][[<span class="dv">2</span>]]) {</span>
+<span id="cb70-89"><a href="nelder-mead.html#cb70-89"></a>     res[[<span class="kw">length</span>(res)]] =<span class="st"> </span><span class="kw">list</span>(xc, cscore)</span>
+<span id="cb70-90"><a href="nelder-mead.html#cb70-90"></a>     <span class="cf">next</span></span>
+<span id="cb70-91"><a href="nelder-mead.html#cb70-91"></a>   }</span>
+<span id="cb70-92"><a href="nelder-mead.html#cb70-92"></a>   </span>
+<span id="cb70-93"><a href="nelder-mead.html#cb70-93"></a>   <span class="co"># reduction</span></span>
+<span id="cb70-94"><a href="nelder-mead.html#cb70-94"></a>   x1   =<span class="st"> </span>res[[<span class="dv">1</span>]][[<span class="dv">1</span>]]</span>
+<span id="cb70-95"><a href="nelder-mead.html#cb70-95"></a>   nres =<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb70-96"><a href="nelder-mead.html#cb70-96"></a>   <span class="cf">for</span> (tup <span class="cf">in</span> res) {</span>
+<span id="cb70-97"><a href="nelder-mead.html#cb70-97"></a>     redx  =<span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>sigma <span class="op">*</span><span class="st"> </span>(tup[[<span class="dv">1</span>]] <span class="op">-</span><span class="st"> </span>x1)</span>
+<span id="cb70-98"><a href="nelder-mead.html#cb70-98"></a>     score =<span class="st"> </span><span class="kw">f</span>(redx)</span>
+<span id="cb70-99"><a href="nelder-mead.html#cb70-99"></a>     nres  =<span class="st"> </span><span class="kw">append</span>(nres, <span class="kw">list</span>(<span class="kw">list</span>(redx, score)))</span>
+<span id="cb70-100"><a href="nelder-mead.html#cb70-100"></a>   }</span>
+<span id="cb70-101"><a href="nelder-mead.html#cb70-101"></a>   </span>
+<span id="cb70-102"><a href="nelder-mead.html#cb70-102"></a>   res =<span class="st"> </span>nres</span>
+<span id="cb70-103"><a href="nelder-mead.html#cb70-103"></a>  }</span>
+<span id="cb70-104"><a href="nelder-mead.html#cb70-104"></a>}</span></code></pre></div>
+<div id="example" class="section level3">
+<h3>Example</h3>
+<p>The function to minimize.</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="nelder-mead.html#cb71-1"></a>f =<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb71-2"><a href="nelder-mead.html#cb71-2"></a>  <span class="kw">sin</span>(x[<span class="dv">1</span>]) <span class="op">*</span><span class="st"> </span><span class="kw">cos</span>(x[<span class="dv">2</span>]) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(<span class="kw">abs</span>(x[<span class="dv">3</span>]) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))</span>
+<span id="cb71-3"><a href="nelder-mead.html#cb71-3"></a>}</span></code></pre></div>
+<p>Estimate.</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="nelder-mead.html#cb72-1"></a><span class="kw">nelder_mead</span>(</span>
+<span id="cb72-2"><a href="nelder-mead.html#cb72-2"></a>  f, </span>
+<span id="cb72-3"><a href="nelder-mead.html#cb72-3"></a>  <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb72-4"><a href="nelder-mead.html#cb72-4"></a>  <span class="dt">max_iter =</span> <span class="dv">1000</span>, </span>
+<span id="cb72-5"><a href="nelder-mead.html#cb72-5"></a>  <span class="dt">no_improve_thr =</span> <span class="fl">1e-12</span></span>
+<span id="cb72-6"><a href="nelder-mead.html#cb72-6"></a>)</span></code></pre></div>
+<pre><code>[[1]]
+[1] -1.570797e+00 -2.235577e-07  1.637460e-14
+
+[[2]]
+[1] -1</code></pre>
+<p>Compare to <code>optimx</code>. You may see warnings.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="nelder-mead.html#cb74-1"></a>optimx<span class="op">::</span><span class="kw">optimx</span>(</span>
+<span id="cb74-2"><a href="nelder-mead.html#cb74-2"></a>  <span class="dt">par =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb74-3"><a href="nelder-mead.html#cb74-3"></a>  <span class="dt">fn =</span> f,</span>
+<span id="cb74-4"><a href="nelder-mead.html#cb74-4"></a>  <span class="dt">method =</span> <span class="st">&quot;Nelder-Mead&quot;</span>,</span>
+<span id="cb74-5"><a href="nelder-mead.html#cb74-5"></a>  <span class="dt">control =</span> <span class="kw">list</span>(</span>
+<span id="cb74-6"><a href="nelder-mead.html#cb74-6"></a>    <span class="dt">alpha =</span> <span class="dv">1</span>,</span>
+<span id="cb74-7"><a href="nelder-mead.html#cb74-7"></a>    <span class="dt">gamma =</span> <span class="dv">2</span>,</span>
+<span id="cb74-8"><a href="nelder-mead.html#cb74-8"></a>    <span class="dt">beta =</span> <span class="fl">0.5</span>,</span>
+<span id="cb74-9"><a href="nelder-mead.html#cb74-9"></a>    <span class="dt">maxit =</span> <span class="dv">1000</span>,</span>
+<span id="cb74-10"><a href="nelder-mead.html#cb74-10"></a>    <span class="dt">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb74-11"><a href="nelder-mead.html#cb74-11"></a>  )</span>
+<span id="cb74-12"><a href="nelder-mead.html#cb74-12"></a>)</span></code></pre></div>
+<pre><code>                   p1           p2           p3 value fevals gevals niter convcode kkt1 kkt2 xtime
+Nelder-Mead -1.570796 1.394018e-08 1.088215e-16    -1    861     NA    NA        0 TRUE TRUE 0.001</code></pre>
+</div>
+<div id="a-regression-model" class="section level3">
+<h3>A Regression Model</h3>
+<p>I find a regression model to be more applicable/intuitive for my needs, so
+provide an example for that case.</p>
+<div id="data-setup-4" class="section level4">
+<h4>Data setup</h4>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="nelder-mead.html#cb76-1"></a><span class="kw">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb76-2"><a href="nelder-mead.html#cb76-2"></a></span>
+<span id="cb76-3"><a href="nelder-mead.html#cb76-3"></a>N =<span class="st"> </span><span class="dv">500</span></span>
+<span id="cb76-4"><a href="nelder-mead.html#cb76-4"></a>npreds =<span class="st"> </span><span class="dv">5</span></span>
+<span id="cb76-5"><a href="nelder-mead.html#cb76-5"></a>X =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>, <span class="kw">matrix</span>(<span class="kw">rnorm</span>(N <span class="op">*</span><span class="st"> </span>npreds), <span class="dt">ncol =</span> npreds))</span>
+<span id="cb76-6"><a href="nelder-mead.html#cb76-6"></a>beta =<span class="st"> </span><span class="kw">runif</span>(<span class="kw">ncol</span>(X), <span class="dv">-1</span>, <span class="dv">1</span>)</span>
+<span id="cb76-7"><a href="nelder-mead.html#cb76-7"></a>y =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="kw">nrow</span>(X))</span></code></pre></div>
+<p>Least squares loss function to minimize.</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="nelder-mead.html#cb77-1"></a>f =<span class="st"> </span><span class="cf">function</span>(b) {</span>
+<span id="cb77-2"><a href="nelder-mead.html#cb77-2"></a>  <span class="kw">crossprod</span>(y <span class="op">-</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>b)[,<span class="dv">1</span>]  <span class="co"># if using optimx need scalar</span></span>
+<span id="cb77-3"><a href="nelder-mead.html#cb77-3"></a>}</span></code></pre></div>
+<p><code>lm</code> estimates.</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="nelder-mead.html#cb78-1"></a><span class="kw">lm.fit</span>(X, y)<span class="op">$</span>coef</span></code></pre></div>
+<pre><code>         x1          x2          x3          x4          x5          x6 
+-0.96214657  0.59432481  0.04864576  0.27573466  0.97525840 -0.07470287 </code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="nelder-mead.html#cb80-1"></a>nm_result =<span class="st"> </span><span class="kw">nelder_mead</span>(</span>
+<span id="cb80-2"><a href="nelder-mead.html#cb80-2"></a>  f, </span>
+<span id="cb80-3"><a href="nelder-mead.html#cb80-3"></a>  <span class="kw">runif</span>(<span class="kw">ncol</span>(X)), </span>
+<span id="cb80-4"><a href="nelder-mead.html#cb80-4"></a>  <span class="dt">max_iter =</span> <span class="dv">2000</span>,</span>
+<span id="cb80-5"><a href="nelder-mead.html#cb80-5"></a>  <span class="dt">no_improve_thr =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb80-6"><a href="nelder-mead.html#cb80-6"></a>  <span class="dt">verbose =</span> <span class="ot">FALSE</span></span>
+<span id="cb80-7"><a href="nelder-mead.html#cb80-7"></a>)</span></code></pre></div>
+</div>
+<div id="comparison-6" class="section level4">
+<h4>Comparison</h4>
+<p>Compare to <code>optimx</code>.</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="nelder-mead.html#cb81-1"></a>opt_out =<span class="st"> </span>optimx<span class="op">::</span><span class="kw">optimx</span>(</span>
+<span id="cb81-2"><a href="nelder-mead.html#cb81-2"></a>  <span class="kw">runif</span>(<span class="kw">ncol</span>(X)),</span>
+<span id="cb81-3"><a href="nelder-mead.html#cb81-3"></a>  <span class="dt">fn =</span> f,  <span class="co"># model function</span></span>
+<span id="cb81-4"><a href="nelder-mead.html#cb81-4"></a>  <span class="dt">method  =</span> <span class="st">&#39;Nelder-Mead&#39;</span>,</span>
+<span id="cb81-5"><a href="nelder-mead.html#cb81-5"></a>  <span class="dt">control =</span> <span class="kw">list</span>(</span>
+<span id="cb81-6"><a href="nelder-mead.html#cb81-6"></a>    <span class="dt">alpha =</span> <span class="dv">1</span>,</span>
+<span id="cb81-7"><a href="nelder-mead.html#cb81-7"></a>    <span class="dt">gamma =</span> <span class="dv">2</span>,</span>
+<span id="cb81-8"><a href="nelder-mead.html#cb81-8"></a>    <span class="dt">beta  =</span> <span class="fl">0.5</span>,</span>
+<span id="cb81-9"><a href="nelder-mead.html#cb81-9"></a>    <span class="co">#rho</span></span>
+<span id="cb81-10"><a href="nelder-mead.html#cb81-10"></a>    <span class="dt">maxit  =</span> <span class="dv">2000</span>,</span>
+<span id="cb81-11"><a href="nelder-mead.html#cb81-11"></a>    <span class="dt">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb81-12"><a href="nelder-mead.html#cb81-12"></a>  )</span>
+<span id="cb81-13"><a href="nelder-mead.html#cb81-13"></a>)</span>
+<span id="cb81-14"><a href="nelder-mead.html#cb81-14"></a></span>
+<span id="cb81-15"><a href="nelder-mead.html#cb81-15"></a><span class="kw">rbind</span>(</span>
+<span id="cb81-16"><a href="nelder-mead.html#cb81-16"></a>  <span class="dt">nm_func =</span> <span class="kw">unlist</span>(nm_result),</span>
+<span id="cb81-17"><a href="nelder-mead.html#cb81-17"></a>  <span class="dt">nm_optimx =</span> opt_out[<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>]</span>
+<span id="cb81-18"><a href="nelder-mead.html#cb81-18"></a>)</span></code></pre></div>
+<pre><code>                  p1       p2         p3        p4        p5          p6    value
+nm_func   -0.9621510 0.594327 0.04864183 0.2757265 0.9752524 -0.07470389 501.3155
+nm_optimx -0.9621494 0.594325 0.04864620 0.2757383 0.9752579 -0.07470054 501.3155</code></pre>
+</div>
+</div>
+</div>
+<div id="second-version" class="section level2">
+<h2>Second version</h2>
+<p>This is a more natural R approach in my opinion.</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="nelder-mead.html#cb83-1"></a>nelder_mead2 =<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb83-2"><a href="nelder-mead.html#cb83-2"></a>  f,</span>
+<span id="cb83-3"><a href="nelder-mead.html#cb83-3"></a>  x_start,</span>
+<span id="cb83-4"><a href="nelder-mead.html#cb83-4"></a>  <span class="dt">step =</span> <span class="fl">0.1</span>,</span>
+<span id="cb83-5"><a href="nelder-mead.html#cb83-5"></a>  <span class="dt">no_improve_thr  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb83-6"><a href="nelder-mead.html#cb83-6"></a>  <span class="dt">no_improv_break =</span> <span class="dv">10</span>,</span>
+<span id="cb83-7"><a href="nelder-mead.html#cb83-7"></a>  <span class="dt">max_iter =</span> <span class="dv">0</span>,</span>
+<span id="cb83-8"><a href="nelder-mead.html#cb83-8"></a>  <span class="dt">alpha =</span> <span class="dv">1</span>,</span>
+<span id="cb83-9"><a href="nelder-mead.html#cb83-9"></a>  <span class="dt">gamma =</span> <span class="dv">2</span>,</span>
+<span id="cb83-10"><a href="nelder-mead.html#cb83-10"></a>  <span class="dt">rho   =</span> <span class="fl">0.5</span>,</span>
+<span id="cb83-11"><a href="nelder-mead.html#cb83-11"></a>  <span class="dt">sigma =</span> <span class="fl">0.5</span>,</span>
+<span id="cb83-12"><a href="nelder-mead.html#cb83-12"></a>  <span class="dt">verbose =</span> <span class="ot">FALSE</span></span>
+<span id="cb83-13"><a href="nelder-mead.html#cb83-13"></a>) {</span>
+<span id="cb83-14"><a href="nelder-mead.html#cb83-14"></a>  </span>
+<span id="cb83-15"><a href="nelder-mead.html#cb83-15"></a>  <span class="co"># init</span></span>
+<span id="cb83-16"><a href="nelder-mead.html#cb83-16"></a>  npar =<span class="st"> </span><span class="kw">length</span>(x_start)</span>
+<span id="cb83-17"><a href="nelder-mead.html#cb83-17"></a>  nc =<span class="st"> </span>npar <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb83-18"><a href="nelder-mead.html#cb83-18"></a>  prev_best =<span class="st"> </span><span class="kw">f</span>(x_start)</span>
+<span id="cb83-19"><a href="nelder-mead.html#cb83-19"></a>  no_improv =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb83-20"><a href="nelder-mead.html#cb83-20"></a>  res =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(x_start, prev_best), <span class="dt">ncol =</span> nc)</span>
+<span id="cb83-21"><a href="nelder-mead.html#cb83-21"></a>  <span class="kw">colnames</span>(res) =<span class="st"> </span><span class="kw">c</span>(<span class="kw">paste</span>(<span class="st">&#39;par&#39;</span>, <span class="dv">1</span><span class="op">:</span>npar, <span class="dt">sep =</span> <span class="st">&#39;_&#39;</span>), <span class="st">&#39;score&#39;</span>)</span>
+<span id="cb83-22"><a href="nelder-mead.html#cb83-22"></a>  </span>
+<span id="cb83-23"><a href="nelder-mead.html#cb83-23"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>npar) {</span>
+<span id="cb83-24"><a href="nelder-mead.html#cb83-24"></a>    x     =<span class="st"> </span>x_start</span>
+<span id="cb83-25"><a href="nelder-mead.html#cb83-25"></a>    x[i]  =<span class="st"> </span>x[i] <span class="op">+</span><span class="st"> </span>step</span>
+<span id="cb83-26"><a href="nelder-mead.html#cb83-26"></a>    score =<span class="st"> </span><span class="kw">f</span>(x)</span>
+<span id="cb83-27"><a href="nelder-mead.html#cb83-27"></a>    res   =<span class="st"> </span><span class="kw">rbind</span>(res, <span class="kw">c</span>(x, score))</span>
+<span id="cb83-28"><a href="nelder-mead.html#cb83-28"></a>  }</span>
+<span id="cb83-29"><a href="nelder-mead.html#cb83-29"></a>  </span>
+<span id="cb83-30"><a href="nelder-mead.html#cb83-30"></a>  <span class="co"># simplex iter</span></span>
+<span id="cb83-31"><a href="nelder-mead.html#cb83-31"></a>  iters =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb83-32"><a href="nelder-mead.html#cb83-32"></a>  </span>
+<span id="cb83-33"><a href="nelder-mead.html#cb83-33"></a>  <span class="cf">while</span> (<span class="ot">TRUE</span>) {</span>
+<span id="cb83-34"><a href="nelder-mead.html#cb83-34"></a>    <span class="co"># order</span></span>
+<span id="cb83-35"><a href="nelder-mead.html#cb83-35"></a>    res  =<span class="st"> </span>res[<span class="kw">order</span>(res[, nc]), ]   <span class="co"># ascending order</span></span>
+<span id="cb83-36"><a href="nelder-mead.html#cb83-36"></a>    best =<span class="st"> </span>res[<span class="dv">1</span>, nc]</span>
+<span id="cb83-37"><a href="nelder-mead.html#cb83-37"></a>    </span>
+<span id="cb83-38"><a href="nelder-mead.html#cb83-38"></a>    <span class="co"># break after max_iter</span></span>
+<span id="cb83-39"><a href="nelder-mead.html#cb83-39"></a>    <span class="cf">if</span> (max_iter <span class="op">&amp;</span><span class="st"> </span>iters <span class="op">&gt;=</span><span class="st"> </span>max_iter) <span class="kw">return</span>(res[<span class="dv">1</span>, ])</span>
+<span id="cb83-40"><a href="nelder-mead.html#cb83-40"></a>    iters =<span class="st"> </span>iters <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb83-41"><a href="nelder-mead.html#cb83-41"></a>    </span>
+<span id="cb83-42"><a href="nelder-mead.html#cb83-42"></a>    <span class="co"># break after no_improv_break iterations with no improvement</span></span>
+<span id="cb83-43"><a href="nelder-mead.html#cb83-43"></a>    <span class="cf">if</span> (verbose) <span class="kw">message</span>(<span class="kw">paste</span>(<span class="st">&#39;...best so far:&#39;</span>, best))</span>
+<span id="cb83-44"><a href="nelder-mead.html#cb83-44"></a>    </span>
+<span id="cb83-45"><a href="nelder-mead.html#cb83-45"></a>    <span class="cf">if</span> (best <span class="op">&lt;</span><span class="st"> </span>(prev_best <span class="op">-</span><span class="st"> </span>no_improve_thr)) {</span>
+<span id="cb83-46"><a href="nelder-mead.html#cb83-46"></a>      no_improv =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb83-47"><a href="nelder-mead.html#cb83-47"></a>      prev_best =<span class="st"> </span>best</span>
+<span id="cb83-48"><a href="nelder-mead.html#cb83-48"></a>    } <span class="cf">else</span> {</span>
+<span id="cb83-49"><a href="nelder-mead.html#cb83-49"></a>      no_improv =<span class="st"> </span>no_improv <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb83-50"><a href="nelder-mead.html#cb83-50"></a>    }</span>
+<span id="cb83-51"><a href="nelder-mead.html#cb83-51"></a>    </span>
+<span id="cb83-52"><a href="nelder-mead.html#cb83-52"></a>    <span class="cf">if</span> (no_improv <span class="op">&gt;=</span><span class="st"> </span>no_improv_break)</span>
+<span id="cb83-53"><a href="nelder-mead.html#cb83-53"></a>      <span class="kw">return</span>(res[<span class="dv">1</span>, ])</span>
+<span id="cb83-54"><a href="nelder-mead.html#cb83-54"></a>    </span>
+<span id="cb83-55"><a href="nelder-mead.html#cb83-55"></a>    nr =<span class="st"> </span><span class="kw">nrow</span>(res)</span>
+<span id="cb83-56"><a href="nelder-mead.html#cb83-56"></a>    </span>
+<span id="cb83-57"><a href="nelder-mead.html#cb83-57"></a>    <span class="co"># centroid: more efficient than previous double loop</span></span>
+<span id="cb83-58"><a href="nelder-mead.html#cb83-58"></a>    x0 =<span class="st"> </span><span class="kw">colMeans</span>(res[(<span class="dv">1</span><span class="op">:</span>npar), <span class="op">-</span>nc])</span>
+<span id="cb83-59"><a href="nelder-mead.html#cb83-59"></a>    </span>
+<span id="cb83-60"><a href="nelder-mead.html#cb83-60"></a>    <span class="co"># reflection</span></span>
+<span id="cb83-61"><a href="nelder-mead.html#cb83-61"></a>    xr =<span class="st"> </span>x0 <span class="op">+</span><span class="st"> </span>alpha <span class="op">*</span><span class="st"> </span>(x0 <span class="op">-</span><span class="st"> </span>res[nr, <span class="op">-</span>nc])</span>
+<span id="cb83-62"><a href="nelder-mead.html#cb83-62"></a>    </span>
+<span id="cb83-63"><a href="nelder-mead.html#cb83-63"></a>    rscore =<span class="st"> </span><span class="kw">f</span>(xr)</span>
+<span id="cb83-64"><a href="nelder-mead.html#cb83-64"></a>    </span>
+<span id="cb83-65"><a href="nelder-mead.html#cb83-65"></a>    <span class="cf">if</span> (res[<span class="dv">1</span>, <span class="st">&#39;score&#39;</span>] <span class="op">&lt;=</span><span class="st"> </span>rscore <span class="op">&amp;</span><span class="st"> </span>rscore <span class="op">&lt;</span><span class="st"> </span>res[npar, <span class="st">&#39;score&#39;</span>]) {</span>
+<span id="cb83-66"><a href="nelder-mead.html#cb83-66"></a>      res[nr,] =<span class="st"> </span><span class="kw">c</span>(xr, rscore)</span>
+<span id="cb83-67"><a href="nelder-mead.html#cb83-67"></a>      <span class="cf">next</span></span>
+<span id="cb83-68"><a href="nelder-mead.html#cb83-68"></a>    }</span>
+<span id="cb83-69"><a href="nelder-mead.html#cb83-69"></a>    </span>
+<span id="cb83-70"><a href="nelder-mead.html#cb83-70"></a>    <span class="co"># expansion</span></span>
+<span id="cb83-71"><a href="nelder-mead.html#cb83-71"></a>    <span class="cf">if</span> (rscore <span class="op">&lt;</span><span class="st"> </span>res[<span class="dv">1</span>, <span class="st">&#39;score&#39;</span>]) {</span>
+<span id="cb83-72"><a href="nelder-mead.html#cb83-72"></a>      xe =<span class="st"> </span>x0 <span class="op">+</span><span class="st"> </span>gamma <span class="op">*</span><span class="st"> </span>(xr <span class="op">-</span><span class="st"> </span>x0)</span>
+<span id="cb83-73"><a href="nelder-mead.html#cb83-73"></a>      escore =<span class="st"> </span><span class="kw">f</span>(xe)</span>
+<span id="cb83-74"><a href="nelder-mead.html#cb83-74"></a>      <span class="cf">if</span> (escore <span class="op">&lt;</span><span class="st"> </span>rscore) {</span>
+<span id="cb83-75"><a href="nelder-mead.html#cb83-75"></a>        res[nr, ] =<span class="st"> </span><span class="kw">c</span>(xe, escore)</span>
+<span id="cb83-76"><a href="nelder-mead.html#cb83-76"></a>        <span class="cf">next</span></span>
+<span id="cb83-77"><a href="nelder-mead.html#cb83-77"></a>      } <span class="cf">else</span> {</span>
+<span id="cb83-78"><a href="nelder-mead.html#cb83-78"></a>        res[nr, ] =<span class="st"> </span><span class="kw">c</span>(xr, rscore)</span>
+<span id="cb83-79"><a href="nelder-mead.html#cb83-79"></a>        <span class="cf">next</span></span>
+<span id="cb83-80"><a href="nelder-mead.html#cb83-80"></a>      }</span>
+<span id="cb83-81"><a href="nelder-mead.html#cb83-81"></a>    }</span>
+<span id="cb83-82"><a href="nelder-mead.html#cb83-82"></a>    </span>
+<span id="cb83-83"><a href="nelder-mead.html#cb83-83"></a>    <span class="co"># contraction</span></span>
+<span id="cb83-84"><a href="nelder-mead.html#cb83-84"></a>    xc =<span class="st"> </span>x0 <span class="op">+</span><span class="st"> </span>rho <span class="op">*</span><span class="st"> </span>(res[nr, <span class="op">-</span>nc] <span class="op">-</span><span class="st"> </span>x0)</span>
+<span id="cb83-85"><a href="nelder-mead.html#cb83-85"></a>    </span>
+<span id="cb83-86"><a href="nelder-mead.html#cb83-86"></a>    cscore =<span class="st"> </span><span class="kw">f</span>(xc)</span>
+<span id="cb83-87"><a href="nelder-mead.html#cb83-87"></a>    </span>
+<span id="cb83-88"><a href="nelder-mead.html#cb83-88"></a>    <span class="cf">if</span> (cscore <span class="op">&lt;</span><span class="st"> </span>res[nr, <span class="st">&#39;score&#39;</span>]) {</span>
+<span id="cb83-89"><a href="nelder-mead.html#cb83-89"></a>      res[nr,] =<span class="st"> </span><span class="kw">c</span>(xc, cscore)</span>
+<span id="cb83-90"><a href="nelder-mead.html#cb83-90"></a>      <span class="cf">next</span></span>
+<span id="cb83-91"><a href="nelder-mead.html#cb83-91"></a>    }</span>
+<span id="cb83-92"><a href="nelder-mead.html#cb83-92"></a>    </span>
+<span id="cb83-93"><a href="nelder-mead.html#cb83-93"></a>    <span class="co"># reduction</span></span>
+<span id="cb83-94"><a href="nelder-mead.html#cb83-94"></a>    x1 =<span class="st"> </span>res[<span class="dv">1</span>, <span class="op">-</span>nc]</span>
+<span id="cb83-95"><a href="nelder-mead.html#cb83-95"></a>    </span>
+<span id="cb83-96"><a href="nelder-mead.html#cb83-96"></a>    nres =<span class="st"> </span>res</span>
+<span id="cb83-97"><a href="nelder-mead.html#cb83-97"></a>    </span>
+<span id="cb83-98"><a href="nelder-mead.html#cb83-98"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>nr) {</span>
+<span id="cb83-99"><a href="nelder-mead.html#cb83-99"></a>      redx  =<span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>sigma <span class="op">*</span><span class="st"> </span>(res[i, <span class="op">-</span>nc] <span class="op">-</span><span class="st"> </span>x1)</span>
+<span id="cb83-100"><a href="nelder-mead.html#cb83-100"></a>      score =<span class="st"> </span><span class="kw">f</span>(redx)</span>
+<span id="cb83-101"><a href="nelder-mead.html#cb83-101"></a>      nres[i, ] =<span class="st"> </span><span class="kw">c</span>(redx, score)</span>
+<span id="cb83-102"><a href="nelder-mead.html#cb83-102"></a>    }</span>
+<span id="cb83-103"><a href="nelder-mead.html#cb83-103"></a>    </span>
+<span id="cb83-104"><a href="nelder-mead.html#cb83-104"></a>    res =<span class="st"> </span>nres</span>
+<span id="cb83-105"><a href="nelder-mead.html#cb83-105"></a>  }</span>
+<span id="cb83-106"><a href="nelder-mead.html#cb83-106"></a>}</span></code></pre></div>
+<div id="example-function" class="section level3">
+<h3>Example function</h3>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="nelder-mead.html#cb84-1"></a>f =<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb84-2"><a href="nelder-mead.html#cb84-2"></a>  <span class="kw">sin</span>(x[<span class="dv">1</span>]) <span class="op">*</span><span class="st"> </span><span class="kw">cos</span>(x[<span class="dv">2</span>]) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(<span class="kw">abs</span>(x[<span class="dv">3</span>]) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))</span>
+<span id="cb84-3"><a href="nelder-mead.html#cb84-3"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="nelder-mead.html#cb85-1"></a><span class="kw">nelder_mead2</span>(</span>
+<span id="cb85-2"><a href="nelder-mead.html#cb85-2"></a>  f, </span>
+<span id="cb85-3"><a href="nelder-mead.html#cb85-3"></a>  <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb85-4"><a href="nelder-mead.html#cb85-4"></a>  <span class="dt">max_iter =</span> <span class="dv">1000</span>, </span>
+<span id="cb85-5"><a href="nelder-mead.html#cb85-5"></a>  <span class="dt">no_improve_thr =</span> <span class="fl">1e-12</span></span>
+<span id="cb85-6"><a href="nelder-mead.html#cb85-6"></a>)</span></code></pre></div>
+<pre><code>        par_1         par_2         par_3         score 
+-1.570797e+00 -2.235577e-07  1.622809e-14 -1.000000e+00 </code></pre>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="nelder-mead.html#cb87-1"></a>optimx<span class="op">::</span><span class="kw">optimx</span>(</span>
+<span id="cb87-2"><a href="nelder-mead.html#cb87-2"></a>  <span class="dt">par =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb87-3"><a href="nelder-mead.html#cb87-3"></a>  <span class="dt">fn =</span> f, </span>
+<span id="cb87-4"><a href="nelder-mead.html#cb87-4"></a>  <span class="dt">method   =</span> <span class="st">&quot;Nelder-Mead&quot;</span>,</span>
+<span id="cb87-5"><a href="nelder-mead.html#cb87-5"></a>  <span class="dt">control  =</span> <span class="kw">list</span>(</span>
+<span id="cb87-6"><a href="nelder-mead.html#cb87-6"></a>    <span class="dt">alpha  =</span> <span class="dv">1</span>,</span>
+<span id="cb87-7"><a href="nelder-mead.html#cb87-7"></a>    <span class="dt">gamma  =</span> <span class="dv">2</span>,</span>
+<span id="cb87-8"><a href="nelder-mead.html#cb87-8"></a>    <span class="dt">beta   =</span> <span class="fl">0.5</span>,</span>
+<span id="cb87-9"><a href="nelder-mead.html#cb87-9"></a>    <span class="dt">maxit  =</span> <span class="dv">1000</span>,</span>
+<span id="cb87-10"><a href="nelder-mead.html#cb87-10"></a>    <span class="dt">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb87-11"><a href="nelder-mead.html#cb87-11"></a>  )</span>
+<span id="cb87-12"><a href="nelder-mead.html#cb87-12"></a>)</span></code></pre></div>
+<pre><code>                   p1           p2           p3 value fevals gevals niter convcode kkt1 kkt2 xtime
+Nelder-Mead -1.570796 1.394018e-08 1.088215e-16    -1    861     NA    NA        0 TRUE TRUE 0.001</code></pre>
+</div>
+<div id="a-regression-model-1" class="section level3">
+<h3>A Regression Model</h3>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="nelder-mead.html#cb89-1"></a><span class="kw">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb89-2"><a href="nelder-mead.html#cb89-2"></a></span>
+<span id="cb89-3"><a href="nelder-mead.html#cb89-3"></a>N =<span class="st"> </span><span class="dv">500</span></span>
+<span id="cb89-4"><a href="nelder-mead.html#cb89-4"></a>npreds =<span class="st"> </span><span class="dv">5</span></span>
+<span id="cb89-5"><a href="nelder-mead.html#cb89-5"></a>X =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>, <span class="kw">matrix</span>(<span class="kw">rnorm</span>(N <span class="op">*</span><span class="st"> </span>npreds), <span class="dt">ncol =</span> npreds))</span>
+<span id="cb89-6"><a href="nelder-mead.html#cb89-6"></a>beta =<span class="st"> </span><span class="kw">runif</span>(<span class="kw">ncol</span>(X), <span class="dv">-1</span>, <span class="dv">1</span>)</span>
+<span id="cb89-7"><a href="nelder-mead.html#cb89-7"></a>y =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="kw">nrow</span>(X))</span></code></pre></div>
+<p>Least squares loss function to minimize.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="nelder-mead.html#cb90-1"></a>f =<span class="st"> </span><span class="cf">function</span>(b) {</span>
+<span id="cb90-2"><a href="nelder-mead.html#cb90-2"></a>  <span class="kw">crossprod</span>(y <span class="op">-</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>b)[,<span class="dv">1</span>]  <span class="co"># if using optimx need scalar</span></span>
+<span id="cb90-3"><a href="nelder-mead.html#cb90-3"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="nelder-mead.html#cb91-1"></a>lm_par =<span class="st"> </span><span class="kw">lm.fit</span>(X, y)<span class="op">$</span>coef</span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="nelder-mead.html#cb92-1"></a>nm_par =<span class="st"> </span><span class="kw">nelder_mead2</span>(</span>
+<span id="cb92-2"><a href="nelder-mead.html#cb92-2"></a>  f, </span>
+<span id="cb92-3"><a href="nelder-mead.html#cb92-3"></a>  <span class="kw">runif</span>(<span class="kw">ncol</span>(X)),</span>
+<span id="cb92-4"><a href="nelder-mead.html#cb92-4"></a>  <span class="dt">max_iter =</span> <span class="dv">2000</span>,</span>
+<span id="cb92-5"><a href="nelder-mead.html#cb92-5"></a>  <span class="dt">no_improve_thr =</span> <span class="fl">1e-12</span></span>
+<span id="cb92-6"><a href="nelder-mead.html#cb92-6"></a>)</span></code></pre></div>
+</div>
+<div id="comparison-7" class="section level3">
+<h3>Comparison</h3>
+<p>Compare to <code>optimx</code>.</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="nelder-mead.html#cb93-1"></a>opt_par =<span class="st"> </span>optimx<span class="op">::</span><span class="kw">optimx</span>(</span>
+<span id="cb93-2"><a href="nelder-mead.html#cb93-2"></a>  <span class="kw">runif</span>(<span class="kw">ncol</span>(X)),</span>
+<span id="cb93-3"><a href="nelder-mead.html#cb93-3"></a>  <span class="dt">fn =</span> f,</span>
+<span id="cb93-4"><a href="nelder-mead.html#cb93-4"></a>  <span class="dt">method   =</span> <span class="st">&#39;Nelder-Mead&#39;</span>,</span>
+<span id="cb93-5"><a href="nelder-mead.html#cb93-5"></a>  <span class="dt">control  =</span> <span class="kw">list</span>(</span>
+<span id="cb93-6"><a href="nelder-mead.html#cb93-6"></a>    <span class="dt">alpha  =</span> <span class="dv">1</span>,</span>
+<span id="cb93-7"><a href="nelder-mead.html#cb93-7"></a>    <span class="dt">gamma  =</span> <span class="dv">2</span>,</span>
+<span id="cb93-8"><a href="nelder-mead.html#cb93-8"></a>    <span class="dt">beta   =</span> <span class="fl">0.5</span>,</span>
+<span id="cb93-9"><a href="nelder-mead.html#cb93-9"></a>    <span class="dt">maxit  =</span> <span class="dv">2000</span>,</span>
+<span id="cb93-10"><a href="nelder-mead.html#cb93-10"></a>    <span class="dt">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb93-11"><a href="nelder-mead.html#cb93-11"></a>  )</span>
+<span id="cb93-12"><a href="nelder-mead.html#cb93-12"></a>)[<span class="dv">1</span><span class="op">:</span>(npreds <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)]</span>
+<span id="cb93-13"><a href="nelder-mead.html#cb93-13"></a></span>
+<span id="cb93-14"><a href="nelder-mead.html#cb93-14"></a><span class="kw">rbind</span>(</span>
+<span id="cb93-15"><a href="nelder-mead.html#cb93-15"></a>  <span class="dt">lm =</span> lm_par,</span>
+<span id="cb93-16"><a href="nelder-mead.html#cb93-16"></a>  <span class="dt">nm =</span> nm_par,</span>
+<span id="cb93-17"><a href="nelder-mead.html#cb93-17"></a>  <span class="dt">optimx =</span> opt_par,</span>
+<span id="cb93-18"><a href="nelder-mead.html#cb93-18"></a>  <span class="dt">truth  =</span> beta</span>
+<span id="cb93-19"><a href="nelder-mead.html#cb93-19"></a>)</span></code></pre></div>
+<pre><code>               p1        p2         p3        p4        p5          p6
+lm     -0.9621466 0.5943248 0.04864576 0.2757347 0.9752584 -0.07470287
+nm     -0.9621510 0.5943270 0.04864183 0.2757265 0.9752524 -0.07470389
+optimx -0.9621494 0.5943250 0.04864620 0.2757383 0.9752579 -0.07470054
+truth  -0.9087584 0.6195267 0.07358131 0.3196977 0.9561050 -0.07977885</code></pre>
+</div>
+</div>
+<div id="source-6" class="section level2">
+<h2>Source</h2>
+<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/nelder_mead.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/nelder_mead.R</a></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="newton-irls.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="gradient-descent.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["twitter", "facebook", "linkedin", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/m-clark/model-demos/blob/master/nelder-mead.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"depth": 2,
+"scroll_highlight": true
+},
+"df_print": "kable",
+"highlight": "pygments",
+"search": true
+});
+});
+</script>
+
+</body>
+
+</html>

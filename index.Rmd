@@ -1,0 +1,74 @@
+---
+title: Models by Example
+subtitle: Demonstrations with R and friends.
+author:  |
+  <span class="noem">Michael Clark</span> <br>
+  [m-clark.github.io](https://m-clark.github.io/)
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook
+documentclass: book
+# bibliography: refs.bib
+biblio-style: apalike
+always_allow_html: true
+link-citations: yes
+description: "This document provides 'by-hand' demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools."
+cover-image: 'img/nineteeneightyR.png'
+favicon: 'img/R.ico'
+url: 'https\://m-clark.github.io/models-by-example/'  
+github-repo:  'm-clark/models-by-example/'
+---
+
+
+
+
+```{r chunk_setup, include=FALSE, eval=TRUE}
+knitr::opts_chunk$set(
+  # code
+  echo      = TRUE,
+  message   = FALSE,
+  warning   = FALSE,
+  error     = FALSE,
+  comment   = NA,
+  R.options = list(width = 220),
+  # viz
+  dev.args  = list(bg = 'transparent'),
+  dev       = 'svglite',
+  fig.align = 'center',
+  out.width = '75%',
+  fig.asp   = .75,
+  # cache
+  cache.rebuild = FALSE,
+  cache         = TRUE
+)
+```
+
+```{r load_common_packages, echo=FALSE, cache=FALSE, eval=TRUE}
+library(tidyverse)
+library(kableExtra)
+library(patchwork)
+
+kable_df = function(data, digits=3, ...) {
+  kableExtra::kable(
+    data,
+    digits = digits,
+    format = 'html',
+    booktabs = T,
+    # longtable = F,
+    linesep = "", 
+    ...,
+  ) %>% 
+    kableExtra::kable_styling(full_width = F)
+}
+```
+
+####
+
+```{r rimg, fig.align='center',  out.width=200, echo=FALSE, cache=FALSE}
+knitr::include_graphics('img/198R.png', dpi = NA)
+```
+
+```{r ccimg, fig.align='center', out.width=0, fig.show='hide', echo=FALSE}
+knitr::include_graphics('img/mc_logo.png', dpi = NA)
+```

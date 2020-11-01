@@ -1,0 +1,67 @@
+ bookdown::gitbook:
+    css: [css/book.css, 'https://use.fontawesome.com/releases/v5.14.0/css/all.css']
+    font-import: https://fonts.googleapis.com/css?family=Roboto|Open+Sans
+    font-family: 'Roboto'
+    number_sections: false
+    split_by: rmd
+    config:
+      df_print: kable
+      highlight: pygments
+      edit: https://github.com/m-clark/model-demos/blob/master/%s
+      download: null
+      search: yes
+      sharing:
+        facebook: no
+        twitter: no
+        google: no
+        weibo: no
+        instapper: no
+        vk: no
+        all: ['twitter', 'facebook', 'linkedin', 'google', 'weibo', 'instapaper']
+      toc:
+        depth: 2
+        collapse: section
+        scroll_highlight: yes
+        before: |
+          <li class='before'><a href="./">Models by Example</a></li>
+        after: |
+         <li class='after'">
+            <a href="https://m-clark.github.io/">
+               <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+            </a>
+         </li>
+         <li class='after'">
+            <div style='text-align:center'>
+               <a href="https://github.com/m-clark/">
+                  <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+               </a>
+            </div>
+         </li>
+         <li class='after'">
+            <div style='text-align:center'>
+               <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+                  <i class="fab fa-creative-commons fa-lg"></i>
+                  <i class="fab fa-creative-commons-by fa-lg"></i>
+                  <i class="fab fa-creative-commons-sa fa-lg"></i>
+               </a>
+            </div>
+         </li>
+
+# bookdown::pdf_book:
+#   includes:
+#     in_header: preamble.tex
+#   latex_engine: xelatex
+#   citation_package: natbib
+
+# have to do this separately; but pretty useless as use of any html image will render entire chapter empty.
+# bookdown::epub_book:
+#    fig_width: 5
+#    fig_height: 4
+#    # dev: "svglite"
+#    fig_caption : TRUE
+#    number_sections : FALSE
+#    toc: TRUE
+#    toc_depth : 2
+#    stylesheet : 'css/book.css'
+#    cover_image : 'img/198R.png'
+#    chapter_level : 1

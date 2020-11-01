@@ -1,0 +1,26 @@
+book_filename: 'model-demos'
+language:
+  ui:
+    chapter_name: 'Chapter '
+output_dir: 'docs'
+delete_merged_file: true
+
+rmd_files: [
+  'index.Rmd',
+  'introduction.Rmd',
+  
+  # Models
+  'linear-regression.Rmd',
+  'logistic-regression.Rmd',
+  
+  
+  # Algos
+  penalized-maximum-likelihood.Rmd,
+  lasso.Rmd,
+  ridge.Rmd,
+  newton-irls.Rmd,
+  nelder-mead.Rmd,
+  gradient-descent.Rmd,
+  stochastic-gradient-descent.Rmd,
+  # 'appendix.Rmd'
+]

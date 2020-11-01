@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Introduction | Models by Example</title>
+  <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Introduction | Models by Example" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
+  <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+  <meta property="og:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="github-repo" content="m-clark/models-by-example/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Introduction | Models by Example" />
+  
+  <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+
+
+
+<meta name="date" content="2020-11-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="index.html"/>
+<link rel="next" href="linear-regression.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class='before'><a href="./">Models by Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="part"><span><b>Models</b></span></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i>Standard Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#data-setup"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#obtain-model-estimates"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic Rodels</a>
+<ul>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#obtain-model-estimates-1"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Algorithms</b></span></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#obtain-model-estimates-2"><i class="fa fa-check"></i>Obtain Model Estimates</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-3"><i class="fa fa-check"></i>Data setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#glm-estimation-examples"><i class="fa fa-check"></i>GLM estimation examples</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-prep"><i class="fa fa-check"></i>Data Prep</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-4"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s method</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example function</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#run"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#stochastic-gradient-descent-algorithm"><i class="fa fa-check"></i>Stochastic Gradient Descent Algorithm</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-1"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-2"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="divider"></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Models by Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production. Almost everything here has a package/module that would do it far better and efficiently. The document itself is also not an introduction to any of these methods, and in fact contains very little expository text. This document is merely a learning tool for those wanting to dive a little deeper.</p>
+<p>The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a></p>
+<p>While I’m happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["twitter", "facebook", "linkedin", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/m-clark/model-demos/blob/master/introduction.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"depth": 2,
+"scroll_highlight": true
+},
+"df_print": "kable",
+"highlight": "pygments",
+"search": true
+});
+});
+</script>
+
+</body>
+
+</html>
