@@ -1,0 +1,95 @@
+
+# Quantile Regression
+
+
+
+## Loss function
+
+```{r qreg}
+qreg = function(par, X, y, tau) {
+  lp = X%*%par
+  res = y - lp
+  loss = ifelse(res < 0 , -(1-tau)*res, tau*res)
+  sum(loss)
+}
+```
+
+
+
+### Data Prep
+
+We'll use the <span class="pack" style = "">quantreg</span> package for comparison, and the classic data set on Belgian household income and food expenditure.  Scale income if you want a meaningful 'centercept'.
+
+```{r qr-setup}
+library(quantreg)
+data(engel)          
+### engel$income = scale(engel$income)
+```
+
+### Median estimation
+
+Compare `optim` output with <span class="pack" style = "">quantreg</span> package.
+
+```{r qr-est}
+optim(
+  par = c(0, 0),
+  fn  = qreg,
+  X   = cbind(1, engel$income),
+  y   = engel$foodexp,
+  tau = .5
+)$par
+
+rq(foodexp ~ income, tau = .5, data = engel)
+```
+
+
+### Other quantiles
+
+Now we will add additional quantiles to estimate.
+
+```{r qreg-quants}
+# quantiles
+qs = c(.05, .1, .25, .5, .75, .9, .95)
+
+resrq = coef(rq(foodexp ~ income, tau = qs, data = engel))
+
+
+resoptim = map_df(qs, function(tau)
+  data.frame(t(
+    optim(
+      par = c(0, 0),
+      fn  = qreg,
+      X   = cbind(1, engel$income),
+      y   = engel$foodexp,
+      tau = tau
+    )$par
+  )))
+
+
+# compare results
+
+rbind(resrq, t(resoptim)) %>% round(2)
+```
+
+### Visualize
+
+Let's visualize the results.
+
+```{r, results='hide'}
+engel %>%
+  qplot(data = .,
+        income,
+        foodexp,
+        color = I(scales::alpha('orange', .25))) +
+  geom_abline(aes(
+    intercept = X1,
+    slope = X2,
+    color = group
+  ),
+  data = data.frame(resoptim, group = factor(qs)))
+```
+
+
+## Source
+
+Base R source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/quantile_regression.Rmd
