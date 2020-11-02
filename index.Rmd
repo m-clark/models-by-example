@@ -1,6 +1,6 @@
 ---
 title: Model Estimation by Example
-subtitle: Demonstrations with R and friends.
+subtitle: Demonstrations with R
 author:  |
   <span class="noem">Michael Clark</span> <br>
   [m-clark.github.io](https://m-clark.github.io/)

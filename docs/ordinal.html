@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>L1 (lasso) regularization | Model Estimation by Example</title>
+  <title>Ordinal | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="L1 (lasso) regularization | Model Estimation by Example" />
+  <meta property="og:title" content="Ordinal | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="L1 (lasso) regularization | Model Estimation by Example" />
+  <meta name="twitter:title" content="Ordinal | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="penalized-maximum-likelihood.html"/>
-<link rel="next" href="ridge.html"/>
+<link rel="prev" href="multinomial.html"/>
+<link rel="next" href="penalized-maximum-likelihood.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -372,149 +372,117 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="l1-lasso-regularization" class="section level1">
-<h1>L1 (lasso) regularization</h1>
-<p>See Tibshirani (1996) for the source, or Murphy PML (2012) for a nice
-overview (watch for typos in depictions). A more conceptual depiction of the
-lasso can be found in penalized_ML.R.</p>
-<div id="functions-3" class="section level2">
-<h2>Functions</h2>
-<p>Coordinate descent</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="lasso.html#cb180-1"></a>lasso &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
-<span id="cb180-2"><a href="lasso.html#cb180-2"></a>  X,                   <span class="co"># model matrix</span></span>
-<span id="cb180-3"><a href="lasso.html#cb180-3"></a>  y,                   <span class="co"># target</span></span>
-<span id="cb180-4"><a href="lasso.html#cb180-4"></a>  <span class="dt">lambda  =</span> <span class="fl">.1</span>,        <span class="co"># penalty parameter</span></span>
-<span id="cb180-5"><a href="lasso.html#cb180-5"></a>  <span class="dt">soft    =</span> <span class="ot">TRUE</span>,      <span class="co"># soft vs. hard thresholding</span></span>
-<span id="cb180-6"><a href="lasso.html#cb180-6"></a>  <span class="dt">tol     =</span> <span class="fl">1e-6</span>,      <span class="co"># tolerance</span></span>
-<span id="cb180-7"><a href="lasso.html#cb180-7"></a>  <span class="dt">iter    =</span> <span class="dv">100</span>,       <span class="co"># number of max iterations</span></span>
-<span id="cb180-8"><a href="lasso.html#cb180-8"></a>  <span class="dt">verbose =</span> <span class="ot">TRUE</span>       <span class="co"># print out iteration number</span></span>
-<span id="cb180-9"><a href="lasso.html#cb180-9"></a>) {</span>
-<span id="cb180-10"><a href="lasso.html#cb180-10"></a>  </span>
-<span id="cb180-11"><a href="lasso.html#cb180-11"></a>  <span class="co"># soft thresholding function</span></span>
-<span id="cb180-12"><a href="lasso.html#cb180-12"></a>  soft_thresh &lt;-<span class="st"> </span><span class="cf">function</span>(a, b) {</span>
-<span id="cb180-13"><a href="lasso.html#cb180-13"></a>    out =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">length</span>(a))</span>
-<span id="cb180-14"><a href="lasso.html#cb180-14"></a>    out[a <span class="op">&gt;</span><span class="st">  </span>b] =<span class="st"> </span>a[a <span class="op">&gt;</span><span class="st"> </span>b] <span class="op">-</span><span class="st"> </span>b</span>
-<span id="cb180-15"><a href="lasso.html#cb180-15"></a>    out[a <span class="op">&lt;</span><span class="st"> </span><span class="op">-</span>b] =<span class="st"> </span>a[a <span class="op">&lt;</span><span class="st"> </span><span class="op">-</span>b] <span class="op">+</span><span class="st"> </span>b</span>
-<span id="cb180-16"><a href="lasso.html#cb180-16"></a>    out</span>
-<span id="cb180-17"><a href="lasso.html#cb180-17"></a>  }</span>
-<span id="cb180-18"><a href="lasso.html#cb180-18"></a>  </span>
-<span id="cb180-19"><a href="lasso.html#cb180-19"></a>  w =<span class="st"> </span><span class="kw">solve</span>(<span class="kw">crossprod</span>(X) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, <span class="kw">ncol</span>(X))) <span class="op">%*%</span><span class="st"> </span><span class="kw">crossprod</span>(X,y)</span>
-<span id="cb180-20"><a href="lasso.html#cb180-20"></a>  tol_curr =<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb180-21"><a href="lasso.html#cb180-21"></a>  J =<span class="st"> </span><span class="kw">ncol</span>(X)</span>
-<span id="cb180-22"><a href="lasso.html#cb180-22"></a>  a =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, J)</span>
-<span id="cb180-23"><a href="lasso.html#cb180-23"></a>  c_ =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, J)</span>
-<span id="cb180-24"><a href="lasso.html#cb180-24"></a>  i =<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb180-25"><a href="lasso.html#cb180-25"></a>  </span>
-<span id="cb180-26"><a href="lasso.html#cb180-26"></a>  <span class="cf">while</span> (tol <span class="op">&lt;</span><span class="st"> </span>tol_curr <span class="op">&amp;&amp;</span><span class="st"> </span>i <span class="op">&lt;</span><span class="st"> </span>iter) {</span>
-<span id="cb180-27"><a href="lasso.html#cb180-27"></a>    w_old =<span class="st"> </span>w </span>
-<span id="cb180-28"><a href="lasso.html#cb180-28"></a>    a =<span class="st"> </span><span class="kw">colSums</span>(X<span class="op">^</span><span class="dv">2</span>)</span>
-<span id="cb180-29"><a href="lasso.html#cb180-29"></a>    l =<span class="st"> </span><span class="kw">length</span>(y)<span class="op">*</span>lambda  <span class="co"># for consistency with glmnet approach</span></span>
-<span id="cb180-30"><a href="lasso.html#cb180-30"></a>    c_ =<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>J, <span class="cf">function</span>(j)  <span class="kw">sum</span>( X[,j] <span class="op">*</span><span class="st"> </span>(y <span class="op">-</span><span class="st"> </span>X[,<span class="op">-</span>j] <span class="op">%*%</span><span class="st"> </span>w_old[<span class="op">-</span>j]) ))</span>
-<span id="cb180-31"><a href="lasso.html#cb180-31"></a>    <span class="cf">if</span> (soft) {</span>
-<span id="cb180-32"><a href="lasso.html#cb180-32"></a>      <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>J) {</span>
-<span id="cb180-33"><a href="lasso.html#cb180-33"></a>        w[j] =<span class="st"> </span><span class="kw">soft_thresh</span>(c_[j]<span class="op">/</span>a[j], l<span class="op">/</span>a[j])</span>
-<span id="cb180-34"><a href="lasso.html#cb180-34"></a>      }</span>
-<span id="cb180-35"><a href="lasso.html#cb180-35"></a>    }</span>
-<span id="cb180-36"><a href="lasso.html#cb180-36"></a>    <span class="cf">else</span> {</span>
-<span id="cb180-37"><a href="lasso.html#cb180-37"></a>      w =<span class="st"> </span>w_old</span>
-<span id="cb180-38"><a href="lasso.html#cb180-38"></a>      w[c_<span class="op">&lt;</span><span class="st"> </span>l <span class="op">&amp;</span><span class="st"> </span>c_ <span class="op">&gt;</span><span class="st"> </span><span class="op">-</span>l] =<span class="st"> </span><span class="dv">0</span></span>
-<span id="cb180-39"><a href="lasso.html#cb180-39"></a>    }</span>
-<span id="cb180-40"><a href="lasso.html#cb180-40"></a>    </span>
-<span id="cb180-41"><a href="lasso.html#cb180-41"></a>    tol_curr =<span class="st"> </span><span class="kw">crossprod</span>(w <span class="op">-</span><span class="st"> </span>w_old)  </span>
-<span id="cb180-42"><a href="lasso.html#cb180-42"></a>    i =<span class="st"> </span>i <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
-<span id="cb180-43"><a href="lasso.html#cb180-43"></a>    <span class="cf">if</span> (verbose <span class="op">&amp;&amp;</span><span class="st"> </span>i<span class="op">%%</span><span class="dv">10</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">message</span>(i)</span>
-<span id="cb180-44"><a href="lasso.html#cb180-44"></a>  }</span>
-<span id="cb180-45"><a href="lasso.html#cb180-45"></a>  </span>
-<span id="cb180-46"><a href="lasso.html#cb180-46"></a>  w</span>
-<span id="cb180-47"><a href="lasso.html#cb180-47"></a>}</span></code></pre></div>
+<div id="ordinal" class="section level1">
+<h1>Ordinal</h1>
+<p>The following demonstrates a standard cumulative link ordinal regression model
+via maximum likelihood. Default is with probit link function. Alternatively you
+can compare it with a logit link, which will result in values roughly
+1.7*parameters estimates from the probit.</p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="ordinal.html#cb161-1"></a>ll_ord =<span class="st"> </span><span class="cf">function</span>(par, X, y, <span class="dt">probit =</span> <span class="ot">TRUE</span>) {</span>
+<span id="cb161-2"><a href="ordinal.html#cb161-2"></a>  K =<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(y))                        <span class="co"># number of classes K</span></span>
+<span id="cb161-3"><a href="ordinal.html#cb161-3"></a>  ncuts =<span class="st"> </span>K<span class="dv">-1</span>                                  <span class="co"># number of cutpoints/thresholds</span></span>
+<span id="cb161-4"><a href="ordinal.html#cb161-4"></a>  cuts =<span class="st"> </span>par[(<span class="dv">1</span><span class="op">:</span>ncuts)]                        <span class="co"># cutpoints</span></span>
+<span id="cb161-5"><a href="ordinal.html#cb161-5"></a>  beta =<span class="st"> </span>par[<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span>ncuts)]                       <span class="co"># regression coefficients</span></span>
+<span id="cb161-6"><a href="ordinal.html#cb161-6"></a>  lp =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta                              <span class="co"># linear predictor</span></span>
+<span id="cb161-7"><a href="ordinal.html#cb161-7"></a>  ll =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">length</span>(y))                       <span class="co"># log likelihood</span></span>
+<span id="cb161-8"><a href="ordinal.html#cb161-8"></a>  pfun =<span class="st"> </span><span class="kw">ifelse</span>(probit, pnorm, plogis)         <span class="co"># which link to use</span></span>
+<span id="cb161-9"><a href="ordinal.html#cb161-9"></a>  </span>
+<span id="cb161-10"><a href="ordinal.html#cb161-10"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>K){</span>
+<span id="cb161-11"><a href="ordinal.html#cb161-11"></a>    <span class="cf">if</span> (k<span class="op">==</span><span class="dv">1</span>) {</span>
+<span id="cb161-12"><a href="ordinal.html#cb161-12"></a>      ll[y<span class="op">==</span>k] =<span class="st"> </span><span class="kw">pfun</span>((cuts[k] <span class="op">-</span><span class="st"> </span>lp[y<span class="op">==</span>k]), <span class="dt">log =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb161-13"><a href="ordinal.html#cb161-13"></a>    }</span>
+<span id="cb161-14"><a href="ordinal.html#cb161-14"></a>    <span class="cf">else</span> <span class="cf">if</span> (k <span class="op">&lt;</span><span class="st"> </span>K) {</span>
+<span id="cb161-15"><a href="ordinal.html#cb161-15"></a>      ll[y<span class="op">==</span>k] =<span class="st"> </span><span class="kw">log</span>(<span class="kw">pfun</span>(cuts[k] <span class="op">-</span><span class="st"> </span>lp[y<span class="op">==</span>k]) <span class="op">-</span><span class="st"> </span><span class="kw">pfun</span>(cuts[k<span class="dv">-1</span>] <span class="op">-</span><span class="st"> </span>lp[y<span class="op">==</span>k]))</span>
+<span id="cb161-16"><a href="ordinal.html#cb161-16"></a>    }</span>
+<span id="cb161-17"><a href="ordinal.html#cb161-17"></a>    <span class="cf">else</span> {</span>
+<span id="cb161-18"><a href="ordinal.html#cb161-18"></a>      ll[y<span class="op">==</span>k] =<span class="st"> </span><span class="kw">log</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">pfun</span>(cuts[k<span class="dv">-1</span>] <span class="op">-</span><span class="st"> </span>lp[y<span class="op">==</span>k])) </span>
+<span id="cb161-19"><a href="ordinal.html#cb161-19"></a>    }</span>
+<span id="cb161-20"><a href="ordinal.html#cb161-20"></a>  }</span>
+<span id="cb161-21"><a href="ordinal.html#cb161-21"></a>  </span>
+<span id="cb161-22"><a href="ordinal.html#cb161-22"></a>  <span class="op">-</span><span class="kw">sum</span>(ll)</span>
+<span id="cb161-23"><a href="ordinal.html#cb161-23"></a>}</span></code></pre></div>
+<div id="data-1" class="section level2">
+<h2>Data</h2>
+<p>This data generation is from the probit perspective, where the underlying continuous latent variable is normally distributed.</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="ordinal.html#cb162-1"></a><span class="kw">set.seed</span>(<span class="dv">808</span>)</span>
+<span id="cb162-2"><a href="ordinal.html#cb162-2"></a></span>
+<span id="cb162-3"><a href="ordinal.html#cb162-3"></a>N =<span class="st"> </span><span class="dv">1000</span>                                       <span class="co"># Sample size</span></span>
+<span id="cb162-4"><a href="ordinal.html#cb162-4"></a>x =<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">x1 =</span> <span class="kw">rnorm</span>(N), <span class="dt">x2 =</span> <span class="kw">rnorm</span>(N))        <span class="co"># predictor variables</span></span>
+<span id="cb162-5"><a href="ordinal.html#cb162-5"></a>beta =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>)                                 <span class="co"># coefficients</span></span>
+<span id="cb162-6"><a href="ordinal.html#cb162-6"></a>y_star =<span class="st"> </span><span class="kw">rnorm</span>(N, <span class="dt">mean =</span> x <span class="op">%*%</span><span class="st"> </span>beta)           <span class="co"># the underlying latent variable</span></span>
+<span id="cb162-7"><a href="ordinal.html#cb162-7"></a>y_<span class="dv">1</span> =<span class="st"> </span>y_star <span class="op">&gt;</span><span class="st"> </span><span class="fl">-1.5</span>                            <span class="co"># -1.50 first cutpoint</span></span>
+<span id="cb162-8"><a href="ordinal.html#cb162-8"></a>y_<span class="dv">2</span> =<span class="st"> </span>y_star <span class="op">&gt;</span><span class="st"> </span><span class="fl">.75</span>                             <span class="co">#  0.75 second cutpoint</span></span>
+<span id="cb162-9"><a href="ordinal.html#cb162-9"></a>y_<span class="dv">3</span> =<span class="st"> </span>y_star <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.75</span>                            <span class="co">#  1.75 third cutpoint</span></span>
+<span id="cb162-10"><a href="ordinal.html#cb162-10"></a>y =<span class="st"> </span>y_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>y_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>y_<span class="dv">3</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>                        <span class="co"># target</span></span>
+<span id="cb162-11"><a href="ordinal.html#cb162-11"></a></span>
+<span id="cb162-12"><a href="ordinal.html#cb162-12"></a><span class="kw">table</span>(y)</span></code></pre></div>
+<pre><code>y
+  1   2   3   4 
+175 495 182 148 </code></pre>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="ordinal.html#cb164-1"></a>d =<span class="st"> </span><span class="kw">data.frame</span>(x, <span class="dt">y =</span> <span class="kw">factor</span>(y))</span></code></pre></div>
 </div>
-<div id="data-setup-5" class="section level2">
-<h2>Data setup</h2>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="lasso.html#cb181-1"></a><span class="kw">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb181-2"><a href="lasso.html#cb181-2"></a></span>
-<span id="cb181-3"><a href="lasso.html#cb181-3"></a>N =<span class="st"> </span><span class="dv">500</span></span>
-<span id="cb181-4"><a href="lasso.html#cb181-4"></a>p =<span class="st"> </span><span class="dv">10</span></span>
-<span id="cb181-5"><a href="lasso.html#cb181-5"></a>X =<span class="st"> </span><span class="kw">scale</span>(<span class="kw">matrix</span>(<span class="kw">rnorm</span>(N<span class="op">*</span>p), <span class="dt">ncol=</span>p))</span>
-<span id="cb181-6"><a href="lasso.html#cb181-6"></a>b =<span class="st"> </span><span class="kw">c</span>(.<span class="dv">5</span>, <span class="fl">-.5</span>, <span class="fl">.25</span>, <span class="fl">-.25</span>, <span class="fl">.125</span>, <span class="fl">-.125</span>, <span class="kw">rep</span>(<span class="dv">0</span>, p<span class="dv">-6</span>))</span>
-<span id="cb181-7"><a href="lasso.html#cb181-7"></a>y =<span class="st"> </span><span class="kw">scale</span>(X <span class="op">%*%</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N, <span class="dt">sd=</span>.<span class="dv">5</span>))</span>
-<span id="cb181-8"><a href="lasso.html#cb181-8"></a>lambda =<span class="st"> </span><span class="fl">.1</span></span></code></pre></div>
-<p>Note, if <code>lambda=0</code>, result is the same as <code>lm.fit</code>.</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="lasso.html#cb182-1"></a>result_soft =<span class="st"> </span><span class="kw">lasso</span>(</span>
-<span id="cb182-2"><a href="lasso.html#cb182-2"></a>  X,</span>
-<span id="cb182-3"><a href="lasso.html#cb182-3"></a>  y,</span>
-<span id="cb182-4"><a href="lasso.html#cb182-4"></a>  <span class="dt">lambda =</span> lambda,</span>
-<span id="cb182-5"><a href="lasso.html#cb182-5"></a>  <span class="dt">tol =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb182-6"><a href="lasso.html#cb182-6"></a>  <span class="dt">soft =</span> <span class="ot">TRUE</span></span>
-<span id="cb182-7"><a href="lasso.html#cb182-7"></a>)</span>
-<span id="cb182-8"><a href="lasso.html#cb182-8"></a></span>
-<span id="cb182-9"><a href="lasso.html#cb182-9"></a>result_hard =<span class="st"> </span><span class="kw">lasso</span>(</span>
-<span id="cb182-10"><a href="lasso.html#cb182-10"></a>  X,</span>
-<span id="cb182-11"><a href="lasso.html#cb182-11"></a>  y,</span>
-<span id="cb182-12"><a href="lasso.html#cb182-12"></a>  <span class="dt">lambda =</span> lambda,</span>
-<span id="cb182-13"><a href="lasso.html#cb182-13"></a>  <span class="dt">tol    =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb182-14"><a href="lasso.html#cb182-14"></a>  <span class="dt">soft   =</span> <span class="ot">FALSE</span></span>
-<span id="cb182-15"><a href="lasso.html#cb182-15"></a>)</span></code></pre></div>
-<p><code>glmnet</code> is by default a mixture of ridge and lasso penalties, setting alpha
-= 1 reduces to lasso (alpha=0 would be ridge). We set the lambda to a couple
-values while only wanting the one set to the same lambda value as above (s).</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="lasso.html#cb183-1"></a><span class="kw">library</span>(glmnet)</span>
-<span id="cb183-2"><a href="lasso.html#cb183-2"></a></span>
-<span id="cb183-3"><a href="lasso.html#cb183-3"></a>glmnet_res =<span class="st"> </span><span class="kw">coef</span>(</span>
-<span id="cb183-4"><a href="lasso.html#cb183-4"></a>  <span class="kw">glmnet</span>(</span>
-<span id="cb183-5"><a href="lasso.html#cb183-5"></a>    X,</span>
-<span id="cb183-6"><a href="lasso.html#cb183-6"></a>    y,</span>
-<span id="cb183-7"><a href="lasso.html#cb183-7"></a>    <span class="dt">alpha  =</span> <span class="dv">1</span>,</span>
-<span id="cb183-8"><a href="lasso.html#cb183-8"></a>    <span class="dt">lambda =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1</span>, lambda),</span>
-<span id="cb183-9"><a href="lasso.html#cb183-9"></a>    <span class="dt">thresh =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb183-10"><a href="lasso.html#cb183-10"></a>    <span class="dt">intercept =</span> <span class="ot">FALSE</span></span>
-<span id="cb183-11"><a href="lasso.html#cb183-11"></a>  ),</span>
-<span id="cb183-12"><a href="lasso.html#cb183-12"></a>  <span class="dt">s =</span> lambda</span>
-<span id="cb183-13"><a href="lasso.html#cb183-13"></a>)</span>
-<span id="cb183-14"><a href="lasso.html#cb183-14"></a></span>
-<span id="cb183-15"><a href="lasso.html#cb183-15"></a><span class="kw">library</span>(lassoshooting)</span>
-<span id="cb183-16"><a href="lasso.html#cb183-16"></a></span>
-<span id="cb183-17"><a href="lasso.html#cb183-17"></a>ls_res =<span class="st"> </span><span class="kw">lassoshooting</span>(</span>
-<span id="cb183-18"><a href="lasso.html#cb183-18"></a>  <span class="dt">X =</span> X,</span>
-<span id="cb183-19"><a href="lasso.html#cb183-19"></a>  <span class="dt">y =</span> y,</span>
-<span id="cb183-20"><a href="lasso.html#cb183-20"></a>  <span class="dt">lambda =</span> <span class="kw">length</span>(y) <span class="op">*</span><span class="st"> </span>lambda,</span>
-<span id="cb183-21"><a href="lasso.html#cb183-21"></a>  <span class="dt">thr =</span> <span class="fl">1e-12</span></span>
-<span id="cb183-22"><a href="lasso.html#cb183-22"></a>)</span></code></pre></div>
+<div id="estimation-2" class="section level2">
+<h2>Estimation</h2>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="ordinal.html#cb165-1"></a>init =<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>)         <span class="co"># initial values</span></span></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="ordinal.html#cb166-1"></a>result_probit =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb166-2"><a href="ordinal.html#cb166-2"></a>  init,</span>
+<span id="cb166-3"><a href="ordinal.html#cb166-3"></a>  ll_ord,</span>
+<span id="cb166-4"><a href="ordinal.html#cb166-4"></a>  <span class="dt">y =</span> y,</span>
+<span id="cb166-5"><a href="ordinal.html#cb166-5"></a>  <span class="dt">X =</span> x,</span>
+<span id="cb166-6"><a href="ordinal.html#cb166-6"></a>  <span class="dt">probit  =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb166-7"><a href="ordinal.html#cb166-7"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">reltol =</span> <span class="fl">1e-10</span>)</span>
+<span id="cb166-8"><a href="ordinal.html#cb166-8"></a>)</span>
+<span id="cb166-9"><a href="ordinal.html#cb166-9"></a></span>
+<span id="cb166-10"><a href="ordinal.html#cb166-10"></a>result_logit  =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb166-11"><a href="ordinal.html#cb166-11"></a>  init,</span>
+<span id="cb166-12"><a href="ordinal.html#cb166-12"></a>  ll_ord,</span>
+<span id="cb166-13"><a href="ordinal.html#cb166-13"></a>  <span class="dt">y =</span> y,</span>
+<span id="cb166-14"><a href="ordinal.html#cb166-14"></a>  <span class="dt">X =</span> x,</span>
+<span id="cb166-15"><a href="ordinal.html#cb166-15"></a>  <span class="dt">probit  =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb166-16"><a href="ordinal.html#cb166-16"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">reltol =</span> <span class="fl">1e-10</span>)</span>
+<span id="cb166-17"><a href="ordinal.html#cb166-17"></a>)</span></code></pre></div>
 </div>
-<div id="comparison-12" class="section level2">
+<div id="comparison-10" class="section level2">
 <h2>Comparison</h2>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="lasso.html#cb184-1"></a><span class="kw">data.frame</span>(</span>
-<span id="cb184-2"><a href="lasso.html#cb184-2"></a>  <span class="dt">lm =</span> <span class="kw">coef</span>(<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>. <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="kw">data.frame</span>(X))),</span>
-<span id="cb184-3"><a href="lasso.html#cb184-3"></a>  <span class="dt">lasso_soft =</span> result_soft,</span>
-<span id="cb184-4"><a href="lasso.html#cb184-4"></a>  <span class="dt">lasso_hard =</span> result_hard,</span>
-<span id="cb184-5"><a href="lasso.html#cb184-5"></a>  <span class="dt">lspack =</span> ls_res<span class="op">$</span>coef,</span>
-<span id="cb184-6"><a href="lasso.html#cb184-6"></a>  <span class="dt">glmnet =</span> glmnet_res[<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>],</span>
-<span id="cb184-7"><a href="lasso.html#cb184-7"></a>  <span class="dt">truth  =</span> b</span>
-<span id="cb184-8"><a href="lasso.html#cb184-8"></a>)</span></code></pre></div>
-<pre><code>              lm  lasso_soft lasso_hard      lspack      glmnet  truth
-X1   0.534988063  0.43542527  0.5348784  0.43542528  0.43552489  0.500
-X2  -0.529993422 -0.42876539 -0.5298847 -0.42876538 -0.42886718 -0.500
-X3   0.234376590  0.12436834  0.2343207  0.12436835  0.12447920  0.250
-X4  -0.294350608 -0.20743074 -0.2942946 -0.20743075 -0.20751883 -0.250
-X5   0.126037566  0.02036410  0.1260132  0.02036407  0.02047015  0.125
-X6  -0.159386728 -0.05501971 -0.1593572 -0.05501969 -0.05512364 -0.125
-X7  -0.016718534  0.00000000  0.0000000  0.00000000  0.00000000  0.000
-X8   0.009894575  0.00000000  0.0000000  0.00000000  0.00000000  0.000
-X9  -0.005441959  0.00000000  0.0000000  0.00000000  0.00000000  0.000
-X10  0.010561128  0.00000000  0.0000000  0.00000000  0.00000000  0.000</code></pre>
+<p>We can compare our results with the <span class="pack" style="">ordinal</span> package.</p>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="ordinal.html#cb167-1"></a><span class="kw">library</span>(ordinal)</span>
+<span id="cb167-2"><a href="ordinal.html#cb167-2"></a>result_ordpack_probit =<span class="st"> </span><span class="kw">clm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">data =</span> d, <span class="dt">link =</span> <span class="st">&#39;probit&#39;</span>)</span>
+<span id="cb167-3"><a href="ordinal.html#cb167-3"></a>result_ordpack_logit  =<span class="st"> </span><span class="kw">clm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">data =</span> d, <span class="dt">link =</span> <span class="st">&#39;logit&#39;</span>)</span>
+<span id="cb167-4"><a href="ordinal.html#cb167-4"></a></span>
+<span id="cb167-5"><a href="ordinal.html#cb167-5"></a></span>
+<span id="cb167-6"><a href="ordinal.html#cb167-6"></a>resprobit =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">method =</span> <span class="kw">c</span>(<span class="st">&#39;ll_ord&#39;</span>, <span class="st">&#39;ordpack&#39;</span>),</span>
+<span id="cb167-7"><a href="ordinal.html#cb167-7"></a>                       <span class="kw">rbind</span>(<span class="kw">coef</span>(result_probit), <span class="kw">coef</span>(result_ordpack_probit)))</span>
+<span id="cb167-8"><a href="ordinal.html#cb167-8"></a><span class="kw">colnames</span>(resprobit) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;method&#39;</span>, <span class="kw">paste0</span>(<span class="st">&#39;cut_&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;beta2&#39;</span>)</span>
+<span id="cb167-9"><a href="ordinal.html#cb167-9"></a></span>
+<span id="cb167-10"><a href="ordinal.html#cb167-10"></a>resprobit</span></code></pre></div>
+<pre><code>   method     cut_1     cut_2    cut_3    beta1     beta2
+1  ll_ord -1.608561 0.7311868 1.797667 1.018545 -1.051004
+2 ordpack -1.608561 0.7311868 1.797667 1.018545 -1.051004</code></pre>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="ordinal.html#cb169-1"></a>reslogit =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">method =</span> <span class="kw">c</span>(<span class="st">&#39;ll_ord&#39;</span>, <span class="st">&#39;ordpack&#39;</span>),</span>
+<span id="cb169-2"><a href="ordinal.html#cb169-2"></a>                      <span class="kw">rbind</span>(<span class="kw">coef</span>(result_logit), <span class="kw">coef</span>(result_ordpack_logit)))</span>
+<span id="cb169-3"><a href="ordinal.html#cb169-3"></a><span class="kw">colnames</span>(reslogit) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;method&#39;</span>, <span class="kw">paste0</span>(<span class="st">&#39;cut_&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="st">&#39;beta1&#39;</span>, <span class="st">&#39;beta2&#39;</span>)</span>
+<span id="cb169-4"><a href="ordinal.html#cb169-4"></a></span>
+<span id="cb169-5"><a href="ordinal.html#cb169-5"></a>reslogit</span></code></pre></div>
+<pre><code>   method     cut_1    cut_2    cut_3    beta1     beta2
+1  ll_ord -2.871524 1.284054 3.168263 1.806431 -1.876804
+2 ordpack -2.871524 1.284054 3.168263 1.806431 -1.876804</code></pre>
 </div>
-<div id="source-12" class="section level2">
+<div id="source-10" class="section level2">
 <h2>Source</h2>
-<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/lasso.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/lasso.R</a></p>
+<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ordinal_regression.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ordinal_regression.R</a></p>
 
 </div>
 </div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="penalized-maximum-likelihood.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ridge.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="multinomial.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="penalized-maximum-likelihood.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -547,7 +515,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/lasso.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/ordinal.Rmd",
 "text": "Edit"
 },
 "history": {

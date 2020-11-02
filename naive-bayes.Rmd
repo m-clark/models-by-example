@@ -3,7 +3,7 @@
 
 ## Initialization
 
-Demo for binary data. First we generate some data. We gave several binary covariates and a binary target variable `y`.
+Demo for binary data. First we generate some data. We have several binary covariates and a binary target variable `y`.
 
 ```{r naive-init}
 set.seed(123)
@@ -35,3 +35,6 @@ lapply(xf, function(var)
 ```
 
 
+## Source
+
+Base R source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/naivebayes.R

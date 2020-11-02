@@ -1,6 +1,6 @@
 # Introduction
 
-This document provides 'by-hand' demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production.    Almost everything here has a package/module that would do it far better and efficiently.  The document itself is also not an introduction to any of these methods, and in fact contains very little expository text. This document is merely a learning tool for those wanting to dive a little deeper.
+This document provides 'by-hand' demonstrations of various models and algorithms. The goal is to take away some of the mystery of them by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production, and in fact, some of these would probably be considered of historical interest only.  To be clear, almost everything here has a package/module that would do the same thing far better and efficiently.  Note alsoe, the document itself is also not an introduction to any of these methods, and in fact contains very little expository text, assuming the reader has some familiarity with the model and possibly some reference text. This document is merely a learning tool for those wanting to dive a little deeper.
 
 
 The source code for these demonstrations may be found at their original home here: https://github.com/m-clark/Miscellaneous-R-Code

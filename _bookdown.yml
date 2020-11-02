@@ -19,6 +19,8 @@ rmd_files: [
   heckman-selection.Rmd,
   tobit.Rmd,
   naive-bayes.Rmd,
+  multinomial.Rmd,
+  ordinal.Rmd,
   
   # Algos
   penalized-maximum-likelihood.Rmd,
