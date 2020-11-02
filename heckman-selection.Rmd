@@ -1,7 +1,7 @@
 # Heckman Selection 
 
-Based on bleven's example here: 
-https://www3.nd.edu/~wevans1/ecoe60303/sample_selection_example.ppt, which is 
+Based on Bleven's example here: 
+https://www3.nd.edu/~wevans1/ecoe60303/sample_selection_example.ppt, but which is 
 more or less the 'classic' example, variations of which you'll find all over
 regarding women's wages.
 
@@ -65,7 +65,7 @@ summary(lm_obs) # smaller coefs, resid standard error
 
 
 
-## 2 step approach
+## Two step approach
 
 The two-step approach first conducts a probit model regarding whether the individual is observed or not, in order to calculate the inverse mills ratio, or 'nonselection hazard'. The second step is a standard lm.
 
@@ -103,7 +103,7 @@ ggplot2::qplot(imr, geom = 'histogram')
 
 
 
-### Step 2: Estimate via linear regression
+### Step 2: Estimate via Linear Regression
 Standard regression model using the inverse mills ratio as covariate
 
 ```{r heckman-step-2}
@@ -130,7 +130,7 @@ coef(lm_select)['imr'] / summary(selection_2step)$estimate['sigma', 'Estimate']
 ## Maximum Likelihood
 
 The following likelihood function takes arguments as follows:
-- **par**: the regression coefficients pertaining to the two models, the residual se
+- **par**: the regression coefficients pertaining to the two models, the residual standard error
 - **sigma** and rho for the correlation estimate
 - **X**: observed data model matrix for the linear regression model
 - **Z**: complete data model matrix for the probit model

@@ -5,7 +5,7 @@ A standard logistic regression model via maximum likelihood or exponential
 loss. Can serve as an entry point for those starting out to the wider world of
 computational statistics as maximum likelihood is the fundamental approach used
 in most applied statistics, but which is also a key aspect of the Bayesian
-approach.  Exponential loss is not confined to the standard glm setting, but
+approach.  Exponential loss is not confined to the standard GLM setting, but
 is widely used in more predictive/'algorithmic' approaches e.g. in
 machine learning and elsewhere.
 
@@ -86,9 +86,9 @@ logreg_exp = function(par, X, y) {
 
 
 
-## Obtain Model Estimates
+## Estimation
 
-Setup for use with `optim`.
+Setup for use with <span class="func" style = "">optim</span>.
 
 ```{r logreg-est}
 X = cbind(1, X)

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>Quantile Regression | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="Quantile Regression | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="Quantile Regression | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="ordinal.html"/>
+<link rel="next" href="cubic-spline.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -398,25 +398,104 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery of them by providing clean code examples that are easy to run and compare with other tools.</p>
-<p>The code was collected over time without respect to any previous code, so is not exactly consistent in style. But in general you will find some imported/simulated data, a primary estimating function, a comparison of results with some R package, and a link to the source code that is demonstrated.</p>
-<p>This code is not meant to be extensive, or used in production, and in fact, some of these would probably be considered of historical interest only. To be clear, almost everything here has a package/module that would do the same thing far better and efficiently. Note also, the document itself is also not an introduction to any of these methods, and in fact contains very little expository text, assuming the reader has some familiarity with the model and possibly some reference text. This document is merely a learning tool for those wanting to dive a little deeper. The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a>.</p>
-<p>Many examples require some initial data processing or visualization via <span class="pack" style="">ggplot2</span>, so it’s assumed the <span class="pack" style="">tidyverse</span> set of packages is loaded.</p>
-<p>While I’m happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="quantile-regression" class="section level1">
+<h1>Quantile Regression</h1>
+<div id="loss-function" class="section level2">
+<h2>Loss function</h2>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="quantile-regression.html#cb190-1"></a>qreg =<span class="st"> </span><span class="cf">function</span>(par, X, y, tau) {</span>
+<span id="cb190-2"><a href="quantile-regression.html#cb190-2"></a>  lp =<span class="st"> </span>X<span class="op">%*%</span>par</span>
+<span id="cb190-3"><a href="quantile-regression.html#cb190-3"></a>  res =<span class="st"> </span>y <span class="op">-</span><span class="st"> </span>lp</span>
+<span id="cb190-4"><a href="quantile-regression.html#cb190-4"></a>  loss =<span class="st"> </span><span class="kw">ifelse</span>(res <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span> , <span class="op">-</span>(<span class="dv">1</span><span class="op">-</span>tau)<span class="op">*</span>res, tau<span class="op">*</span>res)</span>
+<span id="cb190-5"><a href="quantile-regression.html#cb190-5"></a>  <span class="kw">sum</span>(loss)</span>
+<span id="cb190-6"><a href="quantile-regression.html#cb190-6"></a>}</span></code></pre></div>
+<div id="data-prep" class="section level3">
+<h3>Data Prep</h3>
+<p>We’ll use the <span class="pack" style="">quantreg</span> package for comparison, and the classic data set on Belgian household income and food expenditure. Scale income if you want a meaningful ‘centercept’.</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="quantile-regression.html#cb191-1"></a><span class="kw">library</span>(quantreg)</span>
+<span id="cb191-2"><a href="quantile-regression.html#cb191-2"></a><span class="kw">data</span>(engel)          </span>
+<span id="cb191-3"><a href="quantile-regression.html#cb191-3"></a><span class="co">### engel$income = scale(engel$income)</span></span></code></pre></div>
+</div>
+<div id="median-estimation" class="section level3">
+<h3>Median estimation</h3>
+<p>Compare <code>optim</code> output with <span class="pack" style="">quantreg</span> package.</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="quantile-regression.html#cb192-1"></a><span class="kw">optim</span>(</span>
+<span id="cb192-2"><a href="quantile-regression.html#cb192-2"></a>  <span class="dt">par =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb192-3"><a href="quantile-regression.html#cb192-3"></a>  <span class="dt">fn  =</span> qreg,</span>
+<span id="cb192-4"><a href="quantile-regression.html#cb192-4"></a>  <span class="dt">X   =</span> <span class="kw">cbind</span>(<span class="dv">1</span>, engel<span class="op">$</span>income),</span>
+<span id="cb192-5"><a href="quantile-regression.html#cb192-5"></a>  <span class="dt">y   =</span> engel<span class="op">$</span>foodexp,</span>
+<span id="cb192-6"><a href="quantile-regression.html#cb192-6"></a>  <span class="dt">tau =</span> <span class="fl">.5</span></span>
+<span id="cb192-7"><a href="quantile-regression.html#cb192-7"></a>)<span class="op">$</span>par</span></code></pre></div>
+<pre><code>[1] 81.4853550  0.5601706</code></pre>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="quantile-regression.html#cb194-1"></a><span class="kw">rq</span>(foodexp <span class="op">~</span><span class="st"> </span>income, <span class="dt">tau =</span> <span class="fl">.5</span>, <span class="dt">data =</span> engel)</span></code></pre></div>
+<pre><code>Call:
+rq(formula = foodexp ~ income, tau = 0.5, data = engel)
+
+Coefficients:
+(Intercept)      income 
+ 81.4822474   0.5601806 
+
+Degrees of freedom: 235 total; 233 residual</code></pre>
+</div>
+<div id="other-quantiles" class="section level3">
+<h3>Other quantiles</h3>
+<p>Now we will add additional quantiles to estimate.</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="quantile-regression.html#cb196-1"></a><span class="co"># quantiles</span></span>
+<span id="cb196-2"><a href="quantile-regression.html#cb196-2"></a>qs =<span class="st"> </span><span class="kw">c</span>(.<span class="dv">05</span>, <span class="fl">.1</span>, <span class="fl">.25</span>, <span class="fl">.5</span>, <span class="fl">.75</span>, <span class="fl">.9</span>, <span class="fl">.95</span>)</span>
+<span id="cb196-3"><a href="quantile-regression.html#cb196-3"></a></span>
+<span id="cb196-4"><a href="quantile-regression.html#cb196-4"></a>resrq =<span class="st"> </span><span class="kw">coef</span>(<span class="kw">rq</span>(foodexp <span class="op">~</span><span class="st"> </span>income, <span class="dt">tau =</span> qs, <span class="dt">data =</span> engel))</span>
+<span id="cb196-5"><a href="quantile-regression.html#cb196-5"></a></span>
+<span id="cb196-6"><a href="quantile-regression.html#cb196-6"></a></span>
+<span id="cb196-7"><a href="quantile-regression.html#cb196-7"></a>resoptim =<span class="st"> </span><span class="kw">map_df</span>(qs, <span class="cf">function</span>(tau)</span>
+<span id="cb196-8"><a href="quantile-regression.html#cb196-8"></a>  <span class="kw">data.frame</span>(<span class="kw">t</span>(</span>
+<span id="cb196-9"><a href="quantile-regression.html#cb196-9"></a>    <span class="kw">optim</span>(</span>
+<span id="cb196-10"><a href="quantile-regression.html#cb196-10"></a>      <span class="dt">par =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb196-11"><a href="quantile-regression.html#cb196-11"></a>      <span class="dt">fn  =</span> qreg,</span>
+<span id="cb196-12"><a href="quantile-regression.html#cb196-12"></a>      <span class="dt">X   =</span> <span class="kw">cbind</span>(<span class="dv">1</span>, engel<span class="op">$</span>income),</span>
+<span id="cb196-13"><a href="quantile-regression.html#cb196-13"></a>      <span class="dt">y   =</span> engel<span class="op">$</span>foodexp,</span>
+<span id="cb196-14"><a href="quantile-regression.html#cb196-14"></a>      <span class="dt">tau =</span> tau</span>
+<span id="cb196-15"><a href="quantile-regression.html#cb196-15"></a>    )<span class="op">$</span>par</span>
+<span id="cb196-16"><a href="quantile-regression.html#cb196-16"></a>  )))</span>
+<span id="cb196-17"><a href="quantile-regression.html#cb196-17"></a></span>
+<span id="cb196-18"><a href="quantile-regression.html#cb196-18"></a></span>
+<span id="cb196-19"><a href="quantile-regression.html#cb196-19"></a><span class="co"># compare results</span></span>
+<span id="cb196-20"><a href="quantile-regression.html#cb196-20"></a></span>
+<span id="cb196-21"><a href="quantile-regression.html#cb196-21"></a><span class="kw">rbind</span>(resrq, <span class="kw">t</span>(resoptim)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>            tau= 0.05 tau= 0.10 tau= 0.25 tau= 0.50 tau= 0.75 tau= 0.90 tau= 0.95
+(Intercept)    124.88    110.14     95.48     81.48     62.40     67.35     64.10
+income           0.34      0.40      0.47      0.56      0.64      0.69      0.71
+X1             124.88    110.14     95.48     81.49     62.40     67.33     64.14
+X2               0.34      0.40      0.47      0.56      0.64      0.69      0.71</code></pre>
+</div>
+<div id="visualize" class="section level3">
+<h3>Visualize</h3>
+<p>Let’s visualize the results.</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="quantile-regression.html#cb198-1"></a>engel <span class="op">%&gt;%</span></span>
+<span id="cb198-2"><a href="quantile-regression.html#cb198-2"></a><span class="st">  </span><span class="kw">qplot</span>(<span class="dt">data =</span> .,</span>
+<span id="cb198-3"><a href="quantile-regression.html#cb198-3"></a>        income,</span>
+<span id="cb198-4"><a href="quantile-regression.html#cb198-4"></a>        foodexp,</span>
+<span id="cb198-5"><a href="quantile-regression.html#cb198-5"></a>        <span class="dt">color =</span> <span class="kw">I</span>(scales<span class="op">::</span><span class="kw">alpha</span>(<span class="st">&#39;orange&#39;</span>, <span class="fl">.25</span>))) <span class="op">+</span></span>
+<span id="cb198-6"><a href="quantile-regression.html#cb198-6"></a><span class="st">  </span><span class="kw">geom_abline</span>(<span class="kw">aes</span>(</span>
+<span id="cb198-7"><a href="quantile-regression.html#cb198-7"></a>    <span class="dt">intercept =</span> X1,</span>
+<span id="cb198-8"><a href="quantile-regression.html#cb198-8"></a>    <span class="dt">slope =</span> X2,</span>
+<span id="cb198-9"><a href="quantile-regression.html#cb198-9"></a>    <span class="dt">color =</span> group</span>
+<span id="cb198-10"><a href="quantile-regression.html#cb198-10"></a>  ),</span>
+<span id="cb198-11"><a href="quantile-regression.html#cb198-11"></a>  <span class="dt">data =</span> <span class="kw">data.frame</span>(resoptim, <span class="dt">group =</span> <span class="kw">factor</span>(qs)))</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/unnamed-chunk-1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="source-12" class="section level2">
+<h2>Source</h2>
+<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/quantile_regression.Rmd" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/quantile_regression.Rmd</a></p>
 
 </div>
-
-
-
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ordinal.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="cubic-spline.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -449,7 +528,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/quantile-regression.Rmd",
 "text": "Edit"
 },
 "history": {

@@ -38,7 +38,7 @@ free to use base R's `optim` instead.
 This function returns the best parameter array and best score.
 
 
-## First version
+## First Version
 
 ```{r nelder-mead}
 nelder_mead = function(
@@ -203,7 +203,7 @@ I find a regression model to be more applicable/intuitive for my needs, so
 provide an example for that case.
 
 
-#### Data setup
+#### Data Setup
 
 ```{r nelder-mead-setup-1}
 set.seed(8675309)
@@ -274,7 +274,7 @@ rbind(
 
 
 
-## Second version
+## Second Version
 
 This is a more natural R approach in my opinion.
 
@@ -390,7 +390,7 @@ nelder_mead2 = function(
 
 
 
-### Example function
+### Example Function
 
 ```{r opt-func-2}
 f = function(x) {

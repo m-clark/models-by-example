@@ -1,13 +1,12 @@
 # Probit & Bivariate Probit
 
-Stata's seems to be the primary audience concerned with these models, but I
+Stata users seem to be the primary audience concerned with these models, but I
 thought I'd play around with one here (I've never had reason to use a probit
 model in practice).  Stata examples come from the UCLA ATS website and the Stata
-manual so one can investigate the Stata result for comparison.
+manual, so one can investigate the Stata result for comparison.
 
 
-
-## standard probit
+## Standard Probit
 
 ```{r probitLL}
 probitLL = function(beta, X, y){
@@ -82,7 +81,7 @@ optimResult
 
 
 
-## Bivariate probit
+## Bivariate Probit
 
 Main function.
 

@@ -1,8 +1,33 @@
 # Introduction
 
-This document provides 'by-hand' demonstrations of various models and algorithms. The goal is to take away some of the mystery of them by providing clean code examples that are easy to run and compare with other tools. The code is not meant to be extensive, or used in production, and in fact, some of these would probably be considered of historical interest only.  To be clear, almost everything here has a package/module that would do the same thing far better and efficiently.  Note alsoe, the document itself is also not an introduction to any of these methods, and in fact contains very little expository text, assuming the reader has some familiarity with the model and possibly some reference text. This document is merely a learning tool for those wanting to dive a little deeper.
+This document provides 'by-hand' demonstrations of various models and
+algorithms. The goal is to take away some of the mystery of them by providing
+clean code examples that are easy to run and compare with other tools.
+
+The code was collected over several years without respect to any previous code,
+so is not exactly consistent in style.  But in general, within each demo you
+will find some imported/simulated data, a primary estimating function, a
+comparison of results with some R package, and a link to the source code that is
+demonstrated.
+
+This code is not meant to be extensive, or used in production, and in fact, some
+of these would probably be considered of historical interest only.  To be clear,
+almost everything here has a package/module that would do the same thing far
+better and efficiently.  Note also, the document itself is also not an
+introduction to any of these methods, and in fact contains very little
+expository text, assuming the reader has some familiarity with the model and
+possibly some reference text. This document is merely a learning tool for those
+wanting to dive a little deeper.
 
 
-The source code for these demonstrations may be found at their original home here: https://github.com/m-clark/Miscellaneous-R-Code
 
-While I'm happy to fix any glaring errors, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format.  Perhaps if others would like to add to it via pull requests, I would do so.
+The source code for these demonstrations may be found at their original home here: https://github.com/m-clark/Miscellaneous-R-Code.
+
+
+Many examples require some initial data processing or visualization via <span class="pack" style = "">ggplot2</span>, so it's assumed the <span class="pack" style = "">tidyverse</span> set of packages is loaded.
+
+
+
+While I'm happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add to it on rare occasion. This code has accumulated over years, and I just wanted it in a nicer format.  Perhaps if others would like to add to it via pull requests, I would do so.
+
+

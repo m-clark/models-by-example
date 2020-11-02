@@ -2,12 +2,12 @@
 
 
 
-An approach for one factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. Unfortunately I did this before knowing they had both matlab and R code on their website, though the R code here is a little cleaner and has comments. The data regards crop yield from 10 randomly selected locations and three collections at each.  See [one_factor_RE.m](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.m) and  [one_factor_RE.jl](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.jl) for the related Matlab and Julia files, and the respective `twofactorRE.*` for the associated two factor random effects examples.        
+An approach for one factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. Unfortunately I did this before knowing they had both Matlab and R code on their website, though the R code here is a little cleaner and has comments. The data regards crop yield from 10 randomly selected locations and three collections at each.  See [one_factor_RE.m](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.m) and  [one_factor_RE.jl](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.jl) for the related Matlab and Julia files, and the respective `twofactorRE.*` for the associated two factor random effects examples.        
 
 
 
 
-## Main function 
+## Main Function 
  
 ```{r one-factor-re}
 one_factor_re  = function(mu, sigma2_mu, sigma2){
@@ -40,7 +40,7 @@ one_factor_re  = function(mu, sigma2_mu, sigma2){
 
 
 
-## Data set up 
+## Data Setup
 
 ```{r one-factor-re-setup}
 y = matrix(c(22.6,20.5,20.8,
@@ -82,7 +82,7 @@ one_factor_re(starts[[1]], starts[[2]], starts[[3]])
 ## Comparison
 
 
-Package <span class="pack" style = "">bbmle</span> has an <span class="func" style = "">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style = "">optim.</span> LBFGS-B is used to place lower bounds on the variance estimates.
+Package <span class="pack" style = "">bbmle</span> has an <span class="func" style = "">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style = "">optim</span>. LBFGS-B is used to place lower bounds on the variance estimates.
 
 ```{r one-factor-re-bbmle}
 library(bbmle)

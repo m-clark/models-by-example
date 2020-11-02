@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>Cubic Spline Model | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="Cubic Spline Model | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="Cubic Spline Model | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="quantile-regression.html"/>
+<link rel="next" href="penalized-maximum-likelihood.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -398,14 +398,117 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery of them by providing clean code examples that are easy to run and compare with other tools.</p>
-<p>The code was collected over time without respect to any previous code, so is not exactly consistent in style. But in general you will find some imported/simulated data, a primary estimating function, a comparison of results with some R package, and a link to the source code that is demonstrated.</p>
-<p>This code is not meant to be extensive, or used in production, and in fact, some of these would probably be considered of historical interest only. To be clear, almost everything here has a package/module that would do the same thing far better and efficiently. Note also, the document itself is also not an introduction to any of these methods, and in fact contains very little expository text, assuming the reader has some familiarity with the model and possibly some reference text. This document is merely a learning tool for those wanting to dive a little deeper. The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a>.</p>
-<p>Many examples require some initial data processing or visualization via <span class="pack" style="">ggplot2</span>, so it’s assumed the <span class="pack" style="">tidyverse</span> set of packages is loaded.</p>
-<p>While I’m happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="cubic-spline-model" class="section level1">
+<h1>Cubic Spline Model</h1>
+<p>See Wood (2017) Generalized Additive Models or my <a href="https://m-clark.github.io/generalized-additive-models/">document</a>.</p>
+<div id="data-setup-8" class="section level2">
+<h2>Data Setup</h2>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="cubic-spline.html#cb199-1"></a>size =<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.42</span>,<span class="fl">1.58</span>,<span class="fl">1.78</span>,<span class="fl">1.99</span>,<span class="fl">1.99</span>,<span class="fl">1.99</span>,<span class="fl">2.13</span>,<span class="fl">2.13</span>,<span class="fl">2.13</span>,</span>
+<span id="cb199-2"><a href="cubic-spline.html#cb199-2"></a>         <span class="fl">2.32</span>,<span class="fl">2.32</span>,<span class="fl">2.32</span>,<span class="fl">2.32</span>,<span class="fl">2.32</span>,<span class="fl">2.43</span>,<span class="fl">2.43</span>,<span class="fl">2.78</span>,<span class="fl">2.98</span>,<span class="fl">2.98</span>)</span>
+<span id="cb199-3"><a href="cubic-spline.html#cb199-3"></a></span>
+<span id="cb199-4"><a href="cubic-spline.html#cb199-4"></a>wear =<span class="st"> </span><span class="kw">c</span>(<span class="fl">4.0</span>,<span class="fl">4.2</span>,<span class="fl">2.5</span>,<span class="fl">2.6</span>,<span class="fl">2.8</span>,<span class="fl">2.4</span>,<span class="fl">3.2</span>,<span class="fl">2.4</span>,<span class="fl">2.6</span>,<span class="fl">4.8</span>,<span class="fl">2.9</span>,</span>
+<span id="cb199-5"><a href="cubic-spline.html#cb199-5"></a>         <span class="fl">3.8</span>,<span class="fl">3.0</span>,<span class="fl">2.7</span>,<span class="fl">3.1</span>,<span class="fl">3.3</span>,<span class="fl">3.0</span>,<span class="fl">2.8</span>,<span class="fl">1.7</span>)</span>
+<span id="cb199-6"><a href="cubic-spline.html#cb199-6"></a></span>
+<span id="cb199-7"><a href="cubic-spline.html#cb199-7"></a>x =<span class="st"> </span>size <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(size)</span>
+<span id="cb199-8"><a href="cubic-spline.html#cb199-8"></a>x =<span class="st"> </span>x <span class="op">/</span><span class="st"> </span><span class="kw">max</span>(x)</span>
+<span id="cb199-9"><a href="cubic-spline.html#cb199-9"></a>d =<span class="st"> </span><span class="kw">data.frame</span>(wear, x)</span></code></pre></div>
+</div>
+<div id="functions-2" class="section level2">
+<h2>Functions</h2>
+<p>Cubic spline function.</p>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="cubic-spline.html#cb200-1"></a>rk &lt;-<span class="st"> </span><span class="cf">function</span>(x, z) {</span>
+<span id="cb200-2"><a href="cubic-spline.html#cb200-2"></a>  ((z<span class="fl">-0.5</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">12</span>) <span class="op">*</span><span class="st"> </span>((x<span class="fl">-0.5</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">12</span>)<span class="op">/</span><span class="dv">4</span> <span class="op">-</span></span>
+<span id="cb200-3"><a href="cubic-spline.html#cb200-3"></a><span class="st">    </span>((<span class="kw">abs</span>(x<span class="op">-</span>z)<span class="op">-</span><span class="fl">0.5</span>)<span class="op">^</span><span class="dv">4</span> <span class="op">-</span><span class="st"> </span>(<span class="kw">abs</span>(x<span class="op">-</span>z)<span class="op">-</span><span class="fl">0.5</span>)<span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">7</span><span class="op">/</span><span class="dv">240</span>) <span class="op">/</span><span class="st"> </span><span class="dv">24</span></span>
+<span id="cb200-4"><a href="cubic-spline.html#cb200-4"></a>}</span></code></pre></div>
+<p>Generate the model matrix.</p>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="cubic-spline.html#cb201-1"></a>splX &lt;-<span class="st"> </span><span class="cf">function</span>(x, knots) {</span>
+<span id="cb201-2"><a href="cubic-spline.html#cb201-2"></a>  q =<span class="st"> </span><span class="kw">length</span>(knots) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>                <span class="co"># number of parameters</span></span>
+<span id="cb201-3"><a href="cubic-spline.html#cb201-3"></a>  n =<span class="st"> </span><span class="kw">length</span>(x)                        <span class="co"># number of observations</span></span>
+<span id="cb201-4"><a href="cubic-spline.html#cb201-4"></a>  X =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>, n, q)                  <span class="co"># initialized model matrix</span></span>
+<span id="cb201-5"><a href="cubic-spline.html#cb201-5"></a>  X[ ,<span class="dv">2</span>]   =<span class="st"> </span>x                         <span class="co"># set second column to x</span></span>
+<span id="cb201-6"><a href="cubic-spline.html#cb201-6"></a>  X[ ,<span class="dv">3</span><span class="op">:</span>q] =<span class="st"> </span><span class="kw">outer</span>(x, knots, <span class="dt">FUN =</span> rk) <span class="co"># remaining to cubic spline basis</span></span>
+<span id="cb201-7"><a href="cubic-spline.html#cb201-7"></a>  X</span>
+<span id="cb201-8"><a href="cubic-spline.html#cb201-8"></a>}</span>
+<span id="cb201-9"><a href="cubic-spline.html#cb201-9"></a></span>
+<span id="cb201-10"><a href="cubic-spline.html#cb201-10"></a>splS &lt;-<span class="st"> </span><span class="cf">function</span>(knots) {</span>
+<span id="cb201-11"><a href="cubic-spline.html#cb201-11"></a>  q =<span class="st"> </span><span class="kw">length</span>(knots) <span class="op">+</span><span class="st"> </span><span class="dv">2</span></span>
+<span id="cb201-12"><a href="cubic-spline.html#cb201-12"></a>  S =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, q, q)                         <span class="co"># initialize matrix</span></span>
+<span id="cb201-13"><a href="cubic-spline.html#cb201-13"></a>  S[<span class="dv">3</span><span class="op">:</span>q, <span class="dv">3</span><span class="op">:</span>q] =<span class="st"> </span><span class="kw">outer</span>(knots, knots, <span class="dt">FUN =</span> rk) <span class="co"># fill in non-zero part</span></span>
+<span id="cb201-14"><a href="cubic-spline.html#cb201-14"></a>  S</span>
+<span id="cb201-15"><a href="cubic-spline.html#cb201-15"></a>}</span></code></pre></div>
+<p>Matrix square root function. Note that there are various packages with their own.</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="cubic-spline.html#cb202-1"></a>matSqrt &lt;-<span class="st"> </span><span class="cf">function</span>(S) {</span>
+<span id="cb202-2"><a href="cubic-spline.html#cb202-2"></a>  d  =<span class="st"> </span><span class="kw">eigen</span>(S, <span class="dt">symmetric =</span> T)</span>
+<span id="cb202-3"><a href="cubic-spline.html#cb202-3"></a>  rS =<span class="st"> </span>d<span class="op">$</span>vectors <span class="op">%*%</span><span class="st"> </span><span class="kw">diag</span>(d<span class="op">$</span>values<span class="op">^</span>.<span class="dv">5</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(d<span class="op">$</span>vectors)</span>
+<span id="cb202-4"><a href="cubic-spline.html#cb202-4"></a>  rS</span>
+<span id="cb202-5"><a href="cubic-spline.html#cb202-5"></a>}</span></code></pre></div>
+<p>Penalized fitting function.</p>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="cubic-spline.html#cb203-1"></a>prsFit &lt;-<span class="st"> </span><span class="cf">function</span>(y, x, knots, lambda) {</span>
+<span id="cb203-2"><a href="cubic-spline.html#cb203-2"></a>  q  =<span class="st"> </span><span class="kw">length</span>(knots) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>    <span class="co"># dimension of basis</span></span>
+<span id="cb203-3"><a href="cubic-spline.html#cb203-3"></a>  n  =<span class="st"> </span><span class="kw">length</span>(x)            <span class="co"># number of observations</span></span>
+<span id="cb203-4"><a href="cubic-spline.html#cb203-4"></a>  Xa =<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">splX</span>(x, knots), <span class="kw">matSqrt</span>(<span class="kw">splS</span>(knots))<span class="op">*</span><span class="kw">sqrt</span>(lambda)) <span class="co"># augmented model matrix</span></span>
+<span id="cb203-5"><a href="cubic-spline.html#cb203-5"></a>  y[(n<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>(n<span class="op">+</span>q)] =<span class="st"> </span><span class="dv">0</span>        <span class="co"># augment the data vector</span></span>
+<span id="cb203-6"><a href="cubic-spline.html#cb203-6"></a>  </span>
+<span id="cb203-7"><a href="cubic-spline.html#cb203-7"></a>  <span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>Xa <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># fit and return penalized regression spline</span></span>
+<span id="cb203-8"><a href="cubic-spline.html#cb203-8"></a>}</span></code></pre></div>
+</div>
+<div id="example-1" class="section level2">
+<h2>Example 1</h2>
+<p>We start with an unpenalized approach.</p>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="cubic-spline.html#cb204-1"></a>knots =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span><span class="op">/</span><span class="dv">5</span></span>
+<span id="cb204-2"><a href="cubic-spline.html#cb204-2"></a>X =<span class="st"> </span><span class="kw">splX</span>(x, knots)      <span class="co"># generate model matrix</span></span>
+<span id="cb204-3"><a href="cubic-spline.html#cb204-3"></a>mod1 =<span class="st"> </span><span class="kw">lm</span>(wear <span class="op">~</span><span class="st"> </span>X <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># fit model</span></span>
+<span id="cb204-4"><a href="cubic-spline.html#cb204-4"></a></span>
+<span id="cb204-5"><a href="cubic-spline.html#cb204-5"></a>xp =<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">100</span><span class="op">/</span><span class="dv">100</span> <span class="co"># x values for prediction</span></span>
+<span id="cb204-6"><a href="cubic-spline.html#cb204-6"></a>Xp =<span class="st"> </span><span class="kw">splX</span>(xp, knots) <span class="co"># prediction matrix</span></span></code></pre></div>
+<p>Visualize</p>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="cubic-spline.html#cb205-1"></a><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> wear), <span class="dt">data =</span> <span class="kw">data.frame</span>(x, wear)) <span class="op">+</span></span>
+<span id="cb205-2"><a href="cubic-spline.html#cb205-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">color =</span> <span class="st">&quot;#FF5500&quot;</span>) <span class="op">+</span></span>
+<span id="cb205-3"><a href="cubic-spline.html#cb205-3"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> xp, <span class="dt">y =</span> Xp <span class="op">%*%</span><span class="st"> </span><span class="kw">coef</span>(mod1)),</span>
+<span id="cb205-4"><a href="cubic-spline.html#cb205-4"></a>            <span class="dt">data =</span> <span class="kw">data.frame</span>(xp, Xp),</span>
+<span id="cb205-5"><a href="cubic-spline.html#cb205-5"></a>            <span class="dt">color =</span> <span class="st">&quot;#00AAFF&quot;</span>) <span class="op">+</span></span>
+<span id="cb205-6"><a href="cubic-spline.html#cb205-6"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;Scaled Engine size&#39;</span>, <span class="dt">y  =</span> <span class="st">&#39;Wear Index&#39;</span>) <span class="op">+</span></span>
+<span id="cb205-7"><a href="cubic-spline.html#cb205-7"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/unnamed-chunk-2-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="example-2" class="section level2">
+<h2>Example 2</h2>
+<p>Add <code>lambda</code> penalty.</p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="cubic-spline.html#cb206-1"></a>knots =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">7</span><span class="op">/</span><span class="dv">8</span></span>
+<span id="cb206-2"><a href="cubic-spline.html#cb206-2"></a>d2 =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> xp)</span>
+<span id="cb206-3"><a href="cubic-spline.html#cb206-3"></a></span>
+<span id="cb206-4"><a href="cubic-spline.html#cb206-4"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">c</span>(.<span class="dv">1</span>, <span class="fl">.01</span>, <span class="fl">.001</span>, <span class="fl">.0001</span>, <span class="fl">.00001</span>, <span class="fl">.000001</span>)){</span>
+<span id="cb206-5"><a href="cubic-spline.html#cb206-5"></a>  <span class="co"># fit penalized regression</span></span>
+<span id="cb206-6"><a href="cubic-spline.html#cb206-6"></a>  mod2 =<span class="st"> </span><span class="kw">prsFit</span>(</span>
+<span id="cb206-7"><a href="cubic-spline.html#cb206-7"></a>    <span class="dt">y =</span> wear,</span>
+<span id="cb206-8"><a href="cubic-spline.html#cb206-8"></a>    <span class="dt">x =</span> x,</span>
+<span id="cb206-9"><a href="cubic-spline.html#cb206-9"></a>    <span class="dt">knots =</span> knots,</span>
+<span id="cb206-10"><a href="cubic-spline.html#cb206-10"></a>    <span class="dt">lambda =</span> i</span>
+<span id="cb206-11"><a href="cubic-spline.html#cb206-11"></a>  ) </span>
+<span id="cb206-12"><a href="cubic-spline.html#cb206-12"></a>  <span class="co"># spline choosing lambda</span></span>
+<span id="cb206-13"><a href="cubic-spline.html#cb206-13"></a>  Xp =<span class="st"> </span><span class="kw">splX</span>(xp, knots) <span class="co"># matrix to map parameters to fitted values at xp</span></span>
+<span id="cb206-14"><a href="cubic-spline.html#cb206-14"></a>  LP =<span class="st"> </span>Xp <span class="op">%*%</span><span class="st"> </span><span class="kw">coef</span>(mod2)</span>
+<span id="cb206-15"><a href="cubic-spline.html#cb206-15"></a>  d2[, <span class="kw">paste0</span>(<span class="st">&#39;lambda = &#39;</span>, i)] =<span class="st"> </span>LP[, <span class="dv">1</span>]</span>
+<span id="cb206-16"><a href="cubic-spline.html#cb206-16"></a>}</span></code></pre></div>
+<p>Visualize.</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="cubic-spline.html#cb207-1"></a>d3 =<span class="st"> </span>d2 <span class="op">%&gt;%</span></span>
+<span id="cb207-2"><a href="cubic-spline.html#cb207-2"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="op">-</span>x,</span>
+<span id="cb207-3"><a href="cubic-spline.html#cb207-3"></a>               <span class="dt">names_to  =</span> <span class="st">&#39;lambda&#39;</span>,</span>
+<span id="cb207-4"><a href="cubic-spline.html#cb207-4"></a>               <span class="dt">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb207-5"><a href="cubic-spline.html#cb207-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lambda =</span> <span class="kw">fct_inorder</span>(lambda))</span>
+<span id="cb207-6"><a href="cubic-spline.html#cb207-6"></a></span>
+<span id="cb207-7"><a href="cubic-spline.html#cb207-7"></a><span class="kw">ggplot</span>(d3) <span class="op">+</span></span>
+<span id="cb207-8"><a href="cubic-spline.html#cb207-8"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> wear), <span class="dt">col =</span> <span class="st">&#39;#FF5500&#39;</span>, <span class="dt">data =</span> d) <span class="op">+</span></span>
+<span id="cb207-9"><a href="cubic-spline.html#cb207-9"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> value), <span class="dt">col =</span> <span class="st">&quot;#00AAFF&quot;</span>) <span class="op">+</span></span>
+<span id="cb207-10"><a href="cubic-spline.html#cb207-10"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>lambda) <span class="op">+</span></span>
+<span id="cb207-11"><a href="cubic-spline.html#cb207-11"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/cs-penal-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="source-13" class="section level2">
+<h2>Source</h2>
+<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cubicsplines.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cubicsplines.R</a></p>
 
+</div>
 </div>
 
 
@@ -415,8 +518,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="quantile-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="penalized-maximum-likelihood.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -449,7 +552,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/cubic-spline.Rmd",
 "text": "Edit"
 },
 "history": {

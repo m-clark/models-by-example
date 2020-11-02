@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Introduction | Model Estimation by Example</title>
+  <title>Marginal Structural Models | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Introduction | Model Estimation by Example" />
+  <meta property="og:title" content="Marginal Structural Models | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
+  <meta name="twitter:title" content="Marginal Structural Models | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="index.html"/>
-<link rel="next" href="linear-regression.html"/>
+<link rel="prev" href="heckman-selection.html"/>
+<link rel="next" href="tobit.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -398,25 +398,179 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery of them by providing clean code examples that are easy to run and compare with other tools.</p>
-<p>The code was collected over time without respect to any previous code, so is not exactly consistent in style. But in general you will find some imported/simulated data, a primary estimating function, a comparison of results with some R package, and a link to the source code that is demonstrated.</p>
-<p>This code is not meant to be extensive, or used in production, and in fact, some of these would probably be considered of historical interest only. To be clear, almost everything here has a package/module that would do the same thing far better and efficiently. Note also, the document itself is also not an introduction to any of these methods, and in fact contains very little expository text, assuming the reader has some familiarity with the model and possibly some reference text. This document is merely a learning tool for those wanting to dive a little deeper. The source code for these demonstrations may be found at their original home here: <a href="https://github.com/m-clark/Miscellaneous-R-Code" class="uri">https://github.com/m-clark/Miscellaneous-R-Code</a>.</p>
-<p>Many examples require some initial data processing or visualization via <span class="pack" style="">ggplot2</span>, so it’s assumed the <span class="pack" style="">tidyverse</span> set of packages is loaded.</p>
-<p>While I’m happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add to it. This code has accumulated over years, and I just wanted it in a nicer format. Perhaps if others would like to add to it via pull requests, I would do so.</p>
+<div id="marginal-structural-models" class="section level1">
+<h1>Marginal Structural Models</h1>
+<p>This is a demonstration of a simple marginal structural model for estimation of so-called ‘causal’ effects using inverse probability weighting.</p>
+<p>Example data is from, and comparison made to, the <span class="pack" style="">ipw</span> package. See more <a href="https://www.jstatsoft.org/article/view/v043i13/v43i13.pdf">here</a>.</p>
+<div id="data-setup-5" class="section level2">
+<h2>Data Setup</h2>
+<p>This example is from the helpfile at <code>?ipwpoint</code>.</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="marginal-structural.html#cb102-1"></a><span class="kw">library</span>(ipw)</span>
+<span id="cb102-2"><a href="marginal-structural.html#cb102-2"></a></span>
+<span id="cb102-3"><a href="marginal-structural.html#cb102-3"></a><span class="kw">set.seed</span>(<span class="dv">16</span>)</span>
+<span id="cb102-4"><a href="marginal-structural.html#cb102-4"></a></span>
+<span id="cb102-5"><a href="marginal-structural.html#cb102-5"></a>n =<span class="st"> </span><span class="dv">1000</span></span>
+<span id="cb102-6"><a href="marginal-structural.html#cb102-6"></a>simdat =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">l =</span> <span class="kw">rnorm</span>(n, <span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb102-7"><a href="marginal-structural.html#cb102-7"></a>a.lin =<span class="st"> </span>simdat<span class="op">$</span>l <span class="op">-</span><span class="st"> </span><span class="dv">10</span></span>
+<span id="cb102-8"><a href="marginal-structural.html#cb102-8"></a>pa =<span class="st"> </span><span class="kw">plogis</span>(a.lin)</span>
+<span id="cb102-9"><a href="marginal-structural.html#cb102-9"></a></span>
+<span id="cb102-10"><a href="marginal-structural.html#cb102-10"></a>simdat =<span class="st"> </span>simdat <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb102-11"><a href="marginal-structural.html#cb102-11"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb102-12"><a href="marginal-structural.html#cb102-12"></a>    <span class="dt">a =</span> <span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="dt">prob =</span> pa),</span>
+<span id="cb102-13"><a href="marginal-structural.html#cb102-13"></a>    <span class="dt">y =</span> <span class="dv">10</span> <span class="op">*</span><span class="st"> </span>a <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>l <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dv">-10</span>, <span class="dv">5</span>)</span>
+<span id="cb102-14"><a href="marginal-structural.html#cb102-14"></a>  )</span>
+<span id="cb102-15"><a href="marginal-structural.html#cb102-15"></a></span>
+<span id="cb102-16"><a href="marginal-structural.html#cb102-16"></a>ipw_result =<span class="st"> </span><span class="kw">ipwpoint</span>(</span>
+<span id="cb102-17"><a href="marginal-structural.html#cb102-17"></a>  <span class="dt">exposure =</span> a,</span>
+<span id="cb102-18"><a href="marginal-structural.html#cb102-18"></a>  <span class="dt">family   =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb102-19"><a href="marginal-structural.html#cb102-19"></a>  <span class="dt">link     =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb102-20"><a href="marginal-structural.html#cb102-20"></a>  <span class="dt">numerator   =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb102-21"><a href="marginal-structural.html#cb102-21"></a>  <span class="dt">denominator =</span> <span class="op">~</span><span class="st"> </span>l,</span>
+<span id="cb102-22"><a href="marginal-structural.html#cb102-22"></a>  <span class="dt">data =</span> simdat</span>
+<span id="cb102-23"><a href="marginal-structural.html#cb102-23"></a>)</span>
+<span id="cb102-24"><a href="marginal-structural.html#cb102-24"></a></span>
+<span id="cb102-25"><a href="marginal-structural.html#cb102-25"></a><span class="kw">summary</span>(ipw_result<span class="op">$</span>ipw.weights)</span></code></pre></div>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.4810  0.5127  0.5285  0.9095  0.6318 74.6994 </code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="marginal-structural.html#cb104-1"></a><span class="kw">ipwplot</span>(ipw_result<span class="op">$</span>ipw.weights)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/msm-setup-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="create-the-weights" class="section level2">
+<h2>Create the Weights</h2>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="marginal-structural.html#cb105-1"></a>ps_num =<span class="st"> </span><span class="kw">fitted</span>(<span class="kw">glm</span>(a <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> simdat, <span class="dt">family =</span> <span class="st">&#39;binomial&#39;</span>))</span>
+<span id="cb105-2"><a href="marginal-structural.html#cb105-2"></a>ps_num[simdat<span class="op">$</span>a <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] =<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ps_num[simdat<span class="op">$</span>a <span class="op">==</span><span class="st"> </span><span class="dv">0</span>]</span>
+<span id="cb105-3"><a href="marginal-structural.html#cb105-3"></a></span>
+<span id="cb105-4"><a href="marginal-structural.html#cb105-4"></a>ps_den =<span class="st"> </span><span class="kw">fitted</span>(<span class="kw">glm</span>(a <span class="op">~</span><span class="st"> </span>l, <span class="dt">data =</span> simdat, <span class="dt">family =</span> <span class="st">&#39;binomial&#39;</span>))</span>
+<span id="cb105-5"><a href="marginal-structural.html#cb105-5"></a>ps_den[simdat<span class="op">$</span>a <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] =<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ps_den[simdat<span class="op">$</span>a <span class="op">==</span><span class="st"> </span><span class="dv">0</span>]</span>
+<span id="cb105-6"><a href="marginal-structural.html#cb105-6"></a></span>
+<span id="cb105-7"><a href="marginal-structural.html#cb105-7"></a>wts =<span class="st"> </span>ps_num <span class="op">/</span><span class="st"> </span>ps_den</span></code></pre></div>
+<p>Compare the weights</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="marginal-structural.html#cb106-1"></a><span class="kw">rbind</span>(<span class="kw">summary</span>(wts), <span class="kw">summary</span>(ipw_result<span class="op">$</span>ipw.weights))</span></code></pre></div>
+<pre><code>      Min.   1st Qu.    Median      Mean  3rd Qu.    Max.
+[1,] 0.481 0.5127181 0.5284768 0.9094652 0.631794 74.6994
+[2,] 0.481 0.5127181 0.5284768 0.9094652 0.631794 74.6994</code></pre>
+<p>Add inverse probability weights to the data if desired</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="marginal-structural.html#cb108-1"></a>simdat =<span class="st"> </span>simdat <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb108-2"><a href="marginal-structural.html#cb108-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sw =</span> ipw_result<span class="op">$</span>ipw.weights)</span></code></pre></div>
+</div>
+<div id="estimation-4" class="section level2">
+<h2>Estimation</h2>
+<p>Marginal structural model for the causal effect of <code>a</code> on <code>y</code> corrected for confounding by <code>l</code>, using inverse probability weighting with robust standard error from the <span class="pack" style="">survey</span> package.</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="marginal-structural.html#cb109-1"></a><span class="kw">library</span>(<span class="st">&quot;survey&quot;</span>)</span>
+<span id="cb109-2"><a href="marginal-structural.html#cb109-2"></a></span>
+<span id="cb109-3"><a href="marginal-structural.html#cb109-3"></a>msm =<span class="st"> </span><span class="kw">svyglm</span>(</span>
+<span id="cb109-4"><a href="marginal-structural.html#cb109-4"></a>  y <span class="op">~</span><span class="st"> </span>a,</span>
+<span id="cb109-5"><a href="marginal-structural.html#cb109-5"></a>  <span class="dt">design =</span> <span class="kw">svydesign</span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">weights =</span> <span class="op">~</span><span class="st"> </span>sw, <span class="dt">data =</span> simdat)</span>
+<span id="cb109-6"><a href="marginal-structural.html#cb109-6"></a>)</span>
+<span id="cb109-7"><a href="marginal-structural.html#cb109-7"></a></span>
+<span id="cb109-8"><a href="marginal-structural.html#cb109-8"></a><span class="kw">summary</span>(msm)</span></code></pre></div>
+<pre><code>
+Call:
+svyglm(formula = y ~ a, design = svydesign(~1, weights = ~sw, 
+    data = simdat))
+
+Survey design:
+svydesign(~1, weights = ~sw, data = simdat)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -4.375      1.142  -3.832 0.000135 ***
+a             10.647      1.190   8.948  &lt; 2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for gaussian family taken to be 29.58889)
+
+Number of Fisher Scoring iterations: 2</code></pre>
+<p>Create the likelihood function for using the weights.</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="marginal-structural.html#cb111-1"></a>maxlike =<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb111-2"><a href="marginal-structural.html#cb111-2"></a>  par,             <span class="co"># parameters to be estimated; first is taken to be sigma</span></span>
+<span id="cb111-3"><a href="marginal-structural.html#cb111-3"></a>  X,               <span class="co"># model matrix</span></span>
+<span id="cb111-4"><a href="marginal-structural.html#cb111-4"></a>  y,               <span class="co"># target variable</span></span>
+<span id="cb111-5"><a href="marginal-structural.html#cb111-5"></a>  wts              <span class="co"># estimated weights</span></span>
+<span id="cb111-6"><a href="marginal-structural.html#cb111-6"></a>) {</span>
+<span id="cb111-7"><a href="marginal-structural.html#cb111-7"></a>  beta =<span class="st"> </span>par[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb111-8"><a href="marginal-structural.html#cb111-8"></a>  lp =<span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta</span>
+<span id="cb111-9"><a href="marginal-structural.html#cb111-9"></a>  sigma =<span class="st"> </span><span class="kw">exp</span>(par[<span class="dv">1</span>])  <span class="co"># exponentiated value to stay positive</span></span>
+<span id="cb111-10"><a href="marginal-structural.html#cb111-10"></a>  ll =<span class="st"> </span><span class="kw">dnorm</span>(y, <span class="dt">mean =</span> lp, <span class="dt">sd =</span> sigma, <span class="dt">log =</span> <span class="ot">TRUE</span>)  </span>
+<span id="cb111-11"><a href="marginal-structural.html#cb111-11"></a>  </span>
+<span id="cb111-12"><a href="marginal-structural.html#cb111-12"></a>  <span class="op">-</span><span class="kw">sum</span>(ll <span class="op">*</span><span class="st"> </span>wts)   <span class="co"># weighted likelihood</span></span>
+<span id="cb111-13"><a href="marginal-structural.html#cb111-13"></a>  </span>
+<span id="cb111-14"><a href="marginal-structural.html#cb111-14"></a>  <span class="co"># same as</span></span>
+<span id="cb111-15"><a href="marginal-structural.html#cb111-15"></a>  <span class="co"># ll = dnorm(y, mean = lp, sd = sigma)^wts</span></span>
+<span id="cb111-16"><a href="marginal-structural.html#cb111-16"></a>  <span class="co"># -sum(log(ll))</span></span>
+<span id="cb111-17"><a href="marginal-structural.html#cb111-17"></a>}</span></code></pre></div>
+<p>Create the matrices for estimation, estimate the model, and extract results.</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="marginal-structural.html#cb112-1"></a>X =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>, simdat<span class="op">$</span>a)</span>
+<span id="cb112-2"><a href="marginal-structural.html#cb112-2"></a>y =<span class="st"> </span>simdat<span class="op">$</span>y</span>
+<span id="cb112-3"><a href="marginal-structural.html#cb112-3"></a></span>
+<span id="cb112-4"><a href="marginal-structural.html#cb112-4"></a>result =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb112-5"><a href="marginal-structural.html#cb112-5"></a>  <span class="dt">par =</span> <span class="kw">c</span>(<span class="dt">sigma =</span> <span class="dv">0</span>, <span class="dt">intercept =</span> <span class="dv">0</span>, <span class="dt">b =</span> <span class="dv">0</span>),</span>
+<span id="cb112-6"><a href="marginal-structural.html#cb112-6"></a>  <span class="dt">fn  =</span> maxlike,</span>
+<span id="cb112-7"><a href="marginal-structural.html#cb112-7"></a>  <span class="dt">X   =</span> X,</span>
+<span id="cb112-8"><a href="marginal-structural.html#cb112-8"></a>  <span class="dt">y   =</span> y,</span>
+<span id="cb112-9"><a href="marginal-structural.html#cb112-9"></a>  <span class="dt">wts =</span> wts,</span>
+<span id="cb112-10"><a href="marginal-structural.html#cb112-10"></a>  <span class="dt">hessian =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb112-11"><a href="marginal-structural.html#cb112-11"></a>  <span class="dt">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
+<span id="cb112-12"><a href="marginal-structural.html#cb112-12"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">abstol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb112-13"><a href="marginal-structural.html#cb112-13"></a>)</span>
+<span id="cb112-14"><a href="marginal-structural.html#cb112-14"></a></span>
+<span id="cb112-15"><a href="marginal-structural.html#cb112-15"></a>dispersion =<span class="st"> </span><span class="kw">exp</span>(result<span class="op">$</span>par[<span class="dv">1</span>])<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb112-16"><a href="marginal-structural.html#cb112-16"></a>beta =<span class="st"> </span>result<span class="op">$</span>par[<span class="op">-</span><span class="dv">1</span>]</span></code></pre></div>
+<p>Now we compute the standard errors. The following uses the <span class="pack" style="">survey</span> package raw version to get the appropriate standard errors, which the <span class="pack" style="">ipw</span> approach uses.</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="marginal-structural.html#cb113-1"></a>glm_basic =<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>a, <span class="dt">data =</span> simdat, <span class="dt">weights =</span> wts)     <span class="co"># to get unscaled cov</span></span>
+<span id="cb113-2"><a href="marginal-structural.html#cb113-2"></a>res =<span class="st"> </span><span class="kw">resid</span>(glm_basic, <span class="dt">type =</span> <span class="st">&#39;working&#39;</span>)                 <span class="co"># residuals</span></span>
+<span id="cb113-3"><a href="marginal-structural.html#cb113-3"></a>glm_vcov_unsc =<span class="st"> </span><span class="kw">summary</span>(glm_basic)<span class="op">$</span>cov.unscaled          <span class="co"># weighted vcov unscaled by dispersion solve(crossprod(qr(X)))</span></span>
+<span id="cb113-4"><a href="marginal-structural.html#cb113-4"></a>estfun =<span class="st"> </span>X <span class="op">*</span><span class="st"> </span>res <span class="op">*</span><span class="st"> </span>wts                  </span>
+<span id="cb113-5"><a href="marginal-structural.html#cb113-5"></a>x =<span class="st"> </span>estfun <span class="op">%*%</span><span class="st"> </span>glm_vcov_unsc </span></code></pre></div>
+<p>Now get the standard errors.</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="marginal-structural.html#cb114-1"></a>se =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">crossprod</span>(x) <span class="op">*</span><span class="st"> </span>n<span class="op">/</span>(n<span class="dv">-1</span>)))                  <span class="co"># a robust standard error</span></span>
+<span id="cb114-2"><a href="marginal-structural.html#cb114-2"></a>se_robust =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(sandwich<span class="op">::</span><span class="kw">sandwich</span>(glm_basic)))    <span class="co"># much easier way to get it</span></span>
+<span id="cb114-3"><a href="marginal-structural.html#cb114-3"></a>se_msm    =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">vcov</span>(msm)))</span></code></pre></div>
+<p>Compare.</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="marginal-structural.html#cb115-1"></a><span class="kw">tibble</span>(se, se_robust, se_msm)</span></code></pre></div>
+<pre><code># A tibble: 2 x 3
+     se se_robust se_msm
+  &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+1  1.14      1.14   1.14
+2  1.19      1.19   1.19</code></pre>
+</div>
+<div id="comparison-5" class="section level2">
+<h2>Comparison</h2>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="marginal-structural.html#cb117-1"></a><span class="kw">tibble</span>(</span>
+<span id="cb117-2"><a href="marginal-structural.html#cb117-2"></a>  <span class="dt">Estimate  =</span> beta,</span>
+<span id="cb117-3"><a href="marginal-structural.html#cb117-3"></a>  <span class="dt">init_se   =</span> <span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">solve</span>(result<span class="op">$</span>hessian)))[<span class="kw">c</span>(<span class="st">&#39;intercept&#39;</span>, <span class="st">&#39;b&#39;</span>)],  <span class="co"># same as scaled se from glm_basic</span></span>
+<span id="cb117-4"><a href="marginal-structural.html#cb117-4"></a>  <span class="dt">se_robust =</span> se_robust,</span>
+<span id="cb117-5"><a href="marginal-structural.html#cb117-5"></a>  <span class="dt">t =</span> Estimate<span class="op">/</span>se,</span>
+<span id="cb117-6"><a href="marginal-structural.html#cb117-6"></a>  <span class="dt">p =</span> <span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="kw">abs</span>(t), <span class="dt">df =</span> n<span class="op">-</span><span class="kw">ncol</span>(X), <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>),  </span>
+<span id="cb117-7"><a href="marginal-structural.html#cb117-7"></a>  <span class="dt">dispersion =</span> dispersion             </span>
+<span id="cb117-8"><a href="marginal-structural.html#cb117-8"></a>)</span></code></pre></div>
+<pre><code># A tibble: 2 x 6
+  Estimate init_se se_robust     t        p dispersion
+     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+1    -4.38   0.247      1.14 -3.83 1.34e- 4       29.6
+2    10.6    0.361      1.19  8.95 1.71e-18       29.6</code></pre>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="marginal-structural.html#cb119-1"></a><span class="co"># compare to msm</span></span>
+<span id="cb119-2"><a href="marginal-structural.html#cb119-2"></a>broom<span class="op">::</span><span class="kw">tidy</span>(msm)</span></code></pre></div>
+<pre><code># A tibble: 2 x 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)    -4.38      1.14     -3.83 1.35e- 4
+2 a              10.6       1.19      8.95 1.73e-18</code></pre>
+</div>
+<div id="source-7" class="section level2">
+<h2>Source</h2>
+<p>Base R source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ipw.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ipw.R</a></p>
 
 </div>
-
-
-
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="heckman-selection.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tobit.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -449,7 +603,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/introduction.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/marginal-structural.Rmd",
 "text": "Edit"
 },
 "history": {

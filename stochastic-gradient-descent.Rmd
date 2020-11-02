@@ -30,7 +30,7 @@ X  = cbind(Intercept = 1, x1, x2)
 
 
 
-## Stochastic Gradient Descent Algorithm
+## Main Function
 
 ```{r sgd}
 sgd = function(
@@ -54,7 +54,7 @@ sgd = function(
     Xi   = X[i, , drop = FALSE]
     yi   = y[i]
     LP   = Xi %*% beta                                   # matrix operations not necessary, 
-    grad = t(Xi) %*% (LP - yi)                           # but makes consistent with the  standard gd R file
+    grad = t(Xi) %*% (LP - yi)                           # but makes consistent with the  standard gd
     s    = s + grad^2
     beta = beta - stepsize * grad/(stepsizeTau + sqrt(s))     # adagrad approach
     

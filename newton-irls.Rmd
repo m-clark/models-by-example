@@ -1,18 +1,15 @@
 # Newton and IRLS
 
 
-## GLM estimation examples
 
-Examples of maximum likelihood estimation via a variety of means.  See the
-gradientdescent.R script for that approach.  Here we demonstrate Newton's and
-Iterated Reweighted Least Squares approaches via logistic regression.
+Here we demonstrate Newton's and Iterated Reweighted Least Squares approaches via logistic regression.
 
 
 For the following, I had Murphy's PML text open and more or less followed the 
 algorithms in chapter 8.  Note that for Newton's method, this doesn't
 implement a line search to find a more optimal stepsize at a given iteration.
 
-## Data Prep
+## Data Setup
 
 Predict graduate school admission based on gre, gpa, and school rank
 (higher=more prestige). See corresponding demo here:
@@ -34,7 +31,7 @@ y = comparison_model$y
 
 
 ## Functions
-### Newton's method
+### Newton's Method
 
 ```{r newton}
 newton <- function(

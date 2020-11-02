@@ -2,12 +2,12 @@
 
 
 
-An approach for two factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. The data regards the breeding value of a set of five sires in raising pigs. Each sire is mated to a random group of dams, with the response being the average daily weight gain in pounds of two piglets in each litter.  See one_factor_RE.R for a one factor model, and two_factor_RE.m and two_factor_RE.jl for the matlab and julia versions of this example. Note that the text has a typo on the sigma2 variance estimate (value should be .0023 not .023).
+An approach for two factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. The data regards the breeding value of a set of five sires in raising pigs. Each sire is mated to a random group of dams, with the response being the average daily weight gain in pounds of two piglets in each litter.  See the [previous chapter][One-factor Mixed Model] for a one factor model, and two_factor_RE.m and two_factor_RE.jl for the Matlab and Julia versions of this example on the GitHub site. Note that the text has a typo on the `sigma2` variance estimate (value should be .0023 not .023).
 
 
-## Main function
+## Main Function
 
-The function takes the log variances eta* as input to keep positive.
+The function takes the log variances `eta`* as input to keep positive.
 
 ```{r two-factor-re}
 two_factor_re = function(mu, eta_alpha, eta_gamma, eta) {
@@ -38,13 +38,13 @@ two_factor_re = function(mu, eta_alpha, eta_gamma, eta) {
 
 
 
-## Data set up
+## Data Setup
 
 ```{r two-factor-re-setup}
 y = c(1.39,1.29,1.12,1.16,1.52,1.62,1.88,1.87,1.24,1.18,
       .95,.96,.82,.92,1.18,1.20,1.47,1.41,1.57,1.65)
 
-# for use in lme4, but also a more conceptual respresentation of the data
+# for use in lme4, but also a more conceptual representation of the data
 d = expand.grid(sire = rep(1:5, 2), dam = 1:2)
 d = data.frame(d[order(d$sire), ], y)
 ```

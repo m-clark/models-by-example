@@ -424,3 +424,11 @@ div.datatables {
   background-repeat: no-repeat;
   background-position: center; 
 }
+
+.chapter {
+  font-size: 75%;
+}
+
+.book .book-summary ul.summary li {
+  font-size: 100%;
+}

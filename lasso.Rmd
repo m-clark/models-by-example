@@ -59,7 +59,7 @@ lasso <- function(
 ```
 
 
-## Data setup
+## Data Setup
 
 ```{r lasso-setup}
 set.seed(8675309)

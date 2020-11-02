@@ -9,9 +9,9 @@ Also examples for QR decomposition and normal equations. Can serve as an
 entry point for those starting out to the wider world of computational
 statistics as maximum likelihood is the fundamental approach used in most
 applied statistics, but which is also a key aspect of the Bayesian approach.
-Least squares loss is not confined to the standard lm setting, but is widely
-used in more predictive/'algorithmic' approaches e.g. in machine learning and
-elsewhere.
+Least squares loss is not confined to the standard regression setting, but is
+widely used in more predictive/'algorithmic' approaches e.g. in machine learning
+and elsewhere.
 
 ## Data Setup
 
@@ -83,9 +83,10 @@ lm_LS = function(par, X, y) {
 ```
 
 
-##  Obtain Model Estimates
+## Estimation
 
-Setup for use with optim.
+Setup for use with <span class="func" style = "">optim</span>.
+
 
 ```{r lm-model-matrix}
 X = cbind(1, X)
@@ -150,11 +151,11 @@ round(
 ```
 
 
-The slight difference in sigma is roughly maxlike dividing by N vs. N-k-1 in the
-traditional least squares approach; diminishes with increasing N as both tend
-toward whatever sd^2 you specify when creating the y response above.
+The slight difference in sigma is roughly dividing by N vs. N-k-1 in the
+traditional least squares approach. It diminishes with increasing N as both tend
+toward whatever `sd^2` you specify when creating the `y` response above.
 
-Compare to glm, which by default assumes gaussian family with identity link
+Compare to <span class="func" style = "">glm</span>, which by default assumes gaussian family with identity link
 and uses `lm.fit`.
 
 ```{r glm-compare}

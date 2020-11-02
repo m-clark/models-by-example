@@ -2,9 +2,9 @@
 
 For more detail on these types of models, see my document at https://m-clark.github.io/docs/logregmodels.html.
 
-## Standard (categorical) model
+## Standard (Categorical) Model
 
-### Import data and setup
+### Data Setup
 
 First, lets get some data.
 

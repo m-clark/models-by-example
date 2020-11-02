@@ -17,10 +17,13 @@ rmd_files: [
   mixed-model-ML.Rmd,
   probit.Rmd,
   heckman-selection.Rmd,
+  marginal-structural.Rmd,
   tobit.Rmd,
   naive-bayes.Rmd,
   multinomial.Rmd,
   ordinal.Rmd,
+  quantile-regression.Rmd,
+  cubic-spline.Rmd,
   
   # Algos
   penalized-maximum-likelihood.Rmd,

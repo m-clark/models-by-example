@@ -25,9 +25,9 @@ y = sleepstudy$Reaction
 ```
 
 
-### ML function
+### Main Function
 
-The following is based on the code in Wood (6.2.2), with a couple modifications for consistent nomenclature and presentation. We use <span style="color:#8b0000">optim</span> and a minimizing function, in this case the negative log likelihood, to estimate the parameters of interest, collectively $\theta$, in the code below. The (square root of the) variances will be estimated on the log scale. In Wood, he simply extracts the 'fixed effects' for the intercept and days effects using lm (6.2.3), and we'll do the same.
+The following is based on the code in Wood (6.2.2), with a couple modifications for consistent nomenclature and presentation. We use <span class='func'>optim</span> and a minimizing function, in this case the negative log likelihood, to estimate the parameters of interest, collectively $\theta$, in the code below. The (square root of the) variances will be estimated on the log scale. In Wood, he simply extracts the 'fixed effects' for the intercept and days effects using `lm` (6.2.3), and we'll do the same.
 
 ```{r mixed-ml-func}
 llMixed = function(y, X, Z, theta){
