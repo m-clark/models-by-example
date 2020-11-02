@@ -246,4 +246,5 @@ round(
 
 
 ## Source
-Base R source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/penalized_ML.R
+
+Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/penalized_ML.R

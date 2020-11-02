@@ -161,11 +161,12 @@ i {
 .book .book-summary {
     position: absolute;
     font-family: "Open Sans", 'Helvetica Neue', Roboto, sans-serif;
+    font-size: 85%;
     top: 0;
     left: -300px;
     bottom: 0;
     z-index: 1;
-    width: 300px;
+    width: 200px;   /* fiddle with this width if font-size changed */ 
     color: #364149;  /**/
     background: #f5f5f540; /* #eaf5fb;  #d9edf7#bdcadb #3572D9 #fafafa*/
     border-right: 1px solid rgba(0,0,0,.07);
@@ -175,10 +176,15 @@ i {
     transition: left 250ms ease;
 }
 
+
+.book .book-summary ul.summary li {
+  font-size: 100%;
+}
+
 /* nav/menu area */
 .book .book-summary ul.summary li a, .book .book-summary ul.summary li span {
     display: block;
-    padding: 10px 25px;
+    padding: 5px 25px;  /* fiddle with padding if font-size changed */ 
     border-bottom: none;
     color: #364149; /**/
     background: 0 0;
@@ -425,10 +431,4 @@ div.datatables {
   background-position: center; 
 }
 
-.chapter {
-  font-size: 75%;
-}
 
-.book .book-summary ul.summary li {
-  font-size: 100%;
-}

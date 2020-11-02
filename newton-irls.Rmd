@@ -202,4 +202,4 @@ head(cbind(irls_result$weights,
 
 ## Source
 
-Base R source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/newton_irls.R
+Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/newton_irls.R

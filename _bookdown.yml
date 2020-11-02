@@ -24,6 +24,8 @@ rmd_files: [
   ordinal.Rmd,
   quantile-regression.Rmd,
   cubic-spline.Rmd,
+  hurdle.Rmd,
+  zi.Rmd,
   
   # Algos
   penalized-maximum-likelihood.Rmd,

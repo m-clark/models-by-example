@@ -111,4 +111,4 @@ reslogit
 
 ## Source
 
-Base R source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ordinal_regression.R
+Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ordinal_regression.R

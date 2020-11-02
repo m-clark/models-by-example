@@ -263,4 +263,5 @@ ggplot(aes(x = Iteration,
 
 
 ## Source
-Base R source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/stochastic_gradient_descent.R
+
+Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/stochastic_gradient_descent.R
