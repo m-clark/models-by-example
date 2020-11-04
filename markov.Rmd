@@ -1,0 +1,247 @@
+# Markov Chain Model
+
+
+Initial demo of <span class="pack" style = "">markovchain</span> package. Not shown. You may want to play with it to get a feel for how it works.  We will use it for comparison later. Do go ahead and load the package 
+
+```{r markov-chain-demo}
+library(markovchain)
+
+A = matrix(c(.7, .3, .9, .1), nrow = 2, byrow = TRUE)
+
+dtmcA = new(
+  'markovchain',
+  transitionMatrix = A,
+  states = c('a', 'b'),
+  name = 'MarkovChain A'
+)
+
+dtmcA
+plot(dtmcA)
+
+transitionProbability(dtmcA, 'b', 'b')
+initialState = c(0, 1)
+steps = 4
+finalState = initialState * dtmcA ^ steps #using power operator
+finalState
+
+
+steadyStates(dtmcA)
+
+
+observed_states = sample(c('a', 'b'), 50, c(.7, .3), replace = TRUE)
+
+createSequenceMatrix(observed_states)
+
+markovchainFit(observed_states)
+```
+
+
+
+
+
+## Data Setup
+
+
+### Data Functions
+
+A recursive function to take a matrix power.
+
+```{r matrix-power}
+mat_power = function(M, N){
+  if (N==1) return(M)
+  
+  M %*% mat_power(M, N-1)
+}
+```
+
+
+A function to create a sequence.
+
+```{r create-sequence}
+createSequence = function(states, len, tmat) {
+  # states: number of states
+  # len: length of sequence
+  # tmat: the transition matrix
+  states_numeric = length(unique(states))
+  out = numeric(len)
+  out[1] = sample(states_numeric, 1, prob=colMeans(tmat)) # initial state
+  
+  for (i in 2:len){
+    out[i] = sample(states_numeric, 1, prob = tmat[out[i - 1], ])
+  }
+  
+  states[out]
+}
+```
+
+
+```{r markov-setup}
+# example
+result.mat = matrix(rep(2, 4), nrow = 2)
+mat_power(result.mat, 2)
+
+# transition matrix
+A = matrix(c(.7, .3, .4, .6), nrow = 2, byrow = TRUE)
+
+mat_power(A, 10)
+```
+
+
+
+### Two states Demo
+
+Note that a notably long sequence is needed to get close to recovering the true transition matrix.
+
+```{r two-state-demo}
+A = matrix(c(.7, .3, .9, .1), nrow = 2, byrow = TRUE)
+observed_states = createSequence(c('a', 'b'), 5000, tmat = A)
+
+createSequenceMatrix(observed_states)
+prop.table(createSequenceMatrix(observed_states), 1)
+
+markovchainFit(observed_states)
+res = markovchainFit(observed_states)
+
+# log likelihood
+sum(createSequenceMatrix(observed_states) * log(res$estimate@transitionMatrix))
+```
+
+
+
+
+
+### Three states demo
+
+```{r three-state-demo}
+A = matrix(
+  c(.70, .20, .10,
+    .20, .40, .40,
+    .05, .05, .90), 
+  nrow  = 3, 
+  byrow = TRUE
+)
+
+observed_states = createSequence(c('a', 'b', 'c'), 500, tmat = A)
+createSequenceMatrix(observed_states)
+
+prop.table(createSequenceMatrix(observed_states), 1)
+markovchainFit(observed_states)
+```
+
+
+
+
+## Function
+
+Now we create a function to calculate the (negative) log likelihood.
+
+```{r markov-ll}
+markov_ll = function(par, x) {
+  # par should be the c(A) of transition probabilities A
+  nstates = length(unique(x))
+  
+  # create transition matrix
+  par = matrix(par, ncol=nstates)
+  par = t(apply(par, 1, function(x) x/sum(x)))
+  
+  # create seq matrix
+  seqMat = table(x[-length(x)], x[-1])
+  
+  # calculate log likelihood
+  ll = sum(seqMat * log(par))
+  
+  -ll
+}
+```
+
+```{r data-gen}
+A = matrix(
+  c(.70, .20, .10,
+    .40, .20, .40,
+    .10, .15, .75),
+  nrow  = 3,
+  byrow = TRUE
+)
+
+observed_states = createSequence(c('a', 'b', 'c'), 1000, tmat = A)
+```
+
+## Estimation
+
+Note that initial state values will be transformed to rowsum to one, so the specific initial values don't matter (i.e. they don't have to be probabilities). With the basic <span class="func" style = "">optim</span> approach, sometimes log(0) will occur and produce a warning. Can be ignored, or use `LFBGS` as demonstrated at the end.
+
+```{r mm-est}
+initpar = rep(1, 9)
+
+result = optim(
+  par = initpar,
+  fn  = markov_ll,
+  x   = observed_states,
+  method  = 'BFGS',
+  control = list(reltol = 1e-12)
+)
+
+# get estimates on prob scale
+estmat = matrix(result$par, ncol = 3)
+estmat = t(apply(estmat, 1, function(x)  x / sum(x)))
+```
+
+## Comparison
+
+Compare with <span class="pack" style = "">markovchain</span> package.
+
+```{r markov-compare}
+compare_result = markovchainFit(observed_states)
+
+# compare log likelihood
+c(-result$value, compare_result$logLikelihood)
+
+# compare estimated transition matrix
+list(
+  `Estimated via optim` = estmat,
+  `markovchain Package` = compare_result$estimate@transitionMatrix,
+  `Analytical Solution` = prop.table(
+    table(observed_states[-length(observed_states)], observed_states[-1])
+    , 1)
+) %>% 
+  map(round, 3)
+```
+
+
+
+
+Visualize.
+
+```{r markov-vis}
+plot(
+  new(
+    'markovchain',
+    transitionMatrix = estmat,
+    states = c('a', 'b', 'c'),
+    name = 'Estimated Markov Chain'
+  )
+)
+```
+
+
+
+
+If you don't want warnings due to zeros use constraints (`?constrOptim`).
+
+```{r markov-est-constrained, eval=FALSE}
+result = optim(
+  par = initpar,
+  fn  = markov_ll,
+  x   = observed_states,
+  method  = 'L-BFGS',
+  lower   = rep(1e-20, length(initpar)),
+  control = list(pgtol = 1e-12)
+)
+```
+
+
+
+## Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/markov_model.R

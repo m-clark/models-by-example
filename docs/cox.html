@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Supplemental | Model Estimation by Example</title>
+  <title>Cox Survival | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Supplemental | Model Estimation by Example" />
+  <meta property="og:title" content="Cox Survival | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Supplemental | Model Estimation by Example" />
+  <meta name="twitter:title" content="Cox Survival | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="em.html"/>
-
+<link rel="prev" href="zi.html"/>
+<link rel="next" href="cfa.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -513,42 +513,353 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="supplemental" class="section level1">
-<h1>Supplemental</h1>
-<div id="other-languages" class="section level2">
-<h2>Other Languages</h2>
-<p>When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. Not much here but may be useful to some.</p>
-<div id="julia" class="section level4">
-<h4>Julia</h4>
-<div id="one-factor-mixed-model-1" class="section level5">
-<h5>One-factor Mixed Model</h5>
+<div id="cox-survival" class="section level1">
+<h1>Cox Survival</h1>
+<p>Some simple demonstrations of a standard Cox, Cox with time-varying covariates and a stratified Cox.</p>
+<div id="standard-proportional-hazards" class="section level2">
+<h2>Standard Proportional Hazards</h2>
+<div id="data-setup-13" class="section level3">
+<h3>Data Setup</h3>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="cox.html#cb302-1"></a><span class="kw">set.seed</span>(<span class="dv">12</span>)</span>
+<span id="cb302-2"><a href="cox.html#cb302-2"></a></span>
+<span id="cb302-3"><a href="cox.html#cb302-3"></a>dur =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></span>
+<span id="cb302-4"><a href="cox.html#cb302-4"></a>kittyblarg =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">10</span>)                                 <span class="co"># something happened to kitty!</span></span>
+<span id="cb302-5"><a href="cox.html#cb302-5"></a>kittyhappy =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">times =</span> <span class="dv">5</span>)                       <span class="co"># is kitty happy?</span></span>
+<span id="cb302-6"><a href="cox.html#cb302-6"></a>kittydied  =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dv">10</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>)           <span class="co"># kitty died! oh no!</span></span>
+<span id="cb302-7"><a href="cox.html#cb302-7"></a>d =<span class="st"> </span><span class="kw">data.frame</span>(kittyblarg, kittyhappy, dur, kittydied)</span>
+<span id="cb302-8"><a href="cox.html#cb302-8"></a></span>
+<span id="cb302-9"><a href="cox.html#cb302-9"></a><span class="co"># Inspect</span></span>
+<span id="cb302-10"><a href="cox.html#cb302-10"></a>d</span></code></pre></div>
+<pre><code>   kittyblarg kittyhappy dur kittydied
+1  -1.4805676          0   1         0
+2   1.5771695          1   2         1
+3  -0.9567445          0   3         0
+4  -0.9200052          1   4         1
+5  -1.9976421          0   5         1
+6  -0.2722960          1   6         1
+7  -0.3153487          0   7         0
+8  -0.6282552          1   8         1
+9  -0.1064639          0   9         0
+10  0.4280148          1  10         1</code></pre>
 </div>
-<div id="two-factor-mixed-model-1" class="section level5">
-<h5>Two-factor Mixed Model</h5>
+<div id="function-6" class="section level3">
+<h3>Function</h3>
+<p>Create a the likelihood function to feed to <span style="">optim</span>.</p>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="cox.html#cb304-1"></a>pl &lt;-<span class="st"> </span><span class="cf">function</span>(pars, preds, died, t) {</span>
+<span id="cb304-2"><a href="cox.html#cb304-2"></a>  <span class="co"># Arguments- </span></span>
+<span id="cb304-3"><a href="cox.html#cb304-3"></a>  <span class="co"># pars: coefficients of interest</span></span>
+<span id="cb304-4"><a href="cox.html#cb304-4"></a>  <span class="co"># preds: predictor matrix</span></span>
+<span id="cb304-5"><a href="cox.html#cb304-5"></a>  <span class="co"># died: death</span></span>
+<span id="cb304-6"><a href="cox.html#cb304-6"></a>  <span class="co"># t: time</span></span>
+<span id="cb304-7"><a href="cox.html#cb304-7"></a>  </span>
+<span id="cb304-8"><a href="cox.html#cb304-8"></a>  b =<span class="st"> </span>pars</span>
+<span id="cb304-9"><a href="cox.html#cb304-9"></a>  X =<span class="st"> </span><span class="kw">as.matrix</span>(preds[<span class="kw">order</span>(t), ])</span>
+<span id="cb304-10"><a href="cox.html#cb304-10"></a>  died2 =<span class="st"> </span>died[<span class="kw">order</span>(t)]</span>
+<span id="cb304-11"><a href="cox.html#cb304-11"></a>  </span>
+<span id="cb304-12"><a href="cox.html#cb304-12"></a>  LP =<span class="st"> </span>X<span class="op">%*%</span>b                <span class="co"># Linear predictor</span></span>
+<span id="cb304-13"><a href="cox.html#cb304-13"></a>  </span>
+<span id="cb304-14"><a href="cox.html#cb304-14"></a>  <span class="co"># initialize log likelihood due to looping, not necessary</span></span>
+<span id="cb304-15"><a href="cox.html#cb304-15"></a>  ll =<span class="st"> </span><span class="kw">numeric</span>(<span class="kw">nrow</span>(X))     </span>
+<span id="cb304-16"><a href="cox.html#cb304-16"></a>  rows =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(preds)</span>
+<span id="cb304-17"><a href="cox.html#cb304-17"></a>  </span>
+<span id="cb304-18"><a href="cox.html#cb304-18"></a>  <span class="cf">for</span> (i <span class="cf">in</span> rows){</span>
+<span id="cb304-19"><a href="cox.html#cb304-19"></a>    riskset =<span class="st"> </span><span class="kw">ifelse</span>(rows <span class="op">&lt;</span><span class="st"> </span>i, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>)                  <span class="co"># identify risk set</span></span>
+<span id="cb304-20"><a href="cox.html#cb304-20"></a>    ll[i] =<span class="st"> </span>died2[i]<span class="op">*</span>(LP[i] <span class="op">-</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">sum</span>(<span class="kw">exp</span>(LP[riskset]))) )   <span class="co"># log likelihood</span></span>
+<span id="cb304-21"><a href="cox.html#cb304-21"></a>  }</span>
+<span id="cb304-22"><a href="cox.html#cb304-22"></a>  </span>
+<span id="cb304-23"><a href="cox.html#cb304-23"></a>  <span class="op">-</span><span class="kw">sum</span>(ll)</span>
+<span id="cb304-24"><a href="cox.html#cb304-24"></a>}</span></code></pre></div>
 </div>
-</div>
-<div id="matlab" class="section level4">
-<h4>Matlab</h4>
-<div id="one-factor-mixed-model-2" class="section level5">
-<h5>One-factor Mixed Model</h5>
-</div>
-<div id="two-factor-mixed-model-2" class="section level5">
-<h5>Two-factor Mixed Model</h5>
-</div>
-</div>
-<div id="algorithms" class="section level3">
-<h3>Algorithms</h3>
-<div id="python" class="section level4">
-<h4>Python</h4>
-<div id="nelder-mead-1" class="section level5">
-<h5>Nelder-Mead</h5>
-</div>
-<div id="hmm" class="section level5">
-<h5>HMM</h5>
+<div id="estimation-12" class="section level3">
+<h3>Estimation</h3>
+<p>Estimate with <span class="func" style="">optim</span>.</p>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="cox.html#cb305-1"></a>initial_values =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb305-2"><a href="cox.html#cb305-2"></a></span>
+<span id="cb305-3"><a href="cox.html#cb305-3"></a>out =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb305-4"><a href="cox.html#cb305-4"></a>  <span class="dt">par   =</span> initial_values,</span>
+<span id="cb305-5"><a href="cox.html#cb305-5"></a>  <span class="dt">fn    =</span> pl,</span>
+<span id="cb305-6"><a href="cox.html#cb305-6"></a>  <span class="dt">preds =</span> d[, <span class="kw">c</span>(<span class="st">&#39;kittyblarg&#39;</span>, <span class="st">&#39;kittyhappy&#39;</span>)],</span>
+<span id="cb305-7"><a href="cox.html#cb305-7"></a>  <span class="dt">died  =</span> d[, <span class="st">&#39;kittydied&#39;</span>],</span>
+<span id="cb305-8"><a href="cox.html#cb305-8"></a>  <span class="dt">t     =</span> dur,</span>
+<span id="cb305-9"><a href="cox.html#cb305-9"></a>  <span class="dt">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb305-10"><a href="cox.html#cb305-10"></a>  <span class="dt">hessian =</span> T</span>
+<span id="cb305-11"><a href="cox.html#cb305-11"></a>)</span>
+<span id="cb305-12"><a href="cox.html#cb305-12"></a></span>
+<span id="cb305-13"><a href="cox.html#cb305-13"></a>out</span></code></pre></div>
+<pre><code>$par
+[1] -0.5827125  1.3803731
 
+$value
+[1] 7.783878
+
+$counts
+function gradient 
+      14        5 
+
+$convergence
+[1] 0
+
+$message
+NULL
+
+$hessian
+          [,1]      [,2]
+[1,] 1.9913282 0.4735968
+[2,] 0.4735968 0.7780126</code></pre>
+</div>
+<div id="comparison-17" class="section level3">
+<h3>Comparison</h3>
+<p>Extract results.</p>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="cox.html#cb307-1"></a>B  =<span class="st"> </span>out<span class="op">$</span>par</span>
+<span id="cb307-2"><a href="cox.html#cb307-2"></a>se =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">solve</span>(out<span class="op">$</span>hessian)))</span>
+<span id="cb307-3"><a href="cox.html#cb307-3"></a>Z  =<span class="st"> </span>B<span class="op">/</span>se</span>
+<span id="cb307-4"><a href="cox.html#cb307-4"></a></span>
+<span id="cb307-5"><a href="cox.html#cb307-5"></a><span class="co"># create a summary table</span></span>
+<span id="cb307-6"><a href="cox.html#cb307-6"></a></span>
+<span id="cb307-7"><a href="cox.html#cb307-7"></a>result_tbl =<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb307-8"><a href="cox.html#cb307-8"></a>  B, </span>
+<span id="cb307-9"><a href="cox.html#cb307-9"></a>  <span class="dt">exp =</span> <span class="kw">exp</span>(B), </span>
+<span id="cb307-10"><a href="cox.html#cb307-10"></a>  se, </span>
+<span id="cb307-11"><a href="cox.html#cb307-11"></a>  Z,</span>
+<span id="cb307-12"><a href="cox.html#cb307-12"></a>  <span class="dt">p =</span> <span class="kw">ifelse</span>(Z <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">FALSE</span>)<span class="op">*</span><span class="dv">2</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">TRUE</span>)<span class="op">*</span><span class="dv">2</span>) </span>
+<span id="cb307-13"><a href="cox.html#cb307-13"></a>)</span></code></pre></div>
+<p>Compare to <span class="pack" style="">survival</span> package.</p>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="cox.html#cb308-1"></a><span class="kw">library</span>(survival)</span>
+<span id="cb308-2"><a href="cox.html#cb308-2"></a></span>
+<span id="cb308-3"><a href="cox.html#cb308-3"></a>cox_model =<span class="st"> </span><span class="kw">coxph</span>(<span class="kw">Surv</span>(dur, kittydied) <span class="op">~</span><span class="st"> </span>kittyblarg <span class="op">+</span><span class="st"> </span>kittyhappy)</span>
+<span id="cb308-4"><a href="cox.html#cb308-4"></a></span>
+<span id="cb308-5"><a href="cox.html#cb308-5"></a><span class="kw">summary</span>(cox_model)<span class="op">$</span>coefficients</span></code></pre></div>
+<pre><code>                 coef exp(coef)  se(coef)          z  Pr(&gt;|z|)
+kittyblarg -0.5827128 0.5583816 0.7662808 -0.7604429 0.4469899
+kittyhappy  1.3803735 3.9763866 1.2259311  1.1259797 0.2601741</code></pre>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="cox.html#cb310-1"></a>result_tbl</span></code></pre></div>
+<pre><code>           B       exp        se          Z         p
+1 -0.5827125 0.5583817 0.7662807 -0.7604425 0.4469901
+2  1.3803731 3.9763850 1.2259310  1.1259795 0.2601742</code></pre>
 </div>
 </div>
+<div id="time-varying-coefficients" class="section level2">
+<h2>Time-varying coefficients</h2>
+<p>Note that technically nothing new is going on here relative to the previous model. See the vignette for the <span class="pack" style="">survival</span> package for further details.</p>
+<div id="data-setup-14" class="section level3">
+<h3>Data Setup</h3>
+<p>In the following we’ll first create some noisy time points.</p>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="cox.html#cb312-1"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb312-2"><a href="cox.html#cb312-2"></a></span>
+<span id="cb312-3"><a href="cox.html#cb312-3"></a>t1 =<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="dv">20</span>)</span>
+<span id="cb312-4"><a href="cox.html#cb312-4"></a>t2 =<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="dv">20</span>)</span>
+<span id="cb312-5"><a href="cox.html#cb312-5"></a></span>
+<span id="cb312-6"><a href="cox.html#cb312-6"></a>t1[<span class="kw">seq</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dt">by =</span> <span class="dv">2</span>)] =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></span>
+<span id="cb312-7"><a href="cox.html#cb312-7"></a>t2[<span class="kw">seq</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dt">by =</span> <span class="dv">2</span>)] =<span class="st"> </span>t1[<span class="kw">seq</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dt">by =</span> <span class="dv">2</span>)] <span class="op">+</span><span class="st"> </span></span>
+<span id="cb312-8"><a href="cox.html#cb312-8"></a><span class="st">  </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">10</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb312-9"><a href="cox.html#cb312-9"></a><span class="st">  </span><span class="kw">abs</span>(<span class="kw">rnorm</span>(<span class="dv">10</span>))</span>
+<span id="cb312-10"><a href="cox.html#cb312-10"></a></span>
+<span id="cb312-11"><a href="cox.html#cb312-11"></a>t1[<span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">20</span>, <span class="dt">by =</span> <span class="dv">2</span>)] =<span class="st"> </span>t2[<span class="kw">seq</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dt">by =</span> <span class="dv">2</span>)]</span>
+<span id="cb312-12"><a href="cox.html#cb312-12"></a>t2[<span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">20</span>, <span class="dt">by =</span> <span class="dv">2</span>)] =<span class="st"> </span>t1[<span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">20</span>, <span class="dt">by =</span> <span class="dv">2</span>)] <span class="op">+</span><span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(<span class="kw">rnorm</span>(<span class="dv">10</span>))</span>
+<span id="cb312-13"><a href="cox.html#cb312-13"></a></span>
+<span id="cb312-14"><a href="cox.html#cb312-14"></a>kitty =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">e =</span> <span class="dv">2</span>)</span>
+<span id="cb312-15"><a href="cox.html#cb312-15"></a>kittyblarg =<span class="st"> </span>t2 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">20</span>, <span class="dt">sd =</span> <span class="dv">5</span>)</span>
+<span id="cb312-16"><a href="cox.html#cb312-16"></a>kittyhappy =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">times =</span> <span class="dv">5</span>, <span class="dt">e =</span> <span class="dv">2</span>)</span>
+<span id="cb312-17"><a href="cox.html#cb312-17"></a>die =<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">1</span></span>
+<span id="cb312-18"><a href="cox.html#cb312-18"></a>cens =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb312-19"><a href="cox.html#cb312-19"></a>kittydied =<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">runif</span>(<span class="dv">20</span>)<span class="op">&gt;=</span>.<span class="dv">5</span>, die, cens)</span>
+<span id="cb312-20"><a href="cox.html#cb312-20"></a></span>
+<span id="cb312-21"><a href="cox.html#cb312-21"></a>d =<span class="st"> </span><span class="kw">data.frame</span>(kitty, kittyblarg, kittyhappy, </span>
+<span id="cb312-22"><a href="cox.html#cb312-22"></a>               t1, t2, kittydied)</span>
+<span id="cb312-23"><a href="cox.html#cb312-23"></a></span>
+<span id="cb312-24"><a href="cox.html#cb312-24"></a><span class="co"># Inspect the Surv object if desired</span></span>
+<span id="cb312-25"><a href="cox.html#cb312-25"></a><span class="co"># Surv(t1,t2, kittydied)</span></span>
+<span id="cb312-26"><a href="cox.html#cb312-26"></a></span>
+<span id="cb312-27"><a href="cox.html#cb312-27"></a><span class="co"># Inspect the data</span></span>
+<span id="cb312-28"><a href="cox.html#cb312-28"></a>d</span></code></pre></div>
+<pre><code>   kitty kittyblarg kittyhappy        t1        t2 kittydied
+1      1  -1.870759          0  1.000000  4.686853         0
+2      1   4.904677          0  4.686853  7.902718         0
+3      2   4.798609          1  2.000000  5.445662         0
+4      2  15.214255          1  5.445662 10.780575         0
+5      3   5.467102          0  3.000000  6.224082         0
+6      3   9.958737          0  6.224082  8.309781         1
+7      4  -9.776800          1  4.000000  6.359814         0
+8      4   4.586278          1  6.359814  8.445237         0
+9      5   9.833514          0  5.000000  8.400771         0
+10     5   7.368822          0  8.400771 13.471382         1
+11     6  13.283435          1  6.000000 11.110683         0
+12     6  18.256961          1 11.110683 14.256076         0
+13     7  10.736186          0  7.000000 11.555841         0
+14     7  23.935980          0 11.555841 17.721386         1
+15     8   6.114988          1  8.000000 10.786913         0
+16     8  14.573972          1 10.786913 12.605429         1
+17     9  13.516008          0  9.000000 11.497850         0
+18     9   9.750603          0 11.497850 14.182787         1
+19    10   8.371929          1 10.000000 14.966617         0
+20    10  19.430893          1 14.966617 19.286674         1</code></pre>
 </div>
+<div id="function-7" class="section level3">
+<h3>Function</h3>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="cox.html#cb314-1"></a>pl_tv &lt;-<span class="st"> </span><span class="cf">function</span>(pars, preds, died, t1, t2, data) {</span>
+<span id="cb314-2"><a href="cox.html#cb314-2"></a>  <span class="co"># Same arguments as before though will take a data object</span></span>
+<span id="cb314-3"><a href="cox.html#cb314-3"></a>  <span class="co"># plus variable names via string input. Also requires beginning</span></span>
+<span id="cb314-4"><a href="cox.html#cb314-4"></a>  <span class="co"># and end time point (t1, t2)</span></span>
+<span id="cb314-5"><a href="cox.html#cb314-5"></a>  dat =<span class="st"> </span>data[,<span class="kw">c</span>(preds, died, t1, t2)]</span>
+<span id="cb314-6"><a href="cox.html#cb314-6"></a>  dat =<span class="st"> </span>dat[<span class="kw">order</span>(dat<span class="op">$</span>t2), ]</span>
+<span id="cb314-7"><a href="cox.html#cb314-7"></a>  b   =<span class="st"> </span>pars</span>
+<span id="cb314-8"><a href="cox.html#cb314-8"></a>  X   =<span class="st"> </span><span class="kw">as.matrix</span>(dat[, preds])</span>
+<span id="cb314-9"><a href="cox.html#cb314-9"></a>  died2 =<span class="st"> </span>dat[, died]</span>
+<span id="cb314-10"><a href="cox.html#cb314-10"></a>  </span>
+<span id="cb314-11"><a href="cox.html#cb314-11"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb314-12"><a href="cox.html#cb314-12"></a>  LP =<span class="st"> </span>X<span class="op">%*%</span>b</span>
+<span id="cb314-13"><a href="cox.html#cb314-13"></a>  </span>
+<span id="cb314-14"><a href="cox.html#cb314-14"></a>  <span class="co"># log likelihood</span></span>
+<span id="cb314-15"><a href="cox.html#cb314-15"></a>  ll =<span class="st"> </span><span class="kw">numeric</span>(<span class="kw">nrow</span>(X))</span>
+<span id="cb314-16"><a href="cox.html#cb314-16"></a>  rows =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(dat)</span>
+<span id="cb314-17"><a href="cox.html#cb314-17"></a>  </span>
+<span id="cb314-18"><a href="cox.html#cb314-18"></a>  <span class="cf">for</span> (i <span class="cf">in</span> rows){</span>
+<span id="cb314-19"><a href="cox.html#cb314-19"></a>    st_i =<span class="st"> </span>dat<span class="op">$</span>t2[i]</span>
+<span id="cb314-20"><a href="cox.html#cb314-20"></a>    </span>
+<span id="cb314-21"><a href="cox.html#cb314-21"></a>    <span class="co"># if they have already died/censored (row &lt; i) or if the initial time is</span></span>
+<span id="cb314-22"><a href="cox.html#cb314-22"></a>    <span class="co"># greater than current end time (t1 &gt; st_i),  they are not in the risk set,</span></span>
+<span id="cb314-23"><a href="cox.html#cb314-23"></a>    <span class="co"># else they are.</span></span>
+<span id="cb314-24"><a href="cox.html#cb314-24"></a>    riskset =<span class="st"> </span><span class="kw">ifelse</span>(rows <span class="op">&lt;</span><span class="st"> </span>i <span class="op">|</span><span class="st"> </span>dat<span class="op">$</span>t1 <span class="op">&gt;</span><span class="st"> </span>st_i, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>)     </span>
+<span id="cb314-25"><a href="cox.html#cb314-25"></a>    </span>
+<span id="cb314-26"><a href="cox.html#cb314-26"></a>    ll[i] =<span class="st"> </span>died2[i]<span class="op">*</span>(LP[i] <span class="op">-</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">sum</span>(<span class="kw">exp</span>(LP[riskset]))) )        </span>
+<span id="cb314-27"><a href="cox.html#cb314-27"></a>  }     </span>
+<span id="cb314-28"><a href="cox.html#cb314-28"></a>  </span>
+<span id="cb314-29"><a href="cox.html#cb314-29"></a>  <span class="op">-</span><span class="kw">sum</span>(ll)</span>
+<span id="cb314-30"><a href="cox.html#cb314-30"></a>}</span></code></pre></div>
+</div>
+<div id="estimation-13" class="section level3">
+<h3>Estimation</h3>
+<p>Estimate with <span class="func" style="">optim</span>.</p>
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="cox.html#cb315-1"></a>initial_values =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb315-2"><a href="cox.html#cb315-2"></a></span>
+<span id="cb315-3"><a href="cox.html#cb315-3"></a>out =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb315-4"><a href="cox.html#cb315-4"></a>  <span class="dt">par   =</span> initial_values,</span>
+<span id="cb315-5"><a href="cox.html#cb315-5"></a>  <span class="dt">fn    =</span> pl_tv,</span>
+<span id="cb315-6"><a href="cox.html#cb315-6"></a>  <span class="dt">preds =</span> <span class="kw">c</span>(<span class="st">&#39;kittyblarg&#39;</span>, <span class="st">&#39;kittyhappy&#39;</span>),</span>
+<span id="cb315-7"><a href="cox.html#cb315-7"></a>  <span class="dt">died  =</span> <span class="st">&#39;kittydied&#39;</span>,</span>
+<span id="cb315-8"><a href="cox.html#cb315-8"></a>  <span class="dt">data  =</span> d,</span>
+<span id="cb315-9"><a href="cox.html#cb315-9"></a>  <span class="dt">t1    =</span> <span class="st">&#39;t1&#39;</span>,</span>
+<span id="cb315-10"><a href="cox.html#cb315-10"></a>  <span class="dt">t2    =</span> <span class="st">&#39;t2&#39;</span>,</span>
+<span id="cb315-11"><a href="cox.html#cb315-11"></a>  <span class="dt">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb315-12"><a href="cox.html#cb315-12"></a>  <span class="dt">hessian =</span> <span class="ot">TRUE</span></span>
+<span id="cb315-13"><a href="cox.html#cb315-13"></a>)</span>
+<span id="cb315-14"><a href="cox.html#cb315-14"></a></span>
+<span id="cb315-15"><a href="cox.html#cb315-15"></a><span class="co"># out</span></span></code></pre></div>
+</div>
+<div id="comparison-18" class="section level3">
+<h3>Comparison</h3>
+<p>Extract results.</p>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="cox.html#cb316-1"></a>B  =<span class="st"> </span>out<span class="op">$</span>par</span>
+<span id="cb316-2"><a href="cox.html#cb316-2"></a>se =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">solve</span>(out<span class="op">$</span>hessian)))</span>
+<span id="cb316-3"><a href="cox.html#cb316-3"></a>Z  =<span class="st"> </span>B<span class="op">/</span>se</span>
+<span id="cb316-4"><a href="cox.html#cb316-4"></a></span>
+<span id="cb316-5"><a href="cox.html#cb316-5"></a>result_tbl =<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb316-6"><a href="cox.html#cb316-6"></a>  B, </span>
+<span id="cb316-7"><a href="cox.html#cb316-7"></a>  <span class="dt">exp =</span> <span class="kw">exp</span>(B), </span>
+<span id="cb316-8"><a href="cox.html#cb316-8"></a>  se, </span>
+<span id="cb316-9"><a href="cox.html#cb316-9"></a>  Z, </span>
+<span id="cb316-10"><a href="cox.html#cb316-10"></a>  <span class="dt">p =</span> <span class="kw">ifelse</span>(Z <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">FALSE</span>) <span class="op">*</span><span class="st"> </span><span class="dv">2</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">TRUE</span>) <span class="op">*</span><span class="st"> </span><span class="dv">2</span>)</span>
+<span id="cb316-11"><a href="cox.html#cb316-11"></a>)</span></code></pre></div>
+<p>Compare to survival package.</p>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="cox.html#cb317-1"></a>cox_model_tv =<span class="st"> </span><span class="kw">coxph</span>(</span>
+<span id="cb317-2"><a href="cox.html#cb317-2"></a>  <span class="kw">Surv</span>(t1, t2, kittydied) <span class="op">~</span><span class="st"> </span>kittyblarg <span class="op">+</span><span class="st"> </span>kittyhappy,</span>
+<span id="cb317-3"><a href="cox.html#cb317-3"></a>  <span class="dt">method =</span> <span class="st">&#39;breslow&#39;</span>,</span>
+<span id="cb317-4"><a href="cox.html#cb317-4"></a>  <span class="dt">control =</span> <span class="kw">coxph.control</span>(<span class="dt">iter.max =</span> <span class="dv">1000</span>)</span>
+<span id="cb317-5"><a href="cox.html#cb317-5"></a>)</span>
+<span id="cb317-6"><a href="cox.html#cb317-6"></a><span class="co"># cox_model_tv; cox_model_tv$loglik[2]</span></span>
+<span id="cb317-7"><a href="cox.html#cb317-7"></a></span>
+<span id="cb317-8"><a href="cox.html#cb317-8"></a><span class="kw">summary</span>(cox_model_tv)<span class="op">$</span>coefficients</span></code></pre></div>
+<pre><code>                  coef exp(coef)  se(coef)          z  Pr(&gt;|z|)
+kittyblarg -0.09159497 0.9124747 0.1074014 -0.8528288 0.3937542
+kittyhappy -1.51322382 0.2201990 1.1368707 -1.3310430 0.1831748</code></pre>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb319-1"><a href="cox.html#cb319-1"></a>result_tbl</span></code></pre></div>
+<pre><code>            B       exp        se          Z         p
+1 -0.09159224 0.9124771 0.1073995 -0.8528183 0.3937601
+2 -1.51323240 0.2201971 1.1368743 -1.3310464 0.1831737</code></pre>
+</div>
+</div>
+<div id="stratified-cox-model" class="section level2">
+<h2>Stratified Cox Model</h2>
+<div id="data-setup-15" class="section level3">
+<h3>Data Setup</h3>
+<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb321-1"><a href="cox.html#cb321-1"></a><span class="kw">data</span>(ovarian, <span class="dt">package =</span> <span class="st">&#39;survival&#39;</span>) </span></code></pre></div>
+</div>
+<div id="function-8" class="section level3">
+<h3>Function</h3>
+<p>Requires <code>pl</code> function above though one could extend to <code>pl_tv</code>.</p>
+<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="cox.html#cb322-1"></a>pl_strat &lt;-<span class="st"> </span><span class="cf">function</span>(pars, preds, died, t, strata) {</span>
+<span id="cb322-2"><a href="cox.html#cb322-2"></a>  strat =<span class="st"> </span><span class="kw">as.factor</span>(strata)</span>
+<span id="cb322-3"><a href="cox.html#cb322-3"></a>  d =<span class="st"> </span><span class="kw">data.frame</span>(preds, died, t, strat)</span>
+<span id="cb322-4"><a href="cox.html#cb322-4"></a>  dlist =<span class="st"> </span><span class="kw">split</span>(d, strata)</span>
+<span id="cb322-5"><a href="cox.html#cb322-5"></a>  </span>
+<span id="cb322-6"><a href="cox.html#cb322-6"></a>  neglls =<span class="st"> </span><span class="kw">map_dbl</span>(</span>
+<span id="cb322-7"><a href="cox.html#cb322-7"></a>    dlist,</span>
+<span id="cb322-8"><a href="cox.html#cb322-8"></a>    <span class="cf">function</span>(x)</span>
+<span id="cb322-9"><a href="cox.html#cb322-9"></a>      <span class="kw">pl</span>(</span>
+<span id="cb322-10"><a href="cox.html#cb322-10"></a>        <span class="dt">pars  =</span> pars,</span>
+<span id="cb322-11"><a href="cox.html#cb322-11"></a>        <span class="dt">preds =</span> x[, <span class="kw">colnames</span>(preds)],</span>
+<span id="cb322-12"><a href="cox.html#cb322-12"></a>        <span class="dt">died  =</span> x<span class="op">$</span>died,</span>
+<span id="cb322-13"><a href="cox.html#cb322-13"></a>        <span class="dt">t     =</span> x<span class="op">$</span>t</span>
+<span id="cb322-14"><a href="cox.html#cb322-14"></a>      )</span>
+<span id="cb322-15"><a href="cox.html#cb322-15"></a>  )</span>
+<span id="cb322-16"><a href="cox.html#cb322-16"></a>  </span>
+<span id="cb322-17"><a href="cox.html#cb322-17"></a>  <span class="kw">sum</span>(neglls)</span>
+<span id="cb322-18"><a href="cox.html#cb322-18"></a>}</span></code></pre></div>
+</div>
+<div id="estimation-14" class="section level3">
+<h3>Estimation</h3>
+<p>Estimate with <span class="func" style="">optim</span>.</p>
+<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb323-1"><a href="cox.html#cb323-1"></a>initial_values =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb323-2"><a href="cox.html#cb323-2"></a></span>
+<span id="cb323-3"><a href="cox.html#cb323-3"></a>out =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb323-4"><a href="cox.html#cb323-4"></a>  <span class="dt">par   =</span> initial_values,</span>
+<span id="cb323-5"><a href="cox.html#cb323-5"></a>  <span class="dt">fn    =</span> pl_strat,</span>
+<span id="cb323-6"><a href="cox.html#cb323-6"></a>  <span class="dt">preds =</span> ovarian[, <span class="kw">c</span>(<span class="st">&#39;age&#39;</span>, <span class="st">&#39;ecog.ps&#39;</span>)],</span>
+<span id="cb323-7"><a href="cox.html#cb323-7"></a>  <span class="dt">died  =</span> ovarian<span class="op">$</span>fustat,</span>
+<span id="cb323-8"><a href="cox.html#cb323-8"></a>  <span class="dt">t     =</span> ovarian<span class="op">$</span>futime,</span>
+<span id="cb323-9"><a href="cox.html#cb323-9"></a>  <span class="dt">strata  =</span> ovarian<span class="op">$</span>rx,</span>
+<span id="cb323-10"><a href="cox.html#cb323-10"></a>  <span class="dt">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb323-11"><a href="cox.html#cb323-11"></a>  <span class="dt">hessian =</span> <span class="ot">TRUE</span></span>
+<span id="cb323-12"><a href="cox.html#cb323-12"></a>)</span>
+<span id="cb323-13"><a href="cox.html#cb323-13"></a></span>
+<span id="cb323-14"><a href="cox.html#cb323-14"></a><span class="co"># out</span></span></code></pre></div>
+</div>
+<div id="comparison-19" class="section level3">
+<h3>Comparison</h3>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="cox.html#cb324-1"></a>B  =<span class="st"> </span>out<span class="op">$</span>par</span>
+<span id="cb324-2"><a href="cox.html#cb324-2"></a>se =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">solve</span>(out<span class="op">$</span>hessian)))</span>
+<span id="cb324-3"><a href="cox.html#cb324-3"></a>Z  =<span class="st"> </span>B<span class="op">/</span>se</span>
+<span id="cb324-4"><a href="cox.html#cb324-4"></a></span>
+<span id="cb324-5"><a href="cox.html#cb324-5"></a>results_tbl =<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb324-6"><a href="cox.html#cb324-6"></a>  B,</span>
+<span id="cb324-7"><a href="cox.html#cb324-7"></a>  <span class="dt">exp =</span> <span class="kw">exp</span>(B),</span>
+<span id="cb324-8"><a href="cox.html#cb324-8"></a>  se,</span>
+<span id="cb324-9"><a href="cox.html#cb324-9"></a>  Z,</span>
+<span id="cb324-10"><a href="cox.html#cb324-10"></a>  <span class="dt">p =</span> <span class="kw">ifelse</span>(Z <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">FALSE</span>) <span class="op">*</span><span class="st"> </span><span class="dv">2</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">TRUE</span>)<span class="op">*</span><span class="dv">2</span>)</span>
+<span id="cb324-11"><a href="cox.html#cb324-11"></a>)</span>
+<span id="cb324-12"><a href="cox.html#cb324-12"></a>  </span>
+<span id="cb324-13"><a href="cox.html#cb324-13"></a></span>
+<span id="cb324-14"><a href="cox.html#cb324-14"></a>cox_strata_model =<span class="st"> </span><span class="kw">coxph</span>(</span>
+<span id="cb324-15"><a href="cox.html#cb324-15"></a>  <span class="kw">Surv</span>(futime, fustat) <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>ecog.ps <span class="op">+</span><span class="st"> </span><span class="kw">strata</span>(rx), </span>
+<span id="cb324-16"><a href="cox.html#cb324-16"></a>  <span class="dt">data =</span> ovarian</span>
+<span id="cb324-17"><a href="cox.html#cb324-17"></a>  )</span>
+<span id="cb324-18"><a href="cox.html#cb324-18"></a><span class="co"># cox_strata_model; cox_strata_model$loglik[2]</span></span>
+<span id="cb324-19"><a href="cox.html#cb324-19"></a></span>
+<span id="cb324-20"><a href="cox.html#cb324-20"></a><span class="kw">summary</span>(cox_model_tv)<span class="op">$</span>coefficients</span></code></pre></div>
+<pre><code>                  coef exp(coef)  se(coef)          z  Pr(&gt;|z|)
+kittyblarg -0.09159497 0.9124747 0.1074014 -0.8528288 0.3937542
+kittyhappy -1.51322382 0.2201990 1.1368707 -1.3310430 0.1831748</code></pre>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="cox.html#cb326-1"></a>result_tbl</span></code></pre></div>
+<pre><code>            B       exp        se          Z         p
+1 -0.09159224 0.9124771 0.1073995 -0.8528183 0.3937601
+2 -1.51323240 0.2201971 1.1368743 -1.3310464 0.1831737</code></pre>
+</div>
+</div>
+<div id="source-18" class="section level2">
+<h2>Source</h2>
+<p>Source code found at
+<a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/survivalCox.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/survivalCox.R</a></p>
+
 </div>
 </div>
             </section>
@@ -556,8 +867,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="em.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="zi.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="cfa.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -590,7 +901,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/supplemental.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/cox.Rmd",
 "text": "Edit"
 },
 "history": {

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Supplemental | Model Estimation by Example</title>
+  <title>Hurdle Model | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Supplemental | Model Estimation by Example" />
+  <meta property="og:title" content="Hurdle Model | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Supplemental | Model Estimation by Example" />
+  <meta name="twitter:title" content="Hurdle Model | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="em.html"/>
-
+<link rel="prev" href="cubic-spline.html"/>
+<link rel="next" href="zi.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -513,42 +513,242 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="supplemental" class="section level1">
-<h1>Supplemental</h1>
-<div id="other-languages" class="section level2">
-<h2>Other Languages</h2>
-<p>When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. Not much here but may be useful to some.</p>
-<div id="julia" class="section level4">
-<h4>Julia</h4>
-<div id="one-factor-mixed-model-1" class="section level5">
-<h5>One-factor Mixed Model</h5>
+<div id="hurdle-model" class="section level1">
+<h1>Hurdle Model</h1>
+<p>Hurdle models are applied to situations in which target data has relatively many of one value, usually zero, to go along with the other observed values. They are two-part models, a logistic model for whether an observation is zero or not, and a count model for the other part. The key distinction from the usual ‘zero-inflated’ count models, is that the count distribution does not contribute to the excess zeros. While the typical application is count data, the approach can be applied to any distribution in theory.</p>
+<div id="poisson" class="section level2">
+<h2>Poisson</h2>
+<div id="data-setup-11" class="section level3">
+<h3>Data Setup</h3>
+<p>Here we import a simple data set. The example comes from the Stata help file for zinb command. One can compare results with <code>hnblogit</code> command in Stata.</p>
+<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="hurdle.html#cb262-1"></a><span class="kw">library</span>(haven)</span>
+<span id="cb262-2"><a href="hurdle.html#cb262-2"></a></span>
+<span id="cb262-3"><a href="hurdle.html#cb262-3"></a>fish =<span class="st"> </span><span class="kw">read_dta</span>(<span class="st">&quot;http://www.stata-press.com/data/r11/fish.dta&quot;</span>)</span></code></pre></div>
 </div>
-<div id="two-factor-mixed-model-1" class="section level5">
-<h5>Two-factor Mixed Model</h5>
+<div id="function-2" class="section level3">
+<h3>Function</h3>
+<p>The likelihood function is of two parts, one a logistic model, the other, a poisson count model.</p>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="hurdle.html#cb263-1"></a>hurdpoisloglik =<span class="st"> </span><span class="cf">function</span>(y, X, par) {</span>
+<span id="cb263-2"><a href="hurdle.html#cb263-2"></a>  <span class="co"># Extract parameters</span></span>
+<span id="cb263-3"><a href="hurdle.html#cb263-3"></a>  logitpars =<span class="st"> </span>par[<span class="kw">grep</span>(<span class="st">&#39;logit&#39;</span>, <span class="kw">names</span>(par))]</span>
+<span id="cb263-4"><a href="hurdle.html#cb263-4"></a>  poispars  =<span class="st"> </span>par[<span class="kw">grep</span>(<span class="st">&#39;pois&#39;</span>, <span class="kw">names</span>(par))]</span>
+<span id="cb263-5"><a href="hurdle.html#cb263-5"></a>  </span>
+<span id="cb263-6"><a href="hurdle.html#cb263-6"></a>  <span class="co"># Logit model part</span></span>
+<span id="cb263-7"><a href="hurdle.html#cb263-7"></a>  Xlogit =<span class="st"> </span>X</span>
+<span id="cb263-8"><a href="hurdle.html#cb263-8"></a>  ylogit =<span class="st"> </span><span class="kw">ifelse</span>(y <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb263-9"><a href="hurdle.html#cb263-9"></a>  </span>
+<span id="cb263-10"><a href="hurdle.html#cb263-10"></a>  LPlogit =<span class="st"> </span>Xlogit <span class="op">%*%</span><span class="st"> </span>logitpars</span>
+<span id="cb263-11"><a href="hurdle.html#cb263-11"></a>  mulogit =<span class="st"> </span><span class="kw">plogis</span>(LPlogit)</span>
+<span id="cb263-12"><a href="hurdle.html#cb263-12"></a>  </span>
+<span id="cb263-13"><a href="hurdle.html#cb263-13"></a>  <span class="co"># Calculate the likelihood</span></span>
+<span id="cb263-14"><a href="hurdle.html#cb263-14"></a>  logliklogit =<span class="st"> </span><span class="op">-</span><span class="kw">sum</span>( ylogit<span class="op">*</span><span class="kw">log</span>(mulogit) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ylogit)<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mulogit) )  </span>
+<span id="cb263-15"><a href="hurdle.html#cb263-15"></a>  </span>
+<span id="cb263-16"><a href="hurdle.html#cb263-16"></a>  <span class="co"># Poisson part</span></span>
+<span id="cb263-17"><a href="hurdle.html#cb263-17"></a>  Xpois =<span class="st"> </span>X[y <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, ]</span>
+<span id="cb263-18"><a href="hurdle.html#cb263-18"></a>  ypois =<span class="st"> </span>y[y <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</span>
+<span id="cb263-19"><a href="hurdle.html#cb263-19"></a>  </span>
+<span id="cb263-20"><a href="hurdle.html#cb263-20"></a>  mupois =<span class="st"> </span><span class="kw">exp</span>(Xpois <span class="op">%*%</span><span class="st"> </span>poispars)</span>
+<span id="cb263-21"><a href="hurdle.html#cb263-21"></a>  </span>
+<span id="cb263-22"><a href="hurdle.html#cb263-22"></a>  <span class="co"># Calculate the likelihood</span></span>
+<span id="cb263-23"><a href="hurdle.html#cb263-23"></a>  loglik0    =<span class="st"> </span><span class="op">-</span>mupois</span>
+<span id="cb263-24"><a href="hurdle.html#cb263-24"></a>  loglikpois =<span class="st"> </span><span class="op">-</span><span class="kw">sum</span>(<span class="kw">dpois</span>(ypois, <span class="dt">lambda =</span> mupois, <span class="dt">log =</span> <span class="ot">TRUE</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(<span class="kw">log</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(loglik0)))</span>
+<span id="cb263-25"><a href="hurdle.html#cb263-25"></a>  </span>
+<span id="cb263-26"><a href="hurdle.html#cb263-26"></a>  <span class="co"># combine likelihoods</span></span>
+<span id="cb263-27"><a href="hurdle.html#cb263-27"></a>  loglik =<span class="st"> </span>loglikpois <span class="op">+</span><span class="st"> </span>logliklogit</span>
+<span id="cb263-28"><a href="hurdle.html#cb263-28"></a>  loglik</span>
+<span id="cb263-29"><a href="hurdle.html#cb263-29"></a>}</span></code></pre></div>
+<p>Get some starting values from <span class="func" style="">glm</span> For these functions, and create a named vector for them.</p>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="hurdle.html#cb264-1"></a>init_mod =<span class="st"> </span><span class="kw">glm</span>(</span>
+<span id="cb264-2"><a href="hurdle.html#cb264-2"></a>  count <span class="op">~</span><span class="st"> </span>persons <span class="op">+</span><span class="st"> </span>livebait,</span>
+<span id="cb264-3"><a href="hurdle.html#cb264-3"></a>  <span class="dt">data   =</span> fish,</span>
+<span id="cb264-4"><a href="hurdle.html#cb264-4"></a>  <span class="dt">family =</span> poisson,</span>
+<span id="cb264-5"><a href="hurdle.html#cb264-5"></a>  <span class="dt">x =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb264-6"><a href="hurdle.html#cb264-6"></a>  <span class="dt">y =</span> <span class="ot">TRUE</span></span>
+<span id="cb264-7"><a href="hurdle.html#cb264-7"></a>)</span>
+<span id="cb264-8"><a href="hurdle.html#cb264-8"></a></span>
+<span id="cb264-9"><a href="hurdle.html#cb264-9"></a>starts =<span class="st"> </span><span class="kw">c</span>(<span class="dt">logit =</span> <span class="kw">coef</span>(init_mod), <span class="dt">pois =</span> <span class="kw">coef</span>(init_mod))  </span></code></pre></div>
 </div>
-</div>
-<div id="matlab" class="section level4">
-<h4>Matlab</h4>
-<div id="one-factor-mixed-model-2" class="section level5">
-<h5>One-factor Mixed Model</h5>
-</div>
-<div id="two-factor-mixed-model-2" class="section level5">
-<h5>Two-factor Mixed Model</h5>
-</div>
-</div>
-<div id="algorithms" class="section level3">
-<h3>Algorithms</h3>
-<div id="python" class="section level4">
-<h4>Python</h4>
-<div id="nelder-mead-1" class="section level5">
-<h5>Nelder-Mead</h5>
-</div>
-<div id="hmm" class="section level5">
-<h5>HMM</h5>
+<div id="estimation-8" class="section level3">
+<h3>Estimation</h3>
+<p>Use <span class="func" style="">optim</span>. to estimate parameters. I fiddle with some options to reproduce the hurdle function as much as possible.</p>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="hurdle.html#cb265-1"></a>optPois1 =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb265-2"><a href="hurdle.html#cb265-2"></a>  <span class="dt">par =</span> starts,</span>
+<span id="cb265-3"><a href="hurdle.html#cb265-3"></a>  <span class="dt">fn  =</span> hurdpoisloglik,</span>
+<span id="cb265-4"><a href="hurdle.html#cb265-4"></a>  <span class="dt">X   =</span> init_mod<span class="op">$</span>x,</span>
+<span id="cb265-5"><a href="hurdle.html#cb265-5"></a>  <span class="dt">y   =</span> init_mod<span class="op">$</span>y,</span>
+<span id="cb265-6"><a href="hurdle.html#cb265-6"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">maxit =</span> <span class="dv">5000</span>, <span class="dt">reltol =</span> <span class="fl">1e-12</span>),</span>
+<span id="cb265-7"><a href="hurdle.html#cb265-7"></a>  <span class="dt">hessian =</span> <span class="ot">TRUE</span></span>
+<span id="cb265-8"><a href="hurdle.html#cb265-8"></a>)</span>
+<span id="cb265-9"><a href="hurdle.html#cb265-9"></a><span class="co"># optPois1</span></span></code></pre></div>
+<p>Extract the elements from the output to create a summary table.</p>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="hurdle.html#cb266-1"></a>B  =<span class="st"> </span>optPois1<span class="op">$</span>par</span>
+<span id="cb266-2"><a href="hurdle.html#cb266-2"></a>se =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">solve</span>(optPois1<span class="op">$</span>hessian)))</span>
+<span id="cb266-3"><a href="hurdle.html#cb266-3"></a>Z  =<span class="st"> </span>B<span class="op">/</span>se</span>
+<span id="cb266-4"><a href="hurdle.html#cb266-4"></a>p  =<span class="st"> </span><span class="kw">ifelse</span>(Z <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">FALSE</span>)<span class="op">*</span><span class="dv">2</span>, <span class="kw">pnorm</span>(Z)<span class="op">*</span><span class="dv">2</span>)</span>
+<span id="cb266-5"><a href="hurdle.html#cb266-5"></a>summarytable =<span class="st"> </span><span class="kw">round</span>(<span class="kw">data.frame</span>(B, se, Z, p), <span class="dv">3</span>)</span>
+<span id="cb266-6"><a href="hurdle.html#cb266-6"></a></span>
+<span id="cb266-7"><a href="hurdle.html#cb266-7"></a><span class="kw">list</span>(<span class="dt">summary =</span> summarytable, <span class="dt">ll =</span> optPois1<span class="op">$</span>value)</span></code></pre></div>
+<pre><code>$summary
+                       B    se      Z     p
+logit.(Intercept) -1.417 0.491 -2.888 0.004
+logit.persons      0.206 0.117  1.761 0.078
+logit.livebait     0.711 0.403  1.766 0.077
+pois.(Intercept)  -2.057 0.341 -6.035 0.000
+pois.persons       0.750 0.043 17.378 0.000
+pois.livebait      1.851 0.307  6.023 0.000
 
+$ll
+[1] 882.2514</code></pre>
+</div>
+<div id="comparison-13" class="section level3">
+<h3>Comparison</h3>
+<p>Compare to <span class="func" style="">hurdle</span> from <span class="pack" style="">pscl</span> package.</p>
+<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="hurdle.html#cb268-1"></a><span class="kw">library</span>(pscl)</span>
+<span id="cb268-2"><a href="hurdle.html#cb268-2"></a></span>
+<span id="cb268-3"><a href="hurdle.html#cb268-3"></a>poismod =<span class="st"> </span><span class="kw">hurdle</span>(</span>
+<span id="cb268-4"><a href="hurdle.html#cb268-4"></a>  count <span class="op">~</span><span class="st"> </span>persons <span class="op">+</span><span class="st"> </span>livebait,</span>
+<span id="cb268-5"><a href="hurdle.html#cb268-5"></a>  <span class="dt">data =</span> fish,</span>
+<span id="cb268-6"><a href="hurdle.html#cb268-6"></a>  <span class="dt">zero.dist =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb268-7"><a href="hurdle.html#cb268-7"></a>  <span class="dt">dist =</span> <span class="st">&quot;poisson&quot;</span></span>
+<span id="cb268-8"><a href="hurdle.html#cb268-8"></a>)</span>
+<span id="cb268-9"><a href="hurdle.html#cb268-9"></a></span>
+<span id="cb268-10"><a href="hurdle.html#cb268-10"></a><span class="kw">summary</span>(poismod)<span class="op">$</span>coefficients</span></code></pre></div>
+<pre><code>$count
+              Estimate Std. Error   z value     Pr(&gt;|z|)
+(Intercept) -2.0574429 0.34092748 -6.034840 1.591200e-09
+persons      0.7496946 0.04314126 17.377670 1.218024e-67
+livebait     1.8512952 0.30735592  6.023294 1.709022e-09
+
+$zero
+              Estimate Std. Error   z value    Pr(&gt;|z|)
+(Intercept) -1.4173042  0.4907691 -2.887925 0.003877928
+persons      0.2057555  0.1168027  1.761565 0.078142847
+livebait     0.7109464  0.4026898  1.765494 0.077480807</code></pre>
+<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="hurdle.html#cb270-1"></a>summarytable</span></code></pre></div>
+<pre><code>                       B    se      Z     p
+logit.(Intercept) -1.417 0.491 -2.888 0.004
+logit.persons      0.206 0.117  1.761 0.078
+logit.livebait     0.711 0.403  1.766 0.077
+pois.(Intercept)  -2.057 0.341 -6.035 0.000
+pois.persons       0.750 0.043 17.378 0.000
+pois.livebait      1.851 0.307  6.023 0.000</code></pre>
 </div>
 </div>
+<div id="negative-binomial" class="section level2">
+<h2>Negative Binomial</h2>
+<div id="function-3" class="section level3">
+<h3>Function</h3>
+<p>The likelihood function.</p>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="hurdle.html#cb272-1"></a>hurdNBloglik =<span class="st"> </span><span class="cf">function</span>(y, X, par) {</span>
+<span id="cb272-2"><a href="hurdle.html#cb272-2"></a>  <span class="co"># Extract parameters</span></span>
+<span id="cb272-3"><a href="hurdle.html#cb272-3"></a>  logitpars  =<span class="st"> </span>par[<span class="kw">grep</span>(<span class="st">&#39;logit&#39;</span>, <span class="kw">names</span>(par))]</span>
+<span id="cb272-4"><a href="hurdle.html#cb272-4"></a>  NegBinpars =<span class="st"> </span>par[<span class="kw">grep</span>(<span class="st">&#39;NegBin&#39;</span>, <span class="kw">names</span>(par))]</span>
+<span id="cb272-5"><a href="hurdle.html#cb272-5"></a>  </span>
+<span id="cb272-6"><a href="hurdle.html#cb272-6"></a>  theta =<span class="st"> </span><span class="kw">exp</span>(par[<span class="kw">grep</span>(<span class="st">&#39;theta&#39;</span>, <span class="kw">names</span>(par))])</span>
+<span id="cb272-7"><a href="hurdle.html#cb272-7"></a>  </span>
+<span id="cb272-8"><a href="hurdle.html#cb272-8"></a>  <span class="co"># Logit model part</span></span>
+<span id="cb272-9"><a href="hurdle.html#cb272-9"></a>  Xlogit =<span class="st"> </span>X</span>
+<span id="cb272-10"><a href="hurdle.html#cb272-10"></a>  ylogit =<span class="st"> </span><span class="kw">ifelse</span>(y <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb272-11"><a href="hurdle.html#cb272-11"></a>  </span>
+<span id="cb272-12"><a href="hurdle.html#cb272-12"></a>  LPlogit =<span class="st"> </span>Xlogit<span class="op">%*%</span>logitpars</span>
+<span id="cb272-13"><a href="hurdle.html#cb272-13"></a>  mulogit =<span class="st">  </span><span class="kw">plogis</span>(LPlogit)</span>
+<span id="cb272-14"><a href="hurdle.html#cb272-14"></a>  </span>
+<span id="cb272-15"><a href="hurdle.html#cb272-15"></a>  <span class="co"># Calculate the likelihood</span></span>
+<span id="cb272-16"><a href="hurdle.html#cb272-16"></a>  logliklogit =<span class="st"> </span><span class="op">-</span><span class="kw">sum</span>( ylogit<span class="op">*</span><span class="kw">log</span>(mulogit) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ylogit)<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mulogit) )</span>
+<span id="cb272-17"><a href="hurdle.html#cb272-17"></a>  </span>
+<span id="cb272-18"><a href="hurdle.html#cb272-18"></a>  <span class="co">#NB part</span></span>
+<span id="cb272-19"><a href="hurdle.html#cb272-19"></a>  XNB =<span class="st"> </span>X[y <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, ]</span>
+<span id="cb272-20"><a href="hurdle.html#cb272-20"></a>  yNB =<span class="st"> </span>y[y <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</span>
+<span id="cb272-21"><a href="hurdle.html#cb272-21"></a>  </span>
+<span id="cb272-22"><a href="hurdle.html#cb272-22"></a>  muNB =<span class="st"> </span><span class="kw">exp</span>(XNB <span class="op">%*%</span><span class="st"> </span>NegBinpars)</span>
+<span id="cb272-23"><a href="hurdle.html#cb272-23"></a>  </span>
+<span id="cb272-24"><a href="hurdle.html#cb272-24"></a>  <span class="co"># Calculate the likelihood</span></span>
+<span id="cb272-25"><a href="hurdle.html#cb272-25"></a>  loglik0  =<span class="st"> </span><span class="kw">dnbinom</span>(<span class="dv">0</span>,   <span class="dt">mu =</span> muNB, <span class="dt">size =</span> theta, <span class="dt">log =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb272-26"><a href="hurdle.html#cb272-26"></a>  loglik1  =<span class="st"> </span><span class="kw">dnbinom</span>(yNB, <span class="dt">mu =</span> muNB, <span class="dt">size =</span> theta, <span class="dt">log =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb272-27"><a href="hurdle.html#cb272-27"></a>  loglikNB =<span class="st"> </span><span class="op">-</span>( <span class="kw">sum</span>(loglik1) <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(<span class="kw">log</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(loglik0))) )</span>
+<span id="cb272-28"><a href="hurdle.html#cb272-28"></a>  </span>
+<span id="cb272-29"><a href="hurdle.html#cb272-29"></a>  <span class="co"># combine likelihoods</span></span>
+<span id="cb272-30"><a href="hurdle.html#cb272-30"></a>  loglik =<span class="st"> </span>loglikNB <span class="op">+</span><span class="st"> </span>logliklogit</span>
+<span id="cb272-31"><a href="hurdle.html#cb272-31"></a>  loglik</span>
+<span id="cb272-32"><a href="hurdle.html#cb272-32"></a>}</span></code></pre></div>
 </div>
+<div id="estimation-9" class="section level3">
+<h3>Estimation</h3>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="hurdle.html#cb273-1"></a>starts =<span class="st">  </span><span class="kw">c</span>(</span>
+<span id="cb273-2"><a href="hurdle.html#cb273-2"></a>  <span class="dt">logit  =</span> <span class="kw">coef</span>(init_mod),</span>
+<span id="cb273-3"><a href="hurdle.html#cb273-3"></a>  <span class="dt">NegBin =</span> <span class="kw">coef</span>(init_mod),</span>
+<span id="cb273-4"><a href="hurdle.html#cb273-4"></a>  <span class="dt">theta  =</span> <span class="dv">1</span></span>
+<span id="cb273-5"><a href="hurdle.html#cb273-5"></a>)</span>
+<span id="cb273-6"><a href="hurdle.html#cb273-6"></a></span>
+<span id="cb273-7"><a href="hurdle.html#cb273-7"></a>optNB1 =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb273-8"><a href="hurdle.html#cb273-8"></a>  <span class="dt">par =</span> starts,</span>
+<span id="cb273-9"><a href="hurdle.html#cb273-9"></a>  <span class="dt">fn  =</span> hurdNBloglik,</span>
+<span id="cb273-10"><a href="hurdle.html#cb273-10"></a>  <span class="dt">X   =</span> init_mod<span class="op">$</span>x,</span>
+<span id="cb273-11"><a href="hurdle.html#cb273-11"></a>  <span class="dt">y   =</span> init_mod<span class="op">$</span>y,</span>
+<span id="cb273-12"><a href="hurdle.html#cb273-12"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">maxit =</span> <span class="dv">5000</span>, <span class="dt">reltol =</span> <span class="fl">1e-12</span>),</span>
+<span id="cb273-13"><a href="hurdle.html#cb273-13"></a>  <span class="dt">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb273-14"><a href="hurdle.html#cb273-14"></a>  <span class="dt">hessian =</span> <span class="ot">TRUE</span></span>
+<span id="cb273-15"><a href="hurdle.html#cb273-15"></a>)</span>
+<span id="cb273-16"><a href="hurdle.html#cb273-16"></a><span class="co"># optNB1 </span></span>
+<span id="cb273-17"><a href="hurdle.html#cb273-17"></a></span>
+<span id="cb273-18"><a href="hurdle.html#cb273-18"></a>B  =<span class="st"> </span>optNB1<span class="op">$</span>par</span>
+<span id="cb273-19"><a href="hurdle.html#cb273-19"></a>se =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">solve</span>(optNB1<span class="op">$</span>hessian)))</span>
+<span id="cb273-20"><a href="hurdle.html#cb273-20"></a>Z  =<span class="st"> </span>B<span class="op">/</span>se</span>
+<span id="cb273-21"><a href="hurdle.html#cb273-21"></a>p  =<span class="st"> </span><span class="kw">ifelse</span>(Z <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>, <span class="kw">pnorm</span>(Z, <span class="dt">lower =</span> <span class="ot">FALSE</span>)<span class="op">*</span><span class="dv">2</span>, <span class="kw">pnorm</span>(Z)<span class="op">*</span><span class="dv">2</span>)</span>
+<span id="cb273-22"><a href="hurdle.html#cb273-22"></a></span>
+<span id="cb273-23"><a href="hurdle.html#cb273-23"></a>summarytable =<span class="st"> </span><span class="kw">round</span>(<span class="kw">data.frame</span>(B, se, Z, p), <span class="dv">3</span>)</span>
+<span id="cb273-24"><a href="hurdle.html#cb273-24"></a></span>
+<span id="cb273-25"><a href="hurdle.html#cb273-25"></a><span class="kw">list</span>(<span class="dt">summary =</span> summarytable, <span class="dt">ll =</span> optNB1<span class="op">$</span>value)</span></code></pre></div>
+<pre><code>$summary
+                        B    se      Z     p
+logit.(Intercept)  -1.417 0.491 -2.888 0.004
+logit.persons       0.206 0.117  1.762 0.078
+logit.livebait      0.711 0.403  1.765 0.077
+NegBin.(Intercept) -3.461 0.869 -3.984 0.000
+NegBin.persons      0.941 0.153  6.154 0.000
+NegBin.livebait     1.985 0.639  3.109 0.002
+theta              -1.301 0.576 -2.257 0.024
+
+$ll
+[1] 439.3686</code></pre>
+</div>
+<div id="comparison-14" class="section level3">
+<h3>Comparison</h3>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="hurdle.html#cb275-1"></a>NBmod =<span class="st"> </span><span class="kw">hurdle</span>(</span>
+<span id="cb275-2"><a href="hurdle.html#cb275-2"></a>  count <span class="op">~</span><span class="st"> </span>persons <span class="op">+</span><span class="st"> </span>livebait,</span>
+<span id="cb275-3"><a href="hurdle.html#cb275-3"></a>  <span class="dt">data =</span> fish,</span>
+<span id="cb275-4"><a href="hurdle.html#cb275-4"></a>  <span class="dt">zero.dist =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb275-5"><a href="hurdle.html#cb275-5"></a>  <span class="dt">dist =</span> <span class="st">&quot;negbin&quot;</span></span>
+<span id="cb275-6"><a href="hurdle.html#cb275-6"></a>)</span>
+<span id="cb275-7"><a href="hurdle.html#cb275-7"></a></span>
+<span id="cb275-8"><a href="hurdle.html#cb275-8"></a><span class="kw">summary</span>(NBmod)<span class="op">$</span>coefficients</span></code></pre></div>
+<pre><code>$count
+              Estimate Std. Error   z value     Pr(&gt;|z|)
+(Intercept) -3.4607351  0.8685859 -3.984333 6.767006e-05
+persons      0.9406299  0.1528503  6.153930 7.558587e-10
+livebait     1.9851725  0.6385774  3.108742 1.878857e-03
+Log(theta)  -1.3008799  0.5762777 -2.257384 2.398411e-02
+
+$zero
+              Estimate Std. Error   z value    Pr(&gt;|z|)
+(Intercept) -1.4173042  0.4907691 -2.887925 0.003877928
+persons      0.2057555  0.1168027  1.761565 0.078142847
+livebait     0.7109464  0.4026898  1.765494 0.077480807</code></pre>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="hurdle.html#cb277-1"></a>summarytable</span></code></pre></div>
+<pre><code>                        B    se      Z     p
+logit.(Intercept)  -1.417 0.491 -2.888 0.004
+logit.persons       0.206 0.117  1.762 0.078
+logit.livebait      0.711 0.403  1.765 0.077
+NegBin.(Intercept) -3.461 0.869 -3.984 0.000
+NegBin.persons      0.941 0.153  6.154 0.000
+NegBin.livebait     1.985 0.639  3.109 0.002
+theta              -1.301 0.576 -2.257 0.024</code></pre>
+</div>
+</div>
+<div id="source-16" class="section level2">
+<h2>Source</h2>
+<p>Source code found at <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/hurdle.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/hurdle.R</a></p>
+
 </div>
 </div>
             </section>
@@ -556,8 +756,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="em.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="cubic-spline.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="zi.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -590,7 +790,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/supplemental.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/hurdle.Rmd",
 "text": "Edit"
 },
 "history": {

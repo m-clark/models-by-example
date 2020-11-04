@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Supplemental | Model Estimation by Example</title>
+  <title>Markov Chain Model | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Supplemental | Model Estimation by Example" />
+  <meta property="og:title" content="Markov Chain Model | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Supplemental | Model Estimation by Example" />
+  <meta name="twitter:title" content="Markov Chain Model | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="em.html"/>
-
+<link rel="prev" href="ordinal.html"/>
+<link rel="next" href="hmm.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -513,42 +513,332 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="supplemental" class="section level1">
-<h1>Supplemental</h1>
-<div id="other-languages" class="section level2">
-<h2>Other Languages</h2>
-<p>When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. Not much here but may be useful to some.</p>
-<div id="julia" class="section level4">
-<h4>Julia</h4>
-<div id="one-factor-mixed-model-1" class="section level5">
-<h5>One-factor Mixed Model</h5>
-</div>
-<div id="two-factor-mixed-model-1" class="section level5">
-<h5>Two-factor Mixed Model</h5>
-</div>
-</div>
-<div id="matlab" class="section level4">
-<h4>Matlab</h4>
-<div id="one-factor-mixed-model-2" class="section level5">
-<h5>One-factor Mixed Model</h5>
-</div>
-<div id="two-factor-mixed-model-2" class="section level5">
-<h5>Two-factor Mixed Model</h5>
-</div>
-</div>
-<div id="algorithms" class="section level3">
-<h3>Algorithms</h3>
-<div id="python" class="section level4">
-<h4>Python</h4>
-<div id="nelder-mead-1" class="section level5">
-<h5>Nelder-Mead</h5>
-</div>
-<div id="hmm" class="section level5">
-<h5>HMM</h5>
+<div id="markov-chain-model" class="section level1">
+<h1>Markov Chain Model</h1>
+<p>Initial demo of <span class="pack" style="">markovchain</span> package. Not shown. You may want to play with it to get a feel for how it works. We will use it for comparison later. Do go ahead and load the package</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="markov.html#cb190-1"></a><span class="kw">library</span>(markovchain)</span>
+<span id="cb190-2"><a href="markov.html#cb190-2"></a></span>
+<span id="cb190-3"><a href="markov.html#cb190-3"></a>A =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">.3</span>, <span class="fl">.9</span>, <span class="fl">.1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb190-4"><a href="markov.html#cb190-4"></a></span>
+<span id="cb190-5"><a href="markov.html#cb190-5"></a>dtmcA =<span class="st"> </span><span class="kw">new</span>(</span>
+<span id="cb190-6"><a href="markov.html#cb190-6"></a>  <span class="st">&#39;markovchain&#39;</span>,</span>
+<span id="cb190-7"><a href="markov.html#cb190-7"></a>  <span class="dt">transitionMatrix =</span> A,</span>
+<span id="cb190-8"><a href="markov.html#cb190-8"></a>  <span class="dt">states =</span> <span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>),</span>
+<span id="cb190-9"><a href="markov.html#cb190-9"></a>  <span class="dt">name =</span> <span class="st">&#39;MarkovChain A&#39;</span></span>
+<span id="cb190-10"><a href="markov.html#cb190-10"></a>)</span>
+<span id="cb190-11"><a href="markov.html#cb190-11"></a></span>
+<span id="cb190-12"><a href="markov.html#cb190-12"></a>dtmcA</span></code></pre></div>
+<pre><code>MarkovChain A 
+ A  2 - dimensional discrete Markov Chain defined by the following states: 
+ a, b 
+ The transition matrix  (by rows)  is defined as follows: 
+    a   b
+a 0.7 0.3
+b 0.9 0.1</code></pre>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="markov.html#cb192-1"></a><span class="kw">plot</span>(dtmcA)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/markov-chain-demo-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="markov.html#cb193-1"></a><span class="kw">transitionProbability</span>(dtmcA, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;b&#39;</span>)</span></code></pre></div>
+<pre><code>[1] 0.1</code></pre>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="markov.html#cb195-1"></a>initialState =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb195-2"><a href="markov.html#cb195-2"></a>steps =<span class="st"> </span><span class="dv">4</span></span>
+<span id="cb195-3"><a href="markov.html#cb195-3"></a>finalState =<span class="st"> </span>initialState <span class="op">*</span><span class="st"> </span>dtmcA <span class="op">^</span><span class="st"> </span>steps <span class="co">#using power operator</span></span>
+<span id="cb195-4"><a href="markov.html#cb195-4"></a>finalState</span></code></pre></div>
+<pre><code>          a      b
+[1,] 0.7488 0.2512</code></pre>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="markov.html#cb197-1"></a><span class="kw">steadyStates</span>(dtmcA)</span></code></pre></div>
+<pre><code>        a    b
+[1,] 0.75 0.25</code></pre>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="markov.html#cb199-1"></a>observed_states =<span class="st"> </span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>), <span class="dv">50</span>, <span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">.3</span>), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb199-2"><a href="markov.html#cb199-2"></a></span>
+<span id="cb199-3"><a href="markov.html#cb199-3"></a><span class="kw">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
+<pre><code>   a  b
+a 24 11
+b 11  3</code></pre>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="markov.html#cb201-1"></a><span class="kw">markovchainFit</span>(observed_states)</span></code></pre></div>
+<pre><code>$estimate
+MLE Fit 
+ A  2 - dimensional discrete Markov Chain defined by the following states: 
+ a, b 
+ The transition matrix  (by rows)  is defined as follows: 
+          a         b
+a 0.6857143 0.3142857
+b 0.7857143 0.2142857
 
+
+$standardError
+          a          b
+a 0.1399708 0.09476071
+b 0.2369018 0.12371791
+
+$confidenceLevel
+[1] 0.95
+
+$lowerEndpointMatrix
+          a         b
+a 0.4113764 0.1285581
+b 0.3213953 0.0000000
+
+$upperEndpointMatrix
+          a         b
+a 0.9600522 0.5000133
+b 1.0000000 0.4567684
+
+$logLikelihood
+[1] -29.06116</code></pre>
+<div id="data-setup-8" class="section level2">
+<h2>Data Setup</h2>
+<div id="data-functions" class="section level3">
+<h3>Data Functions</h3>
+<p>A recursive function to take a matrix power.</p>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="markov.html#cb203-1"></a>mat_power =<span class="st"> </span><span class="cf">function</span>(M, N){</span>
+<span id="cb203-2"><a href="markov.html#cb203-2"></a>  <span class="cf">if</span> (N<span class="op">==</span><span class="dv">1</span>) <span class="kw">return</span>(M)</span>
+<span id="cb203-3"><a href="markov.html#cb203-3"></a>  </span>
+<span id="cb203-4"><a href="markov.html#cb203-4"></a>  M <span class="op">%*%</span><span class="st"> </span><span class="kw">mat_power</span>(M, N<span class="dv">-1</span>)</span>
+<span id="cb203-5"><a href="markov.html#cb203-5"></a>}</span></code></pre></div>
+<p>A function to create a sequence.</p>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="markov.html#cb204-1"></a>createSequence =<span class="st"> </span><span class="cf">function</span>(states, len, tmat) {</span>
+<span id="cb204-2"><a href="markov.html#cb204-2"></a>  <span class="co"># states: number of states</span></span>
+<span id="cb204-3"><a href="markov.html#cb204-3"></a>  <span class="co"># len: length of sequence</span></span>
+<span id="cb204-4"><a href="markov.html#cb204-4"></a>  <span class="co"># tmat: the transition matrix</span></span>
+<span id="cb204-5"><a href="markov.html#cb204-5"></a>  states_numeric =<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(states))</span>
+<span id="cb204-6"><a href="markov.html#cb204-6"></a>  out =<span class="st"> </span><span class="kw">numeric</span>(len)</span>
+<span id="cb204-7"><a href="markov.html#cb204-7"></a>  out[<span class="dv">1</span>] =<span class="st"> </span><span class="kw">sample</span>(states_numeric, <span class="dv">1</span>, <span class="dt">prob=</span><span class="kw">colMeans</span>(tmat)) <span class="co"># initial state</span></span>
+<span id="cb204-8"><a href="markov.html#cb204-8"></a>  </span>
+<span id="cb204-9"><a href="markov.html#cb204-9"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span>len){</span>
+<span id="cb204-10"><a href="markov.html#cb204-10"></a>    out[i] =<span class="st"> </span><span class="kw">sample</span>(states_numeric, <span class="dv">1</span>, <span class="dt">prob =</span> tmat[out[i <span class="op">-</span><span class="st"> </span><span class="dv">1</span>], ])</span>
+<span id="cb204-11"><a href="markov.html#cb204-11"></a>  }</span>
+<span id="cb204-12"><a href="markov.html#cb204-12"></a>  </span>
+<span id="cb204-13"><a href="markov.html#cb204-13"></a>  states[out]</span>
+<span id="cb204-14"><a href="markov.html#cb204-14"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="markov.html#cb205-1"></a><span class="co"># example</span></span>
+<span id="cb205-2"><a href="markov.html#cb205-2"></a>result.mat =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rep</span>(<span class="dv">2</span>, <span class="dv">4</span>), <span class="dt">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb205-3"><a href="markov.html#cb205-3"></a><span class="kw">mat_power</span>(result.mat, <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>     [,1] [,2]
+[1,]    8    8
+[2,]    8    8</code></pre>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="markov.html#cb207-1"></a><span class="co"># transition matrix</span></span>
+<span id="cb207-2"><a href="markov.html#cb207-2"></a>A =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">.3</span>, <span class="fl">.4</span>, <span class="fl">.6</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb207-3"><a href="markov.html#cb207-3"></a></span>
+<span id="cb207-4"><a href="markov.html#cb207-4"></a><span class="kw">mat_power</span>(A, <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>          [,1]      [,2]
+[1,] 0.5714311 0.4285689
+[2,] 0.5714252 0.4285748</code></pre>
+</div>
+<div id="two-states-demo" class="section level3">
+<h3>Two states Demo</h3>
+<p>Note that a notably long sequence is needed to get close to recovering the true transition matrix.</p>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="markov.html#cb209-1"></a>A =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">.3</span>, <span class="fl">.9</span>, <span class="fl">.1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb209-2"><a href="markov.html#cb209-2"></a>observed_states =<span class="st"> </span><span class="kw">createSequence</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>), <span class="dv">5000</span>, <span class="dt">tmat =</span> A)</span>
+<span id="cb209-3"><a href="markov.html#cb209-3"></a></span>
+<span id="cb209-4"><a href="markov.html#cb209-4"></a><span class="kw">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
+<pre><code>     a    b
+a 2637 1124
+b 1124  114</code></pre>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="markov.html#cb211-1"></a><span class="kw">prop.table</span>(<span class="kw">createSequenceMatrix</span>(observed_states), <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>          a          b
+a 0.7011433 0.29885669
+b 0.9079160 0.09208401</code></pre>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="markov.html#cb213-1"></a><span class="kw">markovchainFit</span>(observed_states)</span></code></pre></div>
+<pre><code>$estimate
+MLE Fit 
+ A  2 - dimensional discrete Markov Chain defined by the following states: 
+ a, b 
+ The transition matrix  (by rows)  is defined as follows: 
+          a          b
+a 0.7011433 0.29885669
+b 0.9079160 0.09208401
+
+
+$standardError
+           a           b
+a 0.01365374 0.008914148
+b 0.02708086 0.008624457
+
+$confidenceLevel
+[1] 0.95
+
+$lowerEndpointMatrix
+          a          b
+a 0.6743825 0.28138528
+b 0.8548385 0.07518038
+
+$upperEndpointMatrix
+          a         b
+a 0.7279042 0.3163281
+b 0.9609935 0.1089876
+
+$logLikelihood
+[1] -2674.284</code></pre>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="markov.html#cb215-1"></a>res =<span class="st"> </span><span class="kw">markovchainFit</span>(observed_states)</span>
+<span id="cb215-2"><a href="markov.html#cb215-2"></a></span>
+<span id="cb215-3"><a href="markov.html#cb215-3"></a><span class="co"># log likelihood</span></span>
+<span id="cb215-4"><a href="markov.html#cb215-4"></a><span class="kw">sum</span>(<span class="kw">createSequenceMatrix</span>(observed_states) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(res<span class="op">$</span>estimate<span class="op">@</span>transitionMatrix))</span></code></pre></div>
+<pre><code>[1] -2674.284</code></pre>
+</div>
+<div id="three-states-demo" class="section level3">
+<h3>Three states demo</h3>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="markov.html#cb217-1"></a>A =<span class="st"> </span><span class="kw">matrix</span>(</span>
+<span id="cb217-2"><a href="markov.html#cb217-2"></a>  <span class="kw">c</span>(.<span class="dv">70</span>, <span class="fl">.20</span>, <span class="fl">.10</span>,</span>
+<span id="cb217-3"><a href="markov.html#cb217-3"></a>    <span class="fl">.20</span>, <span class="fl">.40</span>, <span class="fl">.40</span>,</span>
+<span id="cb217-4"><a href="markov.html#cb217-4"></a>    <span class="fl">.05</span>, <span class="fl">.05</span>, <span class="fl">.90</span>), </span>
+<span id="cb217-5"><a href="markov.html#cb217-5"></a>  <span class="dt">nrow  =</span> <span class="dv">3</span>, </span>
+<span id="cb217-6"><a href="markov.html#cb217-6"></a>  <span class="dt">byrow =</span> <span class="ot">TRUE</span></span>
+<span id="cb217-7"><a href="markov.html#cb217-7"></a>)</span>
+<span id="cb217-8"><a href="markov.html#cb217-8"></a></span>
+<span id="cb217-9"><a href="markov.html#cb217-9"></a>observed_states =<span class="st"> </span><span class="kw">createSequence</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>), <span class="dv">500</span>, <span class="dt">tmat =</span> A)</span>
+<span id="cb217-10"><a href="markov.html#cb217-10"></a><span class="kw">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
+<pre><code>   a  b   c
+a 77 27  12
+b 20 28  22
+c 18 15 280</code></pre>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="markov.html#cb219-1"></a><span class="kw">prop.table</span>(<span class="kw">createSequenceMatrix</span>(observed_states), <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>           a          b         c
+a 0.66379310 0.23275862 0.1034483
+b 0.28571429 0.40000000 0.3142857
+c 0.05750799 0.04792332 0.8945687</code></pre>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="markov.html#cb221-1"></a><span class="kw">markovchainFit</span>(observed_states)</span></code></pre></div>
+<pre><code>$estimate
+MLE Fit 
+ A  3 - dimensional discrete Markov Chain defined by the following states: 
+ a, b, c 
+ The transition matrix  (by rows)  is defined as follows: 
+           a          b         c
+a 0.66379310 0.23275862 0.1034483
+b 0.28571429 0.40000000 0.3142857
+c 0.05750799 0.04792332 0.8945687
+
+
+$standardError
+           a          b          c
+a 0.07564624 0.04479442 0.02986294
+b 0.06388766 0.07559289 0.06700594
+c 0.01355476 0.01237375 0.05346070
+
+$confidenceLevel
+[1] 0.95
+
+$lowerEndpointMatrix
+           a          b          c
+a 0.51552916 0.14496316 0.04491797
+b 0.16049675 0.25184062 0.18295646
+c 0.03094114 0.02367122 0.78978761
+
+$upperEndpointMatrix
+           a          b         c
+a 0.81205705 0.32055408 0.1619786
+b 0.41093182 0.54815938 0.4456150
+c 0.08407484 0.07217543 0.9993498
+
+$logLikelihood
+[1] -302.4854</code></pre>
 </div>
 </div>
+<div id="function" class="section level2">
+<h2>Function</h2>
+<p>Now we create a function to calculate the (negative) log likelihood.</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="markov.html#cb223-1"></a>markov_ll =<span class="st"> </span><span class="cf">function</span>(par, x) {</span>
+<span id="cb223-2"><a href="markov.html#cb223-2"></a>  <span class="co"># par should be the c(A) of transition probabilities A</span></span>
+<span id="cb223-3"><a href="markov.html#cb223-3"></a>  nstates =<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(x))</span>
+<span id="cb223-4"><a href="markov.html#cb223-4"></a>  </span>
+<span id="cb223-5"><a href="markov.html#cb223-5"></a>  <span class="co"># create transition matrix</span></span>
+<span id="cb223-6"><a href="markov.html#cb223-6"></a>  par =<span class="st"> </span><span class="kw">matrix</span>(par, <span class="dt">ncol=</span>nstates)</span>
+<span id="cb223-7"><a href="markov.html#cb223-7"></a>  par =<span class="st"> </span><span class="kw">t</span>(<span class="kw">apply</span>(par, <span class="dv">1</span>, <span class="cf">function</span>(x) x<span class="op">/</span><span class="kw">sum</span>(x)))</span>
+<span id="cb223-8"><a href="markov.html#cb223-8"></a>  </span>
+<span id="cb223-9"><a href="markov.html#cb223-9"></a>  <span class="co"># create seq matrix</span></span>
+<span id="cb223-10"><a href="markov.html#cb223-10"></a>  seqMat =<span class="st"> </span><span class="kw">table</span>(x[<span class="op">-</span><span class="kw">length</span>(x)], x[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb223-11"><a href="markov.html#cb223-11"></a>  </span>
+<span id="cb223-12"><a href="markov.html#cb223-12"></a>  <span class="co"># calculate log likelihood</span></span>
+<span id="cb223-13"><a href="markov.html#cb223-13"></a>  ll =<span class="st"> </span><span class="kw">sum</span>(seqMat <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(par))</span>
+<span id="cb223-14"><a href="markov.html#cb223-14"></a>  </span>
+<span id="cb223-15"><a href="markov.html#cb223-15"></a>  <span class="op">-</span>ll</span>
+<span id="cb223-16"><a href="markov.html#cb223-16"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="markov.html#cb224-1"></a>A =<span class="st"> </span><span class="kw">matrix</span>(</span>
+<span id="cb224-2"><a href="markov.html#cb224-2"></a>  <span class="kw">c</span>(.<span class="dv">70</span>, <span class="fl">.20</span>, <span class="fl">.10</span>,</span>
+<span id="cb224-3"><a href="markov.html#cb224-3"></a>    <span class="fl">.40</span>, <span class="fl">.20</span>, <span class="fl">.40</span>,</span>
+<span id="cb224-4"><a href="markov.html#cb224-4"></a>    <span class="fl">.10</span>, <span class="fl">.15</span>, <span class="fl">.75</span>),</span>
+<span id="cb224-5"><a href="markov.html#cb224-5"></a>  <span class="dt">nrow  =</span> <span class="dv">3</span>,</span>
+<span id="cb224-6"><a href="markov.html#cb224-6"></a>  <span class="dt">byrow =</span> <span class="ot">TRUE</span></span>
+<span id="cb224-7"><a href="markov.html#cb224-7"></a>)</span>
+<span id="cb224-8"><a href="markov.html#cb224-8"></a></span>
+<span id="cb224-9"><a href="markov.html#cb224-9"></a>observed_states =<span class="st"> </span><span class="kw">createSequence</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>), <span class="dv">1000</span>, <span class="dt">tmat =</span> A)</span></code></pre></div>
 </div>
+<div id="estimation-6" class="section level2">
+<h2>Estimation</h2>
+<p>Note that initial state values will be transformed to rowsum to one, so the specific initial values don’t matter (i.e. they don’t have to be probabilities). With the basic <span class="func" style="">optim</span> approach, sometimes log(0) will occur and produce a warning. Can be ignored, or use <code>LFBGS</code> as demonstrated at the end.</p>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="markov.html#cb225-1"></a>initpar =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">9</span>)</span>
+<span id="cb225-2"><a href="markov.html#cb225-2"></a></span>
+<span id="cb225-3"><a href="markov.html#cb225-3"></a>result =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb225-4"><a href="markov.html#cb225-4"></a>  <span class="dt">par =</span> initpar,</span>
+<span id="cb225-5"><a href="markov.html#cb225-5"></a>  <span class="dt">fn  =</span> markov_ll,</span>
+<span id="cb225-6"><a href="markov.html#cb225-6"></a>  <span class="dt">x   =</span> observed_states,</span>
+<span id="cb225-7"><a href="markov.html#cb225-7"></a>  <span class="dt">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
+<span id="cb225-8"><a href="markov.html#cb225-8"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">reltol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb225-9"><a href="markov.html#cb225-9"></a>)</span>
+<span id="cb225-10"><a href="markov.html#cb225-10"></a></span>
+<span id="cb225-11"><a href="markov.html#cb225-11"></a><span class="co"># get estimates on prob scale</span></span>
+<span id="cb225-12"><a href="markov.html#cb225-12"></a>estmat =<span class="st"> </span><span class="kw">matrix</span>(result<span class="op">$</span>par, <span class="dt">ncol =</span> <span class="dv">3</span>)</span>
+<span id="cb225-13"><a href="markov.html#cb225-13"></a>estmat =<span class="st"> </span><span class="kw">t</span>(<span class="kw">apply</span>(estmat, <span class="dv">1</span>, <span class="cf">function</span>(x)  x <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(x)))</span></code></pre></div>
+</div>
+<div id="comparison-12" class="section level2">
+<h2>Comparison</h2>
+<p>Compare with <span class="pack" style="">markovchain</span> package.</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="markov.html#cb226-1"></a>compare_result =<span class="st"> </span><span class="kw">markovchainFit</span>(observed_states)</span>
+<span id="cb226-2"><a href="markov.html#cb226-2"></a></span>
+<span id="cb226-3"><a href="markov.html#cb226-3"></a><span class="co"># compare log likelihood</span></span>
+<span id="cb226-4"><a href="markov.html#cb226-4"></a><span class="kw">c</span>(<span class="op">-</span>result<span class="op">$</span>value, compare_result<span class="op">$</span>logLikelihood)</span></code></pre></div>
+<pre><code>[1] -844.459 -844.459</code></pre>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="markov.html#cb228-1"></a><span class="co"># compare estimated transition matrix</span></span>
+<span id="cb228-2"><a href="markov.html#cb228-2"></a><span class="kw">list</span>(</span>
+<span id="cb228-3"><a href="markov.html#cb228-3"></a>  <span class="st">`</span><span class="dt">Estimated via optim</span><span class="st">`</span> =<span class="st"> </span>estmat,</span>
+<span id="cb228-4"><a href="markov.html#cb228-4"></a>  <span class="st">`</span><span class="dt">markovchain Package</span><span class="st">`</span> =<span class="st"> </span>compare_result<span class="op">$</span>estimate<span class="op">@</span>transitionMatrix,</span>
+<span id="cb228-5"><a href="markov.html#cb228-5"></a>  <span class="st">`</span><span class="dt">Analytical Solution</span><span class="st">`</span> =<span class="st"> </span><span class="kw">prop.table</span>(</span>
+<span id="cb228-6"><a href="markov.html#cb228-6"></a>    <span class="kw">table</span>(observed_states[<span class="op">-</span><span class="kw">length</span>(observed_states)], observed_states[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb228-7"><a href="markov.html#cb228-7"></a>    , <span class="dv">1</span>)</span>
+<span id="cb228-8"><a href="markov.html#cb228-8"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb228-9"><a href="markov.html#cb228-9"></a><span class="st">  </span><span class="kw">map</span>(round, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>$`Estimated via optim`
+      [,1]  [,2]  [,3]
+[1,] 0.698 0.191 0.111
+[2,] 0.369 0.235 0.396
+[3,] 0.113 0.162 0.725
+
+$`markovchain Package`
+      a     b     c
+a 0.698 0.191 0.111
+b 0.369 0.235 0.396
+c 0.113 0.162 0.725
+
+$`Analytical Solution`
+   
+        a     b     c
+  a 0.698 0.191 0.111
+  b 0.369 0.235 0.396
+  c 0.113 0.162 0.725</code></pre>
+<p>Visualize.</p>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="markov.html#cb230-1"></a><span class="kw">plot</span>(</span>
+<span id="cb230-2"><a href="markov.html#cb230-2"></a>  <span class="kw">new</span>(</span>
+<span id="cb230-3"><a href="markov.html#cb230-3"></a>    <span class="st">&#39;markovchain&#39;</span>,</span>
+<span id="cb230-4"><a href="markov.html#cb230-4"></a>    <span class="dt">transitionMatrix =</span> estmat,</span>
+<span id="cb230-5"><a href="markov.html#cb230-5"></a>    <span class="dt">states =</span> <span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>),</span>
+<span id="cb230-6"><a href="markov.html#cb230-6"></a>    <span class="dt">name =</span> <span class="st">&#39;Estimated Markov Chain&#39;</span></span>
+<span id="cb230-7"><a href="markov.html#cb230-7"></a>  )</span>
+<span id="cb230-8"><a href="markov.html#cb230-8"></a>)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/markov-vis-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<p>If you don’t want warnings due to zeros use constraints (<code>?constrOptim</code>).</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="markov.html#cb231-1"></a>result =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb231-2"><a href="markov.html#cb231-2"></a>  <span class="dt">par =</span> initpar,</span>
+<span id="cb231-3"><a href="markov.html#cb231-3"></a>  <span class="dt">fn  =</span> markov_ll,</span>
+<span id="cb231-4"><a href="markov.html#cb231-4"></a>  <span class="dt">x   =</span> observed_states,</span>
+<span id="cb231-5"><a href="markov.html#cb231-5"></a>  <span class="dt">method  =</span> <span class="st">&#39;L-BFGS&#39;</span>,</span>
+<span id="cb231-6"><a href="markov.html#cb231-6"></a>  <span class="dt">lower   =</span> <span class="kw">rep</span>(<span class="fl">1e-20</span>, <span class="kw">length</span>(initpar)),</span>
+<span id="cb231-7"><a href="markov.html#cb231-7"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">pgtol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb231-8"><a href="markov.html#cb231-8"></a>)</span></code></pre></div>
+</div>
+<div id="source-12" class="section level2">
+<h2>Source</h2>
+<p>Source code found at
+<a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/markov_model.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/markov_model.R</a></p>
+
 </div>
 </div>
             </section>
@@ -556,8 +846,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="em.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="ordinal.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="hmm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -590,7 +880,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/supplemental.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/markov.Rmd",
 "text": "Edit"
 },
 "history": {

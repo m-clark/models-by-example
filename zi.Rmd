@@ -1,4 +1,4 @@
-# Zero-Inflated Models
+# Zero-Inflated Model
 
 
 Log likelihood function to estimate parameters for a Zero-inflated Poisson model. With examples
@@ -66,7 +66,7 @@ Get starting values or simply do zeros.
 
 ```{r zip-starts}
 # for zip: need 'logit', 'pois'
-init.mod = glm(
+initial_model = glm(
   count ~ persons + livebait,
   data = fish,
   x = TRUE,
@@ -74,10 +74,11 @@ init.mod = glm(
   "poisson"
 )
 
-# starts = c(logit = coef(init.mod), pois = coef(init.mod))  
+# starts = c(logit = coef(initial_model), pois = coef(initial_model))  
 starts = c(rep(0, 3), rep(0, 3))
-names(starts) = c(paste0('pois.', names(coef(init.mod))),
-                  paste0('logit.', names(coef(init.mod))))
+
+names(starts) = c(paste0('pois.', names(coef(initial_model))),
+                  paste0('logit.', names(coef(initial_model))))
 ```
 
 
@@ -89,8 +90,8 @@ Estimate with <span class="func" style = "">optim</span>.
 optPois1 = optim(
   par = starts ,
   fn  = ZIP,
-  X   = init.mod$x,
-  y   = init.mod$y,
+  X   = initial_model$x,
+  y   = initial_model$y,
   method  = "BFGS",
   control = list(maxit = 5000, reltol = 1e-12),
   hessian = TRUE
@@ -117,6 +118,7 @@ Results from <span class="pack" style = "">pscl</span>.
 
 ```{r zip-pscl}
 library(pscl)
+
 zipoismod = zeroinfl(count ~ persons + livebait, data = fish, dist = "poisson") 
 ```
 
@@ -190,7 +192,7 @@ Get starting values or simply do zeros.
 
 ```{r zinb-starts}
 # for zinb: 'logit', 'negbin', 'theta'
-init.mod = model.matrix(count ~ persons + livebait, data = fish) # to get X matrix
+initial_model = model.matrix(count ~ persons + livebait, data = fish) # to get X matrix
 
 startlogi  = glm(count == 0 ~ persons + livebait, data = fish, family = "binomial")
 startcount = glm(count ~ persons + livebait, data = fish, family = "poisson")
@@ -214,7 +216,7 @@ Estimate with <span class="func" style = "">optim</span>.
 optNB1 = optim(
   par = starts ,
   fn  = ZINB,
-  X   = init.mod,
+  X   = initial_model,
   y   = fish$count,
   method  = "BFGS",
   control = list(maxit = 5000, reltol = 1e-12),
@@ -241,6 +243,7 @@ Results from <span class="pack" style = "">pscl</span>.
 ```{r zinb-pscl}
 # pscl results
 library(pscl)
+
 zinbmod1 = zeroinfl(count ~ persons + livebait, data = fish, dist = "negbin")
 ```
 
@@ -259,7 +262,7 @@ round(data.frame(B, se, Z, p), 4)  # note that theta here is actually log(theta)
 ```{r zinb-supplemental}
 data("bioChemists", package = "pscl")
 
-init.mod   = model.matrix(art ~ fem + mar + kid5 + phd + ment, data = bioChemists) # to get X matrix
+initial_model   = model.matrix(art ~ fem + mar + kid5 + phd + ment, data = bioChemists) # to get X matrix
 startlogi  = glm(art==0 ~ fem + mar + kid5 + phd + ment, data = bioChemists, family = "binomial")
 startcount = glm(art ~ fem + mar + kid5 + phd + ment, data = bioChemists, family = "quasipoisson")
 
@@ -268,6 +271,7 @@ starts = c(
   logit  = coef(startlogi),
   theta  = summary(startcount)$dispersion
 )  
+
 # starts = c(negbin = rep(0, 6),
 #            logit = rep(0, 6),
 #            theta = 1)
@@ -276,7 +280,7 @@ starts = c(
 optNB2 = optim(
   par = starts ,
   fn  = ZINB,
-  X   = init.mod,
+  X   = initial_model,
   y   = bioChemists$art,
   method  = "BFGS",
   control = list(maxit = 5000, reltol = 1e-12),

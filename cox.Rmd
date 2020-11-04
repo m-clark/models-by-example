@@ -1,0 +1,349 @@
+# Cox Survival
+
+Some simple demonstrations of a standard Cox, Cox with time-varying covariates and a stratified Cox.
+
+## Standard Proportional Hazards
+
+### Data Setup
+
+```{r cox-setup}
+set.seed(12)
+
+dur = 1:10
+kittyblarg = rnorm(10)                                 # something happened to kitty!
+kittyhappy = rep(0:1, times = 5)                       # is kitty happy?
+kittydied  = sample(0:1, 10, replace = TRUE)           # kitty died! oh no!
+d = data.frame(kittyblarg, kittyhappy, dur, kittydied)
+
+# Inspect
+d
+```
+
+
+
+### Function
+
+Create a the likelihood function to feed to <span class="" style = "">optim</span>.
+
+```{r cox-ll}
+pl <- function(pars, preds, died, t) {
+  # Arguments- 
+  # pars: coefficients of interest
+  # preds: predictor matrix
+  # died: death
+  # t: time
+  
+  b = pars
+  X = as.matrix(preds[order(t), ])
+  died2 = died[order(t)]
+  
+  LP = X%*%b                # Linear predictor
+  
+  # initialize log likelihood due to looping, not necessary
+  ll = numeric(nrow(X))     
+  rows = 1:nrow(preds)
+  
+  for (i in rows){
+    riskset = ifelse(rows < i, FALSE, TRUE)                  # identify risk set
+    ll[i] = died2[i]*(LP[i] - log(sum(exp(LP[riskset]))) )   # log likelihood
+  }
+  
+  -sum(ll)
+}
+```
+
+
+
+
+### Estimation
+
+Estimate with <span class="func" style = "">optim</span>.
+
+```{r cox-ph-est}
+initial_values = c(0, 0)
+
+out = optim(
+  par   = initial_values,
+  fn    = pl,
+  preds = d[, c('kittyblarg', 'kittyhappy')],
+  died  = d[, 'kittydied'],
+  t     = dur,
+  method  = "BFGS",
+  hessian = T
+)
+
+out
+```
+
+
+
+### Comparison
+
+
+Extract results.
+
+```{r cox-ph-extract}
+B  = out$par
+se = sqrt(diag(solve(out$hessian)))
+Z  = B/se
+
+# create a summary table
+
+result_tbl = data.frame(
+  B, 
+  exp = exp(B), 
+  se, 
+  Z,
+  p = ifelse(Z > 0, pnorm(Z, lower = FALSE)*2, pnorm(Z, lower = TRUE)*2) 
+)
+```
+
+
+
+Compare to <span class="pack" style = "">survival</span> package.
+
+```{r coxph-compare-surv}
+library(survival)
+
+cox_model = coxph(Surv(dur, kittydied) ~ kittyblarg + kittyhappy)
+
+summary(cox_model)$coefficients
+result_tbl
+```
+
+
+
+
+
+## Time-varying coefficients
+
+Note that technically nothing new is going on here relative to the previous model.  See the vignette for the <span class="pack" style = "">survival</span> package for further details.
+
+
+### Data Setup
+
+In the following we'll first create some noisy time points.
+
+
+```{r coxtv-setup}
+set.seed(123)
+
+t1 = rep(NA, 20)
+t2 = rep(NA, 20)
+
+t1[seq(1, 20, by = 2)] = 1:10
+t2[seq(1, 20, by = 2)] = t1[seq(1, 20, by = 2)] + 
+  sample(1:5, 10, replace = TRUE) + 
+  abs(rnorm(10))
+
+t1[seq(2, 20, by = 2)] = t2[seq(1, 20, by = 2)]
+t2[seq(2, 20, by = 2)] = t1[seq(2, 20, by = 2)] + sample(1:5) + abs(rnorm(10))
+
+kitty = rep(1:10, e = 2)
+kittyblarg = t2 + rnorm(20, sd = 5)
+kittyhappy = rep(0:1, times = 5, e = 2)
+die = 0:1
+cens = c(0, 0)
+kittydied = ifelse(runif(20)>=.5, die, cens)
+
+d = data.frame(kitty, kittyblarg, kittyhappy, 
+               t1, t2, kittydied)
+
+# Inspect the Surv object if desired
+# Surv(t1,t2, kittydied)
+
+# Inspect the data
+d
+```
+
+
+
+
+
+### Function
+
+```{r pltv-func}
+pl_tv <- function(pars, preds, died, t1, t2, data) {
+  # Same arguments as before though will take a data object
+  # plus variable names via string input. Also requires beginning
+  # and end time point (t1, t2)
+  dat = data[,c(preds, died, t1, t2)]
+  dat = dat[order(dat$t2), ]
+  b   = pars
+  X   = as.matrix(dat[, preds])
+  died2 = dat[, died]
+  
+  # linear predictor
+  LP = X%*%b
+  
+  # log likelihood
+  ll = numeric(nrow(X))
+  rows = 1:nrow(dat)
+  
+  for (i in rows){
+    st_i = dat$t2[i]
+    
+    # if they have already died/censored (row < i) or if the initial time is
+    # greater than current end time (t1 > st_i),  they are not in the risk set,
+    # else they are.
+    riskset = ifelse(rows < i | dat$t1 > st_i, FALSE, TRUE)     
+    
+    ll[i] = died2[i]*(LP[i] - log(sum(exp(LP[riskset]))) )        
+  }     
+  
+  -sum(ll)
+}
+
+```
+
+
+### Estimation
+
+Estimate with <span class="func" style = "">optim</span>.
+
+```{r coxtv-est}
+initial_values = c(0, 0)
+
+out = optim(
+  par   = initial_values,
+  fn    = pl_tv,
+  preds = c('kittyblarg', 'kittyhappy'),
+  died  = 'kittydied',
+  data  = d,
+  t1    = 't1',
+  t2    = 't2',
+  method  = "BFGS",
+  hessian = TRUE
+)
+
+# out
+```
+
+### Comparison
+
+
+Extract results.
+
+```{r coxtv-extract}
+B  = out$par
+se = sqrt(diag(solve(out$hessian)))
+Z  = B/se
+
+result_tbl = data.frame(
+  B, 
+  exp = exp(B), 
+  se, 
+  Z, 
+  p = ifelse(Z > 0, pnorm(Z, lower = FALSE) * 2, pnorm(Z, lower = TRUE) * 2)
+)
+```
+
+
+
+Compare to survival package.
+
+```{r coxtv-compare}
+cox_model_tv = coxph(
+  Surv(t1, t2, kittydied) ~ kittyblarg + kittyhappy,
+  method = 'breslow',
+  control = coxph.control(iter.max = 1000)
+)
+# cox_model_tv; cox_model_tv$loglik[2]
+
+summary(cox_model_tv)$coefficients
+
+result_tbl
+```
+
+
+
+
+## Stratified Cox Model
+
+
+### Data Setup
+
+```{r coxstrat-setup}
+data(ovarian, package = 'survival') 
+```
+
+### Function
+
+Requires `pl` function above though one could extend to `pl_tv`.
+
+```{r pl-strat-func}
+pl_strat <- function(pars, preds, died, t, strata) {
+  strat = as.factor(strata)
+  d = data.frame(preds, died, t, strat)
+  dlist = split(d, strata)
+  
+  neglls = map_dbl(
+    dlist,
+    function(x)
+      pl(
+        pars  = pars,
+        preds = x[, colnames(preds)],
+        died  = x$died,
+        t     = x$t
+      )
+  )
+  
+  sum(neglls)
+}
+```
+
+
+
+### Estimation
+
+Estimate with <span class="func" style = "">optim</span>.
+
+```{r coxstrat-est}
+initial_values = c(0, 0)
+
+out = optim(
+  par   = initial_values,
+  fn    = pl_strat,
+  preds = ovarian[, c('age', 'ecog.ps')],
+  died  = ovarian$fustat,
+  t     = ovarian$futime,
+  strata  = ovarian$rx,
+  method  = "BFGS",
+  hessian = TRUE
+)
+
+# out
+```
+
+### Comparison
+
+```{r coxstrat-compare}
+B  = out$par
+se = sqrt(diag(solve(out$hessian)))
+Z  = B/se
+
+results_tbl = data.frame(
+  B,
+  exp = exp(B),
+  se,
+  Z,
+  p = ifelse(Z > 0, pnorm(Z, lower = FALSE) * 2, pnorm(Z, lower = TRUE)*2)
+)
+  
+
+cox_strata_model = coxph(
+  Surv(futime, fustat) ~ age + ecog.ps + strata(rx), 
+  data = ovarian
+  )
+# cox_strata_model; cox_strata_model$loglik[2]
+
+summary(cox_model_tv)$coefficients
+
+result_tbl
+```
+
+
+## Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/survivalCox.R

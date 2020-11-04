@@ -1,0 +1,289 @@
+## Multivariate Mixture Model
+
+The following code is based on algorithms noted in Murphy, 2012 Probabilistic Machine Learning.
+Specifically, Chapter 11, section 4.
+
+
+### Function
+
+```{r gaussmixEM-mv}
+gaussmixEM = function(
+  params,
+  X,
+  clusters = 2,
+  tol = .00001,
+  maxits  = 100,
+  showits = TRUE
+  ) {
+  
+  # Arguments are 
+  # params: starting parameters (means, covariances, cluster probability)
+  # X: data 
+  # clusters: number of clusters desired
+  # tol: tolerance
+  # maxits: maximum iterations
+  # showits: whether to show iterations
+  
+  require(mvtnorm)
+  # Starting points
+  N     = nrow(X)
+  mu    = params$mu
+  var   = params$var
+  probs = params$probs
+  
+  # initializations
+  
+  # cluster 'responsibilities', i.e. probability of cluster membership for each
+  # observation i
+  ri = matrix(0, ncol=clusters, nrow=N)       
+  ll = 0                                        # log likelihood
+  it = 0                                        # iteration count
+  converged = FALSE                             # convergence
+  
+  # Show iterations if showits == true
+  if (showits)                                  
+    cat(paste("Iterations of EM:", "\n"))
+  
+  while (!converged & it < maxits) { 
+    probsOld = probs
+    # muOld = mu                # Use direct values or loglike for convergence check
+    # varOld = var
+    llOld = ll
+    riOld = ri
+    
+    ### E
+    # Compute responsibilities
+    for (k in 1:clusters){
+      ri[,k] = probs[k] * dmvnorm(X, mu[k, ], sigma = var[[k]], log = FALSE)
+    }
+    
+    ri = ri/rowSums(ri)
+    
+    ### M
+    rk = colSums(ri)            # rk is weighted average cluster membership size
+    probs = rk/N
+    
+    for (k in 1:clusters){
+      varmat = matrix(0, ncol = ncol(X), nrow = ncol(X))    # initialize to sum matrices
+      
+      for (i in 1:N){
+        varmat = varmat + ri[i,k] * X[i,]%*%t(X[i,])
+      }
+      
+      mu[k,]   = (t(X) %*% ri[,k]) / rk[k]
+      var[[k]] =  varmat/rk[k] - mu[k,]%*%t(mu[k,])
+      
+      ll[k] = -.5*sum( ri[,k] * dmvnorm(X, mu[k,], sigma = var[[k]], log = TRUE) )
+    }
+    
+    ll = sum(ll)
+    
+    ### compare old to current for convergence
+    parmlistold =  c(llOld, probsOld)           # c(muOld, unlist(varOld), probsOld)
+    parmlistcurrent = c(ll, probs)              # c(mu, unlist(var), probs)
+    it = it + 1
+    
+    # if showits true, & it =1 or modulo of 5 print message
+    if (showits & it == 1 | it%%5 == 0)         
+      cat(paste(format(it), "...", "\n", sep = ""))
+    
+    converged = min(abs(parmlistold - parmlistcurrent)) <= tol
+  }
+  
+  clust = which(round(ri) == 1, arr.ind = TRUE)        # create cluster membership
+  clust = clust[order(clust[,1]), 2]            # order accoring to row rather than cluster
+  out = list(
+    probs   = probs,
+    mu      = mu,
+    var     = var,
+    resp    = ri,
+    cluster = clust,
+    ll      = ll
+  )
+  
+  out
+} 
+```
+
+
+
+
+
+
+
+### Example 1: Old Faithful eruptions
+
+
+This example uses Old Faithful geyser eruptions.  This is can be compared to the univariate code from the [other chapter][Mixture Model]. See also http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL
+
+#### Data Setup
+
+```{r mixmv-setup1}
+data("faithful")
+```
+
+
+#### Estimation
+
+Create starting values and estimate.
+
+```{r mixmv-starts1}
+mustart  = rbind(c(3, 60), c(3, 60.1))    # must be at least slightly different
+covstart = list(cov(faithful), cov(faithful))
+probs    = c(.01, .99)
+
+# params is a list of mu, var, and probs 
+starts = list(mu = mustart, var = covstart, probs = probs)  
+```
+
+
+```{r mixmv-est1}
+
+
+mix_faithful = gaussmixEM(
+  params = starts,
+  X = as.matrix(faithful),
+  clusters = 2,
+  tol      = 1e-12,
+  maxits   = 1500,
+  showits  = TRUE
+)
+
+str(mix_faithful)
+```
+
+
+Visualize.
+
+```{r mixmv-vis1}
+library(ggplot2)
+
+ggplot(aes(x = eruptions, y = waiting), data = faithful) +
+  geom_point(aes(color = factor(mix_faithful$cluster))) +
+  theme_minimal()
+
+faithful %>% 
+  mutate(prob_clus_1 = mix_faithful$resp[, 1]) %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point(aes(color = prob_clus_1)) +
+  theme_minimal()
+
+# relatively speaking, these are extremely well-separated clusters
+worst = apply(mix_faithful$resp, 1, function(x)  max(x) < .99) 
+
+ggplot(aes(x = eruptions, y = waiting), data = faithful) +
+  geom_point(aes(color = worst)) +
+  theme_minimal()
+```
+
+#### Comparison
+
+Compare to <span class="pack" style = "">mclust</span> results.
+
+```{r mixmv-compare1}
+library(mclust)
+
+# options are set to be more similar
+mix_mclust = Mclust(
+  faithful[, 1:2],
+  2,
+  modelNames = 'VVV',
+  control = emControl(tol = 1e-12)
+)
+
+str(mix_mclust, 1)
+
+# compare means
+t(mix_faithful$mu)
+mix_mclust$parameters$mean
+
+# compare variances
+mix_faithful$var
+mix_mclust$parameters$variance$sigma
+
+# compare classifications, reverse in case arbitrary numbering of one of them is opposite
+table(mix_faithful$cluster, mix_mclust$classification)
+
+table(ifelse(mix_faithful$cluster == 2, 1, 2),
+      mix_mclust$classification)
+
+# compare responsibilities; reverse one if arbitrary numbering of one of them is opposite
+# cbind(round(mix_faithful$resp[,1], 2), round(mix_mclust$z[,2], 2)) # cluster '1'
+# cbind(round(mix_faithful$resp[,2], 2), round(mix_mclust$z[,1], 2)) # cluster '2'
+```
+
+
+
+
+### Example 2: Iris data set
+
+
+
+#### Data Setup
+
+Set up data
+
+```{r mixmv-setup2}
+iris2 = iris %>% select(-Species)
+```
+
+
+
+
+ 
+
+#### Estimation
+
+Run and examine. We add noise to our starting value, and the function is notably sensitive to starts, but don't want to cheat too badly.
+
+
+```{r mixmv-starts2}
+mustart = iris %>% 
+  group_by(Species) %>% 
+  summarise(across(.fns = function(x) mean(x) + runif(1, 0, .5))) %>% 
+  select(-Species) %>% 
+  as.matrix()
+
+
+# use purrr::map due to mclust::map
+covstart = iris %>% 
+  split(.$Species) %>% 
+  purrr::map(select, -Species) %>% 
+  purrr::map(function(x) cov(x) + diag(runif(4, 0, .5))) 
+
+probs = c(.1, .2, .7)
+
+starts = list(mu = mustart, var = covstart, probs = probs)
+```
+
+
+```{r mixmv-est2}
+mix_mclust_iris = gaussmixEM(
+  params = starts,
+  X = as.matrix(iris2),
+  clusters = 3,
+  tol      = 1e-8,
+  maxits   = 1500,
+  showits  = T
+)
+
+table(mix_mclust_iris$cluster, iris$Species)
+```
+
+
+
+
+
+#### Comparison
+
+Compare to mclust results.
+
+```{r mixmv-compare2}
+mclust_iris = Mclust(iris[,1:4], 3)
+table(mclust_iris$classification, iris$Species)
+```
+
+### Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20Mixture%20MV.R

@@ -22,10 +22,14 @@ rmd_files: [
   naive-bayes.Rmd,
   multinomial.Rmd,
   ordinal.Rmd,
+  markov.Rmd,
+  hmm.Rmd,
   quantile-regression.Rmd,
   cubic-spline.Rmd,
   hurdle.Rmd,
   zi.Rmd,
+  cox.Rmd,
+  cfa.Rmd,
   
   # Algos
   penalized-maximum-likelihood.Rmd,
@@ -35,6 +39,7 @@ rmd_files: [
   nelder-mead.Rmd,
   gradient-descent.Rmd,
   stochastic-gradient-descent.Rmd,
+  em.Rmd,
   
   # Other
   supplemental.Rmd

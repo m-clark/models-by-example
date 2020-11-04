@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Expectation-Maximization | Model Estimation by Example</title>
+  <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Expectation-Maximization | Model Estimation by Example" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
+  <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+  <meta property="og:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="github-repo" content="m-clark/models-by-example/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Expectation-Maximization | Model Estimation by Example" />
+  
+  <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+
+
+
+<meta name="date" content="2020-11-03" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="stochastic-gradient-descent.html"/>
+<link rel="next" href="supplemental.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class='before'><a href="./">Model Estimation by Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="part"><span><b>Models</b></span></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i>Standard Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#data-setup"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#estimation"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Standard Logistic</a>
+<ul>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#estimation-1"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html"><i class="fa fa-check"></i>One-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#main-function"><i class="fa fa-check"></i>Main Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#estimation-2"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html"><i class="fa fa-check"></i>Two-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#main-function-1"><i class="fa fa-check"></i>Main Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#data-setup-3"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#estimation-3"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html"><i class="fa fa-check"></i>Mixed Model via ML</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#introduction-1"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#data"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#main-function-2"><i class="fa fa-check"></i>Main Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#results"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#issues-with-ml-estimation"><i class="fa fa-check"></i>Issues with ML estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#link-with-penalized-regression"><i class="fa fa-check"></i>Link with penalized regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html"><i class="fa fa-check"></i>Probit &amp; Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#standard-probit"><i class="fa fa-check"></i>Standard Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#examples"><i class="fa fa-check"></i>Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#bivariate-probit"><i class="fa fa-check"></i>Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html"><i class="fa fa-check"></i>Heckman Selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#data-setup-4"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#two-step-approach"><i class="fa fa-check"></i>Two step approach</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-1-probit-model"><i class="fa fa-check"></i>Step 1: Probit Model</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-2-estimate-via-linear-regression"><i class="fa fa-check"></i>Step 2: Estimate via Linear Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#maximum-likelihood"><i class="fa fa-check"></i>Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html"><i class="fa fa-check"></i>Marginal Structural Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#create-the-weights"><i class="fa fa-check"></i>Create the Weights</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#estimation-4"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-an-upper-limit"><i class="fa fa-check"></i>Demonstrate Censoring with an Upper Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-6"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-a-lower-limit"><i class="fa fa-check"></i>Demonstrate censoring with a Lower Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html"><i class="fa fa-check"></i>Naive Bayes</a>
+<ul>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#initialization"><i class="fa fa-check"></i>Initialization</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#source-9"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#standard-categorical-model"><i class="fa fa-check"></i>Standard (Categorical) Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#data-setup-7"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#multinomial-via-maximum-likelihood"><i class="fa fa-check"></i>Multinomial via Maximum Likelihood</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#alternative-specific-and-constant-variables"><i class="fa fa-check"></i>Alternative specific and constant variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#source-10"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal</a>
+<ul>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#data-1"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#estimation-5"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#source-11"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html"><i class="fa fa-check"></i>Markov Chain Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-functions"><i class="fa fa-check"></i>Data Functions</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#two-states-demo"><i class="fa fa-check"></i>Two states Demo</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#three-states-demo"><i class="fa fa-check"></i>Three states demo</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#function"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#estimation-6"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#comparison-12"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#source-12"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html"><i class="fa fa-check"></i>Hidden Markov Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#data-setup-9"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#function-1"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#estimation-7"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#supplemental-demo"><i class="fa fa-check"></i>Supplemental demo</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#source-13"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html"><i class="fa fa-check"></i>Quantile Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#loss-function"><i class="fa fa-check"></i>Loss function</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#data-prep"><i class="fa fa-check"></i>Data Prep</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#median-estimation"><i class="fa fa-check"></i>Median estimation</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#other-quantiles"><i class="fa fa-check"></i>Other quantiles</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#source-14"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html"><i class="fa fa-check"></i>Cubic Spline Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#data-setup-10"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#source-15"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html"><i class="fa fa-check"></i>Hurdle Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#poisson"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#data-setup-11"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-2"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-8"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#negative-binomial"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-3"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-9"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#source-16"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html"><i class="fa fa-check"></i>Zero-Inflated Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#poisson-1"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#data-setup-12"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-4"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-10"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#negative-binomial-1"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-5"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-11"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-16"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#supplemental-example"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#source-17"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html"><i class="fa fa-check"></i>Cox Survival</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#standard-proportional-hazards"><i class="fa fa-check"></i>Standard Proportional Hazards</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-13"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-6"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-12"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-17"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#time-varying-coefficients"><i class="fa fa-check"></i>Time-varying coefficients</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-14"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-7"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-13"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-18"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#stratified-cox-model"><i class="fa fa-check"></i>Stratified Cox Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-15"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-8"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-14"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-19"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#source-18"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html"><i class="fa fa-check"></i>Confirmatory Factor Analysis</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#data-setup-16"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#primary-functions"><i class="fa fa-check"></i>Primary Functions</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-15"><i class="fa fa-check"></i>Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#raw"><i class="fa fa-check"></i>Raw</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#standardized"><i class="fa fa-check"></i>Standardized</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-20"><i class="fa fa-check"></i>Comparison</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#mplus"><i class="fa fa-check"></i>Mplus</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#source-19"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Algorithms</b></span></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-17"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-16"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-4"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-18"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-21"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-23"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-22"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-19"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-5"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s Method</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-23"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First Version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-3"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second Version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example Function</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-24"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-21"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#run"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-25"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-22"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#main-function-3"><i class="fa fa-check"></i>Main Function</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-1"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#run-2"><i class="fa fa-check"></i>Run</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-26"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html"><i class="fa fa-check"></i>Expectation-Maximization</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#mixture-model"><i class="fa fa-check"></i>Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-23"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-9"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-17"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-1"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-27"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#multivariate-mixture-model"><i class="fa fa-check"></i>Multivariate Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-10"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-1-old-faithful-eruptions"><i class="fa fa-check"></i>Example 1: Old Faithful eruptions</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-2-iris-data-set"><i class="fa fa-check"></i>Example 2: Iris data set</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-28"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>Other</b></span></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#algorithms"><i class="fa fa-check"></i>Algorithms</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Model Estimation by Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="expectation-maximization" class="section level1">
+<h1>Expectation-Maximization</h1>
+<div id="mixture-model" class="section level2">
+<h2>Mixture Model</h2>
+<p>The following code is based on algorithms noted in Murphy, 2012 Probabilistic Machine Learning, specifically, Chapter 11, section 4.</p>
+<div id="data-setup-23" class="section level3">
+<h3>Data Setup</h3>
+<p>This example uses Old Faithful geyser eruptions. This is only a univariate mixture for either eruption time or wait time. The <a href="em.html#multivariate-mixture-model">next example</a> will be doing both variables, i.e. multivariate normal. ‘Geyser’ is supposedly more accurate, though seems to have
+arbitrarily assigned some duration values. See also <a href="http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL" class="uri">http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL</a>, but that only has
+intervals. Some July 1995 data is available.</p>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="em.html#cb440-1"></a><span class="co"># faithful data set is in base R</span></span>
+<span id="cb440-2"><a href="em.html#cb440-2"></a><span class="kw">data</span>(faithful)</span>
+<span id="cb440-3"><a href="em.html#cb440-3"></a></span>
+<span id="cb440-4"><a href="em.html#cb440-4"></a><span class="kw">head</span>(faithful)</span></code></pre></div>
+<pre><code>  eruptions waiting
+1     3.600      79
+2     1.800      54
+3     3.333      74
+4     2.283      62
+5     4.533      85
+6     2.883      55</code></pre>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="em.html#cb442-1"></a>eruptions  =<span class="st"> </span><span class="kw">as.matrix</span>(faithful[, <span class="dv">1</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>])</span>
+<span id="cb442-2"><a href="em.html#cb442-2"></a>wait_times =<span class="st"> </span><span class="kw">as.matrix</span>(faithful[, <span class="dv">2</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>])</span></code></pre></div>
+</div>
+<div id="function-9" class="section level3">
+<h3>Function</h3>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="em.html#cb443-1"></a>gaussmixEM =<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb443-2"><a href="em.html#cb443-2"></a>  params,</span>
+<span id="cb443-3"><a href="em.html#cb443-3"></a>  X,</span>
+<span id="cb443-4"><a href="em.html#cb443-4"></a>  <span class="dt">clusters =</span> <span class="dv">2</span>,</span>
+<span id="cb443-5"><a href="em.html#cb443-5"></a>  <span class="dt">tol =</span> <span class="fl">.00001</span>,</span>
+<span id="cb443-6"><a href="em.html#cb443-6"></a>  <span class="dt">maxits =</span> <span class="dv">100</span>,</span>
+<span id="cb443-7"><a href="em.html#cb443-7"></a>  <span class="dt">showits =</span> <span class="ot">TRUE</span></span>
+<span id="cb443-8"><a href="em.html#cb443-8"></a>) {</span>
+<span id="cb443-9"><a href="em.html#cb443-9"></a>  </span>
+<span id="cb443-10"><a href="em.html#cb443-10"></a>  <span class="co"># Arguments are starting parameters (means, covariances, cluster probability),</span></span>
+<span id="cb443-11"><a href="em.html#cb443-11"></a>  <span class="co"># data, number of clusters desired, tolerance, maximum iterations, and whether</span></span>
+<span id="cb443-12"><a href="em.html#cb443-12"></a>  <span class="co"># to show iterations</span></span>
+<span id="cb443-13"><a href="em.html#cb443-13"></a>  </span>
+<span id="cb443-14"><a href="em.html#cb443-14"></a>  <span class="co"># Starting points</span></span>
+<span id="cb443-15"><a href="em.html#cb443-15"></a>  N     =<span class="st"> </span><span class="kw">nrow</span>(X)</span>
+<span id="cb443-16"><a href="em.html#cb443-16"></a>  nams  =<span class="st"> </span><span class="kw">names</span>(params)</span>
+<span id="cb443-17"><a href="em.html#cb443-17"></a>  mu    =<span class="st"> </span>params<span class="op">$</span>mu</span>
+<span id="cb443-18"><a href="em.html#cb443-18"></a>  var   =<span class="st"> </span>params<span class="op">$</span>var</span>
+<span id="cb443-19"><a href="em.html#cb443-19"></a>  probs =<span class="st"> </span>params<span class="op">$</span>probs</span>
+<span id="cb443-20"><a href="em.html#cb443-20"></a>  </span>
+<span id="cb443-21"><a href="em.html#cb443-21"></a>  <span class="co"># Other initializations</span></span>
+<span id="cb443-22"><a href="em.html#cb443-22"></a>  <span class="co"># initialize cluster &#39;responsibilities&#39;, i.e. probability of cluster</span></span>
+<span id="cb443-23"><a href="em.html#cb443-23"></a>  <span class="co"># membership for each observation i</span></span>
+<span id="cb443-24"><a href="em.html#cb443-24"></a>  ri =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">ncol =</span> clusters, <span class="dt">nrow =</span> N) </span>
+<span id="cb443-25"><a href="em.html#cb443-25"></a>  it =<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb443-26"><a href="em.html#cb443-26"></a>  converged =<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb443-27"><a href="em.html#cb443-27"></a>  </span>
+<span id="cb443-28"><a href="em.html#cb443-28"></a>  <span class="cf">if</span> (showits)                                  <span class="co"># Show iterations</span></span>
+<span id="cb443-29"><a href="em.html#cb443-29"></a>    <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;Iterations of EM:&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>))</span>
+<span id="cb443-30"><a href="em.html#cb443-30"></a>  </span>
+<span id="cb443-31"><a href="em.html#cb443-31"></a>  <span class="cf">while</span> ((<span class="op">!</span>converged) <span class="op">&amp;</span><span class="st"> </span>(it <span class="op">&lt;</span><span class="st"> </span>maxits)) { </span>
+<span id="cb443-32"><a href="em.html#cb443-32"></a>    probsOld =<span class="st"> </span>probs</span>
+<span id="cb443-33"><a href="em.html#cb443-33"></a>    muOld =<span class="st"> </span>mu</span>
+<span id="cb443-34"><a href="em.html#cb443-34"></a>    varOld =<span class="st"> </span>var</span>
+<span id="cb443-35"><a href="em.html#cb443-35"></a>    riOld =<span class="st"> </span>ri</span>
+<span id="cb443-36"><a href="em.html#cb443-36"></a>    </span>
+<span id="cb443-37"><a href="em.html#cb443-37"></a>    <span class="co"># E</span></span>
+<span id="cb443-38"><a href="em.html#cb443-38"></a>    <span class="co"># Compute responsibilities</span></span>
+<span id="cb443-39"><a href="em.html#cb443-39"></a>    <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>clusters){</span>
+<span id="cb443-40"><a href="em.html#cb443-40"></a>      ri[, k] =<span class="st"> </span>probs[k] <span class="op">*</span><span class="st"> </span><span class="kw">dnorm</span>(X, mu[k], <span class="dt">sd =</span> <span class="kw">sqrt</span>(var[k]), <span class="dt">log =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb443-41"><a href="em.html#cb443-41"></a>    }</span>
+<span id="cb443-42"><a href="em.html#cb443-42"></a>    </span>
+<span id="cb443-43"><a href="em.html#cb443-43"></a>    ri =<span class="st"> </span>ri<span class="op">/</span><span class="kw">rowSums</span>(ri)</span>
+<span id="cb443-44"><a href="em.html#cb443-44"></a>    </span>
+<span id="cb443-45"><a href="em.html#cb443-45"></a>    <span class="co"># M</span></span>
+<span id="cb443-46"><a href="em.html#cb443-46"></a>    rk =<span class="st"> </span><span class="kw">colSums</span>(ri)           <span class="co"># rk is the weighted average cluster membership size</span></span>
+<span id="cb443-47"><a href="em.html#cb443-47"></a>    probs =<span class="st"> </span>rk<span class="op">/</span>N</span>
+<span id="cb443-48"><a href="em.html#cb443-48"></a>    mu =<span class="st"> </span>(<span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>ri) <span class="op">/</span><span class="st"> </span>rk    </span>
+<span id="cb443-49"><a href="em.html#cb443-49"></a>    var =<span class="st"> </span>(<span class="kw">t</span>(X<span class="op">^</span><span class="dv">2</span>) <span class="op">%*%</span><span class="st"> </span>ri) <span class="op">/</span><span class="st"> </span>rk <span class="op">-</span><span class="st"> </span>mu<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb443-50"><a href="em.html#cb443-50"></a>    </span>
+<span id="cb443-51"><a href="em.html#cb443-51"></a>    <span class="co"># could do mu and var via log likelihood here, but this is more straightforward</span></span>
+<span id="cb443-52"><a href="em.html#cb443-52"></a></span>
+<span id="cb443-53"><a href="em.html#cb443-53"></a>    parmlistold     =<span class="st"> </span><span class="kw">rbind</span>(probsOld, muOld, varOld)</span>
+<span id="cb443-54"><a href="em.html#cb443-54"></a>    parmlistcurrent =<span class="st"> </span><span class="kw">rbind</span>(probs, mu, var)</span>
+<span id="cb443-55"><a href="em.html#cb443-55"></a>    </span>
+<span id="cb443-56"><a href="em.html#cb443-56"></a>    it =<span class="st"> </span>it <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb443-57"><a href="em.html#cb443-57"></a>    </span>
+<span id="cb443-58"><a href="em.html#cb443-58"></a>    <span class="co"># if showits true, &amp; it =1 or divisible by 5 print message</span></span>
+<span id="cb443-59"><a href="em.html#cb443-59"></a>    <span class="cf">if</span> (showits <span class="op">&amp;</span><span class="st"> </span>it <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>it<span class="op">%%</span><span class="dv">5</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)        </span>
+<span id="cb443-60"><a href="em.html#cb443-60"></a>      <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="kw">format</span>(it), <span class="st">&quot;...&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>))</span>
+<span id="cb443-61"><a href="em.html#cb443-61"></a>    </span>
+<span id="cb443-62"><a href="em.html#cb443-62"></a>    converged =<span class="st"> </span><span class="kw">max</span>(<span class="kw">abs</span>(parmlistold <span class="op">-</span><span class="st"> </span>parmlistcurrent)) <span class="op">&lt;=</span><span class="st"> </span>tol</span>
+<span id="cb443-63"><a href="em.html#cb443-63"></a>  }</span>
+<span id="cb443-64"><a href="em.html#cb443-64"></a>  </span>
+<span id="cb443-65"><a href="em.html#cb443-65"></a>  clust =<span class="st"> </span><span class="kw">which</span>(<span class="kw">round</span>(ri) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">arr.ind =</span> <span class="ot">TRUE</span>) <span class="co"># create cluster membership</span></span>
+<span id="cb443-66"><a href="em.html#cb443-66"></a>  clust =<span class="st"> </span>clust[<span class="kw">order</span>(clust[, <span class="dv">1</span>]), <span class="dv">2</span>]           <span class="co"># order according to row rather than cluster</span></span>
+<span id="cb443-67"><a href="em.html#cb443-67"></a>  </span>
+<span id="cb443-68"><a href="em.html#cb443-68"></a>  out =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb443-69"><a href="em.html#cb443-69"></a>    <span class="dt">probs   =</span> probs,</span>
+<span id="cb443-70"><a href="em.html#cb443-70"></a>    <span class="dt">mu      =</span> mu,</span>
+<span id="cb443-71"><a href="em.html#cb443-71"></a>    <span class="dt">var     =</span> var,</span>
+<span id="cb443-72"><a href="em.html#cb443-72"></a>    <span class="dt">resp    =</span> ri,</span>
+<span id="cb443-73"><a href="em.html#cb443-73"></a>    <span class="dt">cluster =</span> clust</span>
+<span id="cb443-74"><a href="em.html#cb443-74"></a>  )</span>
+<span id="cb443-75"><a href="em.html#cb443-75"></a>  </span>
+<span id="cb443-76"><a href="em.html#cb443-76"></a>  out</span>
+<span id="cb443-77"><a href="em.html#cb443-77"></a>} </span></code></pre></div>
+</div>
+<div id="estimation-17" class="section level3">
+<h3>Estimation</h3>
+<p>Starting parameters, requires mean, variance and class probability. Note that starts for mean must be within the data range or it will break.</p>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb444-1"><a href="em.html#cb444-1"></a>params1 =<span class="st"> </span><span class="kw">list</span>(<span class="dt">mu =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">5</span>),</span>
+<span id="cb444-2"><a href="em.html#cb444-2"></a>               <span class="dt">var =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb444-3"><a href="em.html#cb444-3"></a>               <span class="dt">probs =</span> <span class="kw">c</span>(.<span class="dv">5</span>, <span class="fl">.5</span>))</span>
+<span id="cb444-4"><a href="em.html#cb444-4"></a></span>
+<span id="cb444-5"><a href="em.html#cb444-5"></a>params2 =<span class="st"> </span><span class="kw">list</span>(<span class="dt">mu =</span> <span class="kw">c</span>(<span class="dv">50</span>, <span class="dv">90</span>),</span>
+<span id="cb444-6"><a href="em.html#cb444-6"></a>               <span class="dt">var =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">15</span>),</span>
+<span id="cb444-7"><a href="em.html#cb444-7"></a>               <span class="dt">probs =</span> <span class="kw">c</span>(.<span class="dv">5</span>, <span class="fl">.5</span>))  </span></code></pre></div>
+<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="em.html#cb445-1"></a>mix_erupt   =<span class="st"> </span><span class="kw">gaussmixEM</span>(params1, <span class="dt">X =</span> eruptions,  <span class="dt">tol =</span> <span class="fl">1e-8</span>)</span></code></pre></div>
+<pre><code>Iterations of EM: 
+1...
+5...
+10...
+15...
+20...
+25...
+30...</code></pre>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="em.html#cb447-1"></a>mix_waiting =<span class="st"> </span><span class="kw">gaussmixEM</span>(params2, <span class="dt">X =</span> wait_times, <span class="dt">tol =</span> <span class="fl">1e-8</span>)</span></code></pre></div>
+<pre><code>Iterations of EM: 
+1...
+5...
+10...
+15...
+20...
+25...
+30...
+35...
+40...
+45...
+50...
+55...</code></pre>
+</div>
+<div id="comparison-30" class="section level3">
+<h3>Comparison</h3>
+<p>Compare to <span class="pack" style="">flexmix</span> package results.</p>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="em.html#cb449-1"></a><span class="kw">library</span>(flexmix)</span>
+<span id="cb449-2"><a href="em.html#cb449-2"></a></span>
+<span id="cb449-3"><a href="em.html#cb449-3"></a>flex_erupt =<span class="st"> </span><span class="kw">flexmix</span>(eruptions <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb449-4"><a href="em.html#cb449-4"></a>                     <span class="dt">k =</span> <span class="dv">2</span>,</span>
+<span id="cb449-5"><a href="em.html#cb449-5"></a>                     <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">tolerance =</span> <span class="fl">1e-8</span>, <span class="dt">iter.max =</span> <span class="dv">100</span>))</span>
+<span id="cb449-6"><a href="em.html#cb449-6"></a></span>
+<span id="cb449-7"><a href="em.html#cb449-7"></a>flex_wait =<span class="st"> </span><span class="kw">flexmix</span>(wait_times <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb449-8"><a href="em.html#cb449-8"></a>                    <span class="dt">k =</span> <span class="dv">2</span>,</span>
+<span id="cb449-9"><a href="em.html#cb449-9"></a>                    <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">tolerance =</span> <span class="fl">1e-8</span>, <span class="dt">iter.max =</span> <span class="dv">100</span>))</span></code></pre></div>
+<p>The following provides means, variances and probability of group membership. Note that the cluster label is arbitrary so cluster 1 for one model may be cluster 2 in another.</p>
+<div id="eruptions" class="section level5">
+<h5>Eruptions</h5>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="em.html#cb450-1"></a>mean_var =<span class="st"> </span><span class="kw">rbind</span>(mix_erupt<span class="op">$</span>mu, <span class="kw">sqrt</span>(mix_erupt<span class="op">$</span>var))</span>
+<span id="cb450-2"><a href="em.html#cb450-2"></a><span class="kw">rownames</span>(mean_var) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb450-3"><a href="em.html#cb450-3"></a><span class="kw">colnames</span>(mean_var) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;cluster 1&#39;</span>, <span class="st">&#39;cluster 2&#39;</span>)</span>
+<span id="cb450-4"><a href="em.html#cb450-4"></a></span>
+<span id="cb450-5"><a href="em.html#cb450-5"></a>mean_var_flex =<span class="st"> </span><span class="kw">parameters</span>(flex_erupt)</span>
+<span id="cb450-6"><a href="em.html#cb450-6"></a><span class="kw">rownames</span>(mean_var_flex) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb450-7"><a href="em.html#cb450-7"></a><span class="kw">colnames</span>(mean_var_flex) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;cluster 1 flex&#39;</span>, <span class="st">&#39;cluster 2 flex&#39;</span>)</span>
+<span id="cb450-8"><a href="em.html#cb450-8"></a></span>
+<span id="cb450-9"><a href="em.html#cb450-9"></a></span>
+<span id="cb450-10"><a href="em.html#cb450-10"></a>prob_membership     =<span class="st"> </span>mix_erupt<span class="op">$</span>probs</span>
+<span id="cb450-11"><a href="em.html#cb450-11"></a>prob_membership_flex =<span class="st"> </span>flex_erupt<span class="op">@</span>size <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(flex_erupt<span class="op">@</span>size)</span>
+<span id="cb450-12"><a href="em.html#cb450-12"></a></span>
+<span id="cb450-13"><a href="em.html#cb450-13"></a><span class="kw">list</span>(</span>
+<span id="cb450-14"><a href="em.html#cb450-14"></a>  <span class="dt">params =</span> <span class="kw">cbind</span>(mean_var, mean_var_flex),</span>
+<span id="cb450-15"><a href="em.html#cb450-15"></a>  <span class="dt">clusterpobs =</span> <span class="kw">cbind</span>(prob_membership, prob_membership_flex)</span>
+<span id="cb450-16"><a href="em.html#cb450-16"></a>)</span></code></pre></div>
+<pre><code>$params
+          cluster 1 cluster 2 cluster 1 flex cluster 2 flex
+means     2.0186078 4.2733434      4.2733678      2.0186385
+variances 0.2356218 0.4370631      0.4378355      0.2361098
+
+$clusterpobs
+  prob_membership prob_membership_flex
+1       0.3484046            0.6507353
+2       0.6515954            0.3492647</code></pre>
+</div>
+<div id="waiting" class="section level5">
+<h5>Waiting</h5>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="em.html#cb452-1"></a>mean_var =<span class="st"> </span><span class="kw">rbind</span>(mix_waiting<span class="op">$</span>mu, <span class="kw">sqrt</span>(mix_waiting<span class="op">$</span>var))</span>
+<span id="cb452-2"><a href="em.html#cb452-2"></a><span class="kw">rownames</span>(mean_var) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb452-3"><a href="em.html#cb452-3"></a><span class="kw">colnames</span>(mean_var) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;cluster 1&#39;</span>, <span class="st">&#39;cluster 2&#39;</span>)</span>
+<span id="cb452-4"><a href="em.html#cb452-4"></a></span>
+<span id="cb452-5"><a href="em.html#cb452-5"></a></span>
+<span id="cb452-6"><a href="em.html#cb452-6"></a>mean_var_flex =<span class="st"> </span><span class="kw">parameters</span>(flex_wait)</span>
+<span id="cb452-7"><a href="em.html#cb452-7"></a><span class="kw">rownames</span>(mean_var_flex) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb452-8"><a href="em.html#cb452-8"></a><span class="kw">colnames</span>(mean_var_flex) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;cluster 1 flex&#39;</span>, <span class="st">&#39;cluster 2 flex&#39;</span>)</span>
+<span id="cb452-9"><a href="em.html#cb452-9"></a></span>
+<span id="cb452-10"><a href="em.html#cb452-10"></a>prob_membership     =<span class="st"> </span>mix_waiting<span class="op">$</span>probs</span>
+<span id="cb452-11"><a href="em.html#cb452-11"></a>prob_membership_flex =<span class="st"> </span>flex_wait<span class="op">@</span>size <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(flex_wait<span class="op">@</span>size)</span>
+<span id="cb452-12"><a href="em.html#cb452-12"></a></span>
+<span id="cb452-13"><a href="em.html#cb452-13"></a><span class="kw">list</span>(</span>
+<span id="cb452-14"><a href="em.html#cb452-14"></a>  <span class="dt">params =</span> <span class="kw">cbind</span>(mean_var, mean_var_flex),</span>
+<span id="cb452-15"><a href="em.html#cb452-15"></a>  <span class="dt">clusterpobs =</span> <span class="kw">cbind</span>(prob_membership, prob_membership_flex)</span>
+<span id="cb452-16"><a href="em.html#cb452-16"></a>)</span></code></pre></div>
+<pre><code>$params
+          cluster 1 cluster 2 cluster 1 flex cluster 2 flex
+means     54.614856 80.091069      54.616140      80.090678
+variances  5.871219  5.867734       5.884422       5.879634
+
+$clusterpobs
+  prob_membership prob_membership_flex
+1       0.3608861            0.3639706
+2       0.6391139            0.6360294</code></pre>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="em.html#cb454-1"></a><span class="kw">qplot</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting, <span class="dt">data =</span> faithful) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/gaussEM-compare-wait-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="em.html#cb455-1"></a><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting), <span class="dt">data =</span> faithful) <span class="op">+</span></span>
+<span id="cb455-2"><a href="em.html#cb455-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">factor</span>(mix_waiting<span class="op">$</span>cluster))) <span class="op">+</span></span>
+<span id="cb455-3"><a href="em.html#cb455-3"></a><span class="st">  </span><span class="kw">geom_density2d</span>() <span class="op">+</span></span>
+<span id="cb455-4"><a href="em.html#cb455-4"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/gaussEM-compare-wait-2.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb456-1"><a href="em.html#cb456-1"></a>faithful <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb456-2"><a href="em.html#cb456-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prob_clus_1 =</span> mix_waiting<span class="op">$</span>resp[, <span class="dv">1</span>]) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb456-3"><a href="em.html#cb456-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting)) <span class="op">+</span></span>
+<span id="cb456-4"><a href="em.html#cb456-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> prob_clus_<span class="dv">1</span>)) <span class="op">+</span></span>
+<span id="cb456-5"><a href="em.html#cb456-5"></a><span class="st">  </span><span class="kw">geom_density2d</span>() <span class="op">+</span></span>
+<span id="cb456-6"><a href="em.html#cb456-6"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/gaussEM-compare-wait-3.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="supplemental-example-1" class="section level3">
+<h3>Supplemental Example</h3>
+<p>This uses the <span class="pack" style="">MASS</span> version (reversed columns). These don’t look even remotely the same data on initial inspection- <code>geyser</code> is even more rounded and of opposite conclusion. Turns out geyser is offset by 1, such that duration 1 should be coupled with waiting 2 and on down. Still the rounding at 2 and 4 (and whatever division was done on duration) makes this fairly poor data.</p>
+<p>I’ve cleaned this up a little bit in case someone wants to play with it for additional practice, but it’s not evaluated.</p>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="em.html#cb457-1"></a><span class="kw">library</span>(MASS)</span>
+<span id="cb457-2"><a href="em.html#cb457-2"></a></span>
+<span id="cb457-3"><a href="em.html#cb457-3"></a>geyser =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">duration =</span> geyser<span class="op">$</span>duration[<span class="op">-</span><span class="dv">299</span>], <span class="dt">waiting =</span> geyser<span class="op">$</span>waiting[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb457-4"><a href="em.html#cb457-4"></a></span>
+<span id="cb457-5"><a href="em.html#cb457-5"></a><span class="co"># compare to faithful</span></span>
+<span id="cb457-6"><a href="em.html#cb457-6"></a><span class="kw">layout</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)</span>
+<span id="cb457-7"><a href="em.html#cb457-7"></a><span class="kw">plot</span>(faithful)</span>
+<span id="cb457-8"><a href="em.html#cb457-8"></a><span class="kw">plot</span>(geyser)</span>
+<span id="cb457-9"><a href="em.html#cb457-9"></a></span>
+<span id="cb457-10"><a href="em.html#cb457-10"></a>X3 =<span class="st"> </span><span class="kw">matrix</span>(geyser[,<span class="dv">1</span>]) </span>
+<span id="cb457-11"><a href="em.html#cb457-11"></a>X4 =<span class="st"> </span><span class="kw">matrix</span>(geyser[,<span class="dv">2</span>])</span>
+<span id="cb457-12"><a href="em.html#cb457-12"></a></span>
+<span id="cb457-13"><a href="em.html#cb457-13"></a></span>
+<span id="cb457-14"><a href="em.html#cb457-14"></a><span class="co"># MASS version</span></span>
+<span id="cb457-15"><a href="em.html#cb457-15"></a>test3 =<span class="st"> </span><span class="kw">gaussmixEM</span>(params1, <span class="dt">X =</span> X3, <span class="dt">tol =</span> <span class="fl">1e-8</span>)</span>
+<span id="cb457-16"><a href="em.html#cb457-16"></a>test4 =<span class="st"> </span><span class="kw">gaussmixEM</span>(params2, <span class="dt">X =</span> X4, <span class="dt">tol =</span> <span class="fl">1e-8</span>)</span>
+<span id="cb457-17"><a href="em.html#cb457-17"></a></span>
+<span id="cb457-18"><a href="em.html#cb457-18"></a>flexmod3 =<span class="st"> </span><span class="kw">flexmix</span>(X3 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb457-19"><a href="em.html#cb457-19"></a>                   <span class="dt">k =</span> <span class="dv">2</span>,</span>
+<span id="cb457-20"><a href="em.html#cb457-20"></a>                   <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">tolerance =</span> <span class="fl">1e-8</span>, <span class="dt">iter.max =</span> <span class="dv">100</span>))</span>
+<span id="cb457-21"><a href="em.html#cb457-21"></a>flexmod4 =<span class="st"> </span><span class="kw">flexmix</span>(X4 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb457-22"><a href="em.html#cb457-22"></a>                   <span class="dt">k =</span> <span class="dv">2</span>,</span>
+<span id="cb457-23"><a href="em.html#cb457-23"></a>                   <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">tolerance =</span> <span class="fl">1e-8</span>, <span class="dt">iter.max =</span> <span class="dv">100</span>))</span>
+<span id="cb457-24"><a href="em.html#cb457-24"></a></span>
+<span id="cb457-25"><a href="em.html#cb457-25"></a><span class="co"># note variability differences compared to faithful dataset</span></span>
+<span id="cb457-26"><a href="em.html#cb457-26"></a><span class="co"># Eruptions/Duration</span></span>
+<span id="cb457-27"><a href="em.html#cb457-27"></a>mean_var =<span class="st"> </span><span class="kw">rbind</span>(test3<span class="op">$</span>mu, <span class="kw">sqrt</span>(test3<span class="op">$</span>var))</span>
+<span id="cb457-28"><a href="em.html#cb457-28"></a><span class="kw">rownames</span>(mean_var) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb457-29"><a href="em.html#cb457-29"></a></span>
+<span id="cb457-30"><a href="em.html#cb457-30"></a>mean_var_flex =<span class="st"> </span><span class="kw">parameters</span>(flexmod3)</span>
+<span id="cb457-31"><a href="em.html#cb457-31"></a><span class="kw">rownames</span>(mean_var_flex) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb457-32"><a href="em.html#cb457-32"></a></span>
+<span id="cb457-33"><a href="em.html#cb457-33"></a>prob_membership =<span class="st"> </span>test3<span class="op">$</span>probs</span>
+<span id="cb457-34"><a href="em.html#cb457-34"></a>prob_membership_flex =<span class="st"> </span>flexmod3<span class="op">@</span>size <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(flexmod3<span class="op">@</span>size)</span>
+<span id="cb457-35"><a href="em.html#cb457-35"></a></span>
+<span id="cb457-36"><a href="em.html#cb457-36"></a><span class="kw">list</span>(</span>
+<span id="cb457-37"><a href="em.html#cb457-37"></a>  <span class="dt">params =</span> <span class="kw">cbind</span>(mean_var, mean_var_flex),</span>
+<span id="cb457-38"><a href="em.html#cb457-38"></a>  <span class="dt">clusterpobs =</span> <span class="kw">cbind</span>(prob_membership, prob_membership_flex)</span>
+<span id="cb457-39"><a href="em.html#cb457-39"></a>)</span>
+<span id="cb457-40"><a href="em.html#cb457-40"></a></span>
+<span id="cb457-41"><a href="em.html#cb457-41"></a><span class="co"># Waiting</span></span>
+<span id="cb457-42"><a href="em.html#cb457-42"></a>mean_var =<span class="st"> </span><span class="kw">rbind</span>(test4<span class="op">$</span>mu, <span class="kw">sqrt</span>(test4<span class="op">$</span>var))</span>
+<span id="cb457-43"><a href="em.html#cb457-43"></a><span class="kw">rownames</span>(mean_var) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb457-44"><a href="em.html#cb457-44"></a></span>
+<span id="cb457-45"><a href="em.html#cb457-45"></a>mean_var_flex =<span class="st"> </span><span class="kw">parameters</span>(flexmod4)</span>
+<span id="cb457-46"><a href="em.html#cb457-46"></a><span class="kw">rownames</span>(mean_var_flex) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;means&#39;</span>, <span class="st">&#39;variances&#39;</span>)</span>
+<span id="cb457-47"><a href="em.html#cb457-47"></a></span>
+<span id="cb457-48"><a href="em.html#cb457-48"></a>prob_membership =<span class="st"> </span>test4<span class="op">$</span>probs</span>
+<span id="cb457-49"><a href="em.html#cb457-49"></a>prob_membership_flex =<span class="st"> </span>flexmod4<span class="op">@</span>size <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(flexmod4<span class="op">@</span>size)</span>
+<span id="cb457-50"><a href="em.html#cb457-50"></a></span>
+<span id="cb457-51"><a href="em.html#cb457-51"></a><span class="kw">list</span>(</span>
+<span id="cb457-52"><a href="em.html#cb457-52"></a>  <span class="dt">params =</span> <span class="kw">cbind</span>(mean_var, mean_var_flex),</span>
+<span id="cb457-53"><a href="em.html#cb457-53"></a>  <span class="dt">clusterpobs =</span> <span class="kw">cbind</span>(prob_membership, prob_membership_flex)</span>
+<span id="cb457-54"><a href="em.html#cb457-54"></a>)</span>
+<span id="cb457-55"><a href="em.html#cb457-55"></a></span>
+<span id="cb457-56"><a href="em.html#cb457-56"></a><span class="co"># Some plots</span></span>
+<span id="cb457-57"><a href="em.html#cb457-57"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb457-58"><a href="em.html#cb457-58"></a><span class="kw">qplot</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting, <span class="dt">data =</span> faithful) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</span>
+<span id="cb457-59"><a href="em.html#cb457-59"></a></span>
+<span id="cb457-60"><a href="em.html#cb457-60"></a><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting), <span class="dt">data =</span> faithful) <span class="op">+</span></span>
+<span id="cb457-61"><a href="em.html#cb457-61"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">factor</span>(mix_waiting<span class="op">$</span>cluster))) <span class="op">+</span></span>
+<span id="cb457-62"><a href="em.html#cb457-62"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span>
+<span id="cb457-63"><a href="em.html#cb457-63"></a></span>
+<span id="cb457-64"><a href="em.html#cb457-64"></a><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting), <span class="dt">data =</span> faithful) <span class="op">+</span></span>
+<span id="cb457-65"><a href="em.html#cb457-65"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> mix_waiting<span class="op">$</span>resp[, <span class="dv">1</span>])) <span class="op">+</span></span>
+<span id="cb457-66"><a href="em.html#cb457-66"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+</div>
+<div id="source-27" class="section level3">
+<h3>Source</h3>
+<p>Source code found at
+<a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20Mixture.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20Mixture.R</a></p>
+</div>
+</div>
+<div id="multivariate-mixture-model" class="section level2">
+<h2>Multivariate Mixture Model</h2>
+<p>The following code is based on algorithms noted in Murphy, 2012 Probabilistic Machine Learning.
+Specifically, Chapter 11, section 4.</p>
+<div id="function-10" class="section level3">
+<h3>Function</h3>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="em.html#cb458-1"></a>gaussmixEM =<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb458-2"><a href="em.html#cb458-2"></a>  params,</span>
+<span id="cb458-3"><a href="em.html#cb458-3"></a>  X,</span>
+<span id="cb458-4"><a href="em.html#cb458-4"></a>  <span class="dt">clusters =</span> <span class="dv">2</span>,</span>
+<span id="cb458-5"><a href="em.html#cb458-5"></a>  <span class="dt">tol =</span> <span class="fl">.00001</span>,</span>
+<span id="cb458-6"><a href="em.html#cb458-6"></a>  <span class="dt">maxits  =</span> <span class="dv">100</span>,</span>
+<span id="cb458-7"><a href="em.html#cb458-7"></a>  <span class="dt">showits =</span> <span class="ot">TRUE</span></span>
+<span id="cb458-8"><a href="em.html#cb458-8"></a>  ) {</span>
+<span id="cb458-9"><a href="em.html#cb458-9"></a>  </span>
+<span id="cb458-10"><a href="em.html#cb458-10"></a>  <span class="co"># Arguments are </span></span>
+<span id="cb458-11"><a href="em.html#cb458-11"></a>  <span class="co"># params: starting parameters (means, covariances, cluster probability)</span></span>
+<span id="cb458-12"><a href="em.html#cb458-12"></a>  <span class="co"># X: data </span></span>
+<span id="cb458-13"><a href="em.html#cb458-13"></a>  <span class="co"># clusters: number of clusters desired</span></span>
+<span id="cb458-14"><a href="em.html#cb458-14"></a>  <span class="co"># tol: tolerance</span></span>
+<span id="cb458-15"><a href="em.html#cb458-15"></a>  <span class="co"># maxits: maximum iterations</span></span>
+<span id="cb458-16"><a href="em.html#cb458-16"></a>  <span class="co"># showits: whether to show iterations</span></span>
+<span id="cb458-17"><a href="em.html#cb458-17"></a>  </span>
+<span id="cb458-18"><a href="em.html#cb458-18"></a>  <span class="kw">require</span>(mvtnorm)</span>
+<span id="cb458-19"><a href="em.html#cb458-19"></a>  <span class="co"># Starting points</span></span>
+<span id="cb458-20"><a href="em.html#cb458-20"></a>  N     =<span class="st"> </span><span class="kw">nrow</span>(X)</span>
+<span id="cb458-21"><a href="em.html#cb458-21"></a>  mu    =<span class="st"> </span>params<span class="op">$</span>mu</span>
+<span id="cb458-22"><a href="em.html#cb458-22"></a>  var   =<span class="st"> </span>params<span class="op">$</span>var</span>
+<span id="cb458-23"><a href="em.html#cb458-23"></a>  probs =<span class="st"> </span>params<span class="op">$</span>probs</span>
+<span id="cb458-24"><a href="em.html#cb458-24"></a>  </span>
+<span id="cb458-25"><a href="em.html#cb458-25"></a>  <span class="co"># initializations</span></span>
+<span id="cb458-26"><a href="em.html#cb458-26"></a>  </span>
+<span id="cb458-27"><a href="em.html#cb458-27"></a>  <span class="co"># cluster &#39;responsibilities&#39;, i.e. probability of cluster membership for each</span></span>
+<span id="cb458-28"><a href="em.html#cb458-28"></a>  <span class="co"># observation i</span></span>
+<span id="cb458-29"><a href="em.html#cb458-29"></a>  ri =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">ncol=</span>clusters, <span class="dt">nrow=</span>N)       </span>
+<span id="cb458-30"><a href="em.html#cb458-30"></a>  ll =<span class="st"> </span><span class="dv">0</span>                                        <span class="co"># log likelihood</span></span>
+<span id="cb458-31"><a href="em.html#cb458-31"></a>  it =<span class="st"> </span><span class="dv">0</span>                                        <span class="co"># iteration count</span></span>
+<span id="cb458-32"><a href="em.html#cb458-32"></a>  converged =<span class="st"> </span><span class="ot">FALSE</span>                             <span class="co"># convergence</span></span>
+<span id="cb458-33"><a href="em.html#cb458-33"></a>  </span>
+<span id="cb458-34"><a href="em.html#cb458-34"></a>  <span class="co"># Show iterations if showits == true</span></span>
+<span id="cb458-35"><a href="em.html#cb458-35"></a>  <span class="cf">if</span> (showits)                                  </span>
+<span id="cb458-36"><a href="em.html#cb458-36"></a>    <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;Iterations of EM:&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>))</span>
+<span id="cb458-37"><a href="em.html#cb458-37"></a>  </span>
+<span id="cb458-38"><a href="em.html#cb458-38"></a>  <span class="cf">while</span> (<span class="op">!</span>converged <span class="op">&amp;</span><span class="st"> </span>it <span class="op">&lt;</span><span class="st"> </span>maxits) { </span>
+<span id="cb458-39"><a href="em.html#cb458-39"></a>    probsOld =<span class="st"> </span>probs</span>
+<span id="cb458-40"><a href="em.html#cb458-40"></a>    <span class="co"># muOld = mu                # Use direct values or loglike for convergence check</span></span>
+<span id="cb458-41"><a href="em.html#cb458-41"></a>    <span class="co"># varOld = var</span></span>
+<span id="cb458-42"><a href="em.html#cb458-42"></a>    llOld =<span class="st"> </span>ll</span>
+<span id="cb458-43"><a href="em.html#cb458-43"></a>    riOld =<span class="st"> </span>ri</span>
+<span id="cb458-44"><a href="em.html#cb458-44"></a>    </span>
+<span id="cb458-45"><a href="em.html#cb458-45"></a>    <span class="co">### E</span></span>
+<span id="cb458-46"><a href="em.html#cb458-46"></a>    <span class="co"># Compute responsibilities</span></span>
+<span id="cb458-47"><a href="em.html#cb458-47"></a>    <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>clusters){</span>
+<span id="cb458-48"><a href="em.html#cb458-48"></a>      ri[,k] =<span class="st"> </span>probs[k] <span class="op">*</span><span class="st"> </span><span class="kw">dmvnorm</span>(X, mu[k, ], <span class="dt">sigma =</span> var[[k]], <span class="dt">log =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb458-49"><a href="em.html#cb458-49"></a>    }</span>
+<span id="cb458-50"><a href="em.html#cb458-50"></a>    </span>
+<span id="cb458-51"><a href="em.html#cb458-51"></a>    ri =<span class="st"> </span>ri<span class="op">/</span><span class="kw">rowSums</span>(ri)</span>
+<span id="cb458-52"><a href="em.html#cb458-52"></a>    </span>
+<span id="cb458-53"><a href="em.html#cb458-53"></a>    <span class="co">### M</span></span>
+<span id="cb458-54"><a href="em.html#cb458-54"></a>    rk =<span class="st"> </span><span class="kw">colSums</span>(ri)            <span class="co"># rk is weighted average cluster membership size</span></span>
+<span id="cb458-55"><a href="em.html#cb458-55"></a>    probs =<span class="st"> </span>rk<span class="op">/</span>N</span>
+<span id="cb458-56"><a href="em.html#cb458-56"></a>    </span>
+<span id="cb458-57"><a href="em.html#cb458-57"></a>    <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>clusters){</span>
+<span id="cb458-58"><a href="em.html#cb458-58"></a>      varmat =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">ncol =</span> <span class="kw">ncol</span>(X), <span class="dt">nrow =</span> <span class="kw">ncol</span>(X))    <span class="co"># initialize to sum matrices</span></span>
+<span id="cb458-59"><a href="em.html#cb458-59"></a>      </span>
+<span id="cb458-60"><a href="em.html#cb458-60"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N){</span>
+<span id="cb458-61"><a href="em.html#cb458-61"></a>        varmat =<span class="st"> </span>varmat <span class="op">+</span><span class="st"> </span>ri[i,k] <span class="op">*</span><span class="st"> </span>X[i,]<span class="op">%*%</span><span class="kw">t</span>(X[i,])</span>
+<span id="cb458-62"><a href="em.html#cb458-62"></a>      }</span>
+<span id="cb458-63"><a href="em.html#cb458-63"></a>      </span>
+<span id="cb458-64"><a href="em.html#cb458-64"></a>      mu[k,]   =<span class="st"> </span>(<span class="kw">t</span>(X) <span class="op">%*%</span><span class="st"> </span>ri[,k]) <span class="op">/</span><span class="st"> </span>rk[k]</span>
+<span id="cb458-65"><a href="em.html#cb458-65"></a>      var[[k]] =<span class="st">  </span>varmat<span class="op">/</span>rk[k] <span class="op">-</span><span class="st"> </span>mu[k,]<span class="op">%*%</span><span class="kw">t</span>(mu[k,])</span>
+<span id="cb458-66"><a href="em.html#cb458-66"></a>      </span>
+<span id="cb458-67"><a href="em.html#cb458-67"></a>      ll[k] =<span class="st"> </span><span class="fl">-.5</span><span class="op">*</span><span class="kw">sum</span>( ri[,k] <span class="op">*</span><span class="st"> </span><span class="kw">dmvnorm</span>(X, mu[k,], <span class="dt">sigma =</span> var[[k]], <span class="dt">log =</span> <span class="ot">TRUE</span>) )</span>
+<span id="cb458-68"><a href="em.html#cb458-68"></a>    }</span>
+<span id="cb458-69"><a href="em.html#cb458-69"></a>    </span>
+<span id="cb458-70"><a href="em.html#cb458-70"></a>    ll =<span class="st"> </span><span class="kw">sum</span>(ll)</span>
+<span id="cb458-71"><a href="em.html#cb458-71"></a>    </span>
+<span id="cb458-72"><a href="em.html#cb458-72"></a>    <span class="co">### compare old to current for convergence</span></span>
+<span id="cb458-73"><a href="em.html#cb458-73"></a>    parmlistold =<span class="st">  </span><span class="kw">c</span>(llOld, probsOld)           <span class="co"># c(muOld, unlist(varOld), probsOld)</span></span>
+<span id="cb458-74"><a href="em.html#cb458-74"></a>    parmlistcurrent =<span class="st"> </span><span class="kw">c</span>(ll, probs)              <span class="co"># c(mu, unlist(var), probs)</span></span>
+<span id="cb458-75"><a href="em.html#cb458-75"></a>    it =<span class="st"> </span>it <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb458-76"><a href="em.html#cb458-76"></a>    </span>
+<span id="cb458-77"><a href="em.html#cb458-77"></a>    <span class="co"># if showits true, &amp; it =1 or modulo of 5 print message</span></span>
+<span id="cb458-78"><a href="em.html#cb458-78"></a>    <span class="cf">if</span> (showits <span class="op">&amp;</span><span class="st"> </span>it <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>it<span class="op">%%</span><span class="dv">5</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)         </span>
+<span id="cb458-79"><a href="em.html#cb458-79"></a>      <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="kw">format</span>(it), <span class="st">&quot;...&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>))</span>
+<span id="cb458-80"><a href="em.html#cb458-80"></a>    </span>
+<span id="cb458-81"><a href="em.html#cb458-81"></a>    converged =<span class="st"> </span><span class="kw">min</span>(<span class="kw">abs</span>(parmlistold <span class="op">-</span><span class="st"> </span>parmlistcurrent)) <span class="op">&lt;=</span><span class="st"> </span>tol</span>
+<span id="cb458-82"><a href="em.html#cb458-82"></a>  }</span>
+<span id="cb458-83"><a href="em.html#cb458-83"></a>  </span>
+<span id="cb458-84"><a href="em.html#cb458-84"></a>  clust =<span class="st"> </span><span class="kw">which</span>(<span class="kw">round</span>(ri) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">arr.ind =</span> <span class="ot">TRUE</span>)        <span class="co"># create cluster membership</span></span>
+<span id="cb458-85"><a href="em.html#cb458-85"></a>  clust =<span class="st"> </span>clust[<span class="kw">order</span>(clust[,<span class="dv">1</span>]), <span class="dv">2</span>]            <span class="co"># order accoring to row rather than cluster</span></span>
+<span id="cb458-86"><a href="em.html#cb458-86"></a>  out =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb458-87"><a href="em.html#cb458-87"></a>    <span class="dt">probs   =</span> probs,</span>
+<span id="cb458-88"><a href="em.html#cb458-88"></a>    <span class="dt">mu      =</span> mu,</span>
+<span id="cb458-89"><a href="em.html#cb458-89"></a>    <span class="dt">var     =</span> var,</span>
+<span id="cb458-90"><a href="em.html#cb458-90"></a>    <span class="dt">resp    =</span> ri,</span>
+<span id="cb458-91"><a href="em.html#cb458-91"></a>    <span class="dt">cluster =</span> clust,</span>
+<span id="cb458-92"><a href="em.html#cb458-92"></a>    <span class="dt">ll      =</span> ll</span>
+<span id="cb458-93"><a href="em.html#cb458-93"></a>  )</span>
+<span id="cb458-94"><a href="em.html#cb458-94"></a>  </span>
+<span id="cb458-95"><a href="em.html#cb458-95"></a>  out</span>
+<span id="cb458-96"><a href="em.html#cb458-96"></a>} </span></code></pre></div>
+</div>
+<div id="example-1-old-faithful-eruptions" class="section level3">
+<h3>Example 1: Old Faithful eruptions</h3>
+<p>This example uses Old Faithful geyser eruptions. This is can be compared to the univariate code from the <a href="em.html#mixture-model">other chapter</a>. See also <a href="http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL" class="uri">http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL</a></p>
+<div id="data-setup-24" class="section level4">
+<h4>Data Setup</h4>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="em.html#cb459-1"></a><span class="kw">data</span>(<span class="st">&quot;faithful&quot;</span>)</span></code></pre></div>
+</div>
+<div id="estimation-18" class="section level4">
+<h4>Estimation</h4>
+<p>Create starting values and estimate.</p>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="em.html#cb460-1"></a>mustart  =<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">60</span>), <span class="kw">c</span>(<span class="dv">3</span>, <span class="fl">60.1</span>))    <span class="co"># must be at least slightly different</span></span>
+<span id="cb460-2"><a href="em.html#cb460-2"></a>covstart =<span class="st"> </span><span class="kw">list</span>(<span class="kw">cov</span>(faithful), <span class="kw">cov</span>(faithful))</span>
+<span id="cb460-3"><a href="em.html#cb460-3"></a>probs    =<span class="st"> </span><span class="kw">c</span>(.<span class="dv">01</span>, <span class="fl">.99</span>)</span>
+<span id="cb460-4"><a href="em.html#cb460-4"></a></span>
+<span id="cb460-5"><a href="em.html#cb460-5"></a><span class="co"># params is a list of mu, var, and probs </span></span>
+<span id="cb460-6"><a href="em.html#cb460-6"></a>starts =<span class="st"> </span><span class="kw">list</span>(<span class="dt">mu =</span> mustart, <span class="dt">var =</span> covstart, <span class="dt">probs =</span> probs)  </span></code></pre></div>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="em.html#cb461-1"></a>mix_faithful =<span class="st"> </span><span class="kw">gaussmixEM</span>(</span>
+<span id="cb461-2"><a href="em.html#cb461-2"></a>  <span class="dt">params =</span> starts,</span>
+<span id="cb461-3"><a href="em.html#cb461-3"></a>  <span class="dt">X =</span> <span class="kw">as.matrix</span>(faithful),</span>
+<span id="cb461-4"><a href="em.html#cb461-4"></a>  <span class="dt">clusters =</span> <span class="dv">2</span>,</span>
+<span id="cb461-5"><a href="em.html#cb461-5"></a>  <span class="dt">tol      =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb461-6"><a href="em.html#cb461-6"></a>  <span class="dt">maxits   =</span> <span class="dv">1500</span>,</span>
+<span id="cb461-7"><a href="em.html#cb461-7"></a>  <span class="dt">showits  =</span> <span class="ot">TRUE</span></span>
+<span id="cb461-8"><a href="em.html#cb461-8"></a>)</span></code></pre></div>
+<pre><code>Iterations of EM: 
+1...
+5...
+10...
+15...
+20...
+25...
+30...
+35...
+40...
+45...
+50...
+55...
+60...
+65...
+70...
+75...
+80...</code></pre>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="em.html#cb463-1"></a><span class="kw">str</span>(mix_faithful)</span></code></pre></div>
+<pre><code>List of 6
+ $ probs  : num [1:2] 0.356 0.644
+ $ mu     : num [1:2, 1:2] 2.04 4.29 54.48 79.97
+ $ var    :List of 2
+  ..$ : num [1:2, 1:2] 0.0692 0.4352 0.4352 33.6973
+  .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+  .. .. ..$ : NULL
+  .. .. ..$ : chr [1:2] &quot;eruptions&quot; &quot;waiting&quot;
+  ..$ : num [1:2, 1:2] 0.17 0.941 0.941 36.046
+  .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+  .. .. ..$ : NULL
+  .. .. ..$ : chr [1:2] &quot;eruptions&quot; &quot;waiting&quot;
+ $ resp   : num [1:272, 1:2] 2.59e-09 1.00 8.42e-06 1.00 1.00e-21 ...
+ $ cluster: int [1:272] 2 1 2 1 2 1 2 2 1 2 ...
+ $ ll     : num 477</code></pre>
+<p>Visualize.</p>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="em.html#cb465-1"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb465-2"><a href="em.html#cb465-2"></a></span>
+<span id="cb465-3"><a href="em.html#cb465-3"></a><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting), <span class="dt">data =</span> faithful) <span class="op">+</span></span>
+<span id="cb465-4"><a href="em.html#cb465-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">factor</span>(mix_faithful<span class="op">$</span>cluster))) <span class="op">+</span></span>
+<span id="cb465-5"><a href="em.html#cb465-5"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/mixmv-vis1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="em.html#cb466-1"></a>faithful <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb466-2"><a href="em.html#cb466-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prob_clus_1 =</span> mix_faithful<span class="op">$</span>resp[, <span class="dv">1</span>]) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb466-3"><a href="em.html#cb466-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting)) <span class="op">+</span></span>
+<span id="cb466-4"><a href="em.html#cb466-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> prob_clus_<span class="dv">1</span>)) <span class="op">+</span></span>
+<span id="cb466-5"><a href="em.html#cb466-5"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/mixmv-vis1-2.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="em.html#cb467-1"></a><span class="co"># relatively speaking, these are extremely well-separated clusters</span></span>
+<span id="cb467-2"><a href="em.html#cb467-2"></a>worst =<span class="st"> </span><span class="kw">apply</span>(mix_faithful<span class="op">$</span>resp, <span class="dv">1</span>, <span class="cf">function</span>(x)  <span class="kw">max</span>(x) <span class="op">&lt;</span><span class="st"> </span><span class="fl">.99</span>) </span>
+<span id="cb467-3"><a href="em.html#cb467-3"></a></span>
+<span id="cb467-4"><a href="em.html#cb467-4"></a><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> eruptions, <span class="dt">y =</span> waiting), <span class="dt">data =</span> faithful) <span class="op">+</span></span>
+<span id="cb467-5"><a href="em.html#cb467-5"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> worst)) <span class="op">+</span></span>
+<span id="cb467-6"><a href="em.html#cb467-6"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/mixmv-vis1-3.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="comparison-31" class="section level4">
+<h4>Comparison</h4>
+<p>Compare to <span class="pack" style="">mclust</span> results.</p>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="em.html#cb468-1"></a><span class="kw">library</span>(mclust)</span>
+<span id="cb468-2"><a href="em.html#cb468-2"></a></span>
+<span id="cb468-3"><a href="em.html#cb468-3"></a><span class="co"># options are set to be more similar</span></span>
+<span id="cb468-4"><a href="em.html#cb468-4"></a>mix_mclust =<span class="st"> </span><span class="kw">Mclust</span>(</span>
+<span id="cb468-5"><a href="em.html#cb468-5"></a>  faithful[, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>],</span>
+<span id="cb468-6"><a href="em.html#cb468-6"></a>  <span class="dv">2</span>,</span>
+<span id="cb468-7"><a href="em.html#cb468-7"></a>  <span class="dt">modelNames =</span> <span class="st">&#39;VVV&#39;</span>,</span>
+<span id="cb468-8"><a href="em.html#cb468-8"></a>  <span class="dt">control =</span> <span class="kw">emControl</span>(<span class="dt">tol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb468-9"><a href="em.html#cb468-9"></a>)</span>
+<span id="cb468-10"><a href="em.html#cb468-10"></a></span>
+<span id="cb468-11"><a href="em.html#cb468-11"></a><span class="kw">str</span>(mix_mclust, <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>List of 16
+ $ call          : language Mclust(data = faithful[, 1:2], G = 2, modelNames = &quot;VVV&quot;, control = emControl(tol = 1e-12))
+ $ data          : num [1:272, 1:2] 3.6 1.8 3.33 2.28 4.53 ...
+  ..- attr(*, &quot;dimnames&quot;)=List of 2
+ $ modelName     : chr &quot;VVV&quot;
+ $ n             : int 272
+ $ d             : int 2
+ $ G             : int 2
+ $ BIC           : &#39;mclustBIC&#39; num [1, 1] -2322
+  ..- attr(*, &quot;dimnames&quot;)=List of 2
+  ..- attr(*, &quot;G&quot;)= num 2
+  ..- attr(*, &quot;modelNames&quot;)= chr &quot;VVV&quot;
+  ..- attr(*, &quot;control&quot;)=List of 4
+  ..- attr(*, &quot;initialization&quot;)=List of 3
+  ..- attr(*, &quot;warn&quot;)= logi FALSE
+  ..- attr(*, &quot;n&quot;)= int 272
+  ..- attr(*, &quot;d&quot;)= int 2
+  ..- attr(*, &quot;oneD&quot;)= logi FALSE
+  ..- attr(*, &quot;criterion&quot;)= chr &quot;BIC&quot;
+  ..- attr(*, &quot;returnCodes&quot;)= num [1, 1] 0
+  .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+ $ loglik        : num -1130
+ $ df            : num 11
+ $ bic           : num -2322
+ $ icl           : num -2323
+ $ hypvol        : num NA
+ $ parameters    :List of 4
+ $ z             : num [1:272, 1:2] 1.00 1.91e-09 1.00 1.07e-05 1.00 ...
+  ..- attr(*, &quot;dimnames&quot;)=List of 2
+ $ classification: Named num [1:272] 1 2 1 2 1 2 1 1 2 1 ...
+  ..- attr(*, &quot;names&quot;)= chr [1:272] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+ $ uncertainty   : Named num [1:272] 2.59e-09 1.91e-09 8.42e-06 1.07e-05 0.00 ...
+  ..- attr(*, &quot;names&quot;)= chr [1:272] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+ - attr(*, &quot;class&quot;)= chr &quot;Mclust&quot;</code></pre>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="em.html#cb470-1"></a><span class="co"># compare means</span></span>
+<span id="cb470-2"><a href="em.html#cb470-2"></a><span class="kw">t</span>(mix_faithful<span class="op">$</span>mu)</span></code></pre></div>
+<pre><code>          [,1]      [,2]
+[1,]  2.036388  4.289662
+[2,] 54.478516 79.968115</code></pre>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="em.html#cb472-1"></a>mix_mclust<span class="op">$</span>parameters<span class="op">$</span>mean</span></code></pre></div>
+<pre><code>               [,1]      [,2]
+eruptions  4.289662  2.036388
+waiting   79.968115 54.478517</code></pre>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="em.html#cb474-1"></a><span class="co"># compare variances</span></span>
+<span id="cb474-2"><a href="em.html#cb474-2"></a>mix_faithful<span class="op">$</span>var</span></code></pre></div>
+<pre><code>[[1]]
+      eruptions    waiting
+[1,] 0.06916767  0.4351676
+[2,] 0.43516762 33.6972821
+
+[[2]]
+     eruptions    waiting
+[1,] 0.1699684  0.9406093
+[2,] 0.9406093 36.0462113</code></pre>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="em.html#cb476-1"></a>mix_mclust<span class="op">$</span>parameters<span class="op">$</span>variance<span class="op">$</span>sigma</span></code></pre></div>
+<pre><code>, , 1
+
+          eruptions    waiting
+eruptions 0.1699684  0.9406089
+waiting   0.9406089 36.0462071
+
+, , 2
+
+           eruptions    waiting
+eruptions 0.06916769  0.4351678
+waiting   0.43516784 33.6972835</code></pre>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="em.html#cb478-1"></a><span class="co"># compare classifications, reverse in case arbitrary numbering of one of them is opposite</span></span>
+<span id="cb478-2"><a href="em.html#cb478-2"></a><span class="kw">table</span>(mix_faithful<span class="op">$</span>cluster, mix_mclust<span class="op">$</span>classification)</span></code></pre></div>
+<pre><code>   
+      1   2
+  1   0  97
+  2 175   0</code></pre>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="em.html#cb480-1"></a><span class="kw">table</span>(<span class="kw">ifelse</span>(mix_faithful<span class="op">$</span>cluster <span class="op">==</span><span class="st"> </span><span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb480-2"><a href="em.html#cb480-2"></a>      mix_mclust<span class="op">$</span>classification)</span></code></pre></div>
+<pre><code>   
+      1   2
+  1 175   0
+  2   0  97</code></pre>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="em.html#cb482-1"></a><span class="co"># compare responsibilities; reverse one if arbitrary numbering of one of them is opposite</span></span>
+<span id="cb482-2"><a href="em.html#cb482-2"></a><span class="co"># cbind(round(mix_faithful$resp[,1], 2), round(mix_mclust$z[,2], 2)) # cluster &#39;1&#39;</span></span>
+<span id="cb482-3"><a href="em.html#cb482-3"></a><span class="co"># cbind(round(mix_faithful$resp[,2], 2), round(mix_mclust$z[,1], 2)) # cluster &#39;2&#39;</span></span></code></pre></div>
+</div>
+</div>
+<div id="example-2-iris-data-set" class="section level3">
+<h3>Example 2: Iris data set</h3>
+<div id="data-setup-25" class="section level4">
+<h4>Data Setup</h4>
+<p>Set up data</p>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="em.html#cb483-1"></a>iris2 =<span class="st"> </span>iris <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>Species)</span></code></pre></div>
+</div>
+<div id="estimation-19" class="section level4">
+<h4>Estimation</h4>
+<p>Run and examine. We add noise to our starting value, and the function is notably sensitive to starts, but don’t want to cheat too badly.</p>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="em.html#cb484-1"></a>mustart =<span class="st"> </span>iris <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb484-2"><a href="em.html#cb484-2"></a><span class="st">  </span><span class="kw">group_by</span>(Species) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb484-3"><a href="em.html#cb484-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="kw">across</span>(<span class="dt">.fns =</span> <span class="cf">function</span>(x) <span class="kw">mean</span>(x) <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">.5</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb484-4"><a href="em.html#cb484-4"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Species) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb484-5"><a href="em.html#cb484-5"></a><span class="st">  </span><span class="kw">as.matrix</span>()</span>
+<span id="cb484-6"><a href="em.html#cb484-6"></a></span>
+<span id="cb484-7"><a href="em.html#cb484-7"></a></span>
+<span id="cb484-8"><a href="em.html#cb484-8"></a><span class="co"># use purrr::map due to mclust::map</span></span>
+<span id="cb484-9"><a href="em.html#cb484-9"></a>covstart =<span class="st"> </span>iris <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb484-10"><a href="em.html#cb484-10"></a><span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>Species) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb484-11"><a href="em.html#cb484-11"></a><span class="st">  </span>purrr<span class="op">::</span><span class="kw">map</span>(select, <span class="op">-</span>Species) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb484-12"><a href="em.html#cb484-12"></a><span class="st">  </span>purrr<span class="op">::</span><span class="kw">map</span>(<span class="cf">function</span>(x) <span class="kw">cov</span>(x) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(<span class="kw">runif</span>(<span class="dv">4</span>, <span class="dv">0</span>, <span class="fl">.5</span>))) </span>
+<span id="cb484-13"><a href="em.html#cb484-13"></a></span>
+<span id="cb484-14"><a href="em.html#cb484-14"></a>probs =<span class="st"> </span><span class="kw">c</span>(.<span class="dv">1</span>, <span class="fl">.2</span>, <span class="fl">.7</span>)</span>
+<span id="cb484-15"><a href="em.html#cb484-15"></a></span>
+<span id="cb484-16"><a href="em.html#cb484-16"></a>starts =<span class="st"> </span><span class="kw">list</span>(<span class="dt">mu =</span> mustart, <span class="dt">var =</span> covstart, <span class="dt">probs =</span> probs)</span></code></pre></div>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="em.html#cb485-1"></a>mix_mclust_iris =<span class="st"> </span><span class="kw">gaussmixEM</span>(</span>
+<span id="cb485-2"><a href="em.html#cb485-2"></a>  <span class="dt">params =</span> starts,</span>
+<span id="cb485-3"><a href="em.html#cb485-3"></a>  <span class="dt">X =</span> <span class="kw">as.matrix</span>(iris2),</span>
+<span id="cb485-4"><a href="em.html#cb485-4"></a>  <span class="dt">clusters =</span> <span class="dv">3</span>,</span>
+<span id="cb485-5"><a href="em.html#cb485-5"></a>  <span class="dt">tol      =</span> <span class="fl">1e-8</span>,</span>
+<span id="cb485-6"><a href="em.html#cb485-6"></a>  <span class="dt">maxits   =</span> <span class="dv">1500</span>,</span>
+<span id="cb485-7"><a href="em.html#cb485-7"></a>  <span class="dt">showits  =</span> T</span>
+<span id="cb485-8"><a href="em.html#cb485-8"></a>)</span></code></pre></div>
+<pre><code>Iterations of EM: 
+1...</code></pre>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="em.html#cb487-1"></a><span class="kw">table</span>(mix_mclust_iris<span class="op">$</span>cluster, iris<span class="op">$</span>Species)</span></code></pre></div>
+<pre><code>   
+    setosa versicolor virginica
+  1     50          0         0
+  2      0         48         0
+  3      0          2        50</code></pre>
+</div>
+<div id="comparison-32" class="section level4">
+<h4>Comparison</h4>
+<p>Compare to mclust results.</p>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="em.html#cb489-1"></a>mclust_iris =<span class="st"> </span><span class="kw">Mclust</span>(iris[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>], <span class="dv">3</span>)</span>
+<span id="cb489-2"><a href="em.html#cb489-2"></a><span class="kw">table</span>(mclust_iris<span class="op">$</span>classification, iris<span class="op">$</span>Species)</span></code></pre></div>
+<pre><code>   
+    setosa versicolor virginica
+  1     50          0         0
+  2      0         45         0
+  3      0          5        50</code></pre>
+</div>
+</div>
+<div id="source-28" class="section level3">
+<h3>Source</h3>
+<p>Source code found at
+<a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20Mixture%20MV.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20Mixture%20MV.R</a></p>
+
+</div>
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="stochastic-gradient-descent.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="supplemental.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["twitter", "facebook", "linkedin", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/m-clark/models-by-example/blob/master/em.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"depth": 2,
+"scroll_highlight": true
+},
+"df_print": "kable",
+"highlight": "pygments",
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

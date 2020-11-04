@@ -1,0 +1,288 @@
+## Mixture Model
+
+The following code is based on algorithms noted in Murphy, 2012 Probabilistic Machine Learning, specifically, Chapter 11, section 4.
+
+
+
+### Data Setup
+
+This example uses Old Faithful geyser eruptions.  This is only a univariate mixture for either eruption time or wait time. The [next example][Multivariate Mixture Model] will be doing both variables, i.e. multivariate normal.  'Geyser' is supposedly more accurate, though seems to have 
+arbitrarily assigned some duration values.  See also http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL, but that only has
+intervals. Some July 1995 data is available.
+
+```{r old-faithful}
+# faithful data set is in base R
+data(faithful)
+
+head(faithful)
+
+eruptions  = as.matrix(faithful[, 1, drop = FALSE])
+wait_times = as.matrix(faithful[, 2, drop = FALSE])
+```
+
+### Function
+
+```{r gaussmixEM}
+gaussmixEM = function(
+  params,
+  X,
+  clusters = 2,
+  tol = .00001,
+  maxits = 100,
+  showits = TRUE
+) {
+  
+  # Arguments are starting parameters (means, covariances, cluster probability),
+  # data, number of clusters desired, tolerance, maximum iterations, and whether
+  # to show iterations
+  
+  # Starting points
+  N     = nrow(X)
+  nams  = names(params)
+  mu    = params$mu
+  var   = params$var
+  probs = params$probs
+  
+  # Other initializations
+  # initialize cluster 'responsibilities', i.e. probability of cluster
+  # membership for each observation i
+  ri = matrix(0, ncol = clusters, nrow = N) 
+  it = 0
+  converged = FALSE
+  
+  if (showits)                                  # Show iterations
+    cat(paste("Iterations of EM:", "\n"))
+  
+  while ((!converged) & (it < maxits)) { 
+    probsOld = probs
+    muOld = mu
+    varOld = var
+    riOld = ri
+    
+    # E
+    # Compute responsibilities
+    for (k in 1:clusters){
+      ri[, k] = probs[k] * dnorm(X, mu[k], sd = sqrt(var[k]), log = FALSE)
+    }
+    
+    ri = ri/rowSums(ri)
+    
+    # M
+    rk = colSums(ri)           # rk is the weighted average cluster membership size
+    probs = rk/N
+    mu = (t(X) %*% ri) / rk    
+    var = (t(X^2) %*% ri) / rk - mu^2
+    
+    # could do mu and var via log likelihood here, but this is more straightforward
+
+    parmlistold     = rbind(probsOld, muOld, varOld)
+    parmlistcurrent = rbind(probs, mu, var)
+    
+    it = it + 1
+    
+    # if showits true, & it =1 or divisible by 5 print message
+    if (showits & it == 1 | it%%5 == 0)        
+      cat(paste(format(it), "...", "\n", sep = ""))
+    
+    converged = max(abs(parmlistold - parmlistcurrent)) <= tol
+  }
+  
+  clust = which(round(ri) == 1, arr.ind = TRUE) # create cluster membership
+  clust = clust[order(clust[, 1]), 2]           # order according to row rather than cluster
+  
+  out = list(
+    probs   = probs,
+    mu      = mu,
+    var     = var,
+    resp    = ri,
+    cluster = clust
+  )
+  
+  out
+} 
+```
+
+### Estimation
+
+Starting parameters, requires mean, variance and class probability. Note that starts for mean must be within the data range or it will break.  
+
+```{r gaussEM-starts}
+params1 = list(mu = c(2, 5),
+               var = c(1, 1),
+               probs = c(.5, .5))
+
+params2 = list(mu = c(50, 90),
+               var = c(1, 15),
+               probs = c(.5, .5))  
+
+
+```
+
+
+```{r gaussEM-est}
+mix_erupt   = gaussmixEM(params1, X = eruptions,  tol = 1e-8)
+mix_waiting = gaussmixEM(params2, X = wait_times, tol = 1e-8)
+```
+
+
+
+### Comparison
+
+Compare to <span class="pack" style = "">flexmix</span> package results.
+
+```{r gaussEM-flex}
+library(flexmix)
+
+flex_erupt = flexmix(eruptions ~ 1,
+                     k = 2,
+                     control = list(tolerance = 1e-8, iter.max = 100))
+
+flex_wait = flexmix(wait_times ~ 1,
+                    k = 2,
+                    control = list(tolerance = 1e-8, iter.max = 100))
+```
+
+
+The following provides means, variances and probability of group membership. Note that the cluster label is arbitrary so cluster 1 for one model may be cluster 2 in another.
+
+##### Eruptions
+
+```{r gaussEM-compare-erupt}
+mean_var = rbind(mix_erupt$mu, sqrt(mix_erupt$var))
+rownames(mean_var) = c('means', 'variances')
+colnames(mean_var) = c('cluster 1', 'cluster 2')
+
+mean_var_flex = parameters(flex_erupt)
+rownames(mean_var_flex) = c('means', 'variances')
+colnames(mean_var_flex) = c('cluster 1 flex', 'cluster 2 flex')
+
+
+prob_membership     = mix_erupt$probs
+prob_membership_flex = flex_erupt@size / sum(flex_erupt@size)
+
+list(
+  params = cbind(mean_var, mean_var_flex),
+  clusterpobs = cbind(prob_membership, prob_membership_flex)
+)
+```
+
+
+
+##### Waiting
+
+
+```{r gaussEM-compare-wait} 
+mean_var = rbind(mix_waiting$mu, sqrt(mix_waiting$var))
+rownames(mean_var) = c('means', 'variances')
+colnames(mean_var) = c('cluster 1', 'cluster 2')
+
+
+mean_var_flex = parameters(flex_wait)
+rownames(mean_var_flex) = c('means', 'variances')
+colnames(mean_var_flex) = c('cluster 1 flex', 'cluster 2 flex')
+
+prob_membership     = mix_waiting$probs
+prob_membership_flex = flex_wait@size / sum(flex_wait@size)
+
+list(
+  params = cbind(mean_var, mean_var_flex),
+  clusterpobs = cbind(prob_membership, prob_membership_flex)
+)
+
+qplot(x = eruptions, y = waiting, data = faithful) + theme_minimal()
+
+ggplot(aes(x = eruptions, y = waiting), data = faithful) +
+  geom_point(aes(color = factor(mix_waiting$cluster))) +
+  geom_density2d() +
+  theme_minimal()
+
+
+faithful %>% 
+  mutate(prob_clus_1 = mix_waiting$resp[, 1]) %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point(aes(color = prob_clus_1)) +
+  geom_density2d() +
+  theme_minimal()
+```
+
+
+### Supplemental Example
+
+This uses the <span class="pack" style = "">MASS</span> version (reversed columns). These don't look even remotely the same data on initial inspection- `geyser` is even more rounded and of opposite conclusion.  Turns out geyser is offset by 1, such that duration 1 should be coupled with waiting 2 and on down. Still the rounding at 2 and 4 (and whatever division was done on duration) makes this fairly poor data.
+
+I've cleaned this up a little bit in case someone wants to play with it for additional practice, but it's not evaluated.
+
+```{r mass-demo, eval=FALSE}
+library(MASS)
+
+geyser = data.frame(duration = geyser$duration[-299], waiting = geyser$waiting[-1])
+
+# compare to faithful
+layout(1:2)
+plot(faithful)
+plot(geyser)
+
+X3 = matrix(geyser[,1]) 
+X4 = matrix(geyser[,2])
+
+
+# MASS version
+test3 = gaussmixEM(params1, X = X3, tol = 1e-8)
+test4 = gaussmixEM(params2, X = X4, tol = 1e-8)
+
+flexmod3 = flexmix(X3 ~ 1,
+                   k = 2,
+                   control = list(tolerance = 1e-8, iter.max = 100))
+flexmod4 = flexmix(X4 ~ 1,
+                   k = 2,
+                   control = list(tolerance = 1e-8, iter.max = 100))
+
+# note variability differences compared to faithful dataset
+# Eruptions/Duration
+mean_var = rbind(test3$mu, sqrt(test3$var))
+rownames(mean_var) = c('means', 'variances')
+
+mean_var_flex = parameters(flexmod3)
+rownames(mean_var_flex) = c('means', 'variances')
+
+prob_membership = test3$probs
+prob_membership_flex = flexmod3@size / sum(flexmod3@size)
+
+list(
+  params = cbind(mean_var, mean_var_flex),
+  clusterpobs = cbind(prob_membership, prob_membership_flex)
+)
+
+# Waiting
+mean_var = rbind(test4$mu, sqrt(test4$var))
+rownames(mean_var) = c('means', 'variances')
+
+mean_var_flex = parameters(flexmod4)
+rownames(mean_var_flex) = c('means', 'variances')
+
+prob_membership = test4$probs
+prob_membership_flex = flexmod4@size / sum(flexmod4@size)
+
+list(
+  params = cbind(mean_var, mean_var_flex),
+  clusterpobs = cbind(prob_membership, prob_membership_flex)
+)
+
+# Some plots
+library(ggplot2)
+qplot(x = eruptions, y = waiting, data = faithful) + theme_minimal()
+
+ggplot(aes(x = eruptions, y = waiting), data = faithful) +
+  geom_point(aes(color = factor(mix_waiting$cluster))) +
+  theme_minimal()
+
+ggplot(aes(x = eruptions, y = waiting), data = faithful) +
+  geom_point(aes(color = mix_waiting$resp[, 1])) +
+  theme_minimal()
+```
+
+
+### Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20Mixture.R

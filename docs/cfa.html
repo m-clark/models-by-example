@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Supplemental | Model Estimation by Example</title>
+  <title>Confirmatory Factor Analysis | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Supplemental | Model Estimation by Example" />
+  <meta property="og:title" content="Confirmatory Factor Analysis | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Supplemental | Model Estimation by Example" />
+  <meta name="twitter:title" content="Confirmatory Factor Analysis | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="em.html"/>
-
+<link rel="prev" href="cox.html"/>
+<link rel="next" href="penalized-maximum-likelihood.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -513,51 +513,391 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="supplemental" class="section level1">
-<h1>Supplemental</h1>
-<div id="other-languages" class="section level2">
-<h2>Other Languages</h2>
-<p>When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. Not much here but may be useful to some.</p>
-<div id="julia" class="section level4">
-<h4>Julia</h4>
-<div id="one-factor-mixed-model-1" class="section level5">
-<h5>One-factor Mixed Model</h5>
+<div id="confirmatory-factor-analysis" class="section level1">
+<h1>Confirmatory Factor Analysis</h1>
+<p>This mostly follows Bollen (1989) for maximum likelihood estimation of a confirmatory factor analysis. In the following example we will examine a situation where there are two underlying (correlated) latent variables for 8 observed responses. The code as is will only work with this toy data set. Setup uses the <span class="pack" style="">psych</span> and <span class="pack" style="">mvtnorm</span> packages, and results are checked against the <span class="pack" style="">lavaan</span> package.</p>
+<div id="data-setup-16" class="section level2">
+<h2>Data Setup</h2>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="cfa.html#cb328-1"></a><span class="kw">library</span>(mvtnorm)</span>
+<span id="cb328-2"><a href="cfa.html#cb328-2"></a><span class="kw">library</span>(psych)</span>
+<span id="cb328-3"><a href="cfa.html#cb328-3"></a></span>
+<span id="cb328-4"><a href="cfa.html#cb328-4"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb328-5"><a href="cfa.html#cb328-5"></a></span>
+<span id="cb328-6"><a href="cfa.html#cb328-6"></a><span class="co"># loading matrix</span></span>
+<span id="cb328-7"><a href="cfa.html#cb328-7"></a>lambda =<span class="st"> </span><span class="kw">matrix</span>(</span>
+<span id="cb328-8"><a href="cfa.html#cb328-8"></a>  <span class="kw">c</span>(<span class="dv">1</span>,.<span class="dv">5</span>,.<span class="dv">3</span>,.<span class="dv">6</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb328-9"><a href="cfa.html#cb328-9"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,.<span class="dv">7</span>,.<span class="dv">4</span>,.<span class="dv">5</span>),</span>
+<span id="cb328-10"><a href="cfa.html#cb328-10"></a>  <span class="dt">nrow =</span> <span class="dv">2</span>, </span>
+<span id="cb328-11"><a href="cfa.html#cb328-11"></a>  <span class="dt">byrow =</span> <span class="ot">TRUE</span></span>
+<span id="cb328-12"><a href="cfa.html#cb328-12"></a>)</span>
+<span id="cb328-13"><a href="cfa.html#cb328-13"></a></span>
+<span id="cb328-14"><a href="cfa.html#cb328-14"></a><span class="co"># correlation of factors</span></span>
+<span id="cb328-15"><a href="cfa.html#cb328-15"></a>phi =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">.25</span>, <span class="fl">.25</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)  </span>
+<span id="cb328-16"><a href="cfa.html#cb328-16"></a></span>
+<span id="cb328-17"><a href="cfa.html#cb328-17"></a><span class="co"># factors and some noise</span></span>
+<span id="cb328-18"><a href="cfa.html#cb328-18"></a>factors =<span class="st"> </span><span class="kw">rmvnorm</span>(<span class="dv">1000</span>, <span class="dt">mean =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="dt">sigma =</span> phi, <span class="st">&quot;chol&quot;</span>)</span>
+<span id="cb328-19"><a href="cfa.html#cb328-19"></a>e =<span class="st"> </span><span class="kw">rmvnorm</span>(<span class="dv">1000</span>, <span class="dt">sigma =</span> <span class="kw">diag</span>(<span class="dv">8</span>))</span>
+<span id="cb328-20"><a href="cfa.html#cb328-20"></a></span>
+<span id="cb328-21"><a href="cfa.html#cb328-21"></a><span class="co"># observed responses</span></span>
+<span id="cb328-22"><a href="cfa.html#cb328-22"></a>y =<span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>factors<span class="op">%*%</span>lambda <span class="op">+</span><span class="st"> </span>e</span>
+<span id="cb328-23"><a href="cfa.html#cb328-23"></a></span>
+<span id="cb328-24"><a href="cfa.html#cb328-24"></a><span class="co"># Examine</span></span>
+<span id="cb328-25"><a href="cfa.html#cb328-25"></a><span class="co">#dim(y)</span></span>
+<span id="cb328-26"><a href="cfa.html#cb328-26"></a><span class="kw">describe</span>(y)</span></code></pre></div>
+<pre><code>   vars    n  mean   sd median trimmed  mad   min  max range  skew kurtosis   se
+X1    1 1000  0.05 1.44   0.05    0.05 1.42 -5.13 4.51  9.63  0.00     0.01 0.05
+X2    2 1000  0.00 1.08  -0.01    0.00 1.04 -3.34 3.25  6.59  0.00    -0.06 0.03
+X3    3 1000 -0.01 1.04   0.00   -0.01 1.01 -4.40 3.56  7.96 -0.07     0.27 0.03
+X4    4 1000  0.00 1.14  -0.03   -0.01 1.13 -3.85 3.98  7.83  0.10     0.16 0.04
+X5    5 1000  0.04 1.43   0.10    0.05 1.39 -4.43 5.21  9.63 -0.02     0.07 0.05
+X6    6 1000 -0.02 1.22  -0.01   -0.02 1.27 -3.35 4.68  8.03  0.04    -0.10 0.04
+X7    7 1000  0.02 1.06   0.01    0.01 1.05 -2.94 3.33  6.28  0.11    -0.09 0.03
+X8    8 1000  0.00 1.14  -0.01    0.01 1.12 -3.27 3.47  6.73 -0.05     0.07 0.04</code></pre>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="cfa.html#cb330-1"></a><span class="kw">round</span>(<span class="kw">cor</span>(y), <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>      [,1]   [,2]  [,3]  [,4]   [,5]  [,6]  [,7]  [,8]
+[1,] 1.000  0.291 0.233 0.352  0.104 0.078 0.049 0.050
+[2,] 0.291  1.000 0.145 0.228 -0.008 0.031 0.054 0.072
+[3,] 0.233  0.145 1.000 0.171  0.006 0.066 0.026 0.079
+[4,] 0.352  0.228 0.171 1.000  0.014 0.057 0.054 0.079
+[5,] 0.104 -0.008 0.006 0.014  1.000 0.417 0.259 0.300
+[6,] 0.078  0.031 0.066 0.057  0.417 1.000 0.201 0.273
+[7,] 0.049  0.054 0.026 0.054  0.259 0.201 1.000 0.142
+[8,] 0.050  0.072 0.079 0.079  0.300 0.273 0.142 1.000</code></pre>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="cfa.html#cb332-1"></a><span class="co">#see the factor structure</span></span>
+<span id="cb332-2"><a href="cfa.html#cb332-2"></a><span class="kw">cor.plot</span>(<span class="kw">cor</span>(y))</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/cfa-setup-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb333-1"><a href="cfa.html#cb333-1"></a><span class="co"># example exploratory fa</span></span>
+<span id="cb333-2"><a href="cfa.html#cb333-2"></a><span class="co">#fa(y, nfactors=2, rotate=&quot;oblimin&quot;) </span></span></code></pre></div>
 </div>
-<div id="two-factor-mixed-model-1" class="section level5">
-<h5>Two-factor Mixed Model</h5>
+<div id="primary-functions" class="section level2">
+<h2>Primary Functions</h2>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="cfa.html#cb334-1"></a><span class="co"># measurement model, covariance approach</span></span>
+<span id="cb334-2"><a href="cfa.html#cb334-2"></a>cfa_cov &lt;-<span class="st"> </span><span class="cf">function</span> (parms, data) {</span>
+<span id="cb334-3"><a href="cfa.html#cb334-3"></a>  <span class="co"># Arguments- </span></span>
+<span id="cb334-4"><a href="cfa.html#cb334-4"></a>  <span class="co"># parms: initial values (named)</span></span>
+<span id="cb334-5"><a href="cfa.html#cb334-5"></a>  <span class="co"># data: raw data</span></span>
+<span id="cb334-6"><a href="cfa.html#cb334-6"></a>  </span>
+<span id="cb334-7"><a href="cfa.html#cb334-7"></a>  <span class="co"># Extract parameters by name</span></span>
+<span id="cb334-8"><a href="cfa.html#cb334-8"></a>  </span>
+<span id="cb334-9"><a href="cfa.html#cb334-9"></a>  <span class="kw">require</span>(psych) <span class="co"># for tr</span></span>
+<span id="cb334-10"><a href="cfa.html#cb334-10"></a>  </span>
+<span id="cb334-11"><a href="cfa.html#cb334-11"></a>  l1 =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, parms[<span class="kw">grep</span>(<span class="st">&#39;l1&#39;</span>, <span class="kw">names</span>(parms))])      <span class="co"># loadings for factor 1</span></span>
+<span id="cb334-12"><a href="cfa.html#cb334-12"></a>  l2 =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, parms[<span class="kw">grep</span>(<span class="st">&#39;l2&#39;</span>, <span class="kw">names</span>(parms))])      <span class="co"># loadings for factor 2</span></span>
+<span id="cb334-13"><a href="cfa.html#cb334-13"></a>  cov0 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;cov&#39;</span>, <span class="kw">names</span>(parms))]         <span class="co"># factor covariance, variances</span></span>
+<span id="cb334-14"><a href="cfa.html#cb334-14"></a>  </span>
+<span id="cb334-15"><a href="cfa.html#cb334-15"></a>  <span class="co"># Covariance matrix</span></span>
+<span id="cb334-16"><a href="cfa.html#cb334-16"></a>  S =<span class="st"> </span><span class="kw">cov</span>(data)<span class="op">*</span>((<span class="kw">nrow</span>(data)<span class="op">-</span><span class="dv">1</span>)<span class="op">/</span><span class="kw">nrow</span>(data))       <span class="co"># ML covariance div by N rather than N-1, the multiplier adjusts</span></span>
+<span id="cb334-17"><a href="cfa.html#cb334-17"></a>  </span>
+<span id="cb334-18"><a href="cfa.html#cb334-18"></a>  <span class="co"># loading estimates</span></span>
+<span id="cb334-19"><a href="cfa.html#cb334-19"></a>  lambda =<span class="st"> </span><span class="kw">cbind</span>(</span>
+<span id="cb334-20"><a href="cfa.html#cb334-20"></a>    <span class="kw">c</span>(l1, <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l2))),</span>
+<span id="cb334-21"><a href="cfa.html#cb334-21"></a>    <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l1)), l2)</span>
+<span id="cb334-22"><a href="cfa.html#cb334-22"></a>  )</span>
+<span id="cb334-23"><a href="cfa.html#cb334-23"></a>  </span>
+<span id="cb334-24"><a href="cfa.html#cb334-24"></a>  <span class="co"># disturbances</span></span>
+<span id="cb334-25"><a href="cfa.html#cb334-25"></a>  dist_init =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;dist&#39;</span>, <span class="kw">names</span>(parms))]    </span>
+<span id="cb334-26"><a href="cfa.html#cb334-26"></a>  disturbs  =<span class="st"> </span><span class="kw">diag</span>(dist_init)</span>
+<span id="cb334-27"><a href="cfa.html#cb334-27"></a>  </span>
+<span id="cb334-28"><a href="cfa.html#cb334-28"></a>  <span class="co"># factor correlation</span></span>
+<span id="cb334-29"><a href="cfa.html#cb334-29"></a>  phi_init =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(cov0[<span class="dv">1</span>], cov0[<span class="dv">2</span>], cov0[<span class="dv">2</span>], cov0[<span class="dv">3</span>]), <span class="dv">2</span>, <span class="dv">2</span>)  <span class="co">#factor cov/correlation matrix</span></span>
+<span id="cb334-30"><a href="cfa.html#cb334-30"></a>  </span>
+<span id="cb334-31"><a href="cfa.html#cb334-31"></a>  <span class="co"># other calculations and log likelihood</span></span>
+<span id="cb334-32"><a href="cfa.html#cb334-32"></a>  sigtheta =<span class="st"> </span>lambda<span class="op">%*%</span>phi_init<span class="op">%*%</span><span class="kw">t</span>(lambda) <span class="op">+</span><span class="st"> </span>disturbs</span>
+<span id="cb334-33"><a href="cfa.html#cb334-33"></a>  </span>
+<span id="cb334-34"><a href="cfa.html#cb334-34"></a>  <span class="co"># in Bollen p + q (but for the purposes of this just p) = tr(data)</span></span>
+<span id="cb334-35"><a href="cfa.html#cb334-35"></a>  pq =<span class="st"> </span><span class="kw">dim</span>(data)[<span class="dv">2</span>] </span>
+<span id="cb334-36"><a href="cfa.html#cb334-36"></a>  </span>
+<span id="cb334-37"><a href="cfa.html#cb334-37"></a>  <span class="co"># a reduced version; Bollen 1989 p.107</span></span>
+<span id="cb334-38"><a href="cfa.html#cb334-38"></a>  <span class="co"># ll = -(log(det(sigtheta)) + tr(S%*%solve(sigtheta)) - log(det(S)) - pq) </span></span>
+<span id="cb334-39"><a href="cfa.html#cb334-39"></a>  </span>
+<span id="cb334-40"><a href="cfa.html#cb334-40"></a>  <span class="co"># should be same as Mplus H0 loglike</span></span>
+<span id="cb334-41"><a href="cfa.html#cb334-41"></a>  ll =<span class="st"> </span>( (<span class="op">-</span><span class="kw">nrow</span>(data)<span class="op">*</span>pq<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) ) <span class="op">-</span><span class="st"> </span></span>
+<span id="cb334-42"><a href="cfa.html#cb334-42"></a><span class="st">    </span>(<span class="kw">nrow</span>(data)<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>( <span class="kw">log</span>(<span class="kw">det</span>(sigtheta)) <span class="op">+</span><span class="st"> </span><span class="kw">tr</span>(S<span class="op">%*%</span><span class="kw">solve</span>(sigtheta)) )</span>
+<span id="cb334-43"><a href="cfa.html#cb334-43"></a>  </span>
+<span id="cb334-44"><a href="cfa.html#cb334-44"></a>  ll</span>
+<span id="cb334-45"><a href="cfa.html#cb334-45"></a>}</span></code></pre></div>
+<p>Correlation approach for standardized results. Lines correspond to those in <code>cfa_cov</code>.</p>
+<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="cfa.html#cb335-1"></a>cfa_cor &lt;-<span class="st"> </span><span class="cf">function</span> (parms, data) {</span>
+<span id="cb335-2"><a href="cfa.html#cb335-2"></a>  <span class="kw">require</span>(psych)</span>
+<span id="cb335-3"><a href="cfa.html#cb335-3"></a>  </span>
+<span id="cb335-4"><a href="cfa.html#cb335-4"></a>  l1 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;l1&#39;</span>, <span class="kw">names</span>(parms))]      <span class="co"># loadings for factor 1</span></span>
+<span id="cb335-5"><a href="cfa.html#cb335-5"></a>  l2 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;l2&#39;</span>, <span class="kw">names</span>(parms))]      <span class="co"># loadings for factor 2</span></span>
+<span id="cb335-6"><a href="cfa.html#cb335-6"></a>  cor0 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;cor&#39;</span>, <span class="kw">names</span>(parms))]   <span class="co"># factor correlation</span></span>
+<span id="cb335-7"><a href="cfa.html#cb335-7"></a>  </span>
+<span id="cb335-8"><a href="cfa.html#cb335-8"></a>  S =<span class="st"> </span><span class="kw">cor</span>(data)</span>
+<span id="cb335-9"><a href="cfa.html#cb335-9"></a>  </span>
+<span id="cb335-10"><a href="cfa.html#cb335-10"></a>  lambda =<span class="st"> </span><span class="kw">cbind</span>(</span>
+<span id="cb335-11"><a href="cfa.html#cb335-11"></a>    <span class="kw">c</span>(l1, <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l2))),</span>
+<span id="cb335-12"><a href="cfa.html#cb335-12"></a>    <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l1)), l2)</span>
+<span id="cb335-13"><a href="cfa.html#cb335-13"></a>  )</span>
+<span id="cb335-14"><a href="cfa.html#cb335-14"></a>  </span>
+<span id="cb335-15"><a href="cfa.html#cb335-15"></a>  dist_init =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;dist&#39;</span>, <span class="kw">names</span>(parms))]</span>
+<span id="cb335-16"><a href="cfa.html#cb335-16"></a>  disturbs  =<span class="st"> </span><span class="kw">diag</span>(dist_init)</span>
+<span id="cb335-17"><a href="cfa.html#cb335-17"></a>  </span>
+<span id="cb335-18"><a href="cfa.html#cb335-18"></a>  phi_init =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, cor0, cor0, <span class="dv">1</span>), <span class="dt">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb335-19"><a href="cfa.html#cb335-19"></a>  </span>
+<span id="cb335-20"><a href="cfa.html#cb335-20"></a>  sigtheta =<span class="st"> </span>lambda<span class="op">%*%</span>phi_init<span class="op">%*%</span><span class="kw">t</span>(lambda) <span class="op">+</span><span class="st"> </span>disturbs</span>
+<span id="cb335-21"><a href="cfa.html#cb335-21"></a>  pq =<span class="st"> </span><span class="kw">dim</span>(data)[<span class="dv">2</span>]</span>
+<span id="cb335-22"><a href="cfa.html#cb335-22"></a>  </span>
+<span id="cb335-23"><a href="cfa.html#cb335-23"></a>  <span class="co">#ll = ( log(det(sigtheta)) + tr(S%*%solve(sigtheta)) - log(det(S)) - pq )</span></span>
+<span id="cb335-24"><a href="cfa.html#cb335-24"></a>  </span>
+<span id="cb335-25"><a href="cfa.html#cb335-25"></a>  ll =<span class="st"> </span>( (<span class="op">-</span><span class="kw">nrow</span>(data)<span class="op">*</span>pq<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) ) <span class="op">-</span><span class="st"> </span></span>
+<span id="cb335-26"><a href="cfa.html#cb335-26"></a><span class="st">    </span>(<span class="kw">nrow</span>(data)<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>( <span class="kw">log</span>(<span class="kw">det</span>(sigtheta)) <span class="op">+</span><span class="st"> </span><span class="kw">tr</span>(S<span class="op">%*%</span><span class="kw">solve</span>(sigtheta)) )</span>
+<span id="cb335-27"><a href="cfa.html#cb335-27"></a>  </span>
+<span id="cb335-28"><a href="cfa.html#cb335-28"></a>  ll</span>
+<span id="cb335-29"><a href="cfa.html#cb335-29"></a>}</span></code></pre></div>
+</div>
+<div id="estimation-15" class="section level2">
+<h2>Estimation</h2>
+<div id="raw" class="section level3">
+<h3>Raw</h3>
+<p>Set initial values.</p>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="cfa.html#cb336-1"></a>par_init_cov =<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="kw">rep</span>(.<span class="dv">05</span>, <span class="dv">8</span>), <span class="kw">rep</span>(.<span class="dv">5</span>, <span class="dv">3</span>)) </span>
+<span id="cb336-2"><a href="cfa.html#cb336-2"></a><span class="kw">names</span>(par_init_cov) =<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;l1&#39;</span>,<span class="st">&#39;l2&#39;</span>, <span class="st">&#39;dist&#39;</span>, <span class="st">&#39;cov&#39;</span>), <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">3</span>))</span></code></pre></div>
+<p>Estimate and extract.</p>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="cfa.html#cb337-1"></a>result_cov =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb337-2"><a href="cfa.html#cb337-2"></a>  <span class="dt">par  =</span> par_init_cov,</span>
+<span id="cb337-3"><a href="cfa.html#cb337-3"></a>  <span class="dt">fn   =</span> cfa_cov,</span>
+<span id="cb337-4"><a href="cfa.html#cb337-4"></a>  <span class="dt">data =</span> y,</span>
+<span id="cb337-5"><a href="cfa.html#cb337-5"></a>  <span class="dt">method  =</span> <span class="st">&quot;L-BFGS-B&quot;</span>,</span>
+<span id="cb337-6"><a href="cfa.html#cb337-6"></a>  <span class="dt">lower   =</span> <span class="dv">0</span>,</span>
+<span id="cb337-7"><a href="cfa.html#cb337-7"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="dv">-1</span>)</span>
+<span id="cb337-8"><a href="cfa.html#cb337-8"></a>) </span>
+<span id="cb337-9"><a href="cfa.html#cb337-9"></a></span>
+<span id="cb337-10"><a href="cfa.html#cb337-10"></a>loadings_cov =<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb337-11"><a href="cfa.html#cb337-11"></a>  <span class="dt">f1 =</span> <span class="kw">c</span>(<span class="dv">1</span>, result_cov<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)),</span>
+<span id="cb337-12"><a href="cfa.html#cb337-12"></a>  <span class="dt">f2 =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="dv">1</span>, result_cov<span class="op">$</span>par[<span class="dv">4</span><span class="op">:</span><span class="dv">6</span>])</span>
+<span id="cb337-13"><a href="cfa.html#cb337-13"></a>)</span>
+<span id="cb337-14"><a href="cfa.html#cb337-14"></a></span>
+<span id="cb337-15"><a href="cfa.html#cb337-15"></a>disturbances_cov =<span class="st"> </span>result_cov<span class="op">$</span>par[<span class="dv">7</span><span class="op">:</span><span class="dv">14</span>]</span></code></pre></div>
+</div>
+<div id="standardized" class="section level3">
+<h3>Standardized</h3>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="cfa.html#cb338-1"></a>par_init_cor =<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">8</span>), <span class="kw">rep</span>(.<span class="dv">05</span>, <span class="dv">8</span>), <span class="dv">0</span>) <span class="co">#for cor</span></span>
+<span id="cb338-2"><a href="cfa.html#cb338-2"></a><span class="kw">names</span>(par_init_cor) =<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;l1&#39;</span>, <span class="st">&#39;l2&#39;</span>, <span class="st">&#39;dist&#39;</span>, <span class="st">&#39;cor&#39;</span>), <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="cfa.html#cb339-1"></a>result_cor =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb339-2"><a href="cfa.html#cb339-2"></a>  <span class="dt">par  =</span> par_init_cor,</span>
+<span id="cb339-3"><a href="cfa.html#cb339-3"></a>  <span class="dt">fn   =</span> cfa_cor,</span>
+<span id="cb339-4"><a href="cfa.html#cb339-4"></a>  <span class="dt">data =</span> y,</span>
+<span id="cb339-5"><a href="cfa.html#cb339-5"></a>  <span class="dt">method  =</span> <span class="st">&quot;L-BFGS-B&quot;</span>,</span>
+<span id="cb339-6"><a href="cfa.html#cb339-6"></a>  <span class="dt">lower   =</span> <span class="dv">0</span>,</span>
+<span id="cb339-7"><a href="cfa.html#cb339-7"></a>  <span class="dt">upper   =</span> <span class="dv">1</span>,</span>
+<span id="cb339-8"><a href="cfa.html#cb339-8"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="dv">-1</span>)</span>
+<span id="cb339-9"><a href="cfa.html#cb339-9"></a>)</span>
+<span id="cb339-10"><a href="cfa.html#cb339-10"></a></span>
+<span id="cb339-11"><a href="cfa.html#cb339-11"></a>loadings_cor =<span class="st"> </span><span class="kw">matrix</span>(</span>
+<span id="cb339-12"><a href="cfa.html#cb339-12"></a>  <span class="kw">c</span>(result_cor<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>], <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), result_cor<span class="op">$</span>par[<span class="dv">5</span><span class="op">:</span><span class="dv">8</span>]), </span>
+<span id="cb339-13"><a href="cfa.html#cb339-13"></a>  <span class="dt">ncol =</span> <span class="dv">2</span></span>
+<span id="cb339-14"><a href="cfa.html#cb339-14"></a>)</span>
+<span id="cb339-15"><a href="cfa.html#cb339-15"></a></span>
+<span id="cb339-16"><a href="cfa.html#cb339-16"></a>disturbances_cor =<span class="st"> </span>result_cor<span class="op">$</span>par[<span class="dv">9</span><span class="op">:</span><span class="dv">16</span>]</span></code></pre></div>
 </div>
 </div>
-<div id="matlab" class="section level4">
-<h4>Matlab</h4>
-<div id="one-factor-mixed-model-2" class="section level5">
-<h5>One-factor Mixed Model</h5>
+<div id="comparison-20" class="section level2">
+<h2>Comparison</h2>
+<p>Gather results for summary</p>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="cfa.html#cb340-1"></a>results =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb340-2"><a href="cfa.html#cb340-2"></a>  <span class="dt">raw =</span> <span class="kw">list</span>(</span>
+<span id="cb340-3"><a href="cfa.html#cb340-3"></a>    <span class="dt">loadings =</span> <span class="kw">round</span>(<span class="kw">data.frame</span>(loadings_cov, <span class="dt">Variances =</span> disturbances_cov), <span class="dv">3</span>),</span>
+<span id="cb340-4"><a href="cfa.html#cb340-4"></a>    <span class="dt">cov.fact =</span> <span class="kw">round</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(result_cov<span class="op">$</span>par[<span class="kw">c</span>(<span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">16</span>, <span class="dv">17</span>)]), <span class="dt">ncol =</span><span class="dv">2</span>) , <span class="dv">3</span>)</span>
+<span id="cb340-5"><a href="cfa.html#cb340-5"></a>  ),</span>
+<span id="cb340-6"><a href="cfa.html#cb340-6"></a>  </span>
+<span id="cb340-7"><a href="cfa.html#cb340-7"></a>  <span class="dt">standardized =</span> <span class="kw">list</span>(</span>
+<span id="cb340-8"><a href="cfa.html#cb340-8"></a>    <span class="dt">loadings =</span> <span class="kw">round</span>(</span>
+<span id="cb340-9"><a href="cfa.html#cb340-9"></a>      <span class="kw">data.frame</span>(</span>
+<span id="cb340-10"><a href="cfa.html#cb340-10"></a>        loadings_cor,</span>
+<span id="cb340-11"><a href="cfa.html#cb340-11"></a>        <span class="dt">Variances =</span> disturbances_cor,</span>
+<span id="cb340-12"><a href="cfa.html#cb340-12"></a>        <span class="dt">Rsq =</span> (<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>disturbances_cor)</span>
+<span id="cb340-13"><a href="cfa.html#cb340-13"></a>      ), <span class="dv">3</span>),</span>
+<span id="cb340-14"><a href="cfa.html#cb340-14"></a>    <span class="dt">cor.fact =</span> <span class="kw">round</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, result_cor<span class="op">$</span>par[<span class="kw">c</span>(<span class="dv">17</span>, <span class="dv">17</span>)], <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">2</span>), <span class="dv">3</span>)</span>
+<span id="cb340-15"><a href="cfa.html#cb340-15"></a>  ),</span>
+<span id="cb340-16"><a href="cfa.html#cb340-16"></a>  </span>
+<span id="cb340-17"><a href="cfa.html#cb340-17"></a>  <span class="co"># note inclusion of intercepts for total number of par</span></span>
+<span id="cb340-18"><a href="cfa.html#cb340-18"></a>  <span class="dt">fit =</span> <span class="kw">data.frame</span>(</span>
+<span id="cb340-19"><a href="cfa.html#cb340-19"></a>    <span class="dt">ll  =</span> result_cov<span class="op">$</span>value,</span>
+<span id="cb340-20"><a href="cfa.html#cb340-20"></a>    <span class="dt">AIC =</span> <span class="dv">-2</span> <span class="op">*</span><span class="st"> </span>result_cov<span class="op">$</span>value <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>(<span class="kw">length</span>(par_init_cov) <span class="op">+</span><span class="st"> </span><span class="kw">ncol</span>(y)),</span>
+<span id="cb340-21"><a href="cfa.html#cb340-21"></a>    <span class="dt">BIC =</span> <span class="dv">-2</span> <span class="op">*</span><span class="st"> </span>result_cov<span class="op">$</span>value <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">nrow</span>(y)) <span class="op">*</span><span class="st"> </span>(<span class="kw">length</span>(par_init_cov) <span class="op">+</span><span class="st"> </span><span class="kw">ncol</span>(y))</span>
+<span id="cb340-22"><a href="cfa.html#cb340-22"></a>  )  </span>
+<span id="cb340-23"><a href="cfa.html#cb340-23"></a>)</span>
+<span id="cb340-24"><a href="cfa.html#cb340-24"></a></span>
+<span id="cb340-25"><a href="cfa.html#cb340-25"></a>results</span></code></pre></div>
+<pre><code>$raw
+$raw$loadings
+     f1    f2 Variances
+1 1.000 0.000     1.097
+2 0.465 0.000     0.955
+3 0.353 0.000     0.951
+4 0.588 0.000     0.948
+5 0.000 1.000     1.064
+6 0.000 0.744     0.942
+7 0.000 0.381     0.976
+8 0.000 0.507     1.038
+
+$raw$cov.fact
+      [,1]  [,2]
+[1,] 0.983 0.170
+[2,] 0.170 0.973
+
+
+$standardized
+$standardized$loadings
+     X1    X2 Variances   Rsq
+1 0.687 0.000     0.528 0.472
+2 0.426 0.000     0.818 0.182
+3 0.338 0.000     0.886 0.114
+4 0.514 0.000     0.736 0.264
+5 0.000 0.691     0.522 0.478
+6 0.000 0.603     0.636 0.364
+7 0.000 0.356     0.874 0.126
+8 0.000 0.441     0.806 0.194
+
+$standardized$cor.fact
+      [,1]  [,2]
+[1,] 1.000 0.174
+[2,] 0.174 1.000
+
+
+$fit
+         ll      AIC      BIC
+1 -12330.93 24711.86 24834.56</code></pre>
+<p>Confirm with <span class="pack" style="">lavaan</span>.</p>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="cfa.html#cb342-1"></a><span class="kw">library</span>(lavaan)</span>
+<span id="cb342-2"><a href="cfa.html#cb342-2"></a>y =<span class="st"> </span><span class="kw">data.frame</span>(y)</span>
+<span id="cb342-3"><a href="cfa.html#cb342-3"></a>model =<span class="st"> &#39; F1  =~ X1 + X2 + X3 + X4</span></span>
+<span id="cb342-4"><a href="cfa.html#cb342-4"></a><span class="st">           F2  =~ X5 + X6 + X7 + X8 &#39;</span></span>
+<span id="cb342-5"><a href="cfa.html#cb342-5"></a></span>
+<span id="cb342-6"><a href="cfa.html#cb342-6"></a>fit =<span class="st"> </span><span class="kw">cfa</span>(model, <span class="dt">data=</span>y, <span class="dt">mimic=</span><span class="st">&#39;Mplus&#39;</span>, <span class="dt">estimator=</span><span class="st">&#39;ML&#39;</span>)</span>
+<span id="cb342-7"><a href="cfa.html#cb342-7"></a>fit.std =<span class="st"> </span><span class="kw">cfa</span>(model, <span class="dt">data=</span>y, <span class="dt">mimic=</span><span class="st">&#39;Mplus&#39;</span>, <span class="dt">estimator=</span><span class="st">&#39;ML&#39;</span>, <span class="dt">std.lv=</span>T, <span class="dt">std.ov=</span>T) <span class="co"># for standardized</span></span>
+<span id="cb342-8"><a href="cfa.html#cb342-8"></a></span>
+<span id="cb342-9"><a href="cfa.html#cb342-9"></a><span class="co"># note that lavaan does not count the intercepts among the free params for AIC/BIC </span></span>
+<span id="cb342-10"><a href="cfa.html#cb342-10"></a><span class="co"># by default, but the mimic=&#39;Mplus&#39; should have them correspond to optim&#39;s results</span></span>
+<span id="cb342-11"><a href="cfa.html#cb342-11"></a><span class="kw">summary</span>(fit, <span class="dt">fit.measures=</span><span class="ot">TRUE</span>, <span class="dt">standardized=</span>T)   </span></code></pre></div>
+<pre><code>lavaan 0.6-7 ended normally after 30 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of free parameters                         25
+                                                      
+  Number of observations                          1000
+  Number of missing patterns                         1
+                                                      
+Model Test User Model:
+                                                      
+  Test statistic                                25.437
+  Degrees of freedom                                19
+  P-value (Chi-square)                           0.147
+
+Model Test Baseline Model:
+
+  Test statistic                               746.093
+  Degrees of freedom                                28
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    0.991
+  Tucker-Lewis Index (TLI)                       0.987
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)             -12330.931
+  Loglikelihood unrestricted model (H1)     -12318.212
+                                                      
+  Akaike (AIC)                               24711.862
+  Bayesian (BIC)                             24834.555
+  Sample-size adjusted Bayesian (BIC)        24755.154
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.018
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.035
+  P-value RMSEA &lt;= 0.05                          1.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.019
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Observed
+  Observed information based on                Hessian
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  F1 =~                                                                 
+    X1                1.000                               0.991    0.687
+    X2                0.465    0.058    7.955    0.000    0.461    0.427
+    X3                0.353    0.050    7.041    0.000    0.350    0.338
+    X4                0.588    0.070    8.387    0.000    0.583    0.514
+  F2 =~                                                                 
+    X5                1.000                               0.986    0.691
+    X6                0.744    0.074   10.075    0.000    0.734    0.603
+    X7                0.381    0.047    8.160    0.000    0.376    0.356
+    X8                0.507    0.055    9.144    0.000    0.500    0.441
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  F1 ~~                                                                 
+    F2                0.170    0.050    3.367    0.001    0.174    0.174
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .X1                0.054    0.046    1.173    0.241    0.054    0.037
+   .X2               -0.004    0.034   -0.104    0.917   -0.004   -0.003
+   .X3               -0.012    0.033   -0.372    0.710   -0.012   -0.012
+   .X4                0.004    0.036    0.113    0.910    0.004    0.004
+   .X5                0.044    0.045    0.964    0.335    0.044    0.031
+   .X6               -0.019    0.038   -0.504    0.614   -0.019   -0.016
+   .X7                0.019    0.033    0.555    0.579    0.019    0.018
+   .X8                0.002    0.036    0.042    0.967    0.002    0.001
+    F1                0.000                               0.000    0.000
+    F2                0.000                               0.000    0.000
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .X1                1.097    0.120    9.119    0.000    1.097    0.527
+   .X2                0.955    0.051   18.876    0.000    0.955    0.818
+   .X3                0.951    0.046   20.471    0.000    0.951    0.886
+   .X4                0.948    0.058   16.263    0.000    0.948    0.736
+   .X5                1.064    0.102   10.404    0.000    1.064    0.522
+   .X6                0.942    0.066   14.236    0.000    0.942    0.636
+   .X7                0.976    0.047   20.607    0.000    0.976    0.874
+   .X8                1.038    0.054   19.281    0.000    1.038    0.806
+    F1                0.983    0.135    7.264    0.000    1.000    1.000
+    F2                0.973    0.119    8.156    0.000    1.000    1.000</code></pre>
+<div id="mplus" class="section level3">
+<h3>Mplus</h3>
+<p>If you have access to Mplus you can use Mplus Automation to prepare the data. The following code is in Mplus syntax and will produce the above model.</p>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="cfa.html#cb344-1"></a><span class="kw">library</span>(MplusAutomation)</span>
+<span id="cb344-2"><a href="cfa.html#cb344-2"></a></span>
+<span id="cb344-3"><a href="cfa.html#cb344-3"></a><span class="kw">prepareMplusData</span>(<span class="kw">data.frame</span>(y), <span class="st">&quot;factsim.dat&quot;</span>)</span></code></pre></div>
+<pre><code>MODEL:
+ F1 BY X1-X4;
+ F2 BY X5-X8;
+
+results:
+ STDYX;</code></pre>
 </div>
-<div id="two-factor-mixed-model-2" class="section level5">
-<h5>Two-factor Mixed Model</h5>
 </div>
-</div>
-<div id="algorithms" class="section level3">
-<h3>Algorithms</h3>
-<div id="python" class="section level4">
-<h4>Python</h4>
-<div id="nelder-mead-1" class="section level5">
-<h5>Nelder-Mead</h5>
-</div>
-<div id="hmm" class="section level5">
-<h5>HMM</h5>
+<div id="source-19" class="section level2">
+<h2>Source</h2>
+<p>Source code found at
+<a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cfa.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cfa.R</a></p>
 
 </div>
 </div>
-</div>
-</div>
-</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="em.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="cox.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="penalized-maximum-likelihood.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -590,7 +930,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/supplemental.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/cfa.Rmd",
 "text": "Edit"
 },
 "history": {

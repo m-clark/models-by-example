@@ -1,0 +1,12 @@
+# Expectation-Maximization
+
+```{r child='em-mixture.Rmd'}
+
+```
+
+```{r child='em-mixture-MV.Rmd'}
+
+```
+
+
+
