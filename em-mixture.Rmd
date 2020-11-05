@@ -22,13 +22,13 @@ wait_times = as.matrix(faithful[, 2, drop = FALSE])
 
 ### Function
 
-```{r gaussmixEM}
-gaussmixEM = function(
+```{r em_mixture}
+em_mixture = function(
   params,
   X,
   clusters = 2,
   tol = .00001,
-  maxits = 100,
+  maxits  = 100,
   showits = TRUE
 ) {
   
@@ -120,8 +120,8 @@ params2 = list(mu = c(50, 90),
 
 
 ```{r gaussEM-est}
-mix_erupt   = gaussmixEM(params1, X = eruptions,  tol = 1e-8)
-mix_waiting = gaussmixEM(params2, X = wait_times, tol = 1e-8)
+mix_erupt   = em_mixture(params1, X = eruptions,  tol = 1e-8)
+mix_waiting = em_mixture(params2, X = wait_times, tol = 1e-8)
 ```
 
 
@@ -227,8 +227,8 @@ X4 = matrix(geyser[,2])
 
 
 # MASS version
-test3 = gaussmixEM(params1, X = X3, tol = 1e-8)
-test4 = gaussmixEM(params2, X = X4, tol = 1e-8)
+test3 = em_mixture(params1, X = X3, tol = 1e-8)
+test4 = em_mixture(params2, X = X4, tol = 1e-8)
 
 flexmod3 = flexmix(X3 ~ 1,
                    k = 2,

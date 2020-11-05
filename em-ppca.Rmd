@@ -1,0 +1,240 @@
+## Probabilistic PCA
+
+The following is an EM algorithm for probabilistic principal components
+analysis. Based on Tipping and Bishop, 1999, and also Murphy 2012 Probabilistic
+ML, with some code snippets inspired by the <span class="func" style = "">ppca</span> function used  below. See also ModelFitting/EM Examples/EM for pca.R
+
+
+### Data Setup
+
+`state.x77` is from base R, which includes various state demographics.  We will first standardize the data.
+
+```{r em-ppca-setup}
+X = scale(state.x77)
+```
+
+### Function
+
+```{r em-ppca}
+em_ppca = function(
+  X,
+  nComp = 2,
+  tol   = .00001,
+  maxits  = 100,
+  showits = TRUE
+) {
+  
+  # Arguments 
+  # X: numeric data
+  # nComp: number of components
+  # tol = tolerance level
+  # maxits: maximum iterations
+  # showits: show iterations
+  
+  require(pracma) # for orthonormal basis of W; pcaMethods package has also
+  require(psych)  # for tr
+  
+  # starting points and other initializations
+  N = nrow(X)
+  D = ncol(X)
+  L = nComp
+
+  S = (1/N) * t(X)%*%X
+  evals = eigen(S)$values
+  evecs = eigen(S)$vectors
+
+  V = evecs[,1:L]
+  Lambda = diag(evals[1:L])
+  
+  # latent variables
+  Z = t(replicate(L, rnorm(N))) 
+  
+  # variance; average variance associated with discarded dimensions
+  sigma2 = 1/(D - L) * sum(evals[(L+1):D])
+  
+  # loadings; this and sigma2 starting points will be near final estimate
+  W = V %*% chol(Lambda - sigma2 * diag(L)) %*% diag(L)  
+
+  it = 0
+  converged = FALSE
+  ll = 0
+  
+  # Show iterations
+  if (showits)                                                    
+    cat(paste("Iterations of EM:", "\n"))
+  
+  while ((!converged) & (it < maxits)) {                           
+    # create 'old' values for comparison
+    if(exists('W_new')){
+      W_old = W_new
+    }
+    else {
+      W_old = W
+    }
+    
+    ll.old = ll
+    
+    Psi = sigma2*diag(L)
+    M   = t(W_old) %*% W_old + Psi
+    
+    # E and M 
+    W_new = S %*% W_old %*% solve( Psi + solve(M) %*% t(W_old) %*% S %*% W_old )   
+    sigma2 = 1/D * tr(S - S %*% W_old %*% solve(M) %*% t(W_new))
+
+    Z  = solve(M) %*% t(W_new) %*% t(X)
+    ZZ = sigma2*solve(M) + Z%*%t(Z)
+    
+    # log likelihood as in paper
+    # ll = .5*sigma2*D + .5*tr(ZZ) + .5*sigma2 * X%*%t(X) -
+    #      1/sigma2 * t(Z)%*%t(W_new)%*%t(X) + .5*sigma2 * tr(t(W_new)%*%W_new%*%ZZ)
+    # ll = -sum(ll)
+    
+    # more straightforward
+    ll = dnorm(X, mean = t(W_new %*% Z), sd = sqrt(sigma2), log = TRUE)
+    ll = -sum(ll)
+
+    it = it + 1
+    
+    # if showits, show first and every 5th iteration
+    if (showits & (it == 1 | it%%5 == 0))                          
+      cat(paste(format(it), "...", "\n", sep = ""))
+    
+    converged = max(abs(ll.old-ll)) <= tol
+  }
+  
+  W     = orth(W_new)
+  evs   = eigen(cov(X %*% W))
+  evecs = evs$vectors
+  
+  W = W %*% evecs
+  Z = X %*% W
+  Xrecon = Z %*% t(W)
+  reconerr = sum((Xrecon - X)^2)
+  
+  if (showits)                                                     # Show last iteration
+    cat(paste0(format(it), "...", "\n"))
+  
+  list(
+    scores   = Z,
+    loadings = W,
+    Xrecon   = Xrecon,
+    reconerr = reconerr,
+    ll       = ll,
+    sigma2   = sigma2
+  )
+}
+```
+
+
+
+
+
+
+
+
+### Estimation
+
+```{r em-ppca-est}
+results_ppca = em_ppca(
+  X = X,
+  nComp = 2,
+  tol = 1e-12,
+  maxit = 100
+)
+
+results_ppca  
+```
+
+### Comparison
+
+Extract reconstructed values and loadings for comparison.
+
+```{r em-ppca-extract}
+Xrecon      = results_ppca$Xrecon
+loadings_em = results_ppca$loadings
+scores_em   = results_ppca$scores
+```
+
+
+Compare to standard pca on full data set if desired.
+
+```{r em-ppca-compare-pca}
+standard_pca =  princomp(scale(state.x77))
+
+scores_standard_pca   = standard_pca$scores[,1:2]
+loadings_standard_pca = standard_pca$loadings[,1:2]
+Xrecon_standard_pca   = scores_standard_pca%*%t(loadings_standard_pca)
+```
+
+
+
+
+Compare results to output from <span class="pack" style = "">pcaMethods</span>, which also has probabilistic PCA (demonstrated next). Note that the signs for loadings/scores may be different
+
+
+```{r em-ppca-compare}
+library(pcaMethods)
+
+results_pcam  = pca(
+  X,
+  nPcs = 2,
+  threshold = 1e-8,
+  method = 'ppca',
+  scale  = 'none',
+  center = FALSE
+)
+
+loadings_pcam = loadings(results_pcam)
+scores_pcam   = scores(results_pcam)
+```
+
+
+Compare loadings and scores.
+
+```{r em-ppca-compare-loadings}
+round(cbind(loadings_pcam, loadings_em, loadings_standard_pca), 3)
+sum((abs(loadings_pcam) - abs(loadings_em)) ^ 2)
+round(cbind(abs(scores_pcam), abs(scores_em)), 2)
+```
+
+
+Compare reconstructed data sets.
+
+```{r em-ppca-compare-recon}
+Xrecon_pcam = scores_pcam %*% t(loadings_pcam)
+
+mean((Xrecon_pcam - X)^2)  
+mean(abs(Xrecon_pcam - Xrecon))
+
+mean(abs(Xrecon_pcam - Xrecon))
+```
+
+
+
+### Visualize
+
+```{r em-ppca-vis-recon}
+GGally::ggpairs(data.frame(
+  data    = X[, 1],
+  custom  = Xrecon[, 1],
+  pcaMeth = Xrecon_pcam[, 1]
+))
+
+GGally::ggpairs(data.frame(
+  data    = X[, 2],
+  custom  = Xrecon[, 2],
+  pcaMeth = Xrecon_pcam[, 2]
+))
+```
+
+```{r em-ppca-vis-scores}
+qplot(Xrecon[, 1], Xrecon_pcam[, 1])
+
+GGally::ggpairs(data.frame(scores_em, scores_pcam) )
+```
+
+
+### Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20algorithm%20for%20ppca.R

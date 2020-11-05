@@ -1,0 +1,168 @@
+## PCA
+
+
+The following is an EM algorithm for principal components analysis. See Murphy,
+2012 Probabilistic Machine Learning 12.2.5. Some of the constructed object is
+based on output from <span class="func" style = "">pca</span> function used below. 
+
+### Data Setup
+
+`state.x77` is from base R, which includes various state demographics.  We will first standardize the data.
+
+```{r em-pca-setup}
+X = scale(state.x77)
+```
+
+
+###  Function
+
+```{r em-pca-func}
+em_pca = function(
+  X,
+  nComp = 2,
+  tol   = .00001,
+  maxits  = 100,
+  showits = TRUE
+  ) {
+  
+  # Arguments 
+  # X: numeric data
+  # nComp: number of components
+  # tol = tolerance level
+  # maxits: maximum iterations
+  # showits: show iterations
+  
+  
+  # starting points and other initializations
+  N  = nrow(X)
+  D  = ncol(X)
+  L  = nComp
+  Xt = t(X)
+  Z  = t(replicate(L, rnorm(N)))                          # latent variables
+  W  = replicate(L, rnorm(D))                             # loadings
+  it = 0
+  converged = FALSE
+    
+  if (showits)                                                     
+    cat(paste("Iterations of EM:", "\n"))
+  
+  # while no convergence and we haven't reached our max iterations do this stuff
+  while ((!converged) & (it < maxits)) {                           
+    Z_old = Z                                      # create 'old' values for comparison
+    Z = solve(t(W)%*%W) %*% crossprod(W, Xt)       # E
+    W = Xt%*%t(Z) %*% solve(tcrossprod(Z))         # M
+
+    it = it + 1
+    
+    # if showits, show first and every 5th iteration
+    if (showits & (it == 1 | it%%5 == 0))           
+      cat(paste(format(it), "...", "\n", sep = ""))
+    
+    converged = max(abs(Z_old-Z)) <= tol
+  }
+  
+  # calculate reconstruction error
+  Xrecon   = W %*% Z
+  reconerr = sum((Xrecon - t(X))^2)
+  
+  # orthogonalize
+  W     = pracma::orth(W)     # for orthonormal basis of W; pcaMethods package has also
+  evs   = eigen(cov(X %*% W))
+  evals = evs$values
+  evecs = evs$vectors
+  
+  W = W %*% evecs
+  Z = X %*% W
+
+  if (showits)                                     # Show last iteration
+    cat(paste0(format(it), "...", "\n"))
+  
+  list(
+    scores   = Z,
+    loadings = W,
+    reconerr = reconerr,
+    Xrecon   = t(Xrecon)
+  )
+}
+```
+
+
+
+
+
+
+### Estimation
+
+```{r em-pca-est}
+results_pca = em_pca(
+  X = X,
+  nComp = 2,
+  tol = 1e-12,
+  maxit = 1000
+)
+
+results_pca
+```
+
+### Comparison
+
+Extract reconstructed values and loadings for comparison.
+
+```{r em-pca-extract}
+Xrecon      = results_pca$Xrecon
+loadings_em = results_pca$loadings
+scores_em   = results_pca$scores
+```
+
+Compare results to output from <span class="pack" style = "">pcaMethods</span>, which also has probabilistic PCA (demonstrated next). Note that the signs for loadings/scores may be different
+
+```{r em-pca-compare}
+library(pcaMethods)  # install via BiocManager::install("pcaMethods")
+
+result_pcam = pca(
+  X,
+  nPcs = 2,
+  method = 'svd',
+  scale  = 'none',
+  center = FALSE
+)
+
+loadings_pcam = loadings(result_pcam)
+scores_pcam   = scores(result_pcam)
+```
+
+
+Compare loadings and scores.
+
+```{r em-pca-compare-loadings}
+sum((abs(loadings_pcam) - abs(loadings_em))^2)
+abs(round(cbind(scores_pcam, scores_em), 2))
+```
+
+
+Calculate mean squared reconstruction error and compare.
+
+```{r em-pca-compare-recon}
+Xrecon_pcam = scores_pcam %*% t(loadings_pcam)
+
+mean((Xrecon - X)^2)
+mean((Xrecon_pcam - X)^2)
+
+mean(abs(Xrecon_pcam - Xrecon))
+```
+
+
+
+### Visualize
+
+```{r em-pca-vis}
+qplot(Xrecon_pcam[,1], X[,1])
+qplot(Xrecon_pcam[,2], X[,2])
+qplot(Xrecon[,1], Xrecon_pcam[,1])
+```
+
+
+### Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20for%20pca.R

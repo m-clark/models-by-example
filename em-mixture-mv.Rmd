@@ -6,8 +6,8 @@ Specifically, Chapter 11, section 4.
 
 ### Function
 
-```{r gaussmixEM-mv}
-gaussmixEM = function(
+```{r em_mixture-mv}
+em_mixture = function(
   params,
   X,
   clusters = 2,
@@ -140,7 +140,7 @@ starts = list(mu = mustart, var = covstart, probs = probs)
 ```{r mixmv-est1}
 
 
-mix_faithful = gaussmixEM(
+mix_faithful = em_mixture(
   params = starts,
   X = as.matrix(faithful),
   clusters = 2,
@@ -258,7 +258,7 @@ starts = list(mu = mustart, var = covstart, probs = probs)
 
 
 ```{r mixmv-est2}
-mix_mclust_iris = gaussmixEM(
+mix_mclust_iris = em_mixture(
   params = starts,
   X = as.matrix(iris2),
   clusters = 3,

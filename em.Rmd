@@ -1,12 +1,17 @@
 # Expectation-Maximization
 
 ```{r child='em-mixture.Rmd'}
-
 ```
 
 ```{r child='em-mixture-MV.Rmd'}
-
 ```
 
+```{r child='em-probit.Rmd'}
+```
 
+```{r child='em-pca.Rmd'}
+```
+
+```{r child='em-ppca.Rmd'}
+```
 

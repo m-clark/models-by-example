@@ -1,0 +1,220 @@
+## Probit Model
+
+
+The following regards models for a binary response. See Murphy, 2012 Probabilistic Machine Learning Chapter 11.4.                                     
+
+
+### Data Setup
+
+```{r probit-setup}
+admission = haven::read_dta("https://stats.idre.ucla.edu/stat/stata/dae/binary.dta")
+```
+
+### Probit via Maximum Likelihood
+
+#### Function
+
+We'll start with the a basic maximum likelihood function for a standard probit.  See the [logistic regression][Standard Logistic] example as comparison.
+
+```{r probit-mle}
+probit_mle = function(params, X, y){
+  # Arguments are starting parameters (coefficients), model matrix, response 
+  
+  b = params
+  mu = X %*% b    # linear predictor
+  
+  # compute the log likelihood either way
+  # ll = sum(y * pnorm(mu, log.p = TRUE) + (1 - y) * pnorm(-mu, log.p = TRUE))  
+  ll = sum(dbinom(y, 1, prob = pnorm(mu), log = TRUE))
+  
+  -ll
+}
+```
+
+
+#### Estimation
+
+Estimate with <span class="func" style = "">optim</span>.
+
+```{r probit-mle-est}
+# input data
+X = as.matrix(cbind(1, admission[, 2:4]))
+y = as.matrix(admission[, 1])
+init = c(0, 0, 0, 0)
+
+# Can set tolerance really low to duplicate glm result
+result_mle = optim(
+  par = init,
+  fn  = probit_mle,
+  X   = X,
+  y   = y,
+  control = list(maxit = 1000, reltol = 1e-12)
+) 
+
+# extract coefficients
+coefs_mle = result_mle$par
+```
+
+
+#### Comparison
+
+```{r probit-glm}
+glm_probit = glm(
+  admit ~ gre + gpa + rank,
+  family  = binomial(link = "probit"),
+  control = list(maxit = 500, epsilon = 1e-8),
+  data    = admission
+)
+
+
+summary(glm_probit)
+coefs_glm = coef(glm_probit)
+```
+
+Compare.
+
+```{r probit-compare-mle-glm}
+rbind(coefs_mle, coefs_glm)
+```
+
+
+
+
+
+
+### EM for Latent Variable Approach to Probit
+
+#### Function
+
+```{r probit-em}
+em_probit = function(
+  params,
+  X,
+  y,
+  tol = .00001,
+  maxits  = 100,
+  showits = TRUE
+) {
+  
+  # Arguments are starting parameters (coefficients), model matrix, response, 
+  # tolerance, maximum iterations, and whether to show iterations
+
+  #starting points
+  b  = params
+  mu = X%*%b
+  it = 0
+  converged = FALSE
+  z = rnorm(length(y))    # z is the latent variable ~N(0,1)
+  
+  # Show iterations
+  if (showits)                                                            
+    cat(paste("Iterations of EM:", "\n"))
+  
+  # while no convergence and we haven't reached our max iterations do this stuff
+  while ((!converged) & (it < maxits)) {                                 
+    z_old = z       # create 'old' values for comparison
+    
+    # E step create a new z based on current values
+    z = ifelse(
+      y == 1, 
+      mu + dnorm(mu) / pnorm(mu), 
+      mu - dnorm(mu) / pnorm(-mu)
+    )     
+    
+    # M step estimate b
+    b = solve(t(X)%*%X) %*% t(X)%*%z                                     
+    mu = X%*%b
+    
+    ll = sum(y * pnorm(mu, log.p = TRUE) + (1 - y) * pnorm(-mu, log.p = TRUE))
+    
+    it = it + 1
+    
+    if (showits & (it == 1 | it%%5 == 0))
+      cat(paste(format(it), "...", "\n", sep = ""))
+    
+    converged = max(abs(z_old - z)) <= tol
+  }
+  
+  # Show last iteration
+  if (showits)                                                            
+    cat(paste0(format(it), "...", "\n"))
+  
+  list(b = t(b), ll = ll)
+}
+```
+
+
+#### Estimation
+
+Use the same setup and starting values to estimate the parameters.
+
+```{r probit-em-est}
+# can lower tolerance to duplicate glm result
+result_em = em_probit(
+  params = init,
+  X      = X,
+  y      = y,
+  tol    = 1e-12,
+  maxit  = 100
+)
+
+# result_em  
+
+coefs_em = result_em$b
+```
+
+
+#### Comparison
+
+Compare all results.
+
+```{r probit-compare-all}
+rbind(coefs_glm, coefs_mle, coefs_em)
+
+rbind(logLik(glm_probit),  result$value, result_em$ll)
+```
+
+
+
+
+#### Visualize
+
+Show estimates over niter iterations and visualize.
+
+```{r probit-em-vis}
+X2 = X
+X2[, 2:3] = scale(X2[, 2:3])
+
+niter = 20
+
+result_em = map_df(1:niter, function(x)
+  as_tibble(
+    em_probit(
+      params  = init,
+      X       = X2,
+      y       = y,
+      tol     = 1e-8,
+      maxit   = x,
+      showits = F
+    )$b)
+)
+
+gdat = result_em %>% 
+  rowid_to_column('iter') %>% 
+  pivot_longer(-iter, names_to = 'coef') %>% 
+  mutate(
+    coef = factor(coef, labels = c('Intercept', 'gre', 'gpa', 'rank'))
+  ) %>% 
+  arrange(iter, coef)
+
+ggplot(aes(x = iter, y = value), data = gdat) +
+  geom_line(aes(group = coef, color = coef)) +
+  theme_minimal()
+```
+
+
+
+### Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20algorithm%20for%20probit%20example.R
