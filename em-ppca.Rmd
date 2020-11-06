@@ -437,7 +437,7 @@ scores_pcam   = scores(results_pcam)
 
 Compare loadings and scores.
 
-```{r em-ppca-compare-loadings}
+```{r em-ppca-miss-compare-loadings}
 round(cbind(loadings_pcam, loadings_em, loadings_standard_pca), 3)
 sum((abs(loadings_pcam) - abs(loadings_em)) ^ 2)
 round(cbind(abs(scores_pcam), abs(scores_em)), 2)
@@ -446,7 +446,7 @@ round(cbind(abs(scores_pcam), abs(scores_em)), 2)
 
 Compare reconstructed data sets.
 
-```{r em-ppca-compare-recon}
+```{r em-ppca-miss-compare-recon}
 Xrecon_pcam = scores_pcam %*% t(loadings_pcam)
 
 mean((Xrecon_pcam - X_miss)^2)  
@@ -457,9 +457,9 @@ mean(abs(Xrecon_pcam - Xrecon))
 
 
 
-### Visualize
+#### Visualize
 
-```{r em-ppca-vis-recon}
+```{r em-ppca-miss-vis-recon}
 GGally::ggpairs(data.frame(
   data    = X_miss[, 1],
   custom  = Xrecon[, 1],
@@ -473,7 +473,7 @@ GGally::ggpairs(data.frame(
 ))
 ```
 
-```{r em-ppca-vis-scores}
+```{r em-ppca-miss-vis-scores}
 qplot(Xrecon[, 1], Xrecon_pcam[, 1])
 
 GGally::ggpairs(data.frame(scores_em, scores_pcam) )
@@ -484,3 +484,6 @@ GGally::ggpairs(data.frame(scores_em, scores_pcam) )
 
 Source code found at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20algorithm%20for%20ppca.R
+
+Source code for the missing example found at
+(https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20algorithm%20for%20ppca%20with%20missing.R

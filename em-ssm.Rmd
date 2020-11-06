@@ -1,0 +1,197 @@
+## State Space Model
+
+The following regards chapter 11 in Statistical Modeling and Computation, the
+first example for an unobserved components model.  The data regards  inflation
+based on the U.S. consumer price index (infl = 400*log(cpi_t/cpi_{t-1})), from
+the second quarter of 1947 to the second  quarter of 2011.  You can acquire the
+data [here](http://www.maths.uq.edu.au/~kroese/statbook/Statespace/USCPI.csv) or
+in [Datasets repo](https://github.com/m-clark/Datasets). Just note that it has 2
+mystery columns and one mystery row presumably supplied by Excel.  You can also
+get the CPI data yourself at the [Bureau of Labor
+Statistics](http://www.bls.gov/cpi/) in a frustrating fashion, or in a much
+easier fashion [here](https://fred.stlouisfed.org/series/CPIAUCSL).
+
+
+For the following I use `n` instead of `t` or `T` because those are transpose and `TRUE`
+in R. The model is basically y = τ + ϵ, with ϵ ~ N(0, σ^2), and τ = τ_{n-1} +
+υ_n with υ ~ N(0, ω^2).  Thus each y is associated with a latent variable that
+follows a random walk over time. ω^2 serves as a smoothing parameter, which
+itself may be estimated but which is fixed in the following. See the text for
+more details.
+
+### Data Setup
+
+```{r em-ssm-setup}
+d = read.csv(
+  'https://raw.githubusercontent.com/m-clark/Datasets/master/us%20cpi/USCPI.csv',
+  header = FALSE
+)
+
+inflation = d[, 1]
+
+summary(inflation)
+```
+
+
+
+### Function
+
+EM function for a state space model.
+
+```{r em-ssm}
+em_state_space = function(
+  params,
+  y,
+  omega2_0,
+  omega2,
+  tol     = .00001,
+  maxits  = 100,
+  showits = FALSE
+) {
+  
+  # Arguments are 
+  # params: starting parameters (variance as 'sigma2'), 
+  # y: data, 
+  # tol: tolerance,
+  # omega2: latent variance (2_0) is a noisier starting variance
+  # maxits: maximum iterations
+  # showits: whether to show iterations
+  
+  # Not really needed here, but would be a good idea generally to take advantage
+  # of sparse representation for large data
+  # require(spam)  # see usage below
+  
+  # Starting points
+  n = length(y)
+  sigma2 = params$sigma2
+  
+  # Other initializations
+  H = diag(n)
+  
+  for (i in 1:(ncol(H) - 1)) {
+    H[i + 1, i] = -1
+  }
+  
+  Omega2 = spam::as.spam(diag(omega2, n))
+  Omega2[1, 1] = omega2_0
+  
+  H = spam::as.spam(H)
+  HinvOmega2H = t(H) %*% chol2inv(chol(Omega2)) %*% H   # tau ~ N(0, HinvOmmega2H^-1)
+  
+  it = 0
+  converged = FALSE
+  
+  if (showits)                                    # Show iterations
+    cat(paste("Iterations of EM:", "\n"))
+
+  while ((!converged) & (it < maxits)) { 
+    sigma2Old    = sigma2[1]
+    Sigma2invOld = diag(n)/sigma2Old
+
+    K   = HinvOmega2H + Sigma2invOld              # E
+    tau = solve(K, y/sigma2Old)                   # tau|y, sigma2_{n-1}, omega2 ~ N(0, K^-1)
+    K_inv_tr = sum(1/eigen(K)$values)
+    
+    sigma2 = 1/n * (K_inv_tr + crossprod(y-tau))  # M
+    
+    converged = max(abs(sigma2 - sigma2Old)) <= tol
+    
+    it = it + 1
+    
+    # if showits true, & it =1 or divisible by 5 print message
+    if (showits & it == 1 | it%%5 == 0)        
+      cat(paste(format(it), "...", "\n", sep = ""))
+  }
+  
+  Kfinal   = HinvOmega2H + diag(n) / sigma2[1]
+  taufinal = solve(K, (y / sigma2[1]))
+  
+  list(sigma2 = sigma2, tau = taufinal)
+}
+```
+
+
+
+
+### Estimation
+
+```{r em-ssm-est}
+ss_mod_1 = em_state_space(
+  params = data.frame(sigma2 = var(inflation)),
+  y      = inflation,
+  tol    = 1e-10,
+  omega2_0 = 9,
+  omega2   = 1^2
+)
+
+ss_mod_.5 = em_state_space(
+  params = data.frame(sigma2 = var(inflation)),
+  y      = inflation,
+  tol    = 1e-10,
+  omega2_0 = 9,
+  omega2   = .5^2
+)
+
+# more smooth
+ss_mod_.1 = em_state_space(
+  params = data.frame(sigma2 = var(inflation)),
+  y      = inflation,
+  tol    = 1e-10,
+  omega2_0 = 9,
+  omega2   = .1^2
+)
+
+ss_mod_1$sigma2
+ss_mod_.5$sigma2
+ss_mod_.1$sigma2
+```
+
+
+
+
+### Visualization
+
+```{r em-ssm-vis-setup}
+library(lubridate)
+
+series = ymd(
+  paste0(
+    rep(1947:2014, e = 4), 
+    '-', 
+    c('01', '04', '07', '10'), 
+    '-', 
+    '01')
+  )
+```
+
+
+
+The following corresponds to Fig. 11.1 in the text.
+
+```{r em-ssm-vis}
+library(tidyverse)
+
+data.frame(
+  series    = series[1:length(inflation)],
+  inflation = inflation,
+  Mod_1     = ss_mod_1$tau,
+  Mod_.5    = ss_mod_.5$tau,
+  Mod_.1     = ss_mod_.1$tau
+) %>% 
+  ggplot(aes(x = series, y = inflation)) +
+  geom_point(color = 'gray50') +
+  geom_line(aes(y = Mod_1),  color = '#ff5500') +
+  geom_line(aes(y = Mod_.5), color = 'skyblue3') +
+  geom_line(aes(y = Mod_.1), color = '#00aaff') +
+  geom_smooth(formula = y ~ s(x),       # compare to generalized additive model (thicker line) 
+              se = FALSE,
+              method = 'gam') +
+  scale_x_date(date_breaks = '10 years') +
+  theme_minimal()
+```
+
+
+### Source
+
+Source code found at
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20for%20state%20space%20unobserved%20components.R

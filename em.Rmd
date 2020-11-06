@@ -15,3 +15,6 @@
 ```{r child='em-ppca.Rmd'}
 ```
 
+```{r child='em-ssm.Rmd'}
+```
+
