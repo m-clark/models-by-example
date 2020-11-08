@@ -30,6 +30,7 @@ rmd_files: [
   quantile-regression.Rmd,
   cubic-spline.Rmd,
   gaussian-process.Rmd,
+  rkhs.Rmd,
   cfa.Rmd,
   
   # Algos
