@@ -10,13 +10,15 @@ The following is based on the @Wood text on additive models, chapter 6 in partic
 For this we'll use the sleepstudy data from the <span style="color:#1e90ff">lme4</span> package. The data has reaction times for 18 individuals over 10 days each (see the help file for the sleepstudy object for more details).
 
 
-### Data
+### Data Setup
 
 ```{r mixed-ml-setup}
+library(tidyverse)
+
 data(sleepstudy, package = 'lme4')
 
-X = model.matrix( ~ Days, sleepstudy)
-Z = model.matrix( ~ factor(sleepstudy$Subject) - 1)
+X = model.matrix(~Days, sleepstudy)
+Z = model.matrix(~factor(sleepstudy$Subject) - 1)
 
 colnames(Z) = paste0('Subject_', unique(sleepstudy$Subject))  # for cleaner presentation later
 rownames(Z) = paste0('Subject_', sleepstudy$Subject)
@@ -25,12 +27,12 @@ y = sleepstudy$Reaction
 ```
 
 
-### Main Function
+### Function
 
 The following is based on the code in Wood (6.2.2), with a couple modifications for consistent nomenclature and presentation. We use <span class='func'>optim</span> and a minimizing function, in this case the negative log likelihood, to estimate the parameters of interest, collectively $\theta$, in the code below. The (square root of the) variances will be estimated on the log scale. In Wood, he simply extracts the 'fixed effects' for the intercept and days effects using `lm` (6.2.3), and we'll do the same.
 
 ```{r mixed-ml-func}
-llMixed = function(y, X, Z, theta){
+ll_mixed = function(y, X, Z, theta){
   tau   = exp(theta[1])
   sigma = exp(theta[2])
   n = length(y)
@@ -54,7 +56,7 @@ llMixed = function(y, X, Z, theta){
 Here is an alternative function using a multivariate normal approach that doesn't use the transformation to independent, and might provide additional perspective.
 
 ```{r mixed-ml-func-mv}
-llMixedMV = function(y, X, Z, theta){
+ll_mixedMV = function(y, X, Z, theta){
   tau   = exp(theta[1])
   sigma = exp(theta[2])
   n = length(y)
@@ -79,7 +81,7 @@ paramInit = c(0, 0)
 names(paramInit) = c('tau', 'sigma')
 
 modelResults = optim(
-  fn  = llMixed,
+  fn  = ll_mixed,
   X   = X,
   y   = y,
   Z   = Z,
@@ -88,7 +90,7 @@ modelResults = optim(
 )
 
 modelResultsMV = optim(
-  fn  = llMixedMV,
+  fn  = ll_mixedMV,
   X   = X,
   y   = y,
   Z   = Z,

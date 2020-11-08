@@ -4,9 +4,25 @@ See Tibshirani (1996) for the source, or Murphy PML (2012) for a nice
 overview (watch for typos in depictions). A more conceptual depiction of the
 lasso can be found in penalized_ML.R.
 
+## Data Setup
+
+```{r lasso-setup}
+library(tidyverse)
+
+set.seed(8675309)
+
+N = 500
+p = 10
+X = scale(matrix(rnorm(N*p), ncol=p))
+b = c(.5, -.5, .25, -.25, .125, -.125, rep(0, p-6))
+y = scale(X %*% b + rnorm(N, sd=.5))
+lambda = .1
+```
+
+
 ## Functions
 
-Coordinate descent
+Coordinate descent.
 
 ```{r lasso}
 lasso <- function(
@@ -59,19 +75,9 @@ lasso <- function(
 ```
 
 
-## Data Setup
 
-```{r lasso-setup}
-set.seed(8675309)
 
-N = 500
-p = 10
-X = scale(matrix(rnorm(N*p), ncol=p))
-b = c(.5, -.5, .25, -.25, .125, -.125, rep(0, p-6))
-y = scale(X %*% b + rnorm(N, sd=.5))
-lambda = .1
-```
-
+## Estimation
 
 Note, if `lambda=0`, result is the same as  `lm.fit`.
 
@@ -147,4 +153,4 @@ data.frame(
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/lasso.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/lasso.R

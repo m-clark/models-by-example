@@ -5,6 +5,35 @@ via maximum likelihood. Default is with probit link function. Alternatively you
 can compare it with a logit link, which will result in values roughly
 1.7*parameters estimates from the probit.
 
+
+
+
+## Data
+
+This data generation is from the probit perspective, where the underlying continuous latent variable is normally distributed.
+
+```{r ordinal-setup}
+library(tidyverse)
+
+set.seed(808)
+
+N = 1000                                       # Sample size
+x = cbind(x1 = rnorm(N), x2 = rnorm(N))        # predictor variables
+beta = c(1,-1)                                 # coefficients
+y_star = rnorm(N, mean = x %*% beta)           # the underlying latent variable
+y_1 = y_star > -1.5                            # -1.50 first cutpoint
+y_2 = y_star > .75                             #  0.75 second cutpoint
+y_3 = y_star > 1.75                            #  1.75 third cutpoint
+y = y_1 + y_2 + y_3 + 1                        # target
+
+table(y)
+
+d = data.frame(x, y = factor(y))
+```
+
+
+## Function
+
 ```{r ll_ord}
 ll_ord = function(par, X, y, probit = TRUE) {
   K = length(unique(y))                        # number of classes K
@@ -30,29 +59,6 @@ ll_ord = function(par, X, y, probit = TRUE) {
   -sum(ll)
 }
 ```
-
-
-## Data
-
-This data generation is from the probit perspective, where the underlying continuous latent variable is normally distributed.
-
-```{r ordinal-setup}
-set.seed(808)
-
-N = 1000                                       # Sample size
-x = cbind(x1 = rnorm(N), x2 = rnorm(N))        # predictor variables
-beta = c(1,-1)                                 # coefficients
-y_star = rnorm(N, mean = x %*% beta)           # the underlying latent variable
-y_1 = y_star > -1.5                            # -1.50 first cutpoint
-y_2 = y_star > .75                             #  0.75 second cutpoint
-y_3 = y_star > 1.75                            #  1.75 third cutpoint
-y = y_1 + y_2 + y_3 + 1                        # target
-
-table(y)
-
-d = data.frame(x, y = factor(y))
-```
-
 
 
 ## Estimation
@@ -111,4 +117,4 @@ reslogit
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ordinal_regression.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ordinal_regression.R

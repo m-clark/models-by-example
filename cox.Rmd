@@ -345,5 +345,5 @@ result_tbl
 
 ## Source
 
-Source code found at
+Original code available at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/survivalCox.R

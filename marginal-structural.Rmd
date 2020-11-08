@@ -10,6 +10,7 @@ Example data is from, and comparison made to, the <span class="pack" style = "">
 This example is from the helpfile at `?ipwpoint`.
 
 ```{r msm-setup}
+library(tidyverse)
 library(ipw)
 
 set.seed(16)
@@ -41,7 +42,7 @@ ipwplot(ipw_result$ipw.weights)
 
 
 
-## Create the Weights
+### Create the Weights
 
 ```{r msm-weights}
 ps_num = fitted(glm(a ~ 1, data = simdat, family = 'binomial'))
@@ -53,16 +54,14 @@ ps_den[simdat$a == 0] = 1 - ps_den[simdat$a == 0]
 wts = ps_num / ps_den
 ```
 
-
-
-Compare the weights
+Compare the weights.
 
 ```{r msm-wts-compare}
 rbind(summary(wts), summary(ipw_result$ipw.weights))
 ```
 
 
-Add inverse probability weights to the data if desired
+Add inverse probability weights to the data if desired.
 
 ```{r msm-add-weights}
 simdat = simdat %>% 
@@ -70,23 +69,7 @@ simdat = simdat %>%
 ```
 
 
-
-
-## Estimation
-
-Marginal structural model for the causal effect of `a` on `y` corrected for confounding by `l`, using inverse probability weighting with robust standard error from the <span class="pack" style = "">survey</span> package.
-
-```{r msm-svy}
-library("survey")
-
-msm = svyglm(
-  y ~ a,
-  design = svydesign(~ 1, weights = ~ sw, data = simdat)
-)
-
-summary(msm)
-```
-
+## Function
 
 Create the likelihood function for using the weights.
 
@@ -110,7 +93,10 @@ maxlike = function(
 }
 ```
 
-Create the matrices for estimation, estimate the model, and extract results.
+
+## Estimation
+
+We want to estimate the marginal structural model for the causal effect of `a` on `y` corrected for confounding by `l`, using inverse probability weighting with robust standard error from the <span class="pack" style = "">survey</span> package.  Create the matrices for estimation, estimate the model, and extract results.
 
 ```{r msm-ml}
 X = cbind(1, simdat$a)
@@ -142,24 +128,41 @@ estfun = X * res * wts
 x = estfun %*% glm_vcov_unsc 
 ```
 
-Now  get the standard errors.
 
-```{r msm-se-2}
-se = sqrt(diag(crossprod(x) * n/(n-1)))                  # a robust standard error
-se_robust = sqrt(diag(sandwich::sandwich(glm_basic)))    # much easier way to get it
-se_msm    = sqrt(diag(vcov(msm)))
-```
 
-Compare.
 
-```{r msm-se-compare}
-tibble(se, se_robust, se_msm)
-```
 
 
 
 
 ## Comparison
+
+```{r msm-svy}
+library("survey")
+
+msm = svyglm(
+  y ~ a,
+  design = svydesign(~ 1, weights = ~ sw, data = simdat)
+)
+
+summary(msm)
+```
+
+Now  get the standard errors.
+
+```{r msm-se-2}
+se = sqrt(diag(crossprod(x) * n/(n-1)))                  # a robust standard error
+se_robust = sqrt(diag(sandwich::sandwich(glm_basic)))    # an easier way to get it
+se_msm    = sqrt(diag(vcov(msm)))                        # extract from msm model
+```
+
+Compare standard errors.
+
+```{r msm-se-compare}
+tibble(se, se_robust, se_msm)
+```
+
+Compare general result.
 
 ```{r msm-comparison}
 tibble(
@@ -167,7 +170,7 @@ tibble(
   init_se   = sqrt(diag(solve(result$hessian)))[c('intercept', 'b')],  # same as scaled se from glm_basic
   se_robust = se_robust,
   t = Estimate/se,
-  p = 2*pt(abs(t), df = n-ncol(X), lower.tail = FALSE),  
+  p = 2*pt(abs(t), df = n - ncol(X), lower.tail = FALSE),  
   dispersion = dispersion             
 )
 
@@ -177,4 +180,4 @@ broom::tidy(msm)
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ipw.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ipw.R

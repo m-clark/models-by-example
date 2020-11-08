@@ -10,6 +10,8 @@ ML, with some code snippets inspired by the <span class="func" style = "">ppca</
 `state.x77` is from base R, which includes various state demographics.  We will first standardize the data.
 
 ```{r em-ppca-setup}
+library(tidyverse)
+
 X = scale(state.x77)
 ```
 
@@ -482,8 +484,8 @@ GGally::ggpairs(data.frame(scores_em, scores_pcam) )
 
 ### Source
 
-Source code found at
+Original code available at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20algorithm%20for%20ppca.R
 
-Source code for the missing example found at
+Original code for the missing example found at
 (https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20algorithm%20for%20ppca%20with%20missing.R

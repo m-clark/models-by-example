@@ -11,6 +11,8 @@ arbitrarily assigned some duration values.  See also http://www.geyserstudy.org/
 intervals. Some July 1995 data is available.
 
 ```{r old-faithful}
+library(tidyverse)
+
 # faithful data set is in base R
 data(faithful)
 
@@ -284,5 +286,5 @@ ggplot(aes(x = eruptions, y = waiting), data = faithful) +
 
 ### Source
 
-Source code found at
+Original code available at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20Mixture.R

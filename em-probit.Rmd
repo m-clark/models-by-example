@@ -7,6 +7,8 @@ The following regards models for a binary response. See Murphy, 2012 Probabilist
 ### Data Setup
 
 ```{r probit-setup}
+library(tidyverse)
+
 admission = haven::read_dta("https://stats.idre.ucla.edu/stat/stata/dae/binary.dta")
 ```
 
@@ -216,5 +218,5 @@ ggplot(aes(x = iter, y = value), data = gdat) +
 
 ### Source
 
-Source code found at
+Original code available at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20algorithm%20for%20probit%20example.R

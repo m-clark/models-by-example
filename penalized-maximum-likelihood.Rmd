@@ -26,6 +26,8 @@ to implement.
 ##  Data Setup
 
 ```{r pml-data-setup}
+library(tidyverse)
+
 set.seed(123)  # ensures replication
 
 # predictors and response
@@ -247,4 +249,4 @@ round(
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/penalized_ML.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/penalized_ML.R

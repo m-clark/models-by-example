@@ -6,6 +6,8 @@ This function duplicates [hmm_viterbi.py](https://github.com/m-clark/Miscellaneo
 ## Data Setup
 
 ```{r hmm-setup}
+library(tidyverse)
+
 obs = c('normal', 'cold', 'dizzy')  # observed state
 
 states = c('Healthy', 'Fever')      # latent states
@@ -208,8 +210,8 @@ viterbi_2(
 
 ## Source
 
-Source code for R found at
+Original code for R found at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/hmm_viterbi.R
 
-Source code for Python found at
+Original code for Python found at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/hmm_viterbi.py

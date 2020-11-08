@@ -23,10 +23,13 @@ Generate missing data for wearnl drawn z from standard normal [0,1].  z is actua
 ## Data Setup
 
 ```{r heckman-setup}
+library(tidyverse)
+
 set.seed(123456)
+
 N = 10000
 educ = sample(1:16, N, replace = T)
-age = sample(18:64, N, replace = T)
+age  = sample(18:64, N, replace = T)
 
 covmat = matrix(c(.46^2, .25*.46, .25*.46, 1), ncol = 2)
 errors = mvtnorm::rmvnorm(N, sigma = covmat)
@@ -257,4 +260,4 @@ tibble(
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/heckman_selection.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/heckman_selection.R

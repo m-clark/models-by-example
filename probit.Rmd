@@ -8,8 +8,10 @@ manual, so one can investigate the Stata result for comparison.
 
 ## Standard Probit
 
-```{r probitLL}
-probitLL = function(beta, X, y){
+### Function
+
+```{r probit_ll}
+probit_ll = function(beta, X, y){
   mu = X %*% beta
   
   # these produce identical results, but the second is the typical depiction
@@ -32,6 +34,8 @@ probitLL = function(beta, X, y){
 Example 1 available at https://stats.idre.ucla.edu/stata/dae/probit-regression/
 
 ```{r probit-example-1}
+library(tidyverse)
+
 admit = haven::read_dta('https://stats.idre.ucla.edu/stat/stata/dae/binary.dta')
 
 head(admit)
@@ -42,7 +46,7 @@ y = admit$admit
 init = rep(0, ncol(X))
 
 optimResult = optim(
-  fn  = probitLL,
+  fn  = probit_ll,
   par = init,
   X = X,
   y = y,
@@ -70,7 +74,7 @@ y = auto$foreign
 init = rep(0, ncol(X))
 
 optimResult = optim(
-  fn  = probitLL,
+  fn  = probit_ll,
   par = init,
   X = X,
   y = y
@@ -85,8 +89,8 @@ optimResult
 
 Main function.
 
-```{r bivariateProbitLL}
-bivariateProbitLL = function(pars, X, y1, y2) {
+```{r bivariateprobit_ll}
+bivariateprobit_ll = function(pars, X, y1, y2) {
   rho = pars[1]
   mu1 = X %*% pars[2:(ncol(X) + 1)]
   mu2 = X %*% pars[(ncol(X) + 2):length(pars)]
@@ -143,7 +147,7 @@ init = c(0, rep(0, ncol(X)*2))
 
 # you'll probably get a warning or two, ignore; takes a couple seconds
 optimResult = optim(
-  fn  = bivariateProbitLL,
+  fn  = bivariateprobit_ll,
   par = init,
   X   = X,
   y1  = y1,
@@ -171,4 +175,4 @@ list(
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/bivariateProbit.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/bivariateProbit.R

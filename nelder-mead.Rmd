@@ -206,6 +206,8 @@ provide an example for that case.
 #### Data Setup
 
 ```{r nelder-mead-setup-1}
+library(tidyverse)
+
 set.seed(8675309)
 
 N = 500
@@ -498,4 +500,4 @@ rbind(
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/nelder_mead.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/nelder_mead.R

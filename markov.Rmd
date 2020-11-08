@@ -4,6 +4,8 @@
 Initial demo of <span class="pack" style = "">markovchain</span> package. Not shown. You may want to play with it to get a feel for how it works.  We will use it for comparison later. Do go ahead and load the package 
 
 ```{r markov-chain-demo}
+library(tidyverse)
+
 library(markovchain)
 
 A = matrix(c(.7, .3, .9, .1), nrow = 2, byrow = TRUE)
@@ -48,7 +50,7 @@ A recursive function to take a matrix power.
 
 ```{r matrix-power}
 mat_power = function(M, N){
-  if (N==1) return(M)
+  if (N == 1) return(M)
   
   M %*% mat_power(M, N-1)
 }
@@ -243,5 +245,5 @@ result = optim(
 
 ## Source
 
-Source code found at
+Original code available at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/markov_model.R

@@ -44,7 +44,9 @@ mlogit_coefs = coef(mlogit_mod)[c(1,5,7,3,2,6,8,4)]  # reorder
 
 
 
-### Multinomial via Maximum Likelihood
+### Function
+
+Multinomial model via maximum likelihood
 
 ```{r multinomregML}
 multinomregML <- function(par, X, y) {
@@ -150,8 +152,8 @@ We can use the `fish` data from the <span class="pack" style = "">mnlogit</span>
 
 ```{r mlogit-fish-data}
 library(mnlogit)
-data(Fish)
 
+data(Fish)
 head(Fish)
 
 fm  = formula(mode ~ price | income | catch)
@@ -289,4 +291,4 @@ cbind(logLik(fit), out$value)
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/multinomial.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/multinomial.R

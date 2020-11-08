@@ -18,6 +18,8 @@ left it as it was.
 ## Data Setup
 
 ```{r sgd-setup}
+library(tidyverse)
+
 set.seed(1234)
 
 n  = 1000
@@ -30,7 +32,7 @@ X  = cbind(Intercept = 1, x1, x2)
 
 
 
-## Main Function
+## Function
 
 ```{r sgd}
 sgd = function(
@@ -83,7 +85,7 @@ sgd = function(
 
 
 
-### Run
+## Estimation
 
 
 Set starting values.
@@ -112,7 +114,7 @@ sgd_result$par
 
 
 
-### Comparison
+## Comparison
 
 We can compare to standard linear regression.
 
@@ -129,7 +131,7 @@ rbind(
 
 
 
-### Visualize Estimates
+## Visualize Estimates
 
 
 ```{r sgd-visualize}
@@ -197,7 +199,7 @@ y3 = c(y2, y3)
 
 
 
-### Run
+### Estimation
 
 ```{r sgd-est-2}
 sgd_result2 = sgd(
@@ -264,4 +266,4 @@ ggplot(aes(x = Iteration,
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/stochastic_gradient_descent.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/stochastic_gradient_descent.R

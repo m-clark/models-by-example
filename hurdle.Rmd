@@ -10,9 +10,9 @@ Hurdle models are applied to situations in which target data has relatively many
 Here we import a simple data set. The example comes from the Stata help file for zinb command. One can compare results with `hnblogit` command in Stata.
 
 ```{r hurdle-setup}
-library(haven)
+library(tidyverse)
 
-fish = read_dta("http://www.stata-press.com/data/r11/fish.dta")
+fish = haven::read_dta("http://www.stata-press.com/data/r11/fish.dta")
 ```
 
 ### Function
@@ -212,4 +212,4 @@ summarytable
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/hurdle.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/hurdle.R

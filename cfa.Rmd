@@ -8,6 +8,7 @@ This mostly follows Bollen (1989) for maximum likelihood estimation of a confirm
 ## Data Setup
 
 ```{r cfa-setup}
+library(tidyverse)
 library(mvtnorm)
 library(psych)
 
@@ -48,7 +49,7 @@ cor.plot(cor(y))
 
 
 
-## Primary Functions
+## Functions
 
 
 ```{r cfa-cov-func}
@@ -272,5 +273,5 @@ results:
 
 ## Source
 
-Source code found at
+Original code available at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cfa.R

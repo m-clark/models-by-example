@@ -10,6 +10,8 @@ based on output from <span class="func" style = "">pca</span> function used belo
 `state.x77` is from base R, which includes various state demographics.  We will first standardize the data.
 
 ```{r em-pca-setup}
+library(tidyverse)
+
 X = scale(state.x77)
 ```
 
@@ -164,5 +166,5 @@ qplot(Xrecon[,1], Xrecon_pcam[,1])
 
 ### Source
 
-Source code found at
+Original code available at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20for%20pca.R

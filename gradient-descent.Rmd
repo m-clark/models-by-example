@@ -8,12 +8,13 @@ stepsize for adaptive approach), whether to print out iterations, and whether
 to plot the loss over each iteration.
 
 
-
 ## Data Setup
 
 Create some basic data for standard regression.
 
 ```{r gd-setup}
+library(tidyverse)
+
 set.seed(8675309)
 
 n  = 1000
@@ -25,7 +26,9 @@ X  = cbind(Intercept = 1, x1, x2)  # model matrix
 
 
 
-## Gradient Descent Algorithm
+## Function
+
+(Batch) Gradient Descent Algorithm.
 
 ```{r gd}
 gd = function(
@@ -80,14 +83,13 @@ gd = function(
 }
 ```
 
-### Run
+## Estimation
 
 Set starting values.
 
 ```{r gd-initial}
 init = rep(0, 3)
 ```
-
 
 For any particular data you'd have to fiddle with the `stepsize`, which could 
 be assessed via cross-validation, or alternatively one can use an
@@ -107,8 +109,7 @@ str(gd_result)
 ```
 
 
-
-### Comparison
+## Comparison
 
 
 We can compare to standard linear regression.
@@ -125,9 +126,6 @@ rbind(
 
 
 
-
-
-
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/gradient_descent.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/gradient_descent.R

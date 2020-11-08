@@ -22,12 +22,14 @@ more details.
 ### Data Setup
 
 ```{r em-ssm-setup}
-d = read.csv(
+library(tidyverse)
+
+d = read_csv(
   'https://raw.githubusercontent.com/m-clark/Datasets/master/us%20cpi/USCPI.csv',
-  header = FALSE
+  col_names = FALSE
 )
 
-inflation = d[, 1]
+inflation = as.matrix(d$X1)
 
 summary(inflation)
 ```
@@ -76,7 +78,7 @@ em_state_space = function(
   Omega2[1, 1] = omega2_0
   
   H = spam::as.spam(H)
-  HinvOmega2H = t(H) %*% chol2inv(chol(Omega2)) %*% H   # tau ~ N(0, HinvOmmega2H^-1)
+  HinvOmega2H = t(H) %*% spam::chol2inv(spam::chol(Omega2)) %*% H   # tau ~ N(0, HinvOmmega2H^-1)
   
   it = 0
   converged = FALSE
@@ -193,5 +195,5 @@ data.frame(
 
 ### Source
 
-Source code found at
+Original code found at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/EM%20Examples/EM%20for%20state%20space%20unobserved%20components.R

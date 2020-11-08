@@ -2,7 +2,7 @@
 
 
 
-# Standard Linear Regression
+# Linear Regression
 
 A standard regression model via maximum likelihood or least squares loss.
 Also examples for QR decomposition and normal equations. Can serve as an
@@ -17,6 +17,8 @@ and elsewhere.
 
 
 ```{r lm-setup}
+library(tidyverse)
+
 set.seed(123)  # ensures replication
 
 # predictors and response
@@ -184,4 +186,4 @@ c(sqrt(pars_ML[1]), sqrt(pars_LS[1]))
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/standard_lm.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/standard_lm.R

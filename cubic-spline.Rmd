@@ -7,6 +7,8 @@ See Wood (2017) Generalized Additive Models or my [document](https://m-clark.git
 ## Data Setup
 
 ```{r cs-setup}
+library(tidyverse)
+
 size = c(1.42,1.58,1.78,1.99,1.99,1.99,2.13,2.13,2.13,
          2.32,2.32,2.32,2.32,2.32,2.43,2.43,2.78,2.98,2.98)
 
@@ -149,4 +151,4 @@ ggplot(d3) +
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cubicsplines.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cubicsplines.R

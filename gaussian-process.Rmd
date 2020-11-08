@@ -1,0 +1,356 @@
+## Gausian Processes
+
+
+'Noise-free' gaussian process demo.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail. Murphy's original Matlab code can be found [here](https://github.com/probml/pmtk3), though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
+
+The goal of this code is to plot samples from the prior and posterior predictive of a gaussian process in which `y = sin(x)`. It will reproduce figure 15.2 in Murphy 2012 and 2.2 in Rasmussen and Williams 2006.
+
+### Noise-Free Demonstration
+
+#### Data Setup
+
+```{r gp-setup}
+library(tidyverse)
+
+l = 1            # for l, sigma_f, see note at covariance function
+sigma_f = 1      
+k_eps   = 1e-8   # see note at K_starstar
+n_prior = 5      # number of prior draws
+n_post_pred = 5  # number of posterior predictive draws
+```
+
+Generate noise-less training data.
+
+```{r gp-data-gen}
+X_train = c(-4, -3, -2, -1, 1)
+y_train  = sin(X_train)
+n_train  = length(X_train)
+
+X_test = seq(-5, 5, .2)
+n_test  = length(X_test)
+```
+
+
+
+#### Functions
+
+The mean function. In this case the mean equals 0.
+
+```{r gp-mean-func}
+gp_mu = function(x) {
+  map_dbl(x, function(x) x = 0)
+}
+```
+
+The covariance function. Here it is the squared exponential kernel. `l` is the horizontal scale, `sigma_f` is the vertical scale.  
+
+```{r gp-cov-func}
+gp_K = function(x, l = 1, sigma_f = 1){
+  sigma_f * exp( -(1/(2 * l^2)) * as.matrix(dist(x, upper = TRUE, diag = TRUE) ^ 2) )
+}
+```
+
+
+#### Visualize the prior distribution
+
+Data setup.
+
+```{r gp-prior-data}
+x_prior = seq(-5, 5, .2)
+
+y_prior = MASS::mvrnorm(
+  n = n_prior,
+  mu    = gp_mu(x_prior),
+  Sigma = gp_K(x_prior, l = l, sigma_f = sigma_f)
+)
+```
+
+
+```{r gp-prior-plot}
+prior_data = data.frame(
+    x  = x_prior,
+    y  = t(y_prior),
+    sd = apply(y_prior, 2, sd)) %>% 
+  pivot_longer(-c(x, sd), names_to = 'variable')
+
+g1 = ggplot(aes(x = x, y = value), data = prior_data) +
+  geom_line(aes(group = variable), color = '#FF5500', alpha = .5) +
+  labs(title = 'Prior') +
+  theme_minimal()
+
+g1
+```
+
+
+
+#### Generate the posterior predictive distribution
+
+Create `K`, `K*`, and `K**` matrices as defined in the texts.
+
+```{r gp-K-gen}
+K  = gp_K(X_train, l = l, sigma_f = sigma_f)
+K_ = gp_K(c(X_train, X_test), l = l, sigma_f = sigma_f)      # initial matrix
+
+K_star  = K_[1:n_train, (n_train+1):ncol(K_)]                  # dim = N x N*
+tK_star = t(K_star)                                          # dim = N* x N
+K_starstar = K_[(n_train+1):nrow(K_), (n_train+1):ncol(K_)] +  # dim = N* x N*
+  k_eps * diag(n_test)    # the k_eps part is for positive definiteness
+
+Kinv = solve(K)
+```
+
+Calculate posterior mean and covariance.
+
+```{r gp-posterior}
+post_mu = gp_mu(X_test) + t(K_star) %*% Kinv %*% (y_train - gp_mu(X_train))
+post_K  = K_starstar - t(K_star) %*% Kinv %*% K_star
+s2 = diag(post_K)
+# R = chol(post_K)  
+# L = t(R)      # L is used in alternative formulation below based on gaussSample.m
+```
+
+
+Generate draws from posterior predictive.
+
+```{r gp-pp}
+y_pp = data.frame(
+  t(MASS::mvrnorm(n_post_pred, mu = post_mu, Sigma = post_K))
+  )
+# y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) # alternative
+```
+
+
+
+#### Visualize the Posterior Predictive Distribution
+
+Reshape data for plotting and create the plot.
+
+```{r gp-pp-plot}
+pp_data = data.frame(
+  x = X_test,
+  y = y_pp,
+  se_lower = post_mu - 2 * sqrt(s2),
+  se_upper = post_mu + 2 * sqrt(s2)
+) %>% 
+  pivot_longer(starts_with('y'), names_to = 'variable')
+
+
+g2 = ggplot(aes(x = x, y = value), data = pp_data) +
+  geom_ribbon(aes(ymin = se_lower, ymax = se_upper, group = variable), 
+              fill = 'gray92') +
+  geom_line(aes(group = variable), color = '#FF5500') +
+  geom_point(aes(x = X_train, y = y_train), data = data.frame(X_train, y_train)) +
+  labs(title = 'Posterior Predictive') +
+  theme_minimal()
+
+g2
+```
+
+Plot prior and posterior predictive together.
+
+```{r gp-prior-pp-plot}
+library(patchwork)
+
+g1 + g2
+```
+
+
+### Noisy Demonstration
+
+
+
+'Noisy' gaussian process demo.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail.  Murphy's Matlab code can be found here: https://github.com/probml/pmtk3, though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
+                                                                              
+The goal of this code is to plot samples from the prior and posterior predictive
+of a gaussian process in which y = sin(x) + noise. It will reproduce an example 
+akin to figure 15.3 in Murphy 2012.                                             
+
+
+
+#### Data Setup
+
+```{r gp-noise-setup}
+l = 1            # for l, sigma_f, sigma_n, see note at covariance function
+sigma_f = 1      
+sigma_n = .25 
+k_eps   = 1e-8   # see note at Kstarstar
+n_prior = 5      # number of prior draws
+n_post_pred = 5  # number of posterior predictive draws
+
+
+
+X_train = 15 * (runif(20) - .5)  
+n_train = length(X_train)
+
+# kept sine function for comparison to noise free result
+y_train = sin(X_train) + rnorm(n = n_train, sd = .1)  
+
+X_test = seq(-7.5, 7.5, length = 200)
+n_test = length(X_test)
+```
+
+#### Functions
+
+The mean function. In this case the mean equals 0.
+
+```{r gp-noise-mean-func}
+gp_mu = function(x) {
+  map_dbl(x, function(x) x = 0)
+}
+```
+
+The covariance function. here it is the squared exponential kernel. `l` is the horizontal scale, `sigma_f` is the vertical scale, and, unlike the previous function, `sigma_n` the noise.
+
+```{r gp-noise-cov-func}
+gp_K = function(
+  x,
+  y = NULL,
+  l = 1,
+  sigma_f = 1,
+  sigma_n = .5
+  ) {
+  
+  if(!is.null(y)){
+    sigma_f * exp( -(1/(2 * l^2)) * as.matrix(dist(x, upper = TRUE, diag = TRUE) ^ 2) ) +
+      sigma_n*diag(length(x))    
+  }
+  else{
+    sigma_f * exp( -(1/(2 * l^2)) * as.matrix(dist(x, upper = TRUE, diag = TRUE) ^ 2) )
+  }  
+}
+```
+
+
+#### Visualize the prior distribution
+
+Data setup.
+
+```{r gp-noisy-prior-data}
+x_prior = seq(-5, 5, .2)
+
+y_prior = MASS::mvrnorm(
+  n     = n_prior,
+  mu    = gp_mu(x_prior),
+  Sigma = gp_K(
+    x_prior,
+    l = l,
+    sigma_f = sigma_f,
+    sigma_n = sigma_n
+  )
+) 
+```
+
+Plot.
+
+```{r gp-noisy-prior-plot}
+prior_data = data.frame(
+    x  = x_prior,
+    y  = t(y_prior),
+    sd = apply(y_prior, 2, sd)) %>% 
+  pivot_longer(-c(x, sd), names_to = 'variable')
+
+g1 = ggplot(aes(x = x, y = value), data = prior_data) +
+  geom_line(aes(group = variable), color = '#FF5500', alpha = .5) +
+  labs(title = 'Prior') +
+  theme_minimal()
+
+g1
+```
+
+
+
+#### Generate the posterior predictive distribution
+
+Create Ky, K*, and K** matrices as defined in the texts.
+
+```{r gp-noisy-K-gen}
+Ky = gp_K(
+  x = X_train,
+  y = y_train,
+  l = l,
+  sigma_f = sigma_f,
+  sigma_n = sigma_n
+)
+
+# initial matrix
+K_ = gp_K(
+  c(X_train, X_test),
+  l = l,
+  sigma_f = sigma_f,
+  sigma_n = sigma_n
+)
+
+Kstar  = K_[1:n_train, (n_train+1):ncol(K_)]                      # dim = N x N*
+tKstar = t(Kstar)                                               # dim = N* x N
+Kstarstar = K_[(n_train+1):nrow(K_), (n_train+1):ncol(K_)] +      # dim = N* x N*
+  k_eps*diag(n_test)      # the k_eps part is for positive definiteness
+
+Kyinv = solve(Ky)
+```
+
+
+
+Calculate posterior mean and covariance.
+
+```{r gp-noisy-posterior}
+post_mu = gp_mu(X_test) + tKstar %*% Kyinv %*% (y_train - gp_mu(X_train))
+post_K  = Kstarstar - tKstar %*% Kyinv %*% Kstar
+s2 = diag(post_K)
+# R = chol(post_K)  
+# L = t(R)      # L is used in alternative formulation below based on gaussSample.m
+```
+
+
+Generate draws from posterior predictive.
+
+```{r  gp-noisy-pp}
+y_pp = data.frame(t(MASS::mvrnorm(n_post_pred, mu = post_mu, Sigma = post_K)))
+# y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) # alternative
+```
+
+
+#### Visualize the Posterior Predictive Distribution
+
+Reshape data for plotting and create the plot.
+
+```{r gp-noisy-pp-plot}
+pp_data = data.frame(
+  x = X_test,
+  y = y_pp,
+  fmean = post_mu, 
+  se_lower = post_mu - 2 * sqrt(s2),
+  se_upper = post_mu + 2 * sqrt(s2)
+) %>% 
+  pivot_longer(starts_with('y'), names_to = 'variable')
+
+
+g2 = ggplot(aes(x = x, y = value), data = pp_data) +
+  geom_ribbon(aes(ymin = se_lower, ymax = se_upper, group = variable), 
+              fill = 'gray92') +
+  geom_line(aes(group = variable), color = '#FF5500') +
+  geom_point(aes(x = X_train, y = y_train), data = data.frame(X_train, y_train)) +
+  labs(title = 'Posterior Predictive') +
+  theme_minimal()
+
+g2
+```
+
+Plot prior and posterior predictive together.
+
+```{r gp-noisy-prior-pp-plot}
+library(patchwork)
+
+g1 + g2
+```
+
+
+
+
+
+
+### Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/gp%20Examples/gaussianprocessNoiseFree.R (noise-free)
+
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/gp%20Examples/gaussianprocessNoisey.R (noisy)

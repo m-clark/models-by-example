@@ -1,4 +1,4 @@
-# Standard Logistic
+# Logistic Regression
 
 
 A standard logistic regression model via maximum likelihood or exponential
@@ -9,7 +9,7 @@ approach.  Exponential loss is not confined to the standard GLM setting, but
 is widely used in more predictive/'algorithmic' approaches e.g. in
 machine learning and elsewhere.
 
-This follows the linear regression model approach.
+This follows the [linear regression model][Linear Regression] approach.
 
 
 
@@ -18,6 +18,8 @@ This follows the linear regression model approach.
 Predictors and target.
 
 ```{r data-setup-logreg}
+library(tidyverse)
+
 set.seed(1235)  # ensures replication
 
 N = 10000 # sample size
@@ -141,4 +143,4 @@ rbind(
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/standard_logistic.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/standard_logistic.R

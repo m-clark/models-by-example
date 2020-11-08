@@ -6,14 +6,15 @@ and comparison to <span class="pack" style = "">pscl</span> package output. Also
 
 
 ## Poisson
+
 ### Data Setup
 
 Get the data.
 
 ```{r zip-setup}
-library(haven)
+library(tidyverse)
 
-fish = read_dta("http://www.stata-press.com/data/r11/fish.dta")
+fish = haven::read_dta("http://www.stata-press.com/data/r11/fish.dta")
 ```
 
 ### Function
@@ -306,7 +307,7 @@ round(data.frame(B,se, Z, p), 4)
 
 ## Source
 
-Source code for ZIP found at
+Original code for ZIP found at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/poiszeroinfl.R
 
-Source code for ZINB found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/NBzeroinfl.R
+Original code for ZINB found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/NBzeroinfl.R

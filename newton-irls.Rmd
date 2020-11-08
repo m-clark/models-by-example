@@ -17,6 +17,8 @@ https://stats.idre.ucla.edu/stata/dae/logistic-regression/. The only
 difference is that I treat rank as numeric rather than categorical.
 
 ```{r newton-setup}
+library(tidyverse)
+
 admit = haven::read_dta('https://stats.idre.ucla.edu/stat/stata/dae/binary.dta')
 
 comparison_model = glm(admit ~ gre + gpa + rank, data = admit, family = binomial)
@@ -202,4 +204,4 @@ head(cbind(irls_result$weights,
 
 ## Source
 
-Source code found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/newton_irls.R
+Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/newton_irls.R

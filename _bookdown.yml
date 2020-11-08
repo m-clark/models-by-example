@@ -19,6 +19,9 @@ rmd_files: [
   heckman-selection.Rmd,
   marginal-structural.Rmd,
   tobit.Rmd,
+  hurdle.Rmd,
+  zi.Rmd,
+  cox.Rmd,
   naive-bayes.Rmd,
   multinomial.Rmd,
   ordinal.Rmd,
@@ -26,9 +29,7 @@ rmd_files: [
   hmm.Rmd,
   quantile-regression.Rmd,
   cubic-spline.Rmd,
-  hurdle.Rmd,
-  zi.Rmd,
-  cox.Rmd,
+  gaussian-process.Rmd,
   cfa.Rmd,
   
   # Algos
@@ -40,6 +41,8 @@ rmd_files: [
   gradient-descent.Rmd,
   stochastic-gradient-descent.Rmd,
   em.Rmd,
+  
+  # Bayesian
   
   # Other
   supplemental.Rmd
