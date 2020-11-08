@@ -21,7 +21,7 @@ wanting to dive a little deeper.
 
 
 
-The Original code for these demonstrations may be found at their original home here: https://github.com/m-clark/Miscellaneous-R-Code.
+The original code for these demonstrations may be found at their first home here: https://github.com/m-clark/Miscellaneous-R-Code.
 
 
 Many examples require some initial data processing or visualization via <span class="pack" style = "">ggplot2</span>, so it's assumed the <span class="pack" style = "">tidyverse</span> set of packages is loaded.
