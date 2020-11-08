@@ -1,0 +1,185 @@
+# Extreme Learning Machine
+
+A very simple implementation of an extreme learning machine for regression. See <span class="pack" style = "">elmNN</span> and <span class="pack" style = "">ELMR</span> for some R package implementations. I add comparison to generalized additive models (elm/neural networks and GAMs are adaptive basis function models). 
+
+
+http://www.extreme-learning-machines.org
+G.-B. Huang, Q.-Y. Zhu and C.-K. Siew, "Extreme Learning Machine: Theory and Applications"
+
+
+## Data Setup
+
+
+One variable, complex function.
+
+```{r elm-setup1}
+library(tidyverse)
+library(mgcv)
+
+set.seed(123)
+
+n = 5000
+x = runif(n)
+# x = rnorm(n)
+mu = sin(2*(4*x-2)) + 2* exp(-(16^2) * ((x-.5)^2))
+y = rnorm(n, mu, .3)
+qplot(x, y)
+d = data.frame(x, y) 
+```
+
+
+Motorcycle accident data.
+
+```{r elm-setup2}
+data('mcycle', package = 'MASS')
+
+times  = matrix(mcycle$times, ncol = 1)
+accel  = mcycle$accel
+```
+
+
+
+## Function
+
+```{r elm-func}
+elm <- function(X, y, n_hidden = NULL, active_fun = tanh) {
+  # X: an N observations x p features matrix
+  # y: the target
+  # n_hidden: the number of hidden nodes
+  # active_fun: activation function
+  
+  pp1 = ncol(X) + 1
+  w0  = matrix(rnorm(pp1*n_hidden), pp1, n_hidden)       # random weights
+  h   = active_fun(cbind(1, scale(X)) %*% w0)            # compute hidden layer
+  B   = MASS::ginv(h) %*% y                              # find weights for hidden layer
+  
+  fit = h %*% B                                          # fitted values
+  
+  list(
+    fit  = fit,
+    loss = crossprod(y - fit),
+    B    = B,
+    w0   = w0
+  )
+}
+```
+
+
+
+
+## Estimation
+
+```{r elm-est1}
+X_mat = as.matrix(x, ncol=1)
+
+elm_1 = elm(X_mat, y, n_hidden = 100)
+str(elm_1)
+
+ggplot(aes(x, y), data = d) +
+  geom_point(alpha = .1) + 
+  geom_line(aes(y = elm_1$fit), color = '#1e90ff') + 
+  theme_minimal()
+
+cor(elm_1$fit[,1], y)^2
+```
+
+
+```{r  elm-est2}
+elm_2 = elm(times, accel, n_hidden = 100)
+cor(elm_2$fit[,1], accel)^2
+```
+
+
+
+
+## Comparison
+
+We'll compare to a generalized additive model with gaussian process approximation.
+
+```{r elm-compare1}
+gam_1 = gam(y ~ s(x, bs = 'gp', k = 20), data = d)
+summary(gam_1)$r.sq
+
+
+d %>%
+  mutate(fit_elm = elm_1$fit,
+         fit_gam = fitted(gam_1)) %>%
+  ggplot() +
+  geom_point(aes(x, y), alpha = .1) +
+  geom_line(aes(x, y = fit_elm), color = '#1e90ff') +
+  geom_line(aes(x, y = fit_gam), color = 'darkred')
+```
+
+
+```{r elm-compare2}
+gam_2 = gam(accel ~ s(times), data = mcycle)
+summary(gam_2)$r.sq
+
+mcycle %>% 
+  ggplot(aes(times, accel)) +
+  geom_point(alpha = .5) +
+  geom_line(aes(y = elm_2$fit), color = '#1e90ff') +
+  geom_line(aes(y = fitted(gam_2)), color = 'darkred')
+```
+
+
+
+## Supplemental Example
+
+Yet another example with additional covariates.
+
+```{r elm-setup-3}
+d = gamSim(eg = 7, n = 10000)
+X = as.matrix(d[, 2:5])
+y = d[, 1]
+
+n_nodes = c(10, 25, 100, 250, 500, 1000)
+```
+
+The following estimation over multiple models will take several seconds.
+
+```{r elm-est3}
+elm_3 = map(n_nodes, function(n) elm(X, y, n_hidden = n))
+```
+
+Now find the best fitting model.
+
+```{r elm-best}
+# estimate 
+final_n = which.min(map_dbl(elm_3, function(x) x$loss))
+best = elm_3[[final_n]]
+```
+
+A quick check of the fit.
+
+```{r elm-fit}
+# str(best)
+# qplot(best$fit[, 1], y, alpha = .2)
+cor(best$fit[, 1], y)^2
+```
+
+
+And compare again to <span class="pack" style = "">mgcv</span>.  In this case, we're comparing fit on test data of the same form.
+
+```{r elm-compare3}
+gam_3 = gam(y ~ s(x0) + s(x1) + s(x2) + s(x3), data = d)
+gam.check(gam_3)
+summary(gam_3)$r.sq
+
+
+test_data0 = gamSim(eg = 7)  # default n = 400
+test_data  =  cbind(1, scale(test_data0[,2:5]))
+
+ # remember to use your specific activation function here
+elm_prediction = tanh(test_data %*% best$w0) %*% best$B         
+gam_prediction = predict(gam_3, newdata = test_data0)
+
+cor(data.frame(elm_prediction, gam_prediction), test_data0$y)^2
+```
+
+
+
+## Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/elm.R

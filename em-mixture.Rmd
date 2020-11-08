@@ -25,7 +25,7 @@ wait_times = as.matrix(faithful[, 2, drop = FALSE])
 ### Function
 
 ```{r em_mixture}
-em_mixture = function(
+em_mixture <- function(
   params,
   X,
   clusters = 2,

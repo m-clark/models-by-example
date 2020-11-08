@@ -1,7 +1,7 @@
 # Reproducing Kernel Hilbert Space Regression
 
 
-This R code is based on Reproducing Kernel Hilbert Spaces for Penalized Regression: A tutorial, [Nosedal-Sanchez et al. (2010)](https://www.tandfonline.com/doi/abs/10.1080/00031305.2012.678196), specifically, their code in the [supplemental section](https://github.com/m-clark/models-by-example/blob/main/rkhs_supplemental.pdf).  The original code had several issues as far as general R programming practices, and eventually appears to have been replaced in publication at some point, as did most of the corresponding supplemental text. I can no longer locate the original, so now follow the published code. The original data I was following was also replaced by the <span class="objclas" style = "">longley</span> and <span class="objclas" style = "">mcycle</span> data sets.
+This R code is based on Reproducing Kernel Hilbert Spaces for Penalized Regression: A tutorial, [Nosedal-Sanchez et al. (2010)](https://www.tandfonline.com/doi/abs/10.1080/00031305.2012.678196), specifically, their code in the [supplemental section](https://github.com/m-clark/models-by-example/blob/main/rkhs_supplemental.pdf).  The original code had several issues as far as general R programming practices, and eventually appears to have been replaced in publication at some point, as did most of the corresponding supplemental text. I can no longer locate the original, so now follow the published code. The original data I was following was also replaced by the <span class="objclass" style = "">longley</span> and <span class="objclass" style = "">mcycle</span> data sets.
 
 To start, we will use an example for [ridge regression][L2 (ridge) regularization], followed by a [spline example](cubic-spline).
 
@@ -102,7 +102,7 @@ A simple direct search for the GCV optimal smoothing parameter can be made as fo
 ```{r rk-ridge-est}
 lambda = 10^seq(-6, 0, by = .1)
 
-gcv_search = lapply(lambda, function(lam) ridge(X, y, lam))
+gcv_search = map(lambda, function(lam) ridge(X, y, lam))
 
 V = map_dbl(gcv_search, function(x) x$gcv)
 
@@ -153,7 +153,7 @@ beta_hat  = crossprod(gamma_hat[-1,], X)         # slope and noise term coeffici
 
 ## Comparison
 
-I add a comparison to glmnet, where `alpha = 0` is equivalent to ridge regression.
+I add a comparison to <span class="pack" style = "">glmnet</span>, where `alpha = 0` is equivalent to ridge regression.
 
 ```{r rk-ridge-compare-glmnet, message=FALSE}
 c(beta_0, beta_hat)
@@ -237,7 +237,7 @@ smoothing_spline <- function(X, y, lambda) {
 ```{r rk-spline-est}
 lambda = 10^seq(-6, 0, by = .1)
 
-gcv_search = lapply(lambda, function(lam) smoothing_spline(x, y, lam))
+gcv_search = map(lambda, function(lam) smoothing_spline(x, y, lam))
 
 V = map_dbl(gcv_search, function(x) x$gcv)
 ```
@@ -285,6 +285,10 @@ gcv_plot + fit_plot
 
 
 ## Source
+
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/RKHSReg
 
 ### Current Supplemental Code
 

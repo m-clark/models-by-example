@@ -19,7 +19,7 @@ X = scale(state.x77)
 ###  Function
 
 ```{r em-pca-func}
-em_pca = function(
+em_pca <- function(
   X,
   nComp = 2,
   tol   = .00001,

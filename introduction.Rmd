@@ -31,3 +31,4 @@ Many examples require some initial data processing or visualization via <span cl
 While I'm happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add to it on rare occasion. This code has accumulated over years, and I just wanted it in a nicer format.  Perhaps if others would like to add to it via pull requests, I would do so.
 
 
+Last updated: `r Sys.Date()`.

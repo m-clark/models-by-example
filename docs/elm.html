@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Extreme Learning Machine | Model Estimation by Example</title>
+  <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Extreme Learning Machine | Model Estimation by Example" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
+  <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+  <meta property="og:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="github-repo" content="m-clark/models-by-example/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Extreme Learning Machine | Model Estimation by Example" />
+  
+  <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="gaussian-process.html"/>
+<link rel="next" href="rkhs.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class='before'><a href="./">Model Estimation by Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="part"><span><b>Models</b></span></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i>Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#data-setup"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#estimation"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Logistic Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#estimation-1"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html"><i class="fa fa-check"></i>One-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#function"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#estimation-2"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html"><i class="fa fa-check"></i>Two-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#data-setup-3"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#function-1"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#estimation-3"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html"><i class="fa fa-check"></i>Mixed Model via ML</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#introduction-1"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#data-setup-4"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#function-2"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#results"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#issues-with-ml-estimation"><i class="fa fa-check"></i>Issues with ML estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#link-with-penalized-regression"><i class="fa fa-check"></i>Link with penalized regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html"><i class="fa fa-check"></i>Probit &amp; Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#standard-probit"><i class="fa fa-check"></i>Standard Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#function-3"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#examples"><i class="fa fa-check"></i>Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#bivariate-probit"><i class="fa fa-check"></i>Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html"><i class="fa fa-check"></i>Heckman Selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#two-step-approach"><i class="fa fa-check"></i>Two step approach</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-1-probit-model"><i class="fa fa-check"></i>Step 1: Probit Model</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-2-estimate-via-linear-regression"><i class="fa fa-check"></i>Step 2: Estimate via Linear Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#maximum-likelihood"><i class="fa fa-check"></i>Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html"><i class="fa fa-check"></i>Marginal Structural Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a>
+<ul>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#create-the-weights"><i class="fa fa-check"></i>Create the Weights</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#function-4"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#estimation-4"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-an-upper-limit"><i class="fa fa-check"></i>Demonstrate Censoring with an Upper Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#data-setup-7"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#function-5"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#estimation-5"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-6"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#demonstrate-censoring-with-a-lower-limit"><i class="fa fa-check"></i>Demonstrate censoring with a Lower Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html"><i class="fa fa-check"></i>Hurdle Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#poisson"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-6"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-6"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#negative-binomial"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-7"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-7"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#source-9"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html"><i class="fa fa-check"></i>Zero-Inflated Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#poisson-1"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#data-setup-9"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-8"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-8"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#negative-binomial-1"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-9"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-9"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#supplemental-example"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#source-10"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html"><i class="fa fa-check"></i>Cox Survival</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#standard-proportional-hazards"><i class="fa fa-check"></i>Standard Proportional Hazards</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-10"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-10"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-10"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-12"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#time-varying-coefficients"><i class="fa fa-check"></i>Time-varying coefficients</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-11"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-11"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-11"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#stratified-cox-model"><i class="fa fa-check"></i>Stratified Cox Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-12"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-12"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-12"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#source-11"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html"><i class="fa fa-check"></i>Naive Bayes</a>
+<ul>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#initialization"><i class="fa fa-check"></i>Initialization</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#source-12"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#standard-categorical-model"><i class="fa fa-check"></i>Standard (Categorical) Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#data-setup-13"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#function-13"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-16"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#alternative-specific-and-constant-variables"><i class="fa fa-check"></i>Alternative specific and constant variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-17"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#source-13"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal</a>
+<ul>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#data"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#function-14"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#estimation-13"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#comparison-18"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#source-14"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html"><i class="fa fa-check"></i>Markov Chain Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-setup-14"><i class="fa fa-check"></i>Data Setup</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-functions"><i class="fa fa-check"></i>Data Functions</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#two-states-demo"><i class="fa fa-check"></i>Two states Demo</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#three-states-demo"><i class="fa fa-check"></i>Three states demo</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#function-15"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#estimation-14"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#comparison-19"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#source-15"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html"><i class="fa fa-check"></i>Hidden Markov Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#data-setup-15"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#function-16"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#estimation-15"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#supplemental-demo"><i class="fa fa-check"></i>Supplemental demo</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#source-16"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html"><i class="fa fa-check"></i>Quantile Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#data-setup-16"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#function-17"><i class="fa fa-check"></i>Function</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#median-estimation"><i class="fa fa-check"></i>Median estimation</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#other-quantiles"><i class="fa fa-check"></i>Other quantiles</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#source-17"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html"><i class="fa fa-check"></i>Cubic Spline Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#data-setup-17"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#source-18"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html"><i class="fa fa-check"></i>Gausian Processes</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
+<ul>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#data-setup-20"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#function-18"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#estimation-16"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#comparison-20"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#supplemental-example-1"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html"><i class="fa fa-check"></i>Reproducing Kernel Hilbert Space Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-21"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-5"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#function-to-find-the-inverse-of-a-matrix"><i class="fa fa-check"></i>Function to find the inverse of a matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#reproducing-kernel"><i class="fa fa-check"></i>Reproducing Kernel</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#gram-matrix"><i class="fa fa-check"></i>Gram matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#ridge-regression"><i class="fa fa-check"></i>Ridge regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-17"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#example-cubic-spline"><i class="fa fa-check"></i>Example: Cubic Spline</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-22"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-6"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-18"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#source-21"><i class="fa fa-check"></i>Source</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#current-supplemental-code"><i class="fa fa-check"></i>Current Supplemental Code</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#original-supplemental-code"><i class="fa fa-check"></i>Original Supplemental Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html"><i class="fa fa-check"></i>Confirmatory Factor Analysis</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#data-setup-23"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#functions-7"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-19"><i class="fa fa-check"></i>Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#raw"><i class="fa fa-check"></i>Raw</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#standardized"><i class="fa fa-check"></i>Standardized</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-23"><i class="fa fa-check"></i>Comparison</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#mplus"><i class="fa fa-check"></i>Mplus</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#source-22"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html"><i class="fa fa-check"></i>Bayesian Nonparametric Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
+<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
+</ul></li>
+<li class="part"><span><b>Algorithms</b></span></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-8"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-23"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-25"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-9"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-21"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-24"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#functions-10"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-25"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-11"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s Method</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-26"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First Version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-3"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second Version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example Function</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-27"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-29"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-19"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-28"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-30"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-20"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-29"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html"><i class="fa fa-check"></i>Expectation-Maximization</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#mixture-model"><i class="fa fa-check"></i>Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-21"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-33"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-2"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-30"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#multivariate-mixture-model"><i class="fa fa-check"></i>Multivariate Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-22"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-1-old-faithful-eruptions"><i class="fa fa-check"></i>Example 1: Old Faithful eruptions</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-2-iris-data-set"><i class="fa fa-check"></i>Example 2: Iris data set</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-31"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-model"><i class="fa fa-check"></i>Probit Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-34"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-via-maximum-likelihood"><i class="fa fa-check"></i>Probit via Maximum Likelihood</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#em-for-latent-variable-approach-to-probit"><i class="fa fa-check"></i>EM for Latent Variable Approach to Probit</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-32"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#pca"><i class="fa fa-check"></i>PCA</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-25"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-2"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-33"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probabilistic-pca"><i class="fa fa-check"></i>Probabilistic PCA</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-36"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-26"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-32"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-39"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-3"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#missing-data-example"><i class="fa fa-check"></i>Missing Data Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-34"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#state-space-model"><i class="fa fa-check"></i>State Space Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-38"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-28"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-34"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-35"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>Other</b></span></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#algorithms"><i class="fa fa-check"></i>Algorithms</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Model Estimation by Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="extreme-learning-machine" class="section level1">
+<h1>Extreme Learning Machine</h1>
+<p>A very simple implementation of an extreme learning machine for regression. See <span class="pack" style="">elmNN</span> and <span class="pack" style="">ELMR</span> for some R package implementations. I add comparison to generalized additive models (elm/neural networks and GAMs are adaptive basis function models).</p>
+<p><a href="http://www.extreme-learning-machines.org" class="uri">http://www.extreme-learning-machines.org</a>
+G.-B. Huang, Q.-Y. Zhu and C.-K. Siew, “Extreme Learning Machine: Theory and Applications”</p>
+<div id="data-setup-20" class="section level2">
+<h2>Data Setup</h2>
+<p>One variable, complex function.</p>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="elm.html#cb349-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb349-2"><a href="elm.html#cb349-2"></a><span class="kw">library</span>(mgcv)</span>
+<span id="cb349-3"><a href="elm.html#cb349-3"></a></span>
+<span id="cb349-4"><a href="elm.html#cb349-4"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb349-5"><a href="elm.html#cb349-5"></a></span>
+<span id="cb349-6"><a href="elm.html#cb349-6"></a>n =<span class="st"> </span><span class="dv">5000</span></span>
+<span id="cb349-7"><a href="elm.html#cb349-7"></a>x =<span class="st"> </span><span class="kw">runif</span>(n)</span>
+<span id="cb349-8"><a href="elm.html#cb349-8"></a><span class="co"># x = rnorm(n)</span></span>
+<span id="cb349-9"><a href="elm.html#cb349-9"></a>mu =<span class="st"> </span><span class="kw">sin</span>(<span class="dv">2</span><span class="op">*</span>(<span class="dv">4</span><span class="op">*</span>x<span class="dv">-2</span>)) <span class="op">+</span><span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span>(<span class="dv">16</span><span class="op">^</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>((x<span class="fl">-.5</span>)<span class="op">^</span><span class="dv">2</span>))</span>
+<span id="cb349-10"><a href="elm.html#cb349-10"></a>y =<span class="st"> </span><span class="kw">rnorm</span>(n, mu, <span class="fl">.3</span>)</span>
+<span id="cb349-11"><a href="elm.html#cb349-11"></a><span class="kw">qplot</span>(x, y)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/elm-setup1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="elm.html#cb350-1"></a>d =<span class="st"> </span><span class="kw">data.frame</span>(x, y) </span></code></pre></div>
+<p>Motorcycle accident data.</p>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="elm.html#cb351-1"></a><span class="kw">data</span>(<span class="st">&#39;mcycle&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;MASS&#39;</span>)</span>
+<span id="cb351-2"><a href="elm.html#cb351-2"></a></span>
+<span id="cb351-3"><a href="elm.html#cb351-3"></a>times  =<span class="st"> </span><span class="kw">matrix</span>(mcycle<span class="op">$</span>times, <span class="dt">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb351-4"><a href="elm.html#cb351-4"></a>accel  =<span class="st"> </span>mcycle<span class="op">$</span>accel</span></code></pre></div>
+</div>
+<div id="function-18" class="section level2">
+<h2>Function</h2>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="elm.html#cb352-1"></a>elm &lt;-<span class="st"> </span><span class="cf">function</span>(X, y, <span class="dt">n_hidden =</span> <span class="ot">NULL</span>, <span class="dt">active_fun =</span> tanh) {</span>
+<span id="cb352-2"><a href="elm.html#cb352-2"></a>  <span class="co"># X: an N observations x p features matrix</span></span>
+<span id="cb352-3"><a href="elm.html#cb352-3"></a>  <span class="co"># y: the target</span></span>
+<span id="cb352-4"><a href="elm.html#cb352-4"></a>  <span class="co"># n_hidden: the number of hidden nodes</span></span>
+<span id="cb352-5"><a href="elm.html#cb352-5"></a>  <span class="co"># active_fun: activation function</span></span>
+<span id="cb352-6"><a href="elm.html#cb352-6"></a>  </span>
+<span id="cb352-7"><a href="elm.html#cb352-7"></a>  pp1 =<span class="st"> </span><span class="kw">ncol</span>(X) <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb352-8"><a href="elm.html#cb352-8"></a>  w0  =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(pp1<span class="op">*</span>n_hidden), pp1, n_hidden)       <span class="co"># random weights</span></span>
+<span id="cb352-9"><a href="elm.html#cb352-9"></a>  h   =<span class="st"> </span><span class="kw">active_fun</span>(<span class="kw">cbind</span>(<span class="dv">1</span>, <span class="kw">scale</span>(X)) <span class="op">%*%</span><span class="st"> </span>w0)            <span class="co"># compute hidden layer</span></span>
+<span id="cb352-10"><a href="elm.html#cb352-10"></a>  B   =<span class="st"> </span>MASS<span class="op">::</span><span class="kw">ginv</span>(h) <span class="op">%*%</span><span class="st"> </span>y                              <span class="co"># find weights for hidden layer</span></span>
+<span id="cb352-11"><a href="elm.html#cb352-11"></a>  </span>
+<span id="cb352-12"><a href="elm.html#cb352-12"></a>  fit =<span class="st"> </span>h <span class="op">%*%</span><span class="st"> </span>B                                          <span class="co"># fitted values</span></span>
+<span id="cb352-13"><a href="elm.html#cb352-13"></a>  </span>
+<span id="cb352-14"><a href="elm.html#cb352-14"></a>  <span class="kw">list</span>(</span>
+<span id="cb352-15"><a href="elm.html#cb352-15"></a>    <span class="dt">fit  =</span> fit,</span>
+<span id="cb352-16"><a href="elm.html#cb352-16"></a>    <span class="dt">loss =</span> <span class="kw">crossprod</span>(y <span class="op">-</span><span class="st"> </span>fit),</span>
+<span id="cb352-17"><a href="elm.html#cb352-17"></a>    <span class="dt">B    =</span> B,</span>
+<span id="cb352-18"><a href="elm.html#cb352-18"></a>    <span class="dt">w0   =</span> w0</span>
+<span id="cb352-19"><a href="elm.html#cb352-19"></a>  )</span>
+<span id="cb352-20"><a href="elm.html#cb352-20"></a>}</span></code></pre></div>
+</div>
+<div id="estimation-16" class="section level2">
+<h2>Estimation</h2>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="elm.html#cb353-1"></a>X_mat =<span class="st"> </span><span class="kw">as.matrix</span>(x, <span class="dt">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb353-2"><a href="elm.html#cb353-2"></a></span>
+<span id="cb353-3"><a href="elm.html#cb353-3"></a>elm_<span class="dv">1</span> =<span class="st"> </span><span class="kw">elm</span>(X_mat, y, <span class="dt">n_hidden =</span> <span class="dv">100</span>)</span>
+<span id="cb353-4"><a href="elm.html#cb353-4"></a><span class="kw">str</span>(elm_<span class="dv">1</span>)</span></code></pre></div>
+<pre><code>List of 4
+ $ fit : num [1:5000, 1] -1.0239 0.7311 -0.413 0.0806 -0.4112 ...
+ $ loss: num [1, 1] 442
+ $ B   : num [1:100, 1] 217 -608 1408 -1433 -4575 ...
+ $ w0  : num [1:2, 1:100] 0.35 0.814 -0.517 -2.692 -1.097 ...</code></pre>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="elm.html#cb355-1"></a><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y), <span class="dt">data =</span> d) <span class="op">+</span></span>
+<span id="cb355-2"><a href="elm.html#cb355-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.1</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb355-3"><a href="elm.html#cb355-3"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">y =</span> elm_<span class="dv">1</span><span class="op">$</span>fit), <span class="dt">color =</span> <span class="st">&#39;#1e90ff&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb355-4"><a href="elm.html#cb355-4"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/elm-est1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb356-1"><a href="elm.html#cb356-1"></a><span class="kw">cor</span>(elm_<span class="dv">1</span><span class="op">$</span>fit[,<span class="dv">1</span>], y)<span class="op">^</span><span class="dv">2</span></span></code></pre></div>
+<pre><code>[1] 0.8862518</code></pre>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="elm.html#cb358-1"></a>elm_<span class="dv">2</span> =<span class="st"> </span><span class="kw">elm</span>(times, accel, <span class="dt">n_hidden =</span> <span class="dv">100</span>)</span>
+<span id="cb358-2"><a href="elm.html#cb358-2"></a><span class="kw">cor</span>(elm_<span class="dv">2</span><span class="op">$</span>fit[,<span class="dv">1</span>], accel)<span class="op">^</span><span class="dv">2</span></span></code></pre></div>
+<pre><code>[1] 0.8122349</code></pre>
+</div>
+<div id="comparison-20" class="section level2">
+<h2>Comparison</h2>
+<p>We’ll compare to a generalized additive model with gaussian process approximation.</p>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="elm.html#cb360-1"></a>gam_<span class="dv">1</span> =<span class="st"> </span><span class="kw">gam</span>(y <span class="op">~</span><span class="st"> </span><span class="kw">s</span>(x, <span class="dt">bs =</span> <span class="st">&#39;gp&#39;</span>, <span class="dt">k =</span> <span class="dv">20</span>), <span class="dt">data =</span> d)</span>
+<span id="cb360-2"><a href="elm.html#cb360-2"></a><span class="kw">summary</span>(gam_<span class="dv">1</span>)<span class="op">$</span>r.sq</span></code></pre></div>
+<pre><code>[1] 0.8856188</code></pre>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="elm.html#cb362-1"></a>d <span class="op">%&gt;%</span></span>
+<span id="cb362-2"><a href="elm.html#cb362-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fit_elm =</span> elm_<span class="dv">1</span><span class="op">$</span>fit,</span>
+<span id="cb362-3"><a href="elm.html#cb362-3"></a>         <span class="dt">fit_gam =</span> <span class="kw">fitted</span>(gam_<span class="dv">1</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb362-4"><a href="elm.html#cb362-4"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb362-5"><a href="elm.html#cb362-5"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(x, y), <span class="dt">alpha =</span> <span class="fl">.1</span>) <span class="op">+</span></span>
+<span id="cb362-6"><a href="elm.html#cb362-6"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(x, <span class="dt">y =</span> fit_elm), <span class="dt">color =</span> <span class="st">&#39;#1e90ff&#39;</span>) <span class="op">+</span></span>
+<span id="cb362-7"><a href="elm.html#cb362-7"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(x, <span class="dt">y =</span> fit_gam), <span class="dt">color =</span> <span class="st">&#39;darkred&#39;</span>)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/elm-compare1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="elm.html#cb363-1"></a>gam_<span class="dv">2</span> =<span class="st"> </span><span class="kw">gam</span>(accel <span class="op">~</span><span class="st"> </span><span class="kw">s</span>(times), <span class="dt">data =</span> mcycle)</span>
+<span id="cb363-2"><a href="elm.html#cb363-2"></a><span class="kw">summary</span>(gam_<span class="dv">2</span>)<span class="op">$</span>r.sq</span></code></pre></div>
+<pre><code>[1] 0.7832988</code></pre>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="elm.html#cb365-1"></a>mcycle <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb365-2"><a href="elm.html#cb365-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(times, accel)) <span class="op">+</span></span>
+<span id="cb365-3"><a href="elm.html#cb365-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.5</span>) <span class="op">+</span></span>
+<span id="cb365-4"><a href="elm.html#cb365-4"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">y =</span> elm_<span class="dv">2</span><span class="op">$</span>fit), <span class="dt">color =</span> <span class="st">&#39;#1e90ff&#39;</span>) <span class="op">+</span></span>
+<span id="cb365-5"><a href="elm.html#cb365-5"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">fitted</span>(gam_<span class="dv">2</span>)), <span class="dt">color =</span> <span class="st">&#39;darkred&#39;</span>)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/elm-compare2-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="supplemental-example-1" class="section level2">
+<h2>Supplemental Example</h2>
+<p>Yet another example with additional covariates.</p>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="elm.html#cb366-1"></a>d =<span class="st"> </span><span class="kw">gamSim</span>(<span class="dt">eg =</span> <span class="dv">7</span>, <span class="dt">n =</span> <span class="dv">10000</span>)</span></code></pre></div>
+<pre><code>Gu &amp; Wahba 4 term additive model, correlated predictors</code></pre>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="elm.html#cb368-1"></a>X =<span class="st"> </span><span class="kw">as.matrix</span>(d[, <span class="dv">2</span><span class="op">:</span><span class="dv">5</span>])</span>
+<span id="cb368-2"><a href="elm.html#cb368-2"></a>y =<span class="st"> </span>d[, <span class="dv">1</span>]</span>
+<span id="cb368-3"><a href="elm.html#cb368-3"></a></span>
+<span id="cb368-4"><a href="elm.html#cb368-4"></a>n_nodes =<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">100</span>, <span class="dv">250</span>, <span class="dv">500</span>, <span class="dv">1000</span>)</span></code></pre></div>
+<p>The following estimation over multiple models will take several seconds.</p>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="elm.html#cb369-1"></a>elm_<span class="dv">3</span> =<span class="st"> </span><span class="kw">map</span>(n_nodes, <span class="cf">function</span>(n) <span class="kw">elm</span>(X, y, <span class="dt">n_hidden =</span> n))</span></code></pre></div>
+<p>Now find the best fitting model.</p>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="elm.html#cb370-1"></a><span class="co"># estimate </span></span>
+<span id="cb370-2"><a href="elm.html#cb370-2"></a>final_n =<span class="st"> </span><span class="kw">which.min</span>(<span class="kw">map_dbl</span>(elm_<span class="dv">3</span>, <span class="cf">function</span>(x) x<span class="op">$</span>loss))</span>
+<span id="cb370-3"><a href="elm.html#cb370-3"></a>best =<span class="st"> </span>elm_<span class="dv">3</span>[[final_n]]</span></code></pre></div>
+<p>A quick check of the fit.</p>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="elm.html#cb371-1"></a><span class="co"># str(best)</span></span>
+<span id="cb371-2"><a href="elm.html#cb371-2"></a><span class="co"># qplot(best$fit[, 1], y, alpha = .2)</span></span>
+<span id="cb371-3"><a href="elm.html#cb371-3"></a><span class="kw">cor</span>(best<span class="op">$</span>fit[, <span class="dv">1</span>], y)<span class="op">^</span><span class="dv">2</span></span></code></pre></div>
+<pre><code>[1] 0.7241967</code></pre>
+<p>And compare again to <span class="pack" style="">mgcv</span>. In this case, we’re comparing fit on test data of the same form.</p>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="elm.html#cb373-1"></a>gam_<span class="dv">3</span> =<span class="st"> </span><span class="kw">gam</span>(y <span class="op">~</span><span class="st"> </span><span class="kw">s</span>(x0) <span class="op">+</span><span class="st"> </span><span class="kw">s</span>(x1) <span class="op">+</span><span class="st"> </span><span class="kw">s</span>(x2) <span class="op">+</span><span class="st"> </span><span class="kw">s</span>(x3), <span class="dt">data =</span> d)</span>
+<span id="cb373-2"><a href="elm.html#cb373-2"></a><span class="kw">gam.check</span>(gam_<span class="dv">3</span>)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/elm-compare3-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<pre><code>
+Method: GCV   Optimizer: magic
+Smoothing parameter selection converged after 15 iterations.
+The RMS GCV score gradient at convergence was 9.309879e-07 .
+The Hessian was positive definite.
+Model rank =  37 / 37 
+
+Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+indicate that k is too low, especially if edf is close to k&#39;.
+
+        k&#39;  edf k-index p-value
+s(x0) 9.00 4.71    1.00    0.48
+s(x1) 9.00 4.89    1.00    0.35
+s(x2) 9.00 8.96    0.99    0.20
+s(x3) 9.00 1.00    1.00    0.47</code></pre>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="elm.html#cb375-1"></a><span class="kw">summary</span>(gam_<span class="dv">3</span>)<span class="op">$</span>r.sq</span></code></pre></div>
+<pre><code>[1] 0.6952978</code></pre>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="elm.html#cb377-1"></a>test_data0 =<span class="st"> </span><span class="kw">gamSim</span>(<span class="dt">eg =</span> <span class="dv">7</span>)  <span class="co"># default n = 400</span></span></code></pre></div>
+<pre><code>Gu &amp; Wahba 4 term additive model, correlated predictors</code></pre>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="elm.html#cb379-1"></a>test_data  =<span class="st">  </span><span class="kw">cbind</span>(<span class="dv">1</span>, <span class="kw">scale</span>(test_data0[,<span class="dv">2</span><span class="op">:</span><span class="dv">5</span>]))</span>
+<span id="cb379-2"><a href="elm.html#cb379-2"></a></span>
+<span id="cb379-3"><a href="elm.html#cb379-3"></a> <span class="co"># remember to use your specific activation function here</span></span>
+<span id="cb379-4"><a href="elm.html#cb379-4"></a>elm_prediction =<span class="st"> </span><span class="kw">tanh</span>(test_data <span class="op">%*%</span><span class="st"> </span>best<span class="op">$</span>w0) <span class="op">%*%</span><span class="st"> </span>best<span class="op">$</span>B         </span>
+<span id="cb379-5"><a href="elm.html#cb379-5"></a>gam_prediction =<span class="st"> </span><span class="kw">predict</span>(gam_<span class="dv">3</span>, <span class="dt">newdata =</span> test_data0)</span>
+<span id="cb379-6"><a href="elm.html#cb379-6"></a></span>
+<span id="cb379-7"><a href="elm.html#cb379-7"></a><span class="kw">cor</span>(<span class="kw">data.frame</span>(elm_prediction, gam_prediction), test_data0<span class="op">$</span>y)<span class="op">^</span><span class="dv">2</span></span></code></pre></div>
+<pre><code>                    [,1]
+elm_prediction 0.6873090
+gam_prediction 0.7185687</code></pre>
+</div>
+<div id="source-20" class="section level2">
+<h2>Source</h2>
+<p>Original code available at:
+<a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/elm.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/elm.R</a></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="gaussian-process.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="rkhs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["twitter", "facebook", "linkedin", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/m-clark/models-by-example/blob/master/elm.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"depth": 2,
+"scroll_highlight": true
+},
+"df_print": "kable",
+"highlight": "pygments",
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

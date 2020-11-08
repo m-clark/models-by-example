@@ -37,7 +37,7 @@ n_test  = length(X_test)
 The mean function. In this case the mean equals 0.
 
 ```{r gp-mean-func}
-gp_mu = function(x) {
+gp_mu <- function(x) {
   map_dbl(x, function(x) x = 0)
 }
 ```
@@ -45,7 +45,7 @@ gp_mu = function(x) {
 The covariance function. Here it is the squared exponential kernel. `l` is the horizontal scale, `sigma_f` is the vertical scale.  
 
 ```{r gp-cov-func}
-gp_K = function(x, l = 1, sigma_f = 1){
+gp_K <- function(x, l = 1, sigma_f = 1){
   sigma_f * exp( -(1/(2 * l^2)) * as.matrix(dist(x, upper = TRUE, diag = TRUE) ^ 2) )
 }
 ```
@@ -194,7 +194,7 @@ n_test = length(X_test)
 The mean function. In this case the mean equals 0.
 
 ```{r gp-noise-mean-func}
-gp_mu = function(x) {
+gp_mu <- function(x) {
   map_dbl(x, function(x) x = 0)
 }
 ```
@@ -202,7 +202,7 @@ gp_mu = function(x) {
 The covariance function. here it is the squared exponential kernel. `l` is the horizontal scale, `sigma_f` is the vertical scale, and, unlike the previous function, `sigma_n` the noise.
 
 ```{r gp-noise-cov-func}
-gp_K = function(
+gp_K <- function(
   x,
   y = NULL,
   l = 1,

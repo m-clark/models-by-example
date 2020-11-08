@@ -7,7 +7,7 @@ Specifically, Chapter 11, section 4.
 ### Function
 
 ```{r em_mixture-mv}
-em_mixture = function(
+em_mixture <- function(
   params,
   X,
   clusters = 2,
@@ -180,13 +180,10 @@ ggplot(aes(x = eruptions, y = waiting), data = faithful) +
 
 #### Comparison
 
-Compare to <span class="pack" style = "">mclust</span> results.
+Compare to <span class="pack" style = "">mclust</span> results. Options are set to be more similar to the settings demonstrated.
 
-```{r mixmv-compare1}
-library(mclust)
-
-# options are set to be more similar
-mix_mclust = Mclust(
+```{r mixmv-compare1} 
+mix_mclust = mclust::Mclust(
   faithful[, 1:2],
   2,
   modelNames = 'VVV',
@@ -281,7 +278,7 @@ table(mix_mclust_iris$cluster, iris$Species)
 Compare to mclust results.
 
 ```{r mixmv-compare2}
-mclust_iris = Mclust(iris[,1:4], 3)
+mclust_iris = mclust::Mclust(iris[,1:4], 3)
 table(mclust_iris$classification, iris$Species)
 ```
 

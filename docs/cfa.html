@@ -23,15 +23,14 @@
 
 
 
-<meta name="date" content="2020-11-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="gaussian-process.html"/>
-<link rel="next" href="penalized-maximum-likelihood.html"/>
+<link rel="prev" href="rkhs.html"/>
+<link rel="next" href="bayes-non-parametric.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -53,6 +52,13 @@
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
@@ -370,56 +376,95 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
+<ul>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#data-setup-20"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#function-18"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#estimation-16"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#comparison-20"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#supplemental-example-1"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html"><i class="fa fa-check"></i>Reproducing Kernel Hilbert Space Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-21"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-5"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#function-to-find-the-inverse-of-a-matrix"><i class="fa fa-check"></i>Function to find the inverse of a matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#reproducing-kernel"><i class="fa fa-check"></i>Reproducing Kernel</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#gram-matrix"><i class="fa fa-check"></i>Gram matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#ridge-regression"><i class="fa fa-check"></i>Ridge regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-17"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#example-cubic-spline"><i class="fa fa-check"></i>Example: Cubic Spline</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-22"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-6"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-18"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#source-21"><i class="fa fa-check"></i>Source</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#current-supplemental-code"><i class="fa fa-check"></i>Current Supplemental Code</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#original-supplemental-code"><i class="fa fa-check"></i>Original Supplemental Code</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html"><i class="fa fa-check"></i>Confirmatory Factor Analysis</a>
 <ul>
-<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#data-setup-20"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#functions-5"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-16"><i class="fa fa-check"></i>Estimation</a>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#data-setup-23"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#functions-7"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-19"><i class="fa fa-check"></i>Estimation</a>
 <ul>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#raw"><i class="fa fa-check"></i>Raw</a></li>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#standardized"><i class="fa fa-check"></i>Standardized</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-20"><i class="fa fa-check"></i>Comparison</a>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-23"><i class="fa fa-check"></i>Comparison</a>
 <ul>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#mplus"><i class="fa fa-check"></i>Mplus</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#source-22"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html"><i class="fa fa-check"></i>Bayesian Nonparametric Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
+<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
 </ul></li>
 <li class="part"><span><b>Algorithms</b></span></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
 <ul>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-21"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-6"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-17"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-21"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-8"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-23"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
 <ul>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-22"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-7"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-18"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-22"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-25"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-9"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-21"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-24"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
 <ul>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-23"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#functions-8"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-19"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-23"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-23"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#functions-10"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-25"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
 <ul>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-9"><i class="fa fa-check"></i>Functions</a>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-11"><i class="fa fa-check"></i>Functions</a>
 <ul>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s Method</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-24"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-26"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
 <ul>
@@ -432,84 +477,84 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example Function</a></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-25"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-27"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
 <ul>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-18"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-26"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-29"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-19"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-28"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
 <ul>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-19"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-21"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-30"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-20"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
 <ul>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-27"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-29"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html"><i class="fa fa-check"></i>Expectation-Maximization</a>
 <ul>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#mixture-model"><i class="fa fa-check"></i>Mixture Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-28"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-20"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-1"><i class="fa fa-check"></i>Supplemental Example</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-28"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-21"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-33"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-2"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-30"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#multivariate-mixture-model"><i class="fa fa-check"></i>Multivariate Mixture Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-21"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-22"><i class="fa fa-check"></i>Function</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-1-old-faithful-eruptions"><i class="fa fa-check"></i>Example 1: Old Faithful eruptions</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-2-iris-data-set"><i class="fa fa-check"></i>Example 2: Iris data set</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-29"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-31"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-model"><i class="fa fa-check"></i>Probit Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-34"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-via-maximum-likelihood"><i class="fa fa-check"></i>Probit via Maximum Likelihood</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#em-for-latent-variable-approach-to-probit"><i class="fa fa-check"></i>EM for Latent Variable Approach to Probit</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-30"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-32"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#pca"><i class="fa fa-check"></i>PCA</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-32"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-24"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-28"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-35"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-25"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-2"><i class="fa fa-check"></i>Visualize</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-31"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-33"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#probabilistic-pca"><i class="fa fa-check"></i>Probabilistic PCA</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-33"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-25"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-29"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-36"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-36"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-26"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-32"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-39"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-3"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#missing-data-example"><i class="fa fa-check"></i>Missing Data Example</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-32"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-34"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#state-space-model"><i class="fa fa-check"></i>State Space Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-27"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-38"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-28"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-34"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization"><i class="fa fa-check"></i>Visualization</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-33"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-35"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 </ul></li>
 <li class="part"><span><b>Other</b></span></li>
@@ -563,35 +608,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="confirmatory-factor-analysis" class="section level1">
 <h1>Confirmatory Factor Analysis</h1>
 <p>This mostly follows Bollen (1989) for maximum likelihood estimation of a confirmatory factor analysis. In the following example we will examine a situation where there are two underlying (correlated) latent variables for 8 observed responses. The code as is will only work with this toy data set. Setup uses the <span class="pack" style="">psych</span> and <span class="pack" style="">mvtnorm</span> packages, and results are checked against the <span class="pack" style="">lavaan</span> package.</p>
-<div id="data-setup-20" class="section level2">
+<div id="data-setup-23" class="section level2">
 <h2>Data Setup</h2>
-<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="cfa.html#cb350-1"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb350-2"><a href="cfa.html#cb350-2"></a><span class="kw">library</span>(mvtnorm)</span>
-<span id="cb350-3"><a href="cfa.html#cb350-3"></a><span class="kw">library</span>(psych)</span>
-<span id="cb350-4"><a href="cfa.html#cb350-4"></a></span>
-<span id="cb350-5"><a href="cfa.html#cb350-5"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb350-6"><a href="cfa.html#cb350-6"></a></span>
-<span id="cb350-7"><a href="cfa.html#cb350-7"></a><span class="co"># loading matrix</span></span>
-<span id="cb350-8"><a href="cfa.html#cb350-8"></a>lambda =<span class="st"> </span><span class="kw">matrix</span>(</span>
-<span id="cb350-9"><a href="cfa.html#cb350-9"></a>  <span class="kw">c</span>(<span class="dv">1</span>,.<span class="dv">5</span>,.<span class="dv">3</span>,.<span class="dv">6</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
-<span id="cb350-10"><a href="cfa.html#cb350-10"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,.<span class="dv">7</span>,.<span class="dv">4</span>,.<span class="dv">5</span>),</span>
-<span id="cb350-11"><a href="cfa.html#cb350-11"></a>  <span class="dt">nrow =</span> <span class="dv">2</span>, </span>
-<span id="cb350-12"><a href="cfa.html#cb350-12"></a>  <span class="dt">byrow =</span> <span class="ot">TRUE</span></span>
-<span id="cb350-13"><a href="cfa.html#cb350-13"></a>)</span>
-<span id="cb350-14"><a href="cfa.html#cb350-14"></a></span>
-<span id="cb350-15"><a href="cfa.html#cb350-15"></a><span class="co"># correlation of factors</span></span>
-<span id="cb350-16"><a href="cfa.html#cb350-16"></a>phi =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">.25</span>, <span class="fl">.25</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)  </span>
-<span id="cb350-17"><a href="cfa.html#cb350-17"></a></span>
-<span id="cb350-18"><a href="cfa.html#cb350-18"></a><span class="co"># factors and some noise</span></span>
-<span id="cb350-19"><a href="cfa.html#cb350-19"></a>factors =<span class="st"> </span><span class="kw">rmvnorm</span>(<span class="dv">1000</span>, <span class="dt">mean =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="dt">sigma =</span> phi, <span class="st">&quot;chol&quot;</span>)</span>
-<span id="cb350-20"><a href="cfa.html#cb350-20"></a>e =<span class="st"> </span><span class="kw">rmvnorm</span>(<span class="dv">1000</span>, <span class="dt">sigma =</span> <span class="kw">diag</span>(<span class="dv">8</span>))</span>
-<span id="cb350-21"><a href="cfa.html#cb350-21"></a></span>
-<span id="cb350-22"><a href="cfa.html#cb350-22"></a><span class="co"># observed responses</span></span>
-<span id="cb350-23"><a href="cfa.html#cb350-23"></a>y =<span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>factors<span class="op">%*%</span>lambda <span class="op">+</span><span class="st"> </span>e</span>
-<span id="cb350-24"><a href="cfa.html#cb350-24"></a></span>
-<span id="cb350-25"><a href="cfa.html#cb350-25"></a><span class="co"># Examine</span></span>
-<span id="cb350-26"><a href="cfa.html#cb350-26"></a><span class="co">#dim(y)</span></span>
-<span id="cb350-27"><a href="cfa.html#cb350-27"></a><span class="kw">describe</span>(y)</span></code></pre></div>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="cfa.html#cb401-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb401-2"><a href="cfa.html#cb401-2"></a><span class="kw">library</span>(mvtnorm)</span>
+<span id="cb401-3"><a href="cfa.html#cb401-3"></a><span class="kw">library</span>(psych)</span>
+<span id="cb401-4"><a href="cfa.html#cb401-4"></a></span>
+<span id="cb401-5"><a href="cfa.html#cb401-5"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb401-6"><a href="cfa.html#cb401-6"></a></span>
+<span id="cb401-7"><a href="cfa.html#cb401-7"></a><span class="co"># loading matrix</span></span>
+<span id="cb401-8"><a href="cfa.html#cb401-8"></a>lambda =<span class="st"> </span><span class="kw">matrix</span>(</span>
+<span id="cb401-9"><a href="cfa.html#cb401-9"></a>  <span class="kw">c</span>(<span class="dv">1</span>,.<span class="dv">5</span>,.<span class="dv">3</span>,.<span class="dv">6</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb401-10"><a href="cfa.html#cb401-10"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,.<span class="dv">7</span>,.<span class="dv">4</span>,.<span class="dv">5</span>),</span>
+<span id="cb401-11"><a href="cfa.html#cb401-11"></a>  <span class="dt">nrow =</span> <span class="dv">2</span>, </span>
+<span id="cb401-12"><a href="cfa.html#cb401-12"></a>  <span class="dt">byrow =</span> <span class="ot">TRUE</span></span>
+<span id="cb401-13"><a href="cfa.html#cb401-13"></a>)</span>
+<span id="cb401-14"><a href="cfa.html#cb401-14"></a></span>
+<span id="cb401-15"><a href="cfa.html#cb401-15"></a><span class="co"># correlation of factors</span></span>
+<span id="cb401-16"><a href="cfa.html#cb401-16"></a>phi =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">.25</span>, <span class="fl">.25</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)  </span>
+<span id="cb401-17"><a href="cfa.html#cb401-17"></a></span>
+<span id="cb401-18"><a href="cfa.html#cb401-18"></a><span class="co"># factors and some noise</span></span>
+<span id="cb401-19"><a href="cfa.html#cb401-19"></a>factors =<span class="st"> </span><span class="kw">rmvnorm</span>(<span class="dv">1000</span>, <span class="dt">mean =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="dt">sigma =</span> phi, <span class="st">&quot;chol&quot;</span>)</span>
+<span id="cb401-20"><a href="cfa.html#cb401-20"></a>e =<span class="st"> </span><span class="kw">rmvnorm</span>(<span class="dv">1000</span>, <span class="dt">sigma =</span> <span class="kw">diag</span>(<span class="dv">8</span>))</span>
+<span id="cb401-21"><a href="cfa.html#cb401-21"></a></span>
+<span id="cb401-22"><a href="cfa.html#cb401-22"></a><span class="co"># observed responses</span></span>
+<span id="cb401-23"><a href="cfa.html#cb401-23"></a>y =<span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>factors<span class="op">%*%</span>lambda <span class="op">+</span><span class="st"> </span>e</span>
+<span id="cb401-24"><a href="cfa.html#cb401-24"></a></span>
+<span id="cb401-25"><a href="cfa.html#cb401-25"></a><span class="co"># Examine</span></span>
+<span id="cb401-26"><a href="cfa.html#cb401-26"></a><span class="co">#dim(y)</span></span>
+<span id="cb401-27"><a href="cfa.html#cb401-27"></a><span class="kw">describe</span>(y)</span></code></pre></div>
 <pre><code>   vars    n  mean   sd median trimmed  mad   min  max range  skew kurtosis   se
 X1    1 1000  0.05 1.44   0.05    0.05 1.42 -5.13 4.51  9.63  0.00     0.01 0.05
 X2    2 1000  0.00 1.08  -0.01    0.00 1.04 -3.34 3.25  6.59  0.00    -0.06 0.03
@@ -601,7 +646,7 @@ X5    5 1000  0.04 1.43   0.10    0.05 1.39 -4.43 5.21  9.63 -0.02     0.07 0.05
 X6    6 1000 -0.02 1.22  -0.01   -0.02 1.27 -3.35 4.68  8.03  0.04    -0.10 0.04
 X7    7 1000  0.02 1.06   0.01    0.01 1.05 -2.94 3.33  6.28  0.11    -0.09 0.03
 X8    8 1000  0.00 1.14  -0.01    0.01 1.12 -3.27 3.47  6.73 -0.05     0.07 0.04</code></pre>
-<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="cfa.html#cb352-1"></a><span class="kw">round</span>(<span class="kw">cor</span>(y), <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb403-1"><a href="cfa.html#cb403-1"></a><span class="kw">round</span>(<span class="kw">cor</span>(y), <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>      [,1]   [,2]  [,3]  [,4]   [,5]  [,6]  [,7]  [,8]
 [1,] 1.000  0.291 0.233 0.352  0.104 0.078 0.049 0.050
 [2,] 0.291  1.000 0.145 0.228 -0.008 0.031 0.054 0.072
@@ -611,164 +656,164 @@ X8    8 1000  0.00 1.14  -0.01    0.01 1.12 -3.27 3.47  6.73 -0.05     0.07 0.04
 [6,] 0.078  0.031 0.066 0.057  0.417 1.000 0.201 0.273
 [7,] 0.049  0.054 0.026 0.054  0.259 0.201 1.000 0.142
 [8,] 0.050  0.072 0.079 0.079  0.300 0.273 0.142 1.000</code></pre>
-<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="cfa.html#cb354-1"></a><span class="co">#see the factor structure</span></span>
-<span id="cb354-2"><a href="cfa.html#cb354-2"></a><span class="kw">cor.plot</span>(<span class="kw">cor</span>(y))</span></code></pre></div>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="cfa.html#cb405-1"></a><span class="co">#see the factor structure</span></span>
+<span id="cb405-2"><a href="cfa.html#cb405-2"></a><span class="kw">cor.plot</span>(<span class="kw">cor</span>(y))</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/cfa-setup-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="cfa.html#cb355-1"></a><span class="co"># example exploratory fa</span></span>
-<span id="cb355-2"><a href="cfa.html#cb355-2"></a><span class="co">#fa(y, nfactors=2, rotate=&quot;oblimin&quot;) </span></span></code></pre></div>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="cfa.html#cb406-1"></a><span class="co"># example exploratory fa</span></span>
+<span id="cb406-2"><a href="cfa.html#cb406-2"></a><span class="co">#fa(y, nfactors=2, rotate=&quot;oblimin&quot;) </span></span></code></pre></div>
 </div>
-<div id="functions-5" class="section level2">
+<div id="functions-7" class="section level2">
 <h2>Functions</h2>
-<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb356-1"><a href="cfa.html#cb356-1"></a><span class="co"># measurement model, covariance approach</span></span>
-<span id="cb356-2"><a href="cfa.html#cb356-2"></a>cfa_cov &lt;-<span class="st"> </span><span class="cf">function</span> (parms, data) {</span>
-<span id="cb356-3"><a href="cfa.html#cb356-3"></a>  <span class="co"># Arguments- </span></span>
-<span id="cb356-4"><a href="cfa.html#cb356-4"></a>  <span class="co"># parms: initial values (named)</span></span>
-<span id="cb356-5"><a href="cfa.html#cb356-5"></a>  <span class="co"># data: raw data</span></span>
-<span id="cb356-6"><a href="cfa.html#cb356-6"></a>  </span>
-<span id="cb356-7"><a href="cfa.html#cb356-7"></a>  <span class="co"># Extract parameters by name</span></span>
-<span id="cb356-8"><a href="cfa.html#cb356-8"></a>  </span>
-<span id="cb356-9"><a href="cfa.html#cb356-9"></a>  <span class="kw">require</span>(psych) <span class="co"># for tr</span></span>
-<span id="cb356-10"><a href="cfa.html#cb356-10"></a>  </span>
-<span id="cb356-11"><a href="cfa.html#cb356-11"></a>  l1 =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, parms[<span class="kw">grep</span>(<span class="st">&#39;l1&#39;</span>, <span class="kw">names</span>(parms))])      <span class="co"># loadings for factor 1</span></span>
-<span id="cb356-12"><a href="cfa.html#cb356-12"></a>  l2 =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, parms[<span class="kw">grep</span>(<span class="st">&#39;l2&#39;</span>, <span class="kw">names</span>(parms))])      <span class="co"># loadings for factor 2</span></span>
-<span id="cb356-13"><a href="cfa.html#cb356-13"></a>  cov0 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;cov&#39;</span>, <span class="kw">names</span>(parms))]         <span class="co"># factor covariance, variances</span></span>
-<span id="cb356-14"><a href="cfa.html#cb356-14"></a>  </span>
-<span id="cb356-15"><a href="cfa.html#cb356-15"></a>  <span class="co"># Covariance matrix</span></span>
-<span id="cb356-16"><a href="cfa.html#cb356-16"></a>  S =<span class="st"> </span><span class="kw">cov</span>(data)<span class="op">*</span>((<span class="kw">nrow</span>(data)<span class="op">-</span><span class="dv">1</span>)<span class="op">/</span><span class="kw">nrow</span>(data))       <span class="co"># ML covariance div by N rather than N-1, the multiplier adjusts</span></span>
-<span id="cb356-17"><a href="cfa.html#cb356-17"></a>  </span>
-<span id="cb356-18"><a href="cfa.html#cb356-18"></a>  <span class="co"># loading estimates</span></span>
-<span id="cb356-19"><a href="cfa.html#cb356-19"></a>  lambda =<span class="st"> </span><span class="kw">cbind</span>(</span>
-<span id="cb356-20"><a href="cfa.html#cb356-20"></a>    <span class="kw">c</span>(l1, <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l2))),</span>
-<span id="cb356-21"><a href="cfa.html#cb356-21"></a>    <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l1)), l2)</span>
-<span id="cb356-22"><a href="cfa.html#cb356-22"></a>  )</span>
-<span id="cb356-23"><a href="cfa.html#cb356-23"></a>  </span>
-<span id="cb356-24"><a href="cfa.html#cb356-24"></a>  <span class="co"># disturbances</span></span>
-<span id="cb356-25"><a href="cfa.html#cb356-25"></a>  dist_init =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;dist&#39;</span>, <span class="kw">names</span>(parms))]    </span>
-<span id="cb356-26"><a href="cfa.html#cb356-26"></a>  disturbs  =<span class="st"> </span><span class="kw">diag</span>(dist_init)</span>
-<span id="cb356-27"><a href="cfa.html#cb356-27"></a>  </span>
-<span id="cb356-28"><a href="cfa.html#cb356-28"></a>  <span class="co"># factor correlation</span></span>
-<span id="cb356-29"><a href="cfa.html#cb356-29"></a>  phi_init =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(cov0[<span class="dv">1</span>], cov0[<span class="dv">2</span>], cov0[<span class="dv">2</span>], cov0[<span class="dv">3</span>]), <span class="dv">2</span>, <span class="dv">2</span>)  <span class="co">#factor cov/correlation matrix</span></span>
-<span id="cb356-30"><a href="cfa.html#cb356-30"></a>  </span>
-<span id="cb356-31"><a href="cfa.html#cb356-31"></a>  <span class="co"># other calculations and log likelihood</span></span>
-<span id="cb356-32"><a href="cfa.html#cb356-32"></a>  sigtheta =<span class="st"> </span>lambda<span class="op">%*%</span>phi_init<span class="op">%*%</span><span class="kw">t</span>(lambda) <span class="op">+</span><span class="st"> </span>disturbs</span>
-<span id="cb356-33"><a href="cfa.html#cb356-33"></a>  </span>
-<span id="cb356-34"><a href="cfa.html#cb356-34"></a>  <span class="co"># in Bollen p + q (but for the purposes of this just p) = tr(data)</span></span>
-<span id="cb356-35"><a href="cfa.html#cb356-35"></a>  pq =<span class="st"> </span><span class="kw">dim</span>(data)[<span class="dv">2</span>] </span>
-<span id="cb356-36"><a href="cfa.html#cb356-36"></a>  </span>
-<span id="cb356-37"><a href="cfa.html#cb356-37"></a>  <span class="co"># a reduced version; Bollen 1989 p.107</span></span>
-<span id="cb356-38"><a href="cfa.html#cb356-38"></a>  <span class="co"># ll = -(log(det(sigtheta)) + tr(S%*%solve(sigtheta)) - log(det(S)) - pq) </span></span>
-<span id="cb356-39"><a href="cfa.html#cb356-39"></a>  </span>
-<span id="cb356-40"><a href="cfa.html#cb356-40"></a>  <span class="co"># should be same as Mplus H0 loglike</span></span>
-<span id="cb356-41"><a href="cfa.html#cb356-41"></a>  ll =<span class="st"> </span>( (<span class="op">-</span><span class="kw">nrow</span>(data)<span class="op">*</span>pq<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) ) <span class="op">-</span><span class="st"> </span></span>
-<span id="cb356-42"><a href="cfa.html#cb356-42"></a><span class="st">    </span>(<span class="kw">nrow</span>(data)<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>( <span class="kw">log</span>(<span class="kw">det</span>(sigtheta)) <span class="op">+</span><span class="st"> </span><span class="kw">tr</span>(S<span class="op">%*%</span><span class="kw">solve</span>(sigtheta)) )</span>
-<span id="cb356-43"><a href="cfa.html#cb356-43"></a>  </span>
-<span id="cb356-44"><a href="cfa.html#cb356-44"></a>  ll</span>
-<span id="cb356-45"><a href="cfa.html#cb356-45"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="cfa.html#cb407-1"></a><span class="co"># measurement model, covariance approach</span></span>
+<span id="cb407-2"><a href="cfa.html#cb407-2"></a>cfa_cov &lt;-<span class="st"> </span><span class="cf">function</span> (parms, data) {</span>
+<span id="cb407-3"><a href="cfa.html#cb407-3"></a>  <span class="co"># Arguments- </span></span>
+<span id="cb407-4"><a href="cfa.html#cb407-4"></a>  <span class="co"># parms: initial values (named)</span></span>
+<span id="cb407-5"><a href="cfa.html#cb407-5"></a>  <span class="co"># data: raw data</span></span>
+<span id="cb407-6"><a href="cfa.html#cb407-6"></a>  </span>
+<span id="cb407-7"><a href="cfa.html#cb407-7"></a>  <span class="co"># Extract parameters by name</span></span>
+<span id="cb407-8"><a href="cfa.html#cb407-8"></a>  </span>
+<span id="cb407-9"><a href="cfa.html#cb407-9"></a>  <span class="kw">require</span>(psych) <span class="co"># for tr</span></span>
+<span id="cb407-10"><a href="cfa.html#cb407-10"></a>  </span>
+<span id="cb407-11"><a href="cfa.html#cb407-11"></a>  l1 =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, parms[<span class="kw">grep</span>(<span class="st">&#39;l1&#39;</span>, <span class="kw">names</span>(parms))])      <span class="co"># loadings for factor 1</span></span>
+<span id="cb407-12"><a href="cfa.html#cb407-12"></a>  l2 =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, parms[<span class="kw">grep</span>(<span class="st">&#39;l2&#39;</span>, <span class="kw">names</span>(parms))])      <span class="co"># loadings for factor 2</span></span>
+<span id="cb407-13"><a href="cfa.html#cb407-13"></a>  cov0 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;cov&#39;</span>, <span class="kw">names</span>(parms))]         <span class="co"># factor covariance, variances</span></span>
+<span id="cb407-14"><a href="cfa.html#cb407-14"></a>  </span>
+<span id="cb407-15"><a href="cfa.html#cb407-15"></a>  <span class="co"># Covariance matrix</span></span>
+<span id="cb407-16"><a href="cfa.html#cb407-16"></a>  S =<span class="st"> </span><span class="kw">cov</span>(data)<span class="op">*</span>((<span class="kw">nrow</span>(data)<span class="op">-</span><span class="dv">1</span>)<span class="op">/</span><span class="kw">nrow</span>(data))       <span class="co"># ML covariance div by N rather than N-1, the multiplier adjusts</span></span>
+<span id="cb407-17"><a href="cfa.html#cb407-17"></a>  </span>
+<span id="cb407-18"><a href="cfa.html#cb407-18"></a>  <span class="co"># loading estimates</span></span>
+<span id="cb407-19"><a href="cfa.html#cb407-19"></a>  lambda =<span class="st"> </span><span class="kw">cbind</span>(</span>
+<span id="cb407-20"><a href="cfa.html#cb407-20"></a>    <span class="kw">c</span>(l1, <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l2))),</span>
+<span id="cb407-21"><a href="cfa.html#cb407-21"></a>    <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l1)), l2)</span>
+<span id="cb407-22"><a href="cfa.html#cb407-22"></a>  )</span>
+<span id="cb407-23"><a href="cfa.html#cb407-23"></a>  </span>
+<span id="cb407-24"><a href="cfa.html#cb407-24"></a>  <span class="co"># disturbances</span></span>
+<span id="cb407-25"><a href="cfa.html#cb407-25"></a>  dist_init =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;dist&#39;</span>, <span class="kw">names</span>(parms))]    </span>
+<span id="cb407-26"><a href="cfa.html#cb407-26"></a>  disturbs  =<span class="st"> </span><span class="kw">diag</span>(dist_init)</span>
+<span id="cb407-27"><a href="cfa.html#cb407-27"></a>  </span>
+<span id="cb407-28"><a href="cfa.html#cb407-28"></a>  <span class="co"># factor correlation</span></span>
+<span id="cb407-29"><a href="cfa.html#cb407-29"></a>  phi_init =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(cov0[<span class="dv">1</span>], cov0[<span class="dv">2</span>], cov0[<span class="dv">2</span>], cov0[<span class="dv">3</span>]), <span class="dv">2</span>, <span class="dv">2</span>)  <span class="co">#factor cov/correlation matrix</span></span>
+<span id="cb407-30"><a href="cfa.html#cb407-30"></a>  </span>
+<span id="cb407-31"><a href="cfa.html#cb407-31"></a>  <span class="co"># other calculations and log likelihood</span></span>
+<span id="cb407-32"><a href="cfa.html#cb407-32"></a>  sigtheta =<span class="st"> </span>lambda<span class="op">%*%</span>phi_init<span class="op">%*%</span><span class="kw">t</span>(lambda) <span class="op">+</span><span class="st"> </span>disturbs</span>
+<span id="cb407-33"><a href="cfa.html#cb407-33"></a>  </span>
+<span id="cb407-34"><a href="cfa.html#cb407-34"></a>  <span class="co"># in Bollen p + q (but for the purposes of this just p) = tr(data)</span></span>
+<span id="cb407-35"><a href="cfa.html#cb407-35"></a>  pq =<span class="st"> </span><span class="kw">dim</span>(data)[<span class="dv">2</span>] </span>
+<span id="cb407-36"><a href="cfa.html#cb407-36"></a>  </span>
+<span id="cb407-37"><a href="cfa.html#cb407-37"></a>  <span class="co"># a reduced version; Bollen 1989 p.107</span></span>
+<span id="cb407-38"><a href="cfa.html#cb407-38"></a>  <span class="co"># ll = -(log(det(sigtheta)) + tr(S%*%solve(sigtheta)) - log(det(S)) - pq) </span></span>
+<span id="cb407-39"><a href="cfa.html#cb407-39"></a>  </span>
+<span id="cb407-40"><a href="cfa.html#cb407-40"></a>  <span class="co"># should be same as Mplus H0 loglike</span></span>
+<span id="cb407-41"><a href="cfa.html#cb407-41"></a>  ll =<span class="st"> </span>( (<span class="op">-</span><span class="kw">nrow</span>(data)<span class="op">*</span>pq<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) ) <span class="op">-</span><span class="st"> </span></span>
+<span id="cb407-42"><a href="cfa.html#cb407-42"></a><span class="st">    </span>(<span class="kw">nrow</span>(data)<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>( <span class="kw">log</span>(<span class="kw">det</span>(sigtheta)) <span class="op">+</span><span class="st"> </span><span class="kw">tr</span>(S<span class="op">%*%</span><span class="kw">solve</span>(sigtheta)) )</span>
+<span id="cb407-43"><a href="cfa.html#cb407-43"></a>  </span>
+<span id="cb407-44"><a href="cfa.html#cb407-44"></a>  ll</span>
+<span id="cb407-45"><a href="cfa.html#cb407-45"></a>}</span></code></pre></div>
 <p>Correlation approach for standardized results. Lines correspond to those in <code>cfa_cov</code>.</p>
-<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="cfa.html#cb357-1"></a>cfa_cor &lt;-<span class="st"> </span><span class="cf">function</span> (parms, data) {</span>
-<span id="cb357-2"><a href="cfa.html#cb357-2"></a>  <span class="kw">require</span>(psych)</span>
-<span id="cb357-3"><a href="cfa.html#cb357-3"></a>  </span>
-<span id="cb357-4"><a href="cfa.html#cb357-4"></a>  l1 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;l1&#39;</span>, <span class="kw">names</span>(parms))]      <span class="co"># loadings for factor 1</span></span>
-<span id="cb357-5"><a href="cfa.html#cb357-5"></a>  l2 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;l2&#39;</span>, <span class="kw">names</span>(parms))]      <span class="co"># loadings for factor 2</span></span>
-<span id="cb357-6"><a href="cfa.html#cb357-6"></a>  cor0 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;cor&#39;</span>, <span class="kw">names</span>(parms))]   <span class="co"># factor correlation</span></span>
-<span id="cb357-7"><a href="cfa.html#cb357-7"></a>  </span>
-<span id="cb357-8"><a href="cfa.html#cb357-8"></a>  S =<span class="st"> </span><span class="kw">cor</span>(data)</span>
-<span id="cb357-9"><a href="cfa.html#cb357-9"></a>  </span>
-<span id="cb357-10"><a href="cfa.html#cb357-10"></a>  lambda =<span class="st"> </span><span class="kw">cbind</span>(</span>
-<span id="cb357-11"><a href="cfa.html#cb357-11"></a>    <span class="kw">c</span>(l1, <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l2))),</span>
-<span id="cb357-12"><a href="cfa.html#cb357-12"></a>    <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l1)), l2)</span>
-<span id="cb357-13"><a href="cfa.html#cb357-13"></a>  )</span>
-<span id="cb357-14"><a href="cfa.html#cb357-14"></a>  </span>
-<span id="cb357-15"><a href="cfa.html#cb357-15"></a>  dist_init =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;dist&#39;</span>, <span class="kw">names</span>(parms))]</span>
-<span id="cb357-16"><a href="cfa.html#cb357-16"></a>  disturbs  =<span class="st"> </span><span class="kw">diag</span>(dist_init)</span>
-<span id="cb357-17"><a href="cfa.html#cb357-17"></a>  </span>
-<span id="cb357-18"><a href="cfa.html#cb357-18"></a>  phi_init =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, cor0, cor0, <span class="dv">1</span>), <span class="dt">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb357-19"><a href="cfa.html#cb357-19"></a>  </span>
-<span id="cb357-20"><a href="cfa.html#cb357-20"></a>  sigtheta =<span class="st"> </span>lambda<span class="op">%*%</span>phi_init<span class="op">%*%</span><span class="kw">t</span>(lambda) <span class="op">+</span><span class="st"> </span>disturbs</span>
-<span id="cb357-21"><a href="cfa.html#cb357-21"></a>  pq =<span class="st"> </span><span class="kw">dim</span>(data)[<span class="dv">2</span>]</span>
-<span id="cb357-22"><a href="cfa.html#cb357-22"></a>  </span>
-<span id="cb357-23"><a href="cfa.html#cb357-23"></a>  <span class="co">#ll = ( log(det(sigtheta)) + tr(S%*%solve(sigtheta)) - log(det(S)) - pq )</span></span>
-<span id="cb357-24"><a href="cfa.html#cb357-24"></a>  </span>
-<span id="cb357-25"><a href="cfa.html#cb357-25"></a>  ll =<span class="st"> </span>( (<span class="op">-</span><span class="kw">nrow</span>(data)<span class="op">*</span>pq<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) ) <span class="op">-</span><span class="st"> </span></span>
-<span id="cb357-26"><a href="cfa.html#cb357-26"></a><span class="st">    </span>(<span class="kw">nrow</span>(data)<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>( <span class="kw">log</span>(<span class="kw">det</span>(sigtheta)) <span class="op">+</span><span class="st"> </span><span class="kw">tr</span>(S<span class="op">%*%</span><span class="kw">solve</span>(sigtheta)) )</span>
-<span id="cb357-27"><a href="cfa.html#cb357-27"></a>  </span>
-<span id="cb357-28"><a href="cfa.html#cb357-28"></a>  ll</span>
-<span id="cb357-29"><a href="cfa.html#cb357-29"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="cfa.html#cb408-1"></a>cfa_cor &lt;-<span class="st"> </span><span class="cf">function</span> (parms, data) {</span>
+<span id="cb408-2"><a href="cfa.html#cb408-2"></a>  <span class="kw">require</span>(psych)</span>
+<span id="cb408-3"><a href="cfa.html#cb408-3"></a>  </span>
+<span id="cb408-4"><a href="cfa.html#cb408-4"></a>  l1 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;l1&#39;</span>, <span class="kw">names</span>(parms))]      <span class="co"># loadings for factor 1</span></span>
+<span id="cb408-5"><a href="cfa.html#cb408-5"></a>  l2 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;l2&#39;</span>, <span class="kw">names</span>(parms))]      <span class="co"># loadings for factor 2</span></span>
+<span id="cb408-6"><a href="cfa.html#cb408-6"></a>  cor0 =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;cor&#39;</span>, <span class="kw">names</span>(parms))]   <span class="co"># factor correlation</span></span>
+<span id="cb408-7"><a href="cfa.html#cb408-7"></a>  </span>
+<span id="cb408-8"><a href="cfa.html#cb408-8"></a>  S =<span class="st"> </span><span class="kw">cor</span>(data)</span>
+<span id="cb408-9"><a href="cfa.html#cb408-9"></a>  </span>
+<span id="cb408-10"><a href="cfa.html#cb408-10"></a>  lambda =<span class="st"> </span><span class="kw">cbind</span>(</span>
+<span id="cb408-11"><a href="cfa.html#cb408-11"></a>    <span class="kw">c</span>(l1, <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l2))),</span>
+<span id="cb408-12"><a href="cfa.html#cb408-12"></a>    <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(l1)), l2)</span>
+<span id="cb408-13"><a href="cfa.html#cb408-13"></a>  )</span>
+<span id="cb408-14"><a href="cfa.html#cb408-14"></a>  </span>
+<span id="cb408-15"><a href="cfa.html#cb408-15"></a>  dist_init =<span class="st"> </span>parms[<span class="kw">grep</span>(<span class="st">&#39;dist&#39;</span>, <span class="kw">names</span>(parms))]</span>
+<span id="cb408-16"><a href="cfa.html#cb408-16"></a>  disturbs  =<span class="st"> </span><span class="kw">diag</span>(dist_init)</span>
+<span id="cb408-17"><a href="cfa.html#cb408-17"></a>  </span>
+<span id="cb408-18"><a href="cfa.html#cb408-18"></a>  phi_init =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, cor0, cor0, <span class="dv">1</span>), <span class="dt">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb408-19"><a href="cfa.html#cb408-19"></a>  </span>
+<span id="cb408-20"><a href="cfa.html#cb408-20"></a>  sigtheta =<span class="st"> </span>lambda<span class="op">%*%</span>phi_init<span class="op">%*%</span><span class="kw">t</span>(lambda) <span class="op">+</span><span class="st"> </span>disturbs</span>
+<span id="cb408-21"><a href="cfa.html#cb408-21"></a>  pq =<span class="st"> </span><span class="kw">dim</span>(data)[<span class="dv">2</span>]</span>
+<span id="cb408-22"><a href="cfa.html#cb408-22"></a>  </span>
+<span id="cb408-23"><a href="cfa.html#cb408-23"></a>  <span class="co">#ll = ( log(det(sigtheta)) + tr(S%*%solve(sigtheta)) - log(det(S)) - pq )</span></span>
+<span id="cb408-24"><a href="cfa.html#cb408-24"></a>  </span>
+<span id="cb408-25"><a href="cfa.html#cb408-25"></a>  ll =<span class="st"> </span>( (<span class="op">-</span><span class="kw">nrow</span>(data)<span class="op">*</span>pq<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">2</span><span class="op">*</span>pi) ) <span class="op">-</span><span class="st"> </span></span>
+<span id="cb408-26"><a href="cfa.html#cb408-26"></a><span class="st">    </span>(<span class="kw">nrow</span>(data)<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>( <span class="kw">log</span>(<span class="kw">det</span>(sigtheta)) <span class="op">+</span><span class="st"> </span><span class="kw">tr</span>(S<span class="op">%*%</span><span class="kw">solve</span>(sigtheta)) )</span>
+<span id="cb408-27"><a href="cfa.html#cb408-27"></a>  </span>
+<span id="cb408-28"><a href="cfa.html#cb408-28"></a>  ll</span>
+<span id="cb408-29"><a href="cfa.html#cb408-29"></a>}</span></code></pre></div>
 </div>
-<div id="estimation-16" class="section level2">
+<div id="estimation-19" class="section level2">
 <h2>Estimation</h2>
 <div id="raw" class="section level3">
 <h3>Raw</h3>
 <p>Set initial values.</p>
-<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="cfa.html#cb358-1"></a>par_init_cov =<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="kw">rep</span>(.<span class="dv">05</span>, <span class="dv">8</span>), <span class="kw">rep</span>(.<span class="dv">5</span>, <span class="dv">3</span>)) </span>
-<span id="cb358-2"><a href="cfa.html#cb358-2"></a><span class="kw">names</span>(par_init_cov) =<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;l1&#39;</span>,<span class="st">&#39;l2&#39;</span>, <span class="st">&#39;dist&#39;</span>, <span class="st">&#39;cov&#39;</span>), <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">3</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb409-1"><a href="cfa.html#cb409-1"></a>par_init_cov =<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="kw">rep</span>(.<span class="dv">05</span>, <span class="dv">8</span>), <span class="kw">rep</span>(.<span class="dv">5</span>, <span class="dv">3</span>)) </span>
+<span id="cb409-2"><a href="cfa.html#cb409-2"></a><span class="kw">names</span>(par_init_cov) =<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;l1&#39;</span>,<span class="st">&#39;l2&#39;</span>, <span class="st">&#39;dist&#39;</span>, <span class="st">&#39;cov&#39;</span>), <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">3</span>))</span></code></pre></div>
 <p>Estimate and extract.</p>
-<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="cfa.html#cb359-1"></a>result_cov =<span class="st"> </span><span class="kw">optim</span>(</span>
-<span id="cb359-2"><a href="cfa.html#cb359-2"></a>  <span class="dt">par  =</span> par_init_cov,</span>
-<span id="cb359-3"><a href="cfa.html#cb359-3"></a>  <span class="dt">fn   =</span> cfa_cov,</span>
-<span id="cb359-4"><a href="cfa.html#cb359-4"></a>  <span class="dt">data =</span> y,</span>
-<span id="cb359-5"><a href="cfa.html#cb359-5"></a>  <span class="dt">method  =</span> <span class="st">&quot;L-BFGS-B&quot;</span>,</span>
-<span id="cb359-6"><a href="cfa.html#cb359-6"></a>  <span class="dt">lower   =</span> <span class="dv">0</span>,</span>
-<span id="cb359-7"><a href="cfa.html#cb359-7"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="dv">-1</span>)</span>
-<span id="cb359-8"><a href="cfa.html#cb359-8"></a>) </span>
-<span id="cb359-9"><a href="cfa.html#cb359-9"></a></span>
-<span id="cb359-10"><a href="cfa.html#cb359-10"></a>loadings_cov =<span class="st"> </span><span class="kw">data.frame</span>(</span>
-<span id="cb359-11"><a href="cfa.html#cb359-11"></a>  <span class="dt">f1 =</span> <span class="kw">c</span>(<span class="dv">1</span>, result_cov<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)),</span>
-<span id="cb359-12"><a href="cfa.html#cb359-12"></a>  <span class="dt">f2 =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="dv">1</span>, result_cov<span class="op">$</span>par[<span class="dv">4</span><span class="op">:</span><span class="dv">6</span>])</span>
-<span id="cb359-13"><a href="cfa.html#cb359-13"></a>)</span>
-<span id="cb359-14"><a href="cfa.html#cb359-14"></a></span>
-<span id="cb359-15"><a href="cfa.html#cb359-15"></a>disturbances_cov =<span class="st"> </span>result_cov<span class="op">$</span>par[<span class="dv">7</span><span class="op">:</span><span class="dv">14</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb410-1"><a href="cfa.html#cb410-1"></a>result_cov =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb410-2"><a href="cfa.html#cb410-2"></a>  <span class="dt">par  =</span> par_init_cov,</span>
+<span id="cb410-3"><a href="cfa.html#cb410-3"></a>  <span class="dt">fn   =</span> cfa_cov,</span>
+<span id="cb410-4"><a href="cfa.html#cb410-4"></a>  <span class="dt">data =</span> y,</span>
+<span id="cb410-5"><a href="cfa.html#cb410-5"></a>  <span class="dt">method  =</span> <span class="st">&quot;L-BFGS-B&quot;</span>,</span>
+<span id="cb410-6"><a href="cfa.html#cb410-6"></a>  <span class="dt">lower   =</span> <span class="dv">0</span>,</span>
+<span id="cb410-7"><a href="cfa.html#cb410-7"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="dv">-1</span>)</span>
+<span id="cb410-8"><a href="cfa.html#cb410-8"></a>) </span>
+<span id="cb410-9"><a href="cfa.html#cb410-9"></a></span>
+<span id="cb410-10"><a href="cfa.html#cb410-10"></a>loadings_cov =<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb410-11"><a href="cfa.html#cb410-11"></a>  <span class="dt">f1 =</span> <span class="kw">c</span>(<span class="dv">1</span>, result_cov<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)),</span>
+<span id="cb410-12"><a href="cfa.html#cb410-12"></a>  <span class="dt">f2 =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="dv">1</span>, result_cov<span class="op">$</span>par[<span class="dv">4</span><span class="op">:</span><span class="dv">6</span>])</span>
+<span id="cb410-13"><a href="cfa.html#cb410-13"></a>)</span>
+<span id="cb410-14"><a href="cfa.html#cb410-14"></a></span>
+<span id="cb410-15"><a href="cfa.html#cb410-15"></a>disturbances_cov =<span class="st"> </span>result_cov<span class="op">$</span>par[<span class="dv">7</span><span class="op">:</span><span class="dv">14</span>]</span></code></pre></div>
 </div>
 <div id="standardized" class="section level3">
 <h3>Standardized</h3>
-<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="cfa.html#cb360-1"></a>par_init_cor =<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">8</span>), <span class="kw">rep</span>(.<span class="dv">05</span>, <span class="dv">8</span>), <span class="dv">0</span>) <span class="co">#for cor</span></span>
-<span id="cb360-2"><a href="cfa.html#cb360-2"></a><span class="kw">names</span>(par_init_cor) =<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;l1&#39;</span>, <span class="st">&#39;l2&#39;</span>, <span class="st">&#39;dist&#39;</span>, <span class="st">&#39;cor&#39;</span>), <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">1</span>))</span></code></pre></div>
-<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="cfa.html#cb361-1"></a>result_cor =<span class="st"> </span><span class="kw">optim</span>(</span>
-<span id="cb361-2"><a href="cfa.html#cb361-2"></a>  <span class="dt">par  =</span> par_init_cor,</span>
-<span id="cb361-3"><a href="cfa.html#cb361-3"></a>  <span class="dt">fn   =</span> cfa_cor,</span>
-<span id="cb361-4"><a href="cfa.html#cb361-4"></a>  <span class="dt">data =</span> y,</span>
-<span id="cb361-5"><a href="cfa.html#cb361-5"></a>  <span class="dt">method  =</span> <span class="st">&quot;L-BFGS-B&quot;</span>,</span>
-<span id="cb361-6"><a href="cfa.html#cb361-6"></a>  <span class="dt">lower   =</span> <span class="dv">0</span>,</span>
-<span id="cb361-7"><a href="cfa.html#cb361-7"></a>  <span class="dt">upper   =</span> <span class="dv">1</span>,</span>
-<span id="cb361-8"><a href="cfa.html#cb361-8"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="dv">-1</span>)</span>
-<span id="cb361-9"><a href="cfa.html#cb361-9"></a>)</span>
-<span id="cb361-10"><a href="cfa.html#cb361-10"></a></span>
-<span id="cb361-11"><a href="cfa.html#cb361-11"></a>loadings_cor =<span class="st"> </span><span class="kw">matrix</span>(</span>
-<span id="cb361-12"><a href="cfa.html#cb361-12"></a>  <span class="kw">c</span>(result_cor<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>], <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), result_cor<span class="op">$</span>par[<span class="dv">5</span><span class="op">:</span><span class="dv">8</span>]), </span>
-<span id="cb361-13"><a href="cfa.html#cb361-13"></a>  <span class="dt">ncol =</span> <span class="dv">2</span></span>
-<span id="cb361-14"><a href="cfa.html#cb361-14"></a>)</span>
-<span id="cb361-15"><a href="cfa.html#cb361-15"></a></span>
-<span id="cb361-16"><a href="cfa.html#cb361-16"></a>disturbances_cor =<span class="st"> </span>result_cor<span class="op">$</span>par[<span class="dv">9</span><span class="op">:</span><span class="dv">16</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="cfa.html#cb411-1"></a>par_init_cor =<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">8</span>), <span class="kw">rep</span>(.<span class="dv">05</span>, <span class="dv">8</span>), <span class="dv">0</span>) <span class="co">#for cor</span></span>
+<span id="cb411-2"><a href="cfa.html#cb411-2"></a><span class="kw">names</span>(par_init_cor) =<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;l1&#39;</span>, <span class="st">&#39;l2&#39;</span>, <span class="st">&#39;dist&#39;</span>, <span class="st">&#39;cor&#39;</span>), <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="cfa.html#cb412-1"></a>result_cor =<span class="st"> </span><span class="kw">optim</span>(</span>
+<span id="cb412-2"><a href="cfa.html#cb412-2"></a>  <span class="dt">par  =</span> par_init_cor,</span>
+<span id="cb412-3"><a href="cfa.html#cb412-3"></a>  <span class="dt">fn   =</span> cfa_cor,</span>
+<span id="cb412-4"><a href="cfa.html#cb412-4"></a>  <span class="dt">data =</span> y,</span>
+<span id="cb412-5"><a href="cfa.html#cb412-5"></a>  <span class="dt">method  =</span> <span class="st">&quot;L-BFGS-B&quot;</span>,</span>
+<span id="cb412-6"><a href="cfa.html#cb412-6"></a>  <span class="dt">lower   =</span> <span class="dv">0</span>,</span>
+<span id="cb412-7"><a href="cfa.html#cb412-7"></a>  <span class="dt">upper   =</span> <span class="dv">1</span>,</span>
+<span id="cb412-8"><a href="cfa.html#cb412-8"></a>  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="dv">-1</span>)</span>
+<span id="cb412-9"><a href="cfa.html#cb412-9"></a>)</span>
+<span id="cb412-10"><a href="cfa.html#cb412-10"></a></span>
+<span id="cb412-11"><a href="cfa.html#cb412-11"></a>loadings_cor =<span class="st"> </span><span class="kw">matrix</span>(</span>
+<span id="cb412-12"><a href="cfa.html#cb412-12"></a>  <span class="kw">c</span>(result_cor<span class="op">$</span>par[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>], <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), result_cor<span class="op">$</span>par[<span class="dv">5</span><span class="op">:</span><span class="dv">8</span>]), </span>
+<span id="cb412-13"><a href="cfa.html#cb412-13"></a>  <span class="dt">ncol =</span> <span class="dv">2</span></span>
+<span id="cb412-14"><a href="cfa.html#cb412-14"></a>)</span>
+<span id="cb412-15"><a href="cfa.html#cb412-15"></a></span>
+<span id="cb412-16"><a href="cfa.html#cb412-16"></a>disturbances_cor =<span class="st"> </span>result_cor<span class="op">$</span>par[<span class="dv">9</span><span class="op">:</span><span class="dv">16</span>]</span></code></pre></div>
 </div>
 </div>
-<div id="comparison-20" class="section level2">
+<div id="comparison-23" class="section level2">
 <h2>Comparison</h2>
 <p>Gather results for summary</p>
-<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="cfa.html#cb362-1"></a>results =<span class="st"> </span><span class="kw">list</span>(</span>
-<span id="cb362-2"><a href="cfa.html#cb362-2"></a>  <span class="dt">raw =</span> <span class="kw">list</span>(</span>
-<span id="cb362-3"><a href="cfa.html#cb362-3"></a>    <span class="dt">loadings =</span> <span class="kw">round</span>(<span class="kw">data.frame</span>(loadings_cov, <span class="dt">Variances =</span> disturbances_cov), <span class="dv">3</span>),</span>
-<span id="cb362-4"><a href="cfa.html#cb362-4"></a>    <span class="dt">cov.fact =</span> <span class="kw">round</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(result_cov<span class="op">$</span>par[<span class="kw">c</span>(<span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">16</span>, <span class="dv">17</span>)]), <span class="dt">ncol =</span><span class="dv">2</span>) , <span class="dv">3</span>)</span>
-<span id="cb362-5"><a href="cfa.html#cb362-5"></a>  ),</span>
-<span id="cb362-6"><a href="cfa.html#cb362-6"></a>  </span>
-<span id="cb362-7"><a href="cfa.html#cb362-7"></a>  <span class="dt">standardized =</span> <span class="kw">list</span>(</span>
-<span id="cb362-8"><a href="cfa.html#cb362-8"></a>    <span class="dt">loadings =</span> <span class="kw">round</span>(</span>
-<span id="cb362-9"><a href="cfa.html#cb362-9"></a>      <span class="kw">data.frame</span>(</span>
-<span id="cb362-10"><a href="cfa.html#cb362-10"></a>        loadings_cor,</span>
-<span id="cb362-11"><a href="cfa.html#cb362-11"></a>        <span class="dt">Variances =</span> disturbances_cor,</span>
-<span id="cb362-12"><a href="cfa.html#cb362-12"></a>        <span class="dt">Rsq =</span> (<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>disturbances_cor)</span>
-<span id="cb362-13"><a href="cfa.html#cb362-13"></a>      ), <span class="dv">3</span>),</span>
-<span id="cb362-14"><a href="cfa.html#cb362-14"></a>    <span class="dt">cor.fact =</span> <span class="kw">round</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, result_cor<span class="op">$</span>par[<span class="kw">c</span>(<span class="dv">17</span>, <span class="dv">17</span>)], <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">2</span>), <span class="dv">3</span>)</span>
-<span id="cb362-15"><a href="cfa.html#cb362-15"></a>  ),</span>
-<span id="cb362-16"><a href="cfa.html#cb362-16"></a>  </span>
-<span id="cb362-17"><a href="cfa.html#cb362-17"></a>  <span class="co"># note inclusion of intercepts for total number of par</span></span>
-<span id="cb362-18"><a href="cfa.html#cb362-18"></a>  <span class="dt">fit =</span> <span class="kw">data.frame</span>(</span>
-<span id="cb362-19"><a href="cfa.html#cb362-19"></a>    <span class="dt">ll  =</span> result_cov<span class="op">$</span>value,</span>
-<span id="cb362-20"><a href="cfa.html#cb362-20"></a>    <span class="dt">AIC =</span> <span class="dv">-2</span> <span class="op">*</span><span class="st"> </span>result_cov<span class="op">$</span>value <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>(<span class="kw">length</span>(par_init_cov) <span class="op">+</span><span class="st"> </span><span class="kw">ncol</span>(y)),</span>
-<span id="cb362-21"><a href="cfa.html#cb362-21"></a>    <span class="dt">BIC =</span> <span class="dv">-2</span> <span class="op">*</span><span class="st"> </span>result_cov<span class="op">$</span>value <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">nrow</span>(y)) <span class="op">*</span><span class="st"> </span>(<span class="kw">length</span>(par_init_cov) <span class="op">+</span><span class="st"> </span><span class="kw">ncol</span>(y))</span>
-<span id="cb362-22"><a href="cfa.html#cb362-22"></a>  )  </span>
-<span id="cb362-23"><a href="cfa.html#cb362-23"></a>)</span>
-<span id="cb362-24"><a href="cfa.html#cb362-24"></a></span>
-<span id="cb362-25"><a href="cfa.html#cb362-25"></a>results</span></code></pre></div>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb413-1"><a href="cfa.html#cb413-1"></a>results =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb413-2"><a href="cfa.html#cb413-2"></a>  <span class="dt">raw =</span> <span class="kw">list</span>(</span>
+<span id="cb413-3"><a href="cfa.html#cb413-3"></a>    <span class="dt">loadings =</span> <span class="kw">round</span>(<span class="kw">data.frame</span>(loadings_cov, <span class="dt">Variances =</span> disturbances_cov), <span class="dv">3</span>),</span>
+<span id="cb413-4"><a href="cfa.html#cb413-4"></a>    <span class="dt">cov.fact =</span> <span class="kw">round</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(result_cov<span class="op">$</span>par[<span class="kw">c</span>(<span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">16</span>, <span class="dv">17</span>)]), <span class="dt">ncol =</span><span class="dv">2</span>) , <span class="dv">3</span>)</span>
+<span id="cb413-5"><a href="cfa.html#cb413-5"></a>  ),</span>
+<span id="cb413-6"><a href="cfa.html#cb413-6"></a>  </span>
+<span id="cb413-7"><a href="cfa.html#cb413-7"></a>  <span class="dt">standardized =</span> <span class="kw">list</span>(</span>
+<span id="cb413-8"><a href="cfa.html#cb413-8"></a>    <span class="dt">loadings =</span> <span class="kw">round</span>(</span>
+<span id="cb413-9"><a href="cfa.html#cb413-9"></a>      <span class="kw">data.frame</span>(</span>
+<span id="cb413-10"><a href="cfa.html#cb413-10"></a>        loadings_cor,</span>
+<span id="cb413-11"><a href="cfa.html#cb413-11"></a>        <span class="dt">Variances =</span> disturbances_cor,</span>
+<span id="cb413-12"><a href="cfa.html#cb413-12"></a>        <span class="dt">Rsq =</span> (<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>disturbances_cor)</span>
+<span id="cb413-13"><a href="cfa.html#cb413-13"></a>      ), <span class="dv">3</span>),</span>
+<span id="cb413-14"><a href="cfa.html#cb413-14"></a>    <span class="dt">cor.fact =</span> <span class="kw">round</span>(<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, result_cor<span class="op">$</span>par[<span class="kw">c</span>(<span class="dv">17</span>, <span class="dv">17</span>)], <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">2</span>), <span class="dv">3</span>)</span>
+<span id="cb413-15"><a href="cfa.html#cb413-15"></a>  ),</span>
+<span id="cb413-16"><a href="cfa.html#cb413-16"></a>  </span>
+<span id="cb413-17"><a href="cfa.html#cb413-17"></a>  <span class="co"># note inclusion of intercepts for total number of par</span></span>
+<span id="cb413-18"><a href="cfa.html#cb413-18"></a>  <span class="dt">fit =</span> <span class="kw">data.frame</span>(</span>
+<span id="cb413-19"><a href="cfa.html#cb413-19"></a>    <span class="dt">ll  =</span> result_cov<span class="op">$</span>value,</span>
+<span id="cb413-20"><a href="cfa.html#cb413-20"></a>    <span class="dt">AIC =</span> <span class="dv">-2</span> <span class="op">*</span><span class="st"> </span>result_cov<span class="op">$</span>value <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>(<span class="kw">length</span>(par_init_cov) <span class="op">+</span><span class="st"> </span><span class="kw">ncol</span>(y)),</span>
+<span id="cb413-21"><a href="cfa.html#cb413-21"></a>    <span class="dt">BIC =</span> <span class="dv">-2</span> <span class="op">*</span><span class="st"> </span>result_cov<span class="op">$</span>value <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">nrow</span>(y)) <span class="op">*</span><span class="st"> </span>(<span class="kw">length</span>(par_init_cov) <span class="op">+</span><span class="st"> </span><span class="kw">ncol</span>(y))</span>
+<span id="cb413-22"><a href="cfa.html#cb413-22"></a>  )  </span>
+<span id="cb413-23"><a href="cfa.html#cb413-23"></a>)</span>
+<span id="cb413-24"><a href="cfa.html#cb413-24"></a></span>
+<span id="cb413-25"><a href="cfa.html#cb413-25"></a>results</span></code></pre></div>
 <pre><code>$raw
 $raw$loadings
      f1    f2 Variances
@@ -809,17 +854,17 @@ $fit
          ll      AIC      BIC
 1 -12330.93 24711.86 24834.56</code></pre>
 <p>Confirm with <span class="pack" style="">lavaan</span>.</p>
-<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="cfa.html#cb364-1"></a><span class="kw">library</span>(lavaan)</span>
-<span id="cb364-2"><a href="cfa.html#cb364-2"></a>y =<span class="st"> </span><span class="kw">data.frame</span>(y)</span>
-<span id="cb364-3"><a href="cfa.html#cb364-3"></a>model =<span class="st"> &#39; F1  =~ X1 + X2 + X3 + X4</span></span>
-<span id="cb364-4"><a href="cfa.html#cb364-4"></a><span class="st">           F2  =~ X5 + X6 + X7 + X8 &#39;</span></span>
-<span id="cb364-5"><a href="cfa.html#cb364-5"></a></span>
-<span id="cb364-6"><a href="cfa.html#cb364-6"></a>fit =<span class="st"> </span><span class="kw">cfa</span>(model, <span class="dt">data=</span>y, <span class="dt">mimic=</span><span class="st">&#39;Mplus&#39;</span>, <span class="dt">estimator=</span><span class="st">&#39;ML&#39;</span>)</span>
-<span id="cb364-7"><a href="cfa.html#cb364-7"></a>fit.std =<span class="st"> </span><span class="kw">cfa</span>(model, <span class="dt">data=</span>y, <span class="dt">mimic=</span><span class="st">&#39;Mplus&#39;</span>, <span class="dt">estimator=</span><span class="st">&#39;ML&#39;</span>, <span class="dt">std.lv=</span>T, <span class="dt">std.ov=</span>T) <span class="co"># for standardized</span></span>
-<span id="cb364-8"><a href="cfa.html#cb364-8"></a></span>
-<span id="cb364-9"><a href="cfa.html#cb364-9"></a><span class="co"># note that lavaan does not count the intercepts among the free params for AIC/BIC </span></span>
-<span id="cb364-10"><a href="cfa.html#cb364-10"></a><span class="co"># by default, but the mimic=&#39;Mplus&#39; should have them correspond to optim&#39;s results</span></span>
-<span id="cb364-11"><a href="cfa.html#cb364-11"></a><span class="kw">summary</span>(fit, <span class="dt">fit.measures=</span><span class="ot">TRUE</span>, <span class="dt">standardized=</span>T)   </span></code></pre></div>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="cfa.html#cb415-1"></a><span class="kw">library</span>(lavaan)</span>
+<span id="cb415-2"><a href="cfa.html#cb415-2"></a>y =<span class="st"> </span><span class="kw">data.frame</span>(y)</span>
+<span id="cb415-3"><a href="cfa.html#cb415-3"></a>model =<span class="st"> &#39; F1  =~ X1 + X2 + X3 + X4</span></span>
+<span id="cb415-4"><a href="cfa.html#cb415-4"></a><span class="st">           F2  =~ X5 + X6 + X7 + X8 &#39;</span></span>
+<span id="cb415-5"><a href="cfa.html#cb415-5"></a></span>
+<span id="cb415-6"><a href="cfa.html#cb415-6"></a>fit =<span class="st"> </span><span class="kw">cfa</span>(model, <span class="dt">data=</span>y, <span class="dt">mimic=</span><span class="st">&#39;Mplus&#39;</span>, <span class="dt">estimator=</span><span class="st">&#39;ML&#39;</span>)</span>
+<span id="cb415-7"><a href="cfa.html#cb415-7"></a>fit.std =<span class="st"> </span><span class="kw">cfa</span>(model, <span class="dt">data=</span>y, <span class="dt">mimic=</span><span class="st">&#39;Mplus&#39;</span>, <span class="dt">estimator=</span><span class="st">&#39;ML&#39;</span>, <span class="dt">std.lv=</span>T, <span class="dt">std.ov=</span>T) <span class="co"># for standardized</span></span>
+<span id="cb415-8"><a href="cfa.html#cb415-8"></a></span>
+<span id="cb415-9"><a href="cfa.html#cb415-9"></a><span class="co"># note that lavaan does not count the intercepts among the free params for AIC/BIC </span></span>
+<span id="cb415-10"><a href="cfa.html#cb415-10"></a><span class="co"># by default, but the mimic=&#39;Mplus&#39; should have them correspond to optim&#39;s results</span></span>
+<span id="cb415-11"><a href="cfa.html#cb415-11"></a><span class="kw">summary</span>(fit, <span class="dt">fit.measures=</span><span class="ot">TRUE</span>, <span class="dt">standardized=</span>T)   </span></code></pre></div>
 <pre><code>lavaan 0.6-7 ended normally after 30 iterations
 
   Estimator                                         ML
@@ -918,9 +963,9 @@ Variances:
 <div id="mplus" class="section level3">
 <h3>Mplus</h3>
 <p>If you have access to Mplus you can use Mplus Automation to prepare the data. The following code is in Mplus syntax and will produce the above model.</p>
-<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="cfa.html#cb366-1"></a><span class="kw">library</span>(MplusAutomation)</span>
-<span id="cb366-2"><a href="cfa.html#cb366-2"></a></span>
-<span id="cb366-3"><a href="cfa.html#cb366-3"></a><span class="kw">prepareMplusData</span>(<span class="kw">data.frame</span>(y), <span class="st">&quot;factsim.dat&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="cfa.html#cb417-1"></a><span class="kw">library</span>(MplusAutomation)</span>
+<span id="cb417-2"><a href="cfa.html#cb417-2"></a></span>
+<span id="cb417-3"><a href="cfa.html#cb417-3"></a><span class="kw">prepareMplusData</span>(<span class="kw">data.frame</span>(y), <span class="st">&quot;factsim.dat&quot;</span>)</span></code></pre></div>
 <pre><code>MODEL:
  F1 BY X1-X4;
  F2 BY X5-X8;
@@ -929,23 +974,20 @@ results:
  STDYX;</code></pre>
 </div>
 </div>
-<div id="source-20" class="section level2">
+<div id="source-22" class="section level2">
 <h2>Source</h2>
 <p>Original code available at
 <a href="https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cfa.R" class="uri">https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/cfa.R</a></p>
 
 </div>
 </div>
-
-
-
             </section>
 
           </div>
         </div>
       </div>
-<a href="gaussian-process.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="penalized-maximum-likelihood.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="rkhs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bayes-non-parametric.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -19,7 +19,7 @@ admission = haven::read_dta("https://stats.idre.ucla.edu/stat/stata/dae/binary.d
 We'll start with the a basic maximum likelihood function for a standard probit.  See the [logistic regression][Standard Logistic] example as comparison.
 
 ```{r probit-mle}
-probit_mle = function(params, X, y){
+probit_mle <- function(params, X, y){
   # Arguments are starting parameters (coefficients), model matrix, response 
   
   b = params
@@ -89,7 +89,7 @@ rbind(coefs_mle, coefs_glm)
 #### Function
 
 ```{r probit-em}
-em_probit = function(
+em_probit <- function(
   params,
   X,
   y,

@@ -1,0 +1,201 @@
+# Bayesian Nonparametric Models
+
+
+The following provides some conceptual code for the Chinese restaurant and Indian buffet process for categorical and continuous latent variables respectively.  For more detail, see the Bayesian nonparametric section of my [structural equation modeling document](https://m-clark.github.io/sem/bayesian-nonparametric-models.html). 
+
+## Chinese Restaurant Process
+
+To start, a couple functions demonstrating the Chinese restaurant process.  The first is succinct and more conceptual, but notably slower.
+ 
+```{r crp-func-1}
+crp <- function(alpha, n) {
+  table_assignments = 1
+  
+  for (i in 2:n){
+    table_counts = table(table_assignments)       # counts of table assignments
+    nt = length(table_counts)                     # number of tables  
+    table_prob = table_counts/(i - 1 + alpha)     # probabilities of previous table assignments
+    
+    # sample assignment based on probability of current tables and potential next table
+    current_table_assignment = sample(1:(nt+1), 1, prob = c(table_prob, 1 - sum(table_prob)))
+    
+    # concatenate new to previous table assignments
+    table_assignments = c(table_assignments, current_table_assignment)  
+  }
+  
+  table_assignments
+}
+```
+
+
+The following function is similar to the restaurant function here https://github.com/mcdickenson/shinyapps, and notably faster.
+
+```{r crp-func-2}
+crpF <- function(alpha, n) {
+  table_assignments = c(1, rep(NA, n-1))
+  table_counts = 1
+  
+  for (i in 2:n){
+    init =  c(table_counts, alpha)
+    
+    table_prob = init/sum(init)
+    
+    current_table_assignment = sample(seq_along(init), 1, prob = table_prob)
+    
+    table_assignments[i] = current_table_assignment
+    
+    if (current_table_assignment == length(init)) {
+      table_counts[current_table_assignment] = 1
+    } else {
+      table_counts[current_table_assignment] = table_counts[current_table_assignment] + 1
+    }
+  }
+  
+  table_assignments
+}
+
+# library(microbenchmark)
+# test  = microbenchmark(crp(alpha = 1, n = 1000),
+#                        crpF(alpha = 1, n = 1000), times = 100)
+# test
+# ggplot2::autoplot(test)
+```
+
+
+
+
+
+Visualize some examples at a given setting.
+
+```{r vis-crp}
+out = replicate(5 , crpF(alpha = 1, n = 500), simplify = FALSE)
+
+library(tidyverse)
+
+map_df(
+  out, 
+  function(x) data.frame(table(x)),
+  .id = 'result'
+) %>% 
+  rename(cluster = x) %>% 
+  ggplot(aes(cluster, Freq)) +
+  geom_col() +
+  facet_grid(~ result) +
+  theme_minimal()
+```
+
+
+Visualize cluster membership. With smaller `alpha`, there is more tendency to stick to fewer clusters.
+
+```{r vis-crp2}
+set.seed(123)
+
+n = 100
+
+crp_1 = crp(alpha = 1, n = n)
+
+crp_1_mat = matrix(0, nrow = n, ncol = n_distinct(crp_1))
+
+for (i in 1:n_distinct(crp_1)) {
+  crp_1_mat[, i] = ifelse(crp_1 == i, 1, 0)
+}
+
+
+crp_4 = crp(alpha = 5, n = n)
+
+crp_4_mat = matrix(0, nrow = n, ncol = n_distinct(crp_4))
+
+for (i in 1:n_distinct(crp_4)) {
+  crp_4_mat[, i] = ifelse(crp_4 == i, 1, 0)
+}
+```
+
+
+```{r crp-heatmaps}
+heatmaply::heatmaply(
+  crp_1_mat,
+  Rowv = FALSE,
+  Colv = FALSE,
+  colors = scico::scico(n = 256, alpha = 1, begin = 0, end = 1),
+  width = 400
+)
+
+heatmaply::heatmaply(
+  crp_4_mat,
+  Rowv = FALSE,
+  Colv = FALSE,
+  colors = scico::scico(n = 256, alpha = 1, begin = 0, end = 1),
+  width = 400
+)
+```
+
+
+## Indian Buffet Process
+
+
+The following demonstrates the Indian buffet process for continuous latent variable settings.
+
+```{r ibp-func}
+ibp <- function(alpha, N){
+  # preallocate assignments with upper bound of N*alpha number of latent factors
+  assignments = matrix(NA, nrow = N, ncol = N*alpha) 
+  
+  # start with some dishes/assignments
+  dishes = rpois(1, alpha)      
+  zeroes = ncol(assignments) - dishes   # fill in the rest of potential dishes
+  assignments[1, ] = c(rep(1, dishes), rep(0, zeroes))
+  
+  for(i in 2:N){
+    prev = i - 1
+    # esoteric line that gets the last dish sampled without a search for it
+    last_previously_sampled_dish = sum(colSums(assignments[1:prev, , drop = FALSE]) > 0)    
+    
+    # initialize 
+    dishes_previously_sampled = matrix(0, nrow=1, ncol=last_previously_sampled_dish)
+    
+    # calculate probability of sampling from previous dishes
+    dish_prob = colSums(assignments[1:prev, 1:last_previously_sampled_dish, drop = FALSE]) / i
+    dishes_previously_sampled[1, ] = rbinom(n    = last_previously_sampled_dish,
+                                            size = 1,
+                                            prob = dish_prob)
+    
+    # sample new dish and assign based on results
+    new_dishes = rpois(1, alpha/i)
+    zeroes = ncol(assignments) - (last_previously_sampled_dish + new_dishes)
+    assignments[i,] = c(dishes_previously_sampled, rep(1,new_dishes), rep(0, zeroes))
+  }
+  
+  # return only the dimensions sampled
+  last_sampled_dish = sum(colSums(assignments[1:prev,]) > 0) 
+  
+  assignments[, 1:last_sampled_dish]
+}
+```
+
+
+As before, we can compare different settings.
+
+```{r vis-ibp}
+set.seed(123)
+
+ibp_1 = ibp(1, 100)
+ibp_4 = ibp(5, 100)
+
+heatmaply::heatmaply(
+  ibp_1,
+  Rowv   = FALSE,
+  Colv   = FALSE,
+  colors = scico::scico(n = 256, alpha = 1, begin = 0, end = 1),
+  width  = 400
+)
+
+heatmaply::heatmaply(
+  ibp_4,
+  Rowv   = FALSE,
+  Colv   = FALSE,
+  colors = scico::scico(n = 256, alpha = 1, begin = 0, end = 1),
+  width  = 400
+)
+```
+
+

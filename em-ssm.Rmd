@@ -41,7 +41,7 @@ summary(inflation)
 EM function for a state space model.
 
 ```{r em-ssm}
-em_state_space = function(
+em_state_space <- function(
   params,
   y,
   omega2_0,

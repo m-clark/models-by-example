@@ -30,8 +30,10 @@ rmd_files: [
   quantile-regression.Rmd,
   cubic-spline.Rmd,
   gaussian-process.Rmd,
+  elm.Rmd,
   rkhs.Rmd,
   cfa.Rmd,
+  bayes-non-parametric.Rmd,
   
   # Algos
   penalized-maximum-likelihood.Rmd,
