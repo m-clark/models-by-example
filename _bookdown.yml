@@ -35,6 +35,9 @@ rmd_files: [
   cfa.Rmd,
   bayes-non-parametric.Rmd,
   
+  # Bayesian
+  bayesian.Rmd,
+  
   # Algos
   penalized-maximum-likelihood.Rmd,
   lasso.Rmd,
@@ -45,7 +48,7 @@ rmd_files: [
   stochastic-gradient-descent.Rmd,
   em.Rmd,
   
-  # Bayesian
+
   
   # Other
   supplemental.Rmd

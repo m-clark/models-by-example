@@ -1,13 +1,13 @@
-## Gausian Processes
+# Gausian Processes
 
 
 'Noise-free' gaussian process demo.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail. Murphy's original Matlab code can be found [here](https://github.com/probml/pmtk3), though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
 
 The goal of this code is to plot samples from the prior and posterior predictive of a gaussian process in which `y = sin(x)`. It will reproduce figure 15.2 in Murphy 2012 and 2.2 in Rasmussen and Williams 2006.
 
-### Noise-Free Demonstration
+## Noise-Free Demonstration
 
-#### Data Setup
+### Data Setup
 
 ```{r gp-setup}
 library(tidyverse)
@@ -32,7 +32,7 @@ n_test  = length(X_test)
 
 
 
-#### Functions
+### Functions
 
 The mean function. In this case the mean equals 0.
 
@@ -51,7 +51,7 @@ gp_K <- function(x, l = 1, sigma_f = 1){
 ```
 
 
-#### Visualize the prior distribution
+### Visualize the prior distribution
 
 Data setup.
 
@@ -83,7 +83,7 @@ g1
 
 
 
-#### Generate the posterior predictive distribution
+### Generate the posterior predictive distribution
 
 Create `K`, `K*`, and `K**` matrices as defined in the texts.
 
@@ -121,7 +121,7 @@ y_pp = data.frame(
 
 
 
-#### Visualize the Posterior Predictive Distribution
+### Visualize the Posterior Predictive Distribution
 
 Reshape data for plotting and create the plot.
 
@@ -155,7 +155,7 @@ g1 + g2
 ```
 
 
-### Noisy Demonstration
+## Noisy Demonstration
 
 
 
@@ -167,7 +167,7 @@ akin to figure 15.3 in Murphy 2012.
 
 
 
-#### Data Setup
+### Data Setup
 
 ```{r gp-noise-setup}
 l = 1            # for l, sigma_f, sigma_n, see note at covariance function
@@ -189,7 +189,7 @@ X_test = seq(-7.5, 7.5, length = 200)
 n_test = length(X_test)
 ```
 
-#### Functions
+### Functions
 
 The mean function. In this case the mean equals 0.
 
@@ -221,7 +221,7 @@ gp_K <- function(
 ```
 
 
-#### Visualize the prior distribution
+### Visualize the prior distribution
 
 Data setup.
 
@@ -259,7 +259,7 @@ g1
 
 
 
-#### Generate the posterior predictive distribution
+### Generate the posterior predictive distribution
 
 Create Ky, K*, and K** matrices as defined in the texts.
 
@@ -309,7 +309,7 @@ y_pp = data.frame(t(MASS::mvrnorm(n_post_pred, mu = post_mu, Sigma = post_K)))
 ```
 
 
-#### Visualize the Posterior Predictive Distribution
+### Visualize the Posterior Predictive Distribution
 
 Reshape data for plotting and create the plot.
 

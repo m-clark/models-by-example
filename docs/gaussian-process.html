@@ -369,10 +369,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#source-18"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html"><i class="fa fa-check"></i>Gausian Processes</a>
 <ul>
-<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a></li>
-<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-18"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-19"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-4"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution-1"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 </ul></li>
@@ -430,6 +444,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
 <li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
 </ul></li>
+<li class="part"><span><b>Bayesian</b></span></li>
+<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html"><i class="fa fa-check"></i>Placeholder</a></li>
 <li class="part"><span><b>Algorithms</b></span></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
 <ul>
@@ -560,10 +576,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="part"><span><b>Other</b></span></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
 <ul>
-<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
-<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#algorithms"><i class="fa fa-check"></i>Algorithms</a></li>
-</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li class='after'">
@@ -605,14 +619,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="gausian-processes" class="section level2">
-<h2>Gausian Processes</h2>
+<div id="gausian-processes" class="section level1">
+<h1>Gausian Processes</h1>
 <p>‘Noise-free’ gaussian process demo. The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006. See those sources for more detail. Murphy’s original Matlab code can be found <a href="https://github.com/probml/pmtk3">here</a>, though the relevant files are housed alongside this code in <a href="https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples">my original repo</a> (<code>*.m</code> files).</p>
 <p>The goal of this code is to plot samples from the prior and posterior predictive of a gaussian process in which <code>y = sin(x)</code>. It will reproduce figure 15.2 in Murphy 2012 and 2.2 in Rasmussen and Williams 2006.</p>
-<div id="noise-free-demonstration" class="section level3">
-<h3>Noise-Free Demonstration</h3>
-<div id="data-setup-18" class="section level4">
-<h4>Data Setup</h4>
+<div id="noise-free-demonstration" class="section level2">
+<h2>Noise-Free Demonstration</h2>
+<div id="data-setup-18" class="section level3">
+<h3>Data Setup</h3>
 <div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="gaussian-process.html#cb328-1"></a><span class="kw">library</span>(tidyverse)</span>
 <span id="cb328-2"><a href="gaussian-process.html#cb328-2"></a></span>
 <span id="cb328-3"><a href="gaussian-process.html#cb328-3"></a>l =<span class="st"> </span><span class="dv">1</span>            <span class="co"># for l, sigma_f, see note at covariance function</span></span>
@@ -628,8 +642,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb329-5"><a href="gaussian-process.html#cb329-5"></a>X_test =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="fl">.2</span>)</span>
 <span id="cb329-6"><a href="gaussian-process.html#cb329-6"></a>n_test  =<span class="st"> </span><span class="kw">length</span>(X_test)</span></code></pre></div>
 </div>
-<div id="functions-3" class="section level4">
-<h4>Functions</h4>
+<div id="functions-3" class="section level3">
+<h3>Functions</h3>
 <p>The mean function. In this case the mean equals 0.</p>
 <div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="gaussian-process.html#cb330-1"></a>gp_mu &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
 <span id="cb330-2"><a href="gaussian-process.html#cb330-2"></a>  <span class="kw">map_dbl</span>(x, <span class="cf">function</span>(x) <span class="dt">x =</span> <span class="dv">0</span>)</span>
@@ -639,8 +653,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb331-2"><a href="gaussian-process.html#cb331-2"></a>  sigma_f <span class="op">*</span><span class="st"> </span><span class="kw">exp</span>( <span class="op">-</span>(<span class="dv">1</span><span class="op">/</span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>l<span class="op">^</span><span class="dv">2</span>)) <span class="op">*</span><span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">dist</span>(x, <span class="dt">upper =</span> <span class="ot">TRUE</span>, <span class="dt">diag =</span> <span class="ot">TRUE</span>) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>) )</span>
 <span id="cb331-3"><a href="gaussian-process.html#cb331-3"></a>}</span></code></pre></div>
 </div>
-<div id="visualize-the-prior-distribution" class="section level4">
-<h4>Visualize the prior distribution</h4>
+<div id="visualize-the-prior-distribution" class="section level3">
+<h3>Visualize the prior distribution</h3>
 <p>Data setup.</p>
 <div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="gaussian-process.html#cb332-1"></a>x_prior =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="fl">.2</span>)</span>
 <span id="cb332-2"><a href="gaussian-process.html#cb332-2"></a></span>
@@ -663,8 +677,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb333-12"><a href="gaussian-process.html#cb333-12"></a>g1</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-prior-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="generate-the-posterior-predictive-distribution" class="section level4">
-<h4>Generate the posterior predictive distribution</h4>
+<div id="generate-the-posterior-predictive-distribution" class="section level3">
+<h3>Generate the posterior predictive distribution</h3>
 <p>Create <code>K</code>, <code>K*</code>, and <code>K**</code> matrices as defined in the texts.</p>
 <div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="gaussian-process.html#cb334-1"></a>K  =<span class="st"> </span><span class="kw">gp_K</span>(X_train, <span class="dt">l =</span> l, <span class="dt">sigma_f =</span> sigma_f)</span>
 <span id="cb334-2"><a href="gaussian-process.html#cb334-2"></a>K_ =<span class="st"> </span><span class="kw">gp_K</span>(<span class="kw">c</span>(X_train, X_test), <span class="dt">l =</span> l, <span class="dt">sigma_f =</span> sigma_f)      <span class="co"># initial matrix</span></span>
@@ -687,8 +701,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb336-3"><a href="gaussian-process.html#cb336-3"></a>  )</span>
 <span id="cb336-4"><a href="gaussian-process.html#cb336-4"></a><span class="co"># y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) # alternative</span></span></code></pre></div>
 </div>
-<div id="visualize-the-posterior-predictive-distribution" class="section level4">
-<h4>Visualize the Posterior Predictive Distribution</h4>
+<div id="visualize-the-posterior-predictive-distribution" class="section level3">
+<h3>Visualize the Posterior Predictive Distribution</h3>
 <p>Reshape data for plotting and create the plot.</p>
 <div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="gaussian-process.html#cb337-1"></a>pp_data =<span class="st"> </span><span class="kw">data.frame</span>(</span>
 <span id="cb337-2"><a href="gaussian-process.html#cb337-2"></a>  <span class="dt">x =</span> X_test,</span>
@@ -716,14 +730,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="model-demos_files/figure-html/gp-prior-pp-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<div id="noisy-demonstration" class="section level3">
-<h3>Noisy Demonstration</h3>
+<div id="noisy-demonstration" class="section level2">
+<h2>Noisy Demonstration</h2>
 <p>‘Noisy’ gaussian process demo. The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006. See those sources for more detail. Murphy’s Matlab code can be found here: <a href="https://github.com/probml/pmtk3" class="uri">https://github.com/probml/pmtk3</a>, though the relevant files are housed alongside this code in <a href="https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples">my original repo</a> (<code>*.m</code> files).</p>
 <p>The goal of this code is to plot samples from the prior and posterior predictive
 of a gaussian process in which y = sin(x) + noise. It will reproduce an example
 akin to figure 15.3 in Murphy 2012.</p>
-<div id="data-setup-19" class="section level4">
-<h4>Data Setup</h4>
+<div id="data-setup-19" class="section level3">
+<h3>Data Setup</h3>
 <div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="gaussian-process.html#cb339-1"></a>l =<span class="st"> </span><span class="dv">1</span>            <span class="co"># for l, sigma_f, sigma_n, see note at covariance function</span></span>
 <span id="cb339-2"><a href="gaussian-process.html#cb339-2"></a>sigma_f =<span class="st"> </span><span class="dv">1</span>      </span>
 <span id="cb339-3"><a href="gaussian-process.html#cb339-3"></a>sigma_n =<span class="st"> </span><span class="fl">.25</span> </span>
@@ -742,8 +756,8 @@ akin to figure 15.3 in Murphy 2012.</p>
 <span id="cb339-16"><a href="gaussian-process.html#cb339-16"></a>X_test =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="fl">7.5</span>, <span class="fl">7.5</span>, <span class="dt">length =</span> <span class="dv">200</span>)</span>
 <span id="cb339-17"><a href="gaussian-process.html#cb339-17"></a>n_test =<span class="st"> </span><span class="kw">length</span>(X_test)</span></code></pre></div>
 </div>
-<div id="functions-4" class="section level4">
-<h4>Functions</h4>
+<div id="functions-4" class="section level3">
+<h3>Functions</h3>
 <p>The mean function. In this case the mean equals 0.</p>
 <div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="gaussian-process.html#cb340-1"></a>gp_mu &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
 <span id="cb340-2"><a href="gaussian-process.html#cb340-2"></a>  <span class="kw">map_dbl</span>(x, <span class="cf">function</span>(x) <span class="dt">x =</span> <span class="dv">0</span>)</span>
@@ -766,8 +780,8 @@ akin to figure 15.3 in Murphy 2012.</p>
 <span id="cb341-15"><a href="gaussian-process.html#cb341-15"></a>  }  </span>
 <span id="cb341-16"><a href="gaussian-process.html#cb341-16"></a>}</span></code></pre></div>
 </div>
-<div id="visualize-the-prior-distribution-1" class="section level4">
-<h4>Visualize the prior distribution</h4>
+<div id="visualize-the-prior-distribution-1" class="section level3">
+<h3>Visualize the prior distribution</h3>
 <p>Data setup.</p>
 <div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="gaussian-process.html#cb342-1"></a>x_prior =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="fl">.2</span>)</span>
 <span id="cb342-2"><a href="gaussian-process.html#cb342-2"></a></span>
@@ -796,8 +810,8 @@ akin to figure 15.3 in Murphy 2012.</p>
 <span id="cb343-12"><a href="gaussian-process.html#cb343-12"></a>g1</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-noisy-prior-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="generate-the-posterior-predictive-distribution-1" class="section level4">
-<h4>Generate the posterior predictive distribution</h4>
+<div id="generate-the-posterior-predictive-distribution-1" class="section level3">
+<h3>Generate the posterior predictive distribution</h3>
 <p>Create Ky, K*, and K** matrices as defined in the texts.</p>
 <div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="gaussian-process.html#cb344-1"></a>Ky =<span class="st"> </span><span class="kw">gp_K</span>(</span>
 <span id="cb344-2"><a href="gaussian-process.html#cb344-2"></a>  <span class="dt">x =</span> X_train,</span>
@@ -831,8 +845,8 @@ akin to figure 15.3 in Murphy 2012.</p>
 <div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="gaussian-process.html#cb346-1"></a>y_pp =<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">t</span>(MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n_post_pred, <span class="dt">mu =</span> post_mu, <span class="dt">Sigma =</span> post_K)))</span>
 <span id="cb346-2"><a href="gaussian-process.html#cb346-2"></a><span class="co"># y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) # alternative</span></span></code></pre></div>
 </div>
-<div id="visualize-the-posterior-predictive-distribution-1" class="section level4">
-<h4>Visualize the Posterior Predictive Distribution</h4>
+<div id="visualize-the-posterior-predictive-distribution-1" class="section level3">
+<h3>Visualize the Posterior Predictive Distribution</h3>
 <p>Reshape data for plotting and create the plot.</p>
 <div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="gaussian-process.html#cb347-1"></a>pp_data =<span class="st"> </span><span class="kw">data.frame</span>(</span>
 <span id="cb347-2"><a href="gaussian-process.html#cb347-2"></a>  <span class="dt">x =</span> X_test,</span>
@@ -859,7 +873,6 @@ akin to figure 15.3 in Murphy 2012.</p>
 <span id="cb348-2"><a href="gaussian-process.html#cb348-2"></a></span>
 <span id="cb348-3"><a href="gaussian-process.html#cb348-3"></a>g1 <span class="op">+</span><span class="st"> </span>g2</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-noisy-prior-pp-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-</div>
 </div>
 <div id="source-19" class="section level3">
 <h3>Source</h3>

@@ -1,0 +1,5 @@
+# (PART\*)  Bayesian {-}
+
+# Placeholder
+
+This part is still in progress while I decide what to keep/retain.  In the meantime, you can take a look at the [old repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian).

@@ -369,10 +369,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#source-18"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html"><i class="fa fa-check"></i>Gausian Processes</a>
 <ul>
-<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a></li>
-<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-18"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-19"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-4"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution-1"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 </ul></li>
@@ -430,6 +444,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
 <li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
 </ul></li>
+<li class="part"><span><b>Bayesian</b></span></li>
+<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html"><i class="fa fa-check"></i>Placeholder</a></li>
 <li class="part"><span><b>Algorithms</b></span></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
 <ul>
@@ -560,10 +576,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="part"><span><b>Other</b></span></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
 <ul>
-<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
-<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#algorithms"><i class="fa fa-check"></i>Algorithms</a></li>
-</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li class='after'">
@@ -607,7 +621,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="two-factor-mixed-model" class="section level1">
 <h1>Two-factor Mixed Model</h1>
-<p>An approach for two factor random effects model via maximum likelihood in R Matlab and Julia. It’s based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. The data regards the breeding value of a set of five sires in raising pigs. Each sire is mated to a random group of dams, with the response being the average daily weight gain in pounds of two piglets in each litter. See the <a href="supplemental.html#one-factor-mixed-model-2">previous chapter</a> for a one factor model, and two_factor_RE.m and two_factor_RE.jl for the Matlab and Julia versions of this example on the GitHub site. Note that the text has a typo on the <code>sigma2</code> variance estimate (value should be .0023 not .023).</p>
+<p>An approach for two factor random effects model via maximum likelihood in R Matlab and Julia. It’s based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. The data regards the breeding value of a set of five sires in raising pigs. Each sire is mated to a random group of dams, with the response being the average daily weight gain in pounds of two piglets in each litter. See the <a href="mixed-model-one-factor.html#one-factor-mixed-model">previous chapter</a> for a one factor model, and two_factor_RE.m and two_factor_RE.jl for the Matlab and Julia versions of this example on the GitHub site. Note that the text has a typo on the <code>sigma2</code> variance estimate (value should be .0023 not .023).</p>
 <div id="data-setup-3" class="section level2">
 <h2>Data Setup</h2>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="mixed-model-two-factor.html#cb40-1"></a><span class="kw">library</span>(tidyverse)</span>

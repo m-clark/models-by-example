@@ -29,7 +29,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="bayes-non-parametric.html"/>
+<link rel="prev" href="bayesian.html"/>
 <link rel="next" href="lasso.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -369,10 +369,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#source-18"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html"><i class="fa fa-check"></i>Gausian Processes</a>
 <ul>
-<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a></li>
-<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-18"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-19"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-4"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution-1"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 </ul></li>
@@ -430,6 +444,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
 <li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
 </ul></li>
+<li class="part"><span><b>Bayesian</b></span></li>
+<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html"><i class="fa fa-check"></i>Placeholder</a></li>
 <li class="part"><span><b>Algorithms</b></span></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
 <ul>
@@ -560,10 +576,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="part"><span><b>Other</b></span></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
 <ul>
-<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
-<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#algorithms"><i class="fa fa-check"></i>Algorithms</a></li>
-</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li class='after'">
@@ -814,7 +828,7 @@ pars_L1     -0.4325 0.1207 0.1005</code></pre>
           </div>
         </div>
       </div>
-<a href="bayes-non-parametric.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bayesian.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="lasso.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
