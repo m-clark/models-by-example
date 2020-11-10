@@ -5,9 +5,6 @@
 An approach for two factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. The data regards the breeding value of a set of five sires in raising pigs. Each sire is mated to a random group of dams, with the response being the average daily weight gain in pounds of two piglets in each litter.  See the [previous chapter][One-factor Mixed Model] for a one factor model, and two_factor_RE.m and two_factor_RE.jl for the Matlab and Julia versions of this example on the GitHub site. Note that the text has a typo on the `sigma2` variance estimate (value should be .0023 not .023).
 
 
-
-
-
 ## Data Setup
 
 ```{r two-factor-re-setup}

@@ -4,10 +4,7 @@
 A simple demonstration of tobit regression via maximum likelihood. The issue is one where data is censored such that while we observe the value, it is not the true value, which would extend beyond the range of the observed data. This is very commonly seen in cases where the dependent variable has been given some arbitrary cutoff at the lower or upper end of the range, often resulting in floor or ceiling effects respectively. The conceptual idea is that we are interested in modeling the underlying latent variable that would not have such restriction if it was actually observed.
 
 
-
-
-
-## Demonstrate Censoring with an Upper Limit
+## Censoring with an Upper Limit
 
 ### Data Setup 
 
@@ -145,7 +142,7 @@ rbind(
 
 
 
-## Demonstrate censoring with a Lower Limit
+## Censoring with a Lower Limit
 
 Create a censored data situation for the low end.  The scale itself would be censored for anyone scoring a 200, but that basically doesn't happen. In this data, 15 are less than a score of 500, so we'll do that.
 

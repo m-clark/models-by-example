@@ -28,464 +28,15 @@ knitr::opts_chunk$set(
 
 ## Other Languages
 
-When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. Not much here but may be useful to some.  Refer to the corresponding chapter of R code for context.
+When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. There is not a whole lot here, but it still may be useful to some.  Refer to the corresponding chapter of R code for context.
 
-#### Julia
+### Python Demos
 
-I haven't played with Julia in a very long time, but briefly hacked the old code to get something that worked.  As Julia has gone though notable changes, it's doubtful these are very good as far as Julia code goes, though conceptually they may still provide some utility.  Perhaps at some point I'll reteach myself the basics and come back to these. In any case the code did run on a [Jupyter notebook](https://jupyter.org/). 
+#### Linear Regression
 
-#####  Mixed Models
+##### Data Setup
 
-###### One-factor
-
-
-```{julia jl-one-factor-func, eval = FALSE}
-#####################
-### Main function ###
-#####################
-
-using LinearAlgebra
-using Statistics
-
-function one_factor_re_loglike(par::Vector)    
-    d, ni = size(y)
-    mu = par[1]
-    sigma2_mu = par[2]
-    sigma2 = par[3]
-
-    Sigmai = sigma2*I(ni) + sigma2_mu*ones(ni, ni)
-    l = -(ni*d)/2*log(2*pi) - d/2*log(det(Sigmai))
-    
-    for i in 1:d
-      yi = y[i,:]
-      l = l - .5(yi .- mu)' * (Sigmai\(yi .- mu))
-    end
-
-    l = -l[1]
-    
-    return l
-end
-```
-
-
-```{julia jl-one-factor-setup, eval = FALSE}
-###################
-### Data set up ###
-###################
-
-y = [22.6 20.5 20.8
-     22.6 21.2 20.5
-     17.3 16.2 16.6
-     21.4 23.7 23.2
-     20.9 22.2 22.6
-     14.5 10.5 12.3
-     20.8 19.1 21.3
-     17.4 18.6 18.6
-     25.1 24.8 24.9
-     14.9 16.3 16.6]
-
-
-################################
-### Starting values and test ###
-################################
-using Statistics
-
-mu0 = mean(y)
-sigma2_mu0 = var(mean(y, dims = 2))
-sigma20 = mean(var(y, dims = 2))
-theta0  = [mu0, sigma2_mu0, sigma20]
-
-### test
-one_factor_re_loglike(theta0)
-```
-
-
-```{julia jl-onefactor-est, eval = FALSE}
-###########
-### Run ###
-###########
-
-using Optim
-res = optimize(one_factor_re_loglike, theta0, LBFGS())
-res
-```
-
-```{r julia-one-factor-res, echo=FALSE, eval=TRUE}
-cat(
-  "
- * Status: success
-
- * Candidate solution
-    Final objective value:     6.226441e+01
-
- * Found with
-    Algorithm:     L-BFGS
-
- * Convergence measures
-    |x - x'|               = 2.93e-08 ≰ 0.0e+00
-    |x - x'|/|x'|          = 1.49e-09 ≰ 0.0e+00
-    |f(x) - f(x')|         = 1.42e-14 ≰ 0.0e+00
-    |f(x) - f(x')|/|f(x')| = 2.28e-16 ≰ 0.0e+00
-    |g(x)|                 = 1.17e-09 ≤ 1.0e-08
-
- * Work counters
-    Seconds run:   1  (vs limit Inf)
-    Iterations:    7
-    f(x) calls:    22
-    ∇f(x) calls:   22
-  
-  "
-)
-```
-
-
-```{julia jl-onefactor-res1, eval = FALSE}
-Optim.minimizer(res)
-```
-
-```{r julia-onefactor-res1, echo=FALSE, eval=TRUE}
-cat("
-3-element Array{Float64,1}:
-19.599999980440952
-12.193999992338886
-1.1666666662195693
-")
-```
-
-
-
-
-```{julia jl-onefactor-res2, eval = FALSE}
-Optim.minimum(res)
-```
-
-```{r julia-onefactor-res2, echo = FALSE, eval=TRUE}
-cat('62.30661224610756')
-```
-
-
-###### Two-factor
-
-
-```{julia  jl-two-factor-func, eval = FALSE}
-using LinearAlgebra
-using Statistics
-
-function sfran2_loglike(par::Vector)
-    n = length(y)
-    mu = par[1]
-    
-    sigma2_alpha = exp(par[2])
-    sigma2_gamma = exp(par[3])
-    sigma2 = exp(par[4])
-
-    Sigma = sigma2*I(n) + sigma2_alpha*(Xalpha * Xalpha') + sigma2_gamma * (Xgamma * Xgamma')
-
-    l = -n/2*log(2*pi) - sum(log.(diag(cholesky(Sigma).L))) - .5*(y .- mu)' * (Sigma\(y .- mu))
-
-    l = -l[1]
-    return l
-end
-```
-
-
-```{julia  jl-two-factor-setup, eval = FALSE}
-##################
-### Data setup ###
-##################
-y = [1.39,1.29,1.12,1.16,1.52,1.62,1.88,1.87,1.24,1.18,
-     .95,.96,.82,.92,1.18,1.20,1.47,1.41,1.57,1.65]
-
-
-################################
-### Starting values and test ###
-################################
-yhat = mean(reshape(y, 4, 5), 1)
-
-theta0 = [mean(y), log(var(yhat)), log(var(y)/3), log(var(y)/3)]
-
-sfran2_loglike(theta0)
-```
-
-
-
-
-
-```{julia jl-twofactor-res, eval = FALSE}
-###########
-### Run ###
-###########
-using Optim
-res = optimize(sfran2_loglike, theta0, method = :l_bfgs)
-res
-```
-
-```{r julia-twofactor-res0, echo = FALSE, eval=TRUE}
-cat(
-"
- * Status: success
-
- * Candidate solution
-    Final objective value:     -1.199315e+01
-
- * Found with
-    Algorithm:     L-BFGS
-
- * Convergence measures
-    |x - x'|               = 6.60e-09 ≰ 0.0e+00
-    |x - x'|/|x'|          = 1.08e-09 ≰ 0.0e+00
-    |f(x) - f(x')|         = 5.33e-15 ≰ 0.0e+00
-    |f(x) - f(x')|/|f(x')| = 4.44e-16 ≰ 0.0e+00
-    |g(x)|                 = 7.02e-10 ≤ 1.0e-08
-
- * Work counters
-    Seconds run:   0  (vs limit Inf)
-    Iterations:    9
-    f(x) calls:    23
-    ∇f(x) calls:   23
-
-")
-```
-
-```{julia jl-twofactor-res1, eval=FALSE}
-exp.(Optim.minimizer(res))
-```
-
-
-```{r julia-twofactor-res1, echo = FALSE, eval=TRUE}
-cat(
-"
-4-element Array{Float64,1}:
- 3.7434213772629223
- 0.053720000000540405
- 0.031790000003692476
- 0.002290000000530042
-"
-)
-```
-
-
-
-```{julia jl-twofactor-res2, eval = FALSE}
--2*Optim.minimum(res)
-```
-
-```{r julia-twofactor-res2, echo = FALSE, eval=TRUE}
-cat(
-  "23.98630759443859"
-)
-```
-
-
-#### Matlab
-
-I don't code in Matlab, nor have any particular desire to, so this is provided here just for reference.
-
-##### Mixed Models
-
-###### One-factor
-
-```{Matlab ml-one-fac, eval = FALSE}
-% matlab from Statistical Modeling and Computation (2014 p 311).  See the 
-% associated twofactorRE.R file for details.
-
-function one_factor_re_loglike(mu, sigma2_mu, sigma2, y)
-	[d ni] = size(y);
-	Sigmai = sigma2*eye(ni) + sigma2_mu*ones(ni,ni);
-	l = -(ni*d) / 2*log(2*pi) - d / 2*log(det(Sigmai));
-	for i=1:d
-	  yi = y(i, :)';
-	  l = l - .5*(yi - mu)' * (Sigmai\(yi - mu));
-	end
-end
-
-
-y = [22.6 20.5 20.8;
-     22.6 21.2 20.5;
-     17.3 16.2 16.6;
-     21.4 23.7 23.2;
-     20.9 22.2 22.6;
-     14.5 10.5 12.3;
-     20.8 19.1 21.3;
-     17.4 18.6 18.6;
-     25.1 24.8 24.9;
-     14.9 16.3 16.6];
-
-
-f = @(theta) -one_factor_re_loglike(theta(1), theta(2), theta(3), y);
-ybar = mean(y, 2);
-theta0 = [mean(ybar) var(ybar) mean(var(y, 0, 2))];
-thetahat = fminsearch(f, theta0);
-```
-
-
-###### Two-factor
-
-```{Matlab ml-two-fac, eval = FALSE}
-% matlab from Statistical Modeling and Computation (2014 p 314). See the 
-% associated twofactorRE.R file for details.
-
-function sfran2_loglike(mu, eta_alpha, eta_gamma, eta, y, Xalpha, Xgamma)
-  sigma2_alpha = exp(eta_alpha);
-  sigma2_gamma = exp(eta_gamma);
-  sigma2 = exp(eta);
-  
-  n = length(y);
-  
-  Sigma = sigma2*speye(n) + sigma2_alpha * (Xalpha * Xalpha') + sigma2_gamma * (Xgamma*Xgamma');
-  
-  l = -n/2 * log(2*pi) - sum(log(diag(chol(Sigma)))) - .5*(y - mu)' * (Sigma\(y - mu));
-  
-end
-
-y = [1.39 1.29 1.12 1.16 1.52 1.62 1.88 1.87 1.24 1.18 .95 .96 .82 .92 1.18 1.20 1.47 1.41 1.57 1.65];
-
-Xalpha = kron(speye(5),  ones(4,1));
-
-Xgamma = kron(speye(10), ones(2,1));
-
-f = @(theta) -sfran_loglike(theta(1), theta(2), theta(3), theta(4), y, Xalpha, Xgamma);
-yhat     = mean(reshape(y, 4, 5));
-theta0   = [mean(y) log(var(yhat)) log(var(y)/3) log(var(y)/3)];
-thetahat = fminsearch(f, theta0)
-```
-
-
-##### Gaussian Processes
-
-Any updates on the following can be found at the [repo](https://github.com/probml/pmtk3).
-
-```{Matlab ml-gp, eval = FALSE}
-function S = gaussSample(arg1, arg2, arg3)
-% Returns n samples (in the rows) from a multivariate Gaussian distribution
-%
-% Examples:
-% S = gaussSample(mu, Sigma, 10)
-% S = gaussSample(model, 100)
-% S = gaussSample(struct('mu',[0], 'Sigma', eye(1)), 3)
-
-% This file is from pmtk3.googlecode.com
-
-
-switch nargin
-    case 3,  mu = arg1; Sigma = arg2; n = arg3;
-    case 2, model = arg1; mu = model.mu; Sigma = model.Sigma; n = arg2;
-    case 1, model = arg1; mu = model.mu; Sigma = model.Sigma; n = 1; 
-    otherwise
-        error('bad num args')
-end
-
-A = chol(Sigma, 'lower');
-Z = randn(length(mu), n);
-S = bsxfun(@plus, mu(:), A*Z)';
-
-
-end
-```
-
-```{Matlab ml-gp2, eval = FALSE}
-%% Visualize the effect of change the hyper-params for a 1d GP regression
-% based on demo_gpr by Carl Rasmussen
-%
-%% Generate data
-
-% This file is from pmtk3.googlecode.com
-
-n = 20;
-rand('state',18);
-randn('state',20);
-covfunc = {'covSum', {'covSEiso','covNoise'}};
-loghyper = [log(1.0); log(1.0); log(0.1)];
-x = 15*(rand(n,1)-0.5);
-y = chol(feval(covfunc{:}, loghyper, x))'*randn(n,1);        % Cholesky decomp.
-
-xstar = linspace(-7.5, 7.5, 201)';
-
-hyps = [log(1), log(1), log(0.1);...
-  log(0.3),log(1.08),log(0.00005);...
-  log(3),log(1.16),log(0.89)];
-
-%% compute post pred and plot marginals
-for i=1:size(hyps,1)
-  loghyper = hyps(i,:)';
-  [mu, S2] = gpr(loghyper, covfunc, x, y, xstar);
-  S2 = S2 - exp(2*loghyper(3)); % remove observation noise
-  
-  figure;
-  f = [mu+2*sqrt(S2);flipdim(mu-2*sqrt(S2),1)];
-  fill([xstar; flipdim(xstar,1)], f, [7 7 7]/8, 'EdgeColor', [7 7 7]/8);
-  hold on
-  plot(xstar,mu,'k-','LineWidth',2);
-  plot(x, y, 'k+', 'MarkerSize', 17);
-  axis([-8 8 -3 3])
-  printPmtkFigure(sprintf('gprDemoChangeHparams%d', i));
-end
-```
-
-```{Matlab ml-gp-3, eval = FALSE}
-%% Reproduce figure 2.2 from GP book
-%
-%%
-
-% This file is from pmtk3.googlecode.com
-
-setSeed(0);
-L = 1;
-xs = (-5:0.2:5)';
-ns = length(xs);
-keps = 1e-8;
-muFn = @(x) 0*x(:).^2;
-Kfn = @(x,z) 1*exp(-sq_dist(x'/L,z'/L)/2);
-
-
-% plot sampled functions from the prior
-figure; hold on
-for i=1:3
-  model = struct('mu', muFn(xs), 'Sigma',  Kfn(xs, xs) + 1e-15*eye(size(xs, 1)));
-  fs = gaussSample(model, 1);
-  plot(xs, fs, 'k-', 'linewidth', 2)
-end
-printPmtkFigure('gprDemoNoiseFreePrior')
-
-
-% generate noise-less training data
-Xtrain = [-4, -3, -2, -1, 1]';
-ftrain = sin(Xtrain);
-
-% compute posterior predictive
-K = Kfn(Xtrain, Xtrain); % K
-Ks = Kfn(Xtrain, xs); %K_*
-Kss = Kfn(xs, xs) + keps*eye(length(xs)); % K_** (keps is essential!)
-Ki = inv(K);
-postMu = muFn(xs) + Ks'*Ki*(ftrain - muFn(Xtrain));
-postCov = Kss - Ks'*Ki*Ks;
-
-figure; hold on
-% plot marginal posterior variance as gray band
-mu = postMu(:);
-S2 = diag(postCov);
-f = [mu+2*sqrt(S2);flipdim(mu-2*sqrt(S2),1)];
-fill([xs; flipdim(xs,1)], f, [7 7 7]/8, 'EdgeColor', [7 7 7]/8);
-
-% plot samples from posterior predictive
-for i=1:3
-  model = struct('mu', postMu(:)', 'Sigma', postCov);
-  fs = gaussSample(model, 1);
-  plot(xs, fs, 'k-', 'linewidth', 2)
-  h=plot(Xtrain, ftrain, 'kx', 'markersize', 12, 'linewidth', 3);
-end
-printPmtkFigure('gprDemoNoiseFreePost')
-```
-
-
-
-
-#### Python
-##### Linear Regression
-
-###### Data Setup
-
-```{python py-lm-setup}
+```{python py-linreg-setup, eval=FALSE}
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
@@ -494,28 +45,32 @@ from scipy.optimize import minimize
 np.random.seed(123) # ensures replication
 
 # predictors and response
-N = 100 # sample size
+# increasing N will get estimated values closer to the known parameters
+
+N = 1000 # sample size
 k = 2   # number of desired predictors
 X = np.matrix(np.random.normal(size = N * k)).reshape(N, k) 
-y = -.5 + .2*X[:, 0] + .1*X[:, 1] + np.random.normal(scale = .5, size = N).reshape(N, 1)  # increasing N will get estimated values closer to these
+y = -.5 + .2*X[:, 0] + .1*X[:, 1] + np.random.normal(scale = .5, size = N).reshape(N, 1)  
 
 dfXy = pd.DataFrame(np.column_stack([X, y]), columns = ['X1', 'X2', 'y'])
 ```
 
+##### Functions
 
-```{python}
-def lm_ML(par, X, y):
+A maximum likelihood approach.
+
+```{python py-linreg-ml, eval=FALSE}
+def lm_ml(par, X, y):
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
   # y: response
   
   # setup
-  beta   = par[1:].reshape(3,1)              # coefficients
-  sigma  = par[0]                            # error variance
+  beta   = par[1:].reshape(3, 1)             # coefficients
+  sigma  = par[0]                            # error sd
   # N = X.shape[0]
   
   # linear predictor
-  
   LP = X * beta                              # linear predictor
   mu = LP                                    # identity link in the glm sense
   
@@ -528,95 +83,95 @@ def lm_ML(par, X, y):
   L = -np.sum(np.log(L))       # optim by default is minimization, and we want to maximize the likelihood 
   
   return(L)
-
-
-
 ```
-
-```{python linreg-est}
-X_mm = np.column_stack([np.repeat(1, N).reshape(N, 1), X])
-
-# you may get wranings, they can be ignored
-result = minimize(
-  lm_ML,
-  x0 = [1, 0, 0, 0],
-  bounds = ((0, None), (None, None), (None, None), (None, None)),
-  args = (X_mm, y),
-  method = 'L-BFGS-B', 
-  tol = 1e-12
-)
-
-result.x
-```
-
-
 
 An approach via least squares loss function.
 
-
-```{r lm_LS}
-lm_LS = function(par, X, y) {
-  # arguments- 
+```{python py-linreg-ls, eval=FALSE}
+def lm_ls(par, X, y):
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
   # y: response
   
   # setup
-  beta = par                                   # coefficients
+  beta = par.reshape(3, 1)              # coefficients
+  N = X.shape[0]
+  p = X.shape[1]
   
   # linear predictor
-  LP = X %*% beta                              # linear predictor
-  mu = LP                                      # identity link
-  
-  # calculate least squares loss function
-  L = crossprod(y - mu)
-}
+  LP = X * beta                              # linear predictor
+  mu = LP                                    # identity link in the glm sense
+  # 
+  # # squared error loss
+  # 
+  return(np.sum(np.square(y - mu)))
 ```
 
 
-## Estimation
+##### Estimation
 
-Setup for use with <span class="func" style = "">optim</span>.
+```{python linreg-est, eval=FALSE}
+X_mm = np.column_stack([np.repeat(1, N).reshape(N, 1), X])
 
-
-```{r lm-model-matrix}
-X = cbind(1, X)
-```
-
-Initial values. Note we'd normally want to handle the sigma differently as it's
-bounded by zero, but we'll ignore for demonstration.  Also `sigma2` is not
-required for the LS approach as it is the objective function.
-
-```{r lm-est}
-init = c(1, rep(0, ncol(X)))
-names(init) = c('sigma2', 'intercept', 'b1', 'b2')
-
-optlmML = optim(
-  par = init,
-  fn  = lm_ML,
-  X   = X,
-  y   = y,
-  control = list(reltol = 1e-8)
+# you may get warnings, they can be ignored
+result_ml = minimize(
+  fun = lm_ml,
+  x0  = [1, 0, 0, 0],
+  args    = (X_mm, y),
+  bounds  = ((0, None), (None, None), (None, None), (None, None)),
+  method  = 'L-BFGS-B', 
+  tol     = 1e-12, 
+  options = {'maxiter': 500}
 )
 
-optlmLS = optim(
-  par = init[-1],
-  fn  = lm_LS,
-  X   = X,
-  y   = y,
-  control = list(reltol = 1e-8)
+
+# can use least_squares directly
+# from scipy.optimize import least_squares
+
+result_ls = minimize(
+  lm_ls,
+  x0   = np.array([0, 0, 0]),
+  args = (X_mm, y), 
+  tol     = 1e-12, 
+  options = {'maxiter': 500}
 )
+```
 
-pars_ML = optlmML$par
-pars_LS = c(sigma2 = optlmLS$value / (N - k - 1), optlmLS$par)  # calculate sigma2 and add
+##### Comparison
 
+```{python py-linreg-compare, eval=FALSE}
+import statsmodels.formula.api as smf
+
+model_sm_ols  = smf.ols('y ~ X1 + X2', data = dfXy)
+result_sm_ols = model.fit()
+
+pd.DataFrame(
+  [
+  np.append(result_ml.x[0]**2, result_ml.x[1:]), 
+  np.append(result_ls.fun/(N - X_mm.shape[1] - 1), result_ls.x), 
+  np.append(result_sm_ols.scale, result_sm_ols.params)
+  ], 
+  columns = ['sigma','Int', 'b_X1', 'b_X2'], 
+  index   = ['ML', 'OLS', 'SM']
+  )
+```
+
+```{r py-linreg-results, echo=FALSE}
+cat("
+        sigma       Int      b_X1    b_X2
+ML   0.240332 -0.494647  0.213036  0.0815
+OLS  0.241297 -0.494647  0.213036  0.0815
+SM   0.241055 -0.494647  0.213036  0.0815    
+    ")
 ```
 
 
 
-##### Nelder-Mead
 
-```{python py-nelder-mead}
+
+#### Nelder-Mead
+
+```{python py-nelder-mead, eval = FALSE}
 import copy
 
 '''
@@ -748,9 +303,9 @@ nelder_mead(f, np.array([0., 0., 0.]))
 
 
 
-##### HMM
+#### HMM
 
-```{python}
+```{python py-hmm, eval = FALSE}
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -837,4 +392,457 @@ emit_p = {
    
 viterbi(obs,states,start_p,trans_p,emit_p)
 ```
+
+
+
+
+### Julia Demos
+
+I haven't played with Julia in a very long time, but briefly hacked the old code to get something that worked.  As Julia has gone though notable changes, it's doubtful these are very good as far as Julia code goes, though conceptually they may still provide some utility.  Perhaps at some point I'll reteach myself the basics and come back to these. In any case the code did run on a [Jupyter notebook](https://jupyter.org/). 
+
+####  Mixed Models
+
+##### One-factor
+
+
+```{julia jl-one-factor-func, eval = FALSE}
+#####################
+### Main function ###
+#####################
+
+using LinearAlgebra
+using Statistics
+
+function one_factor_re_loglike(par::Vector)    
+    d, ni = size(y)
+    mu = par[1]
+    sigma2_mu = par[2]
+    sigma2 = par[3]
+
+    Sigmai = sigma2*I(ni) + sigma2_mu*ones(ni, ni)
+    l = -(ni*d)/2*log(2*pi) - d/2*log(det(Sigmai))
+    
+    for i in 1:d
+      yi = y[i,:]
+      l = l - .5(yi .- mu)' * (Sigmai\(yi .- mu))
+    end
+
+    l = -l[1]
+    
+    return l
+end
+```
+
+
+```{julia jl-one-factor-setup, eval = FALSE}
+###################
+### Data set up ###
+###################
+
+y = [22.6 20.5 20.8
+     22.6 21.2 20.5
+     17.3 16.2 16.6
+     21.4 23.7 23.2
+     20.9 22.2 22.6
+     14.5 10.5 12.3
+     20.8 19.1 21.3
+     17.4 18.6 18.6
+     25.1 24.8 24.9
+     14.9 16.3 16.6]
+
+
+################################
+### Starting values and test ###
+################################
+using Statistics
+
+mu0 = mean(y)
+sigma2_mu0 = var(mean(y, dims = 2))
+sigma20 = mean(var(y, dims = 2))
+theta0  = [mu0, sigma2_mu0, sigma20]
+
+### test
+one_factor_re_loglike(theta0)
+```
+
+
+```{julia jl-onefactor-est, eval = FALSE}
+###########
+### Run ###
+###########
+
+using Optim
+res = optimize(one_factor_re_loglike, theta0, LBFGS())
+res
+```
+
+```{r julia-one-factor-res, echo=FALSE, eval=TRUE}
+cat(
+  "
+ * Status: success
+
+ * Candidate solution
+    Final objective value:     6.226441e+01
+
+ * Found with
+    Algorithm:     L-BFGS
+
+ * Convergence measures
+    |x - x'|               = 2.93e-08 ≰ 0.0e+00
+    |x - x'|/|x'|          = 1.49e-09 ≰ 0.0e+00
+    |f(x) - f(x')|         = 1.42e-14 ≰ 0.0e+00
+    |f(x) - f(x')|/|f(x')| = 2.28e-16 ≰ 0.0e+00
+    |g(x)|                 = 1.17e-09 ≤ 1.0e-08
+
+ * Work counters
+    Seconds run:   1  (vs limit Inf)
+    Iterations:    7
+    f(x) calls:    22
+    ∇f(x) calls:   22
+  
+  "
+)
+```
+
+
+```{julia jl-onefactor-res1, eval = FALSE}
+Optim.minimizer(res)
+```
+
+```{r julia-onefactor-res1, echo=FALSE, eval=TRUE}
+cat("
+3-element Array{Float64,1}:
+19.599999980440952
+12.193999992338886
+1.1666666662195693
+")
+```
+
+
+
+
+```{julia jl-onefactor-res2, eval = FALSE}
+Optim.minimum(res)
+```
+
+```{r julia-onefactor-res2, echo = FALSE, eval=TRUE}
+cat('62.30661224610756')
+```
+
+
+##### Two-factor
+
+
+```{julia  jl-two-factor-func, eval = FALSE}
+using LinearAlgebra
+using Statistics
+
+function sfran2_loglike(par::Vector)
+    n = length(y)
+    mu = par[1]
+    
+    sigma2_alpha = exp(par[2])
+    sigma2_gamma = exp(par[3])
+    sigma2 = exp(par[4])
+
+    Sigma = sigma2*I(n) + sigma2_alpha*(Xalpha * Xalpha') + sigma2_gamma * (Xgamma * Xgamma')
+
+    l = -n/2*log(2*pi) - sum(log.(diag(cholesky(Sigma).L))) - .5*(y .- mu)' * (Sigma\(y .- mu))
+
+    l = -l[1]
+    return l
+end
+```
+
+
+```{julia  jl-two-factor-setup, eval = FALSE}
+##################
+### Data setup ###
+##################
+y = [1.39,1.29,1.12,1.16,1.52,1.62,1.88,1.87,1.24,1.18,
+     .95,.96,.82,.92,1.18,1.20,1.47,1.41,1.57,1.65]
+
+
+################################
+### Starting values and test ###
+################################
+yhat = mean(reshape(y, 4, 5), 1)
+
+theta0 = [mean(y), log(var(yhat)), log(var(y)/3), log(var(y)/3)]
+
+sfran2_loglike(theta0)
+```
+
+
+
+
+
+```{julia jl-twofactor-res, eval = FALSE}
+###########
+### Run ###
+###########
+using Optim
+res = optimize(sfran2_loglike, theta0, method = :l_bfgs)
+res
+```
+
+```{r julia-twofactor-res0, echo = FALSE, eval=TRUE}
+cat(
+"
+ * Status: success
+
+ * Candidate solution
+    Final objective value:     -1.199315e+01
+
+ * Found with
+    Algorithm:     L-BFGS
+
+ * Convergence measures
+    |x - x'|               = 6.60e-09 ≰ 0.0e+00
+    |x - x'|/|x'|          = 1.08e-09 ≰ 0.0e+00
+    |f(x) - f(x')|         = 5.33e-15 ≰ 0.0e+00
+    |f(x) - f(x')|/|f(x')| = 4.44e-16 ≰ 0.0e+00
+    |g(x)|                 = 7.02e-10 ≤ 1.0e-08
+
+ * Work counters
+    Seconds run:   0  (vs limit Inf)
+    Iterations:    9
+    f(x) calls:    23
+    ∇f(x) calls:   23
+
+")
+```
+
+```{julia jl-twofactor-res1, eval=FALSE}
+exp.(Optim.minimizer(res))
+```
+
+
+```{r julia-twofactor-res1, echo = FALSE, eval=TRUE}
+cat(
+"
+4-element Array{Float64,1}:
+ 3.7434213772629223
+ 0.053720000000540405
+ 0.031790000003692476
+ 0.002290000000530042
+"
+)
+```
+
+
+
+```{julia jl-twofactor-res2, eval = FALSE}
+-2*Optim.minimum(res)
+```
+
+```{r julia-twofactor-res2, echo = FALSE, eval=TRUE}
+cat(
+  "23.98630759443859"
+)
+```
+
+
+### Matlab Demos
+
+I don't code in Matlab, nor have any particular desire to, so this is provided here just for reference.
+
+#### Mixed Models
+
+##### One-factor
+
+```{Matlab ml-one-fac, eval = FALSE}
+% matlab from Statistical Modeling and Computation (2014 p 311).  See the 
+% associated twofactorRE.R file for details.
+
+function one_factor_re_loglike(mu, sigma2_mu, sigma2, y)
+	[d ni] = size(y);
+	Sigmai = sigma2*eye(ni) + sigma2_mu*ones(ni,ni);
+	l = -(ni*d) / 2*log(2*pi) - d / 2*log(det(Sigmai));
+	for i=1:d
+	  yi = y(i, :)';
+	  l = l - .5*(yi - mu)' * (Sigmai\(yi - mu));
+	end
+end
+
+
+y = [22.6 20.5 20.8;
+     22.6 21.2 20.5;
+     17.3 16.2 16.6;
+     21.4 23.7 23.2;
+     20.9 22.2 22.6;
+     14.5 10.5 12.3;
+     20.8 19.1 21.3;
+     17.4 18.6 18.6;
+     25.1 24.8 24.9;
+     14.9 16.3 16.6];
+
+
+f = @(theta) -one_factor_re_loglike(theta(1), theta(2), theta(3), y);
+ybar = mean(y, 2);
+theta0 = [mean(ybar) var(ybar) mean(var(y, 0, 2))];
+thetahat = fminsearch(f, theta0);
+```
+
+
+##### Two-factor
+
+```{Matlab ml-two-fac, eval = FALSE}
+% matlab from Statistical Modeling and Computation (2014 p 314). See the 
+% associated twofactorRE.R file for details.
+
+function sfran2_loglike(mu, eta_alpha, eta_gamma, eta, y, Xalpha, Xgamma)
+  sigma2_alpha = exp(eta_alpha);
+  sigma2_gamma = exp(eta_gamma);
+  sigma2 = exp(eta);
+  
+  n = length(y);
+  
+  Sigma = sigma2*speye(n) + sigma2_alpha * (Xalpha * Xalpha') + sigma2_gamma * (Xgamma*Xgamma');
+  
+  l = -n/2 * log(2*pi) - sum(log(diag(chol(Sigma)))) - .5*(y - mu)' * (Sigma\(y - mu));
+  
+end
+
+y = [1.39 1.29 1.12 1.16 1.52 1.62 1.88 1.87 1.24 1.18 .95 .96 .82 .92 1.18 1.20 1.47 1.41 1.57 1.65];
+
+Xalpha = kron(speye(5),  ones(4,1));
+
+Xgamma = kron(speye(10), ones(2,1));
+
+f = @(theta) -sfran_loglike(theta(1), theta(2), theta(3), theta(4), y, Xalpha, Xgamma);
+yhat     = mean(reshape(y, 4, 5));
+theta0   = [mean(y) log(var(yhat)) log(var(y)/3) log(var(y)/3)];
+thetahat = fminsearch(f, theta0)
+```
+
+
+#### Gaussian Processes
+
+Any updates on the following can be found at the [repo](https://github.com/probml/pmtk3).
+
+```{Matlab ml-gp, eval = FALSE}
+function S = gaussSample(arg1, arg2, arg3)
+% Returns n samples (in the rows) from a multivariate Gaussian distribution
+%
+% Examples:
+% S = gaussSample(mu, Sigma, 10)
+% S = gaussSample(model, 100)
+% S = gaussSample(struct('mu',[0], 'Sigma', eye(1)), 3)
+
+% This file is from pmtk3.googlecode.com
+
+
+switch nargin
+    case 3,  mu = arg1; Sigma = arg2; n = arg3;
+    case 2, model = arg1; mu = model.mu; Sigma = model.Sigma; n = arg2;
+    case 1, model = arg1; mu = model.mu; Sigma = model.Sigma; n = 1; 
+    otherwise
+        error('bad num args')
+end
+
+A = chol(Sigma, 'lower');
+Z = randn(length(mu), n);
+S = bsxfun(@plus, mu(:), A*Z)';
+
+
+end
+```
+
+```{Matlab ml-gp2, eval = FALSE}
+%% Visualize the effect of change the hyper-params for a 1d GP regression
+% based on demo_gpr by Carl Rasmussen
+%
+%% Generate data
+
+% This file is from pmtk3.googlecode.com
+
+n = 20;
+rand('state',18);
+randn('state',20);
+covfunc = {'covSum', {'covSEiso','covNoise'}};
+loghyper = [log(1.0); log(1.0); log(0.1)];
+x = 15*(rand(n,1)-0.5);
+y = chol(feval(covfunc{:}, loghyper, x))'*randn(n,1);        % Cholesky decomp.
+
+xstar = linspace(-7.5, 7.5, 201)';
+
+hyps = [log(1), log(1), log(0.1);...
+  log(0.3),log(1.08),log(0.00005);...
+  log(3),log(1.16),log(0.89)];
+
+%% compute post pred and plot marginals
+for i=1:size(hyps,1)
+  loghyper = hyps(i,:)';
+  [mu, S2] = gpr(loghyper, covfunc, x, y, xstar);
+  S2 = S2 - exp(2*loghyper(3)); % remove observation noise
+  
+  figure;
+  f = [mu+2*sqrt(S2);flipdim(mu-2*sqrt(S2),1)];
+  fill([xstar; flipdim(xstar,1)], f, [7 7 7]/8, 'EdgeColor', [7 7 7]/8);
+  hold on
+  plot(xstar,mu,'k-','LineWidth',2);
+  plot(x, y, 'k+', 'MarkerSize', 17);
+  axis([-8 8 -3 3])
+  printPmtkFigure(sprintf('gprDemoChangeHparams%d', i));
+end
+```
+
+```{Matlab ml-gp-3, eval = FALSE}
+%% Reproduce figure 2.2 from GP book
+%
+%%
+
+% This file is from pmtk3.googlecode.com
+
+setSeed(0);
+L = 1;
+xs = (-5:0.2:5)';
+ns = length(xs);
+keps = 1e-8;
+muFn = @(x) 0*x(:).^2;
+Kfn = @(x,z) 1*exp(-sq_dist(x'/L,z'/L)/2);
+
+
+% plot sampled functions from the prior
+figure; hold on
+for i=1:3
+  model = struct('mu', muFn(xs), 'Sigma',  Kfn(xs, xs) + 1e-15*eye(size(xs, 1)));
+  fs = gaussSample(model, 1);
+  plot(xs, fs, 'k-', 'linewidth', 2)
+end
+printPmtkFigure('gprDemoNoiseFreePrior')
+
+
+% generate noise-less training data
+Xtrain = [-4, -3, -2, -1, 1]';
+ftrain = sin(Xtrain);
+
+% compute posterior predictive
+K = Kfn(Xtrain, Xtrain); % K
+Ks = Kfn(Xtrain, xs); %K_*
+Kss = Kfn(xs, xs) + keps*eye(length(xs)); % K_** (keps is essential!)
+Ki = inv(K);
+postMu = muFn(xs) + Ks'*Ki*(ftrain - muFn(Xtrain));
+postCov = Kss - Ks'*Ki*Ks;
+
+figure; hold on
+% plot marginal posterior variance as gray band
+mu = postMu(:);
+S2 = diag(postCov);
+f = [mu+2*sqrt(S2);flipdim(mu-2*sqrt(S2),1)];
+fill([xs; flipdim(xs,1)], f, [7 7 7]/8, 'EdgeColor', [7 7 7]/8);
+
+% plot samples from posterior predictive
+for i=1:3
+  model = struct('mu', postMu(:)', 'Sigma', postCov);
+  fs = gaussSample(model, 1);
+  plot(xs, fs, 'k-', 'linewidth', 2)
+  h=plot(Xtrain, ftrain, 'kx', 'markersize', 12, 'linewidth', 3);
+end
+printPmtkFigure('gprDemoNoiseFreePost')
+```
+
+
+
 

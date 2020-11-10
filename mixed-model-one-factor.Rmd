@@ -2,7 +2,7 @@
 
 
 
-An approach for one factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. Unfortunately I did this before knowing they had both Matlab and R code on their website, though the R code here is a little cleaner and has comments. The data regards crop yield from 10 randomly selected locations and three collections at each.  See [one_factor_RE.m](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.m) and  [one_factor_RE.jl](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.jl) for the related Matlab and Julia files, and the respective `twofactorRE.*` for the associated two factor random effects examples.        
+An approach for one factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. Unfortunately I did this before knowing they had both Matlab and R code on their website, though the R code here is a little cleaner and has comments. The data regards crop yield from 10 randomly selected locations and three collections at each.  See [one_factor_RE.m](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.m) and  [one_factor_RE.jl](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.jl) for the related Matlab and Julia files, and the respective `twofactorRE.*` for the associated two factor random effects examples.
 
 
 

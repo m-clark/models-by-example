@@ -7,7 +7,8 @@ author:  |
 # date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
-  bookdown::gitbook
+  bookdown::gitbook:
+    anchor_sections: FALSE
 documentclass: book
 # bibliography: refs.bib
 biblio-style: apalike
@@ -49,7 +50,7 @@ library(tidyverse)
 library(kableExtra)
 library(patchwork)
 
-kable_df = function(data, digits=3, ...) {
+kable_df = function(data, digits = 3, ...) {
   kableExtra::kable(
     data,
     digits = digits,

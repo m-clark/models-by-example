@@ -1,12 +1,6 @@
 
 # Quantile Regression
 
-
-
-
-
-
-
 ### Data Setup
 
 We'll use the <span class="pack" style = "">quantreg</span> package for comparison, and the classic data set on Belgian household income and food expenditure.  Scale income if you want a meaningful 'centercept'.
