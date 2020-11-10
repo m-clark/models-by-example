@@ -383,7 +383,7 @@ S = bsxfun(@plus, mu(:), A*Z)';
 end
 ```
 
-```{Matlab, eval = FALSE}
+```{Matlab ml-gp2, eval = FALSE}
 %% Visualize the effect of change the hyper-params for a 1d GP regression
 % based on demo_gpr by Carl Rasmussen
 %
@@ -422,7 +422,7 @@ for i=1:size(hyps,1)
 end
 ```
 
-```{Matlab, eval = FALSE}
+```{Matlab ml-gp-3, eval = FALSE}
 %% Reproduce figure 2.2 from GP book
 %
 %%
@@ -478,13 +478,363 @@ printPmtkFigure('gprDemoNoiseFreePost')
 ```
 
 
-## Algorithms
+
 
 #### Python
+##### Linear Regression
+
+###### Data Setup
+
+```{python py-lm-setup}
+import numpy as np
+import pandas as pd
+from scipy.stats import norm
+from scipy.optimize import minimize
+
+np.random.seed(123) # ensures replication
+
+# predictors and response
+N = 100 # sample size
+k = 2   # number of desired predictors
+X = np.matrix(np.random.normal(size = N * k)).reshape(N, k) 
+y = -.5 + .2*X[:, 0] + .1*X[:, 1] + np.random.normal(scale = .5, size = N).reshape(N, 1)  # increasing N will get estimated values closer to these
+
+dfXy = pd.DataFrame(np.column_stack([X, y]), columns = ['X1', 'X2', 'y'])
+```
+
+
+```{python}
+def lm_ML(par, X, y):
+  # par: parameters to be estimated
+  # X: predictor matrix with intercept column
+  # y: response
+  
+  # setup
+  beta   = par[1:].reshape(3,1)              # coefficients
+  sigma  = par[0]                            # error variance
+  # N = X.shape[0]
+  
+  # linear predictor
+  
+  LP = X * beta                              # linear predictor
+  mu = LP                                    # identity link in the glm sense
+  
+  # calculate likelihood
+
+  L = norm.pdf(y, loc = mu, scale = sigma) # log likelihood
+  
+  # L =  -.5*N*log(sigma2) - .5*(1/sigma2)*crossprod(y-mu)    # alternate log likelihood form
+
+  L = -np.sum(np.log(L))       # optim by default is minimization, and we want to maximize the likelihood 
+  
+  return(L)
+
+
+
+```
+
+```{python linreg-est}
+X_mm = np.column_stack([np.repeat(1, N).reshape(N, 1), X])
+
+# you may get wranings, they can be ignored
+result = minimize(
+  lm_ML,
+  x0 = [1, 0, 0, 0],
+  bounds = ((0, None), (None, None), (None, None), (None, None)),
+  args = (X_mm, y),
+  method = 'L-BFGS-B', 
+  tol = 1e-12
+)
+
+result.x
+```
+
+
+
+An approach via least squares loss function.
+
+
+```{r lm_LS}
+lm_LS = function(par, X, y) {
+  # arguments- 
+  # par: parameters to be estimated
+  # X: predictor matrix with intercept column
+  # y: response
+  
+  # setup
+  beta = par                                   # coefficients
+  
+  # linear predictor
+  LP = X %*% beta                              # linear predictor
+  mu = LP                                      # identity link
+  
+  # calculate least squares loss function
+  L = crossprod(y - mu)
+}
+```
+
+
+## Estimation
+
+Setup for use with <span class="func" style = "">optim</span>.
+
+
+```{r lm-model-matrix}
+X = cbind(1, X)
+```
+
+Initial values. Note we'd normally want to handle the sigma differently as it's
+bounded by zero, but we'll ignore for demonstration.  Also `sigma2` is not
+required for the LS approach as it is the objective function.
+
+```{r lm-est}
+init = c(1, rep(0, ncol(X)))
+names(init) = c('sigma2', 'intercept', 'b1', 'b2')
+
+optlmML = optim(
+  par = init,
+  fn  = lm_ML,
+  X   = X,
+  y   = y,
+  control = list(reltol = 1e-8)
+)
+
+optlmLS = optim(
+  par = init[-1],
+  fn  = lm_LS,
+  X   = X,
+  y   = y,
+  control = list(reltol = 1e-8)
+)
+
+pars_ML = optlmML$par
+pars_LS = c(sigma2 = optlmLS$value / (N - k - 1), optlmLS$par)  # calculate sigma2 and add
+
+```
+
+
 
 ##### Nelder-Mead
+
+```{python py-nelder-mead}
+import copy
+
+'''
+    Francois Chollet's Nelder-Mead in Python.
+    https://github.com/fchollet/nelder-mead/blob/master/nelder_mead.py
+    Pure Python/Numpy implementation of the Nelder-Mead algorithm.
+    Reference: https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+'''
+
+
+def nelder_mead(
+  f,
+  x_start,
+  step = 0.1,
+  no_improve_thr  = 10e-6,
+  no_improv_break = 10,
+  max_iter = 0,
+  alpha = 1.,
+  gamma = 2.,
+  rho   = 0.5,
+  sigma = 0.5
+):
+    '''
+        @param f (function): function to optimize, must return a scalar score
+            and operate over a numpy array of the same dimensions as x_start
+        @param x_start (numpy array): initial position
+        @param step (float): look-around radius in initial step
+        @no_improv_thr,  no_improv_break (float, int): break after no_improv_break iterations with
+            an improvement lower than no_improv_thr
+        @max_iter (int): always break after this number of iterations.
+            Set it to 0 to loop indefinitely.
+        @alpha, gamma, rho, sigma (floats): parameters of the algorithm
+            (see Wikipedia page for reference)
+        return: tuple (best parameter array, best score)
+    '''
+
+    # init
+    dim = len(x_start)
+    prev_best = f(x_start)
+    no_improv = 0
+    res = [[x_start, prev_best]]
+
+    for i in range(dim):
+        x = copy.copy(x_start)
+        x[i] = x[i] + step
+        score = f(x)
+        res.append([x, score])
+
+    # simplex iter
+    iters = 0
+    while 1:
+        # order
+        res.sort(key=lambda x: x[1])
+        best = res[0][1]
+
+        # break after max_iter
+        if max_iter and iters >= max_iter:
+            return res[0]
+        iters += 1
+
+        # break after no_improv_break iterations with no improvement
+        if iters//10 == 0:
+          print('...best so far:', best)
+
+        if best < prev_best - no_improve_thr:
+            no_improv = 0
+            prev_best = best
+        else:
+            no_improv += 1
+
+        if no_improv >= no_improv_break:
+            return res[0]
+
+        # centroid
+        x0 = [0.] * dim
+        for tup in res[:-1]:
+            for i, c in enumerate(tup[0]):
+                x0[i] += c / (len(res)-1)
+
+        # reflection
+        xr = x0 + alpha*(x0 - res[-1][0])
+        rscore = f(xr)
+        if res[0][1] <= rscore < res[-2][1]:
+            del res[-1]
+            res.append([xr, rscore])
+            continue
+
+        # expansion
+        if rscore < res[0][1]:
+            xe = x0 + gamma*(x0 - res[-1][0])
+            escore = f(xe)
+            if escore < rscore:
+                del res[-1]
+                res.append([xe, escore])
+                continue
+            else:
+                del res[-1]
+                res.append([xr, rscore])
+                continue
+
+        # contraction
+        xc = x0 + rho*(x0 - res[-1][0])
+        cscore = f(xc)
+        if cscore < res[-1][1]:
+            del res[-1]
+            res.append([xc, cscore])
+            continue
+
+        # reduction
+        x1 = res[0][0]
+        nres = []
+        for tup in res:
+            redx = x1 + sigma*(tup[0] - x1)
+            score = f(redx)
+            nres.append([redx, score])
+        res = nres
+
+
+if __name__ == "__main__":
+    # test
+    import math
+    import numpy as np
+
+    def f(x):
+        return math.sin(x[0]) * math.cos(x[1]) * (1. / (abs(x[2]) + 1))
+
+nelder_mead(f, np.array([0., 0., 0.]))
+```
 
 
 
 ##### HMM
+
+```{python}
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+From the wikipedia page with slight modification
+https://en.wikipedia.org/wiki/Viterbi_algorithm#Example
+"""
+
+def viterbi(obs, states, start_p, trans_p, emit_p):
+    V = [{}]
+
+    for st in states:
+        V[0][st] = {"prob": start_p[st] * emit_p[st][obs[0]], "prev": None}
+
+    # Run Viterbi when t > 0
+
+    for t in range(1, len(obs)):
+        V.append({})
+
+        for st in states:
+            max_tr_prob = max(V[t-1][prev_st]["prob"]*trans_p[prev_st][st] for prev_st in states)
+
+            for prev_st in states:
+                if V[t-1][prev_st]["prob"] * trans_p[prev_st][st] == max_tr_prob:
+                    max_prob = max_tr_prob * emit_p[st][obs[t]]
+                    V[t][st] = {"prob": max_prob, "prev": prev_st}
+                    break
+
+    for line in dptable(V):
+        print(line)
+
+    opt = []
+
+    # The highest probability
+    max_prob = max(value["prob"] for value in V[-1].values())
+    previous = None
+
+    # Get most probable state and its backtrack
+    for st, data in V[-1].items():
+        if data["prob"] == max_prob:
+            opt.append(st)
+            previous = st
+            break
+
+    # Follow the backtrack till the first observation
+    for t in range(len(V) - 2, -1, -1):
+        opt.insert(0, V[t + 1][previous]["prev"])
+        previous = V[t + 1][previous]["prev"]
+
+    print('The steps of states are ' + ' '.join(opt) + ' with highest probability of %s' % max_prob)
+
+
+def dptable(V):
+    # Print a table of steps from dictionary
+    yield " ".join(("%12d" % i) for i in range(len(V)))
+    
+    for state in V[0]:
+        yield "%.7s: " % state + " ".join("%.7s" % ("%f" % v[state]["prob"]) for v in V)
+
+# The function viterbi takes the following arguments: obs is the sequence of
+# observations, e.g. ['normal', 'cold', 'dizzy']; states is the set of hidden
+# states; start_p is the start probability; trans_p are the transition
+# probabilities; and emit_p are the emission probabilities. For simplicity of
+# code, we assume that the observation sequence obs is non-empty and that
+# trans_p[i][j] and emit_p[i][j] is defined for all states i,j.
+
+# In the running example, the forward/Viterbi algorithm is used as follows:
+
+
+obs = ('normal', 'cold', 'dizzy')
+states = ('Healthy', 'Fever')
+
+
+start_p = {'Healthy': 0.6, 'Fever': 0.4}
+
+trans_p = {
+   'Healthy' : {'Healthy': 0.7, 'Fever': 0.3},
+   'Fever' : {'Healthy': 0.4, 'Fever': 0.6}
+   }
+   
+emit_p = {
+   'Healthy' : {'normal': 0.5, 'cold': 0.4, 'dizzy': 0.1},
+   'Fever' : {'normal': 0.1, 'cold': 0.3, 'dizzy': 0.6}
+   }
+   
+viterbi(obs,states,start_p,trans_p,emit_p)
+```
 
