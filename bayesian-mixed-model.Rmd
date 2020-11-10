@@ -1,0 +1,181 @@
+# Bayesian Mixed Model
+
+
+
+Estimate the classic `sleepstudy` example of <span class="pack" style = "">lme4</span>.  Part of this code was based on that seen on this old [Stan thread](https://groups.google.com/d/msg/stan-users/pdfignYQcas/BL0LPbGA2eMJ), but you can look at the underlying code for <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span> for a fully optimized approach compared to this conceptual one.
+            
+## Data Setup
+
+The data comes from the <span class="pack" style = "">lme4</span> package.  It deals with reaction time to some task vs. sleep deprivation over 10 days.
+
+```{r bayesian-mixed-setup}
+library(tidyverse)
+library(lme4)
+
+data(sleepstudy)
+# ?sleepstudy
+
+dat = list(
+  N = nrow(sleepstudy),
+  I = n_distinct(sleepstudy$Subject),
+  Subject = as.numeric(sleepstudy$Subject),
+  Days    = sleepstudy$Days,
+  RT      = sleepstudy$Reaction
+)
+```
+
+
+
+
+
+## Model Code
+
+Create the Stan model code.
+
+```{stan stan-mixed-code, output.var='bayes_mixed'}
+data {                                      // data setup
+  int<lower = 1> N;                         // sample size
+  int<lower = 1> I;                         // number of subjects
+  vector<lower = 0>[N] RT;                  // Response: reaction time
+  vector<lower = 0>[N] Days;                // Days in study
+  int<lower = 1, upper = I> Subject[N];     // Subject
+}
+
+transformed data {
+  real IntBase;
+  real RTsd;
+  
+  IntBase = mean(RT);                    // Intercept starting point
+  RTsd    = sd(RT);
+}
+
+parameters {
+  real Intercept01;                       // fixed effects
+  real beta01;
+  vector<lower = 0>[2] sigma_u;           // sd for ints and slopes
+  real<lower = 0> sigma_y;                // residual sd
+  vector[2] gamma[I];                     // individual effects
+  cholesky_factor_corr[2] Omega_chol;     // correlation matrix for random intercepts and slopes (chol decomp)
+}
+
+transformed parameters {
+  vector[I] gammaIntercept;               // individual effects (named)
+  vector[I] gammaDays;
+  real Intercept;
+  real beta;
+
+  Intercept = IntBase + Intercept01 * RTsd;
+  beta = beta01 * 10;
+
+  for (i in 1:I){  
+    gammaIntercept[i]  = gamma[i, 1];
+    gammaDays[i] = gamma[i, 2];
+  }
+
+} 
+
+model {
+  matrix[2,2] D;
+  matrix[2,2] DC;
+  vector[N] mu;                         // Linear predictor
+  vector[2] gamma_mu;                   // vector of Intercept and beta
+
+  D = diag_matrix(sigma_u);
+  gamma_mu[1] = Intercept;
+  gamma_mu[2] = beta;
+
+  // priors
+  Intercept01 ~ normal(0, 1);             // example of weakly informative priors;
+  beta01 ~ normal(0, 1);                  // remove to essentially duplicate lme4 via improper prior
+
+  Omega_chol ~  lkj_corr_cholesky(2.0); 
+
+  sigma_u ~ cauchy(0, 2.5);               // prior for RE scale
+  sigma_y ~ cauchy(0, 2.5);               // prior for residual scale
+
+  DC = D * Omega_chol;
+
+  for (i in 1:I)                          // loop for Subject random effects
+    gamma[i] ~ multi_normal_cholesky(gamma_mu, DC);
+
+  // likelihood
+  for (n in 1:N)                          
+    mu[n] = gammaIntercept[Subject[n]] + gammaDays[Subject[n]] * Days[n];
+
+  RT ~ normal(mu, sigma_y);
+}
+
+generated quantities {
+  matrix[2, 2] Omega;                     // correlation of RE
+  vector[N] y_hat;
+  
+  Omega = tcrossprod(Omega_chol);
+  
+  for (n in 1:N)                 
+    y_hat[n] = gammaIntercept[Subject[n]] + gammaDays[Subject[n]] * Days[n];
+}
+```
+
+
+
+## Estimation
+
+Run the model and examine results.  The following assumes a character string or file (`bayes_mixed`) of the previous model code.
+
+```{r bayesian-mixed-est, results='hide'}
+library(rstan)
+
+fit = sampling(
+  bayes_mixed,
+  data = dat,
+  thin = 4,
+  verbose = FALSE
+)
+```
+
+
+
+## Comparison
+
+Compare to <span class="pack" style = "">lme4</span> result.
+
+```{r bayesian-mixed-compare}
+print(
+  fit,
+  digits_summary = 3,
+  pars  = c('Intercept', 'beta', 'sigma_y', 'sigma_u', 'Omega[1,2]'),
+  probs = c(.025, .5, .975)
+)
+
+mod_lme = lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
+mod_lme
+
+cbind(
+  coef(mod_lme)$Subject,
+  matrix(get_posterior_mean(fit, par = c('gammaIntercept', 'gammaDays'))[, 'mean-all chains'],
+         ncol = 2)
+)
+```
+
+
+
+## Visualize
+
+Visualize the posterior predictive distribution.
+
+```{r bayes-mixed-pp}
+# shinystan::launch_shinystan(fit)  # diagnostic plots
+
+library(bayesplot)
+
+pp_check(
+  dat$RT, 
+  rstan::extract(fit, par = 'y_hat')$y_hat[1:10, ], 
+  fun = 'dens_overlay'
+)
+```
+
+
+
+
+

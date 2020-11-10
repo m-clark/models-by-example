@@ -1,0 +1,167 @@
+# Bayesian Linear Regression
+
+
+The following provides a simple working example of a standard regression model
+using Stan via <span class="pack" style = "">rstan</span>. It will hopefully to
+allow some to more easily jump in to using Stan if they are comfortable with R.
+You would normally just use <span class="pack" style = "">rstanarm</span> or
+<span class="pack" style = "">brms</span> for such a model however.
+
+
+
+## Data Setup
+
+
+Create a correlation matrix of one's choosing assuming response as last column/row.
+
+```{r bayes-linreg-setup}
+library(tidyverse)
+
+cormat = matrix(
+  c(
+    1, .2, -.1, .3,
+    .2, 1, .1, .2,
+    -.1, .1, 1, .1,
+    .3, .2, .1, 1
+  ),
+  ncol = 4, 
+  byrow = TRUE
+)
+
+cormat
+
+cormat = Matrix::nearPD(cormat, corr = TRUE)$mat
+
+n = 1000
+means = rep(0, ncol(cormat))
+d = MASS::mvrnorm(n, means, cormat, empirical = TRUE)
+colnames(d) = c('X1', 'X2', 'X3', 'y')
+
+d[,'y'] = d[,'y'] - .1 # unnecessary, just to model a non-zero intercept
+
+str(d)
+cor(d)
+
+### Prepare for Stan
+
+# create X (add intercept column) and y for vectorized version later
+X = cbind(1, d[,1:3]); colnames(X) = c('Intercept', 'X1', 'X2', 'X3')
+y = d[,4]
+```
+
+
+## Model Code
+
+Initial preparation, create the data list object.
+
+```{r bayes-linreg-standat}
+dat = list(
+  N = n,
+  k = 4,
+  y = y,
+  X = X
+)
+```
+
+Create the Stan model code.
+
+```{stan stan-linreg-code, output.var='bayes_linreg'}
+data {                      // Data block; declarations only
+  int<lower = 0> N;         // Sample size                         
+  int<lower = 0> k;         // Dimension of model matrix
+  matrix [N, k] X;          // Model Matrix
+  vector[N] y;              // Target
+}
+
+/* transformed data {       // Transformed data block; declarations and statements. None needed here.
+ }
+*/
+
+parameters {                // Parameters block; declarations only
+  vector[k] beta;           // Coefficient vector
+  real<lower = 0> sigma;    // Error scale
+}
+
+transformed parameters {    // Transformed parameters block; declarations and statements.
+
+}
+
+model {                     // Model block; declarations and statements.
+  vector[N] mu;
+  mu = X * beta;            // Linear predictor
+
+  // priors
+  beta  ~ normal(0, 1);
+  sigma ~ cauchy(0, 1);     // With sigma bounded at 0, this is half-cauchy 
+
+  // likelihood
+  y ~ normal(mu, sigma);
+}
+
+generated quantities {      // Generated quantities block; declarations and statements.
+  real rss;                
+  real totalss;
+  real R2;                  // Calculate Rsq as a demonstration
+  vector[N] y_hat;
+  
+  y_hat = X * beta;
+  rss = dot_self(y - y_hat);
+  totalss = dot_self(y - mean(y));
+  R2 = 1 - rss/totalss;
+}
+```
+
+
+## Estimation
+
+Run the model and examine results.  The following assumes a character string or file (`bayes_linreg`) of the previous model code.
+
+```{r bayes-linreg-est, results='hide'}
+library(rstan)
+
+fit = sampling(
+  bayes_linreg,
+  data  = dat,
+  thin  = 4,
+  verbose = FALSE
+)
+```
+
+Note the `pars` argument in the following.  You must specify desired parameters or it will print out everything, including the `y_hat`, i.e. expected values.  Also note that by taking into account the additional uncertainty estimating sigma, you get a shrunken Rsq (see Gelman & Pardoe 2006 sec. 3).
+
+```{r bayes-linreg-est-show}
+print(
+  fit,
+  digits_summary = 3,
+  pars  = c('beta', 'sigma', 'R2'),
+  probs = c(.025, .5, .975)
+)
+```
+
+
+
+##  Comparison
+
+Compare to basic <span class="func" style = "">lm</span> result.
+
+```{r bayes-linreg-compare}
+modlm = lm(y ~ ., data.frame(d))
+# Compare
+summary(modlm)
+```
+
+## Visualize
+
+Visualize the posterior predictive distribution.
+
+```{r bayes-linreg-pp}
+# shinystan::launch_shinystan(fit)   # diagnostic plots
+library(bayesplot)
+
+pp_check(
+  dat$y, 
+  rstan::extract(fit, par = 'y_hat')$y_hat[1:10, ], 
+  fun = 'dens_overlay'
+)
+```
+
