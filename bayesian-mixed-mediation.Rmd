@@ -1,0 +1,459 @@
+# Bayesian Multilevel Mediation
+
+The following demonstrates an indirect effect in a multilevel situation.  It is
+based on Yuan & MacKinnon 2009, which provides some Bugs code.  In what follows
+we essentially have two models, one where the 'mediator' is the response; the
+other regards the primary response of interest (noted `y`).  They will be referred
+to with Med or Main respectively.  
+
+
+## Data Setup 
+
+The two main models are expressed conceptually as follows:
+
+$$Mediator \sim \alpha_{Med} + \beta_{Med}\cdot X$$
+$$y \sim \alpha_{Main} + \beta_{1\_{Main}}\cdot X + \beta_{2\_{Main}}\cdot Mediator$$
+
+However, there will be random effects for a grouping variable for each coefficient, i.e. random intercepts and slopes.
+
+Let's create data to this effect.
+
+```{r bayes-med-setup}
+set.seed(8675309)
+
+## random effects for mediator model
+# create cov matrix of RE etc. with no covariance between model random effects
+# covmat_RE = matrix(c(1,-.15,0,0,0,
+#                       -.15,.4,0,0,0,
+#                       0,0,1,-.1,.15,
+#                       0,0,-.1,.3,0,
+#                       0,0,.15,0,.2), nrow=5, byrow = T)
+
+# or with slight cov added to indirect coefficient RE; both matrices are pos def
+covmat_RE = matrix(c(1,-.15,0,0,0,
+                     -.15,.64,0,0,-.1,
+                     0,0,1,-.1,.15,
+                     0,0,-.1,.49,0,
+                     0,-.1,.15,0,.25), nrow = 5, byrow = TRUE)
+
+# inspect
+covmat_RE
+
+# inspect as correlation
+cov2cor(covmat_RE)
+
+# simulate
+re = MASS::mvrnorm(50,
+                   mu    = rep(0, 5),
+                   Sigma = covmat_RE,
+                   empirical = TRUE)
+
+# random effects for mediator model
+ranef_alpha_Med = rep(re[, 1], e = 10)
+ranef_beta_Med  = rep(re[, 2], e = 10)
+
+# random effects for main model                                                 
+ranef_alpha_Main = rep(re[, 3], e = 10)
+ranef_beta1_Main = rep(re[, 4], e = 10)
+ranef_beta2_Main = rep(re[, 5], e = 10)
+
+## fixed effects
+alpha_Med = 2
+beta_Med  = .2
+
+alpha_Main = 1
+beta1_Main = .3
+beta2_Main = -.2
+
+# residual variance
+resid_Med  = MASS::mvrnorm(500, 0, .75^2, empirical = TRUE)
+resid_Main = MASS::mvrnorm(500, 0, .5^2, empirical = TRUE)
+
+
+# Collect parameters for later comparison
+params = c(
+  alpha_Med  = alpha_Med,
+  beta_Med   = beta_Med,
+  sigma_Med  = sd(resid_Med),
+  alpha_Main = alpha_Main,
+  beta1_Main = beta1_Main,
+  beta2_Main = beta2_Main,
+  sigma_y   = sd(resid_Main),
+  alpha_Med_sd = sqrt(diag(covmat_RE)[1]),
+  beta_Med_sd  = sqrt(diag(covmat_RE)[2]),
+  alpha_sd = sqrt(diag(covmat_RE)[3]),
+  beta1_sd = sqrt(diag(covmat_RE)[4]),
+  beta2_sd = sqrt(diag(covmat_RE)[5])
+)
+
+ranefs =  cbind(
+  gamma_alpha_Med = unique(ranef_alpha_Med),
+  gamma_beta_Med  = unique(ranef_beta_Med),
+  gamma_alpha    = unique(ranef_alpha_Main),
+  gamma_beta1    = unique(ranef_beta1_Main),
+  gamma_beta2    = unique(ranef_beta2_Main)
+)
+```
+
+Finally, we can create the data for analysis.
+
+```{r bayes-med-setup2}
+X = rnorm(500, sd = 2)
+
+Med = (alpha_Med + ranef_alpha_Med) + (beta_Med + ranef_beta_Med) * X + resid_Med[, 1]
+
+y   = (alpha_Main + ranef_alpha_Main) + (beta1_Main + ranef_beta1_Main) * X + 
+  (beta2_Main + ranef_beta2_Main) *  Med + resid_Main[, 1]
+
+group = rep(1:50, e = 10)
+
+standat = list(
+  X   = X,
+  Med = Med,
+  y   = y,
+  Group = group,
+  J = length(unique(group)),
+  N = length(y)
+)
+```
+
+
+
+
+
+
+
+
+## Model Code
+
+
+In the following, the cholesky decomposition of the RE covariance matrix is used for efficiency.  As a rough guide, the default data where `N = 500` took about 5 min to run for the main model with `iter=12000` and `warmup = 2000`.
+
+
+
+```{stan bayes-med-model, output.var='bayes_med_model'}
+data {
+  int<lower = 1> N;                              // Sample size
+  vector[N] X;                                   // Explanatory variable
+  vector[N] Med;                                 // Mediator
+  vector[N] y;                                   // Response
+  int<lower = 1> J;                              // Number of groups
+  int<lower = 1,upper = J> Group[N];             // Groups
+}
+
+parameters{
+  real alpha_Med;                                // mediator model reg parameters and related
+  real beta_Med;
+  real<lower = 0> sigma_alpha_Med;
+  real<lower = 0> sigma_beta_Med;
+  real<lower = 0> sigmaMed;
+
+  real alpha_Main;                               // main model reg parameters and related
+  real beta1_Main;
+  real beta2_Main;
+  real<lower = 0> sigma_alpha;
+  real<lower = 0> sigma_beta1;
+  real<lower = 0> sigma_beta2;
+  real<lower = 0> sigma_y;
+
+  cholesky_factor_corr[5] Omega_chol;            // chol decomp of corr matrix for random effects
+
+  vector<lower = 0>[5] sigma_ranef;              // sd for random effects
+
+  matrix[J,5] gamma;                             // random effects
+}
+
+transformed parameters{
+  vector[J] gamma_alpha_Med;
+  vector[J] gamma_beta_Med;
+
+  vector[J] gamma_alpha;
+  vector[J] gamma_beta1;
+  vector[J] gamma_beta2;
+
+  for (j in 1:J){
+    gamma_alpha_Med[j] = gamma[j,1];
+    gamma_beta_Med[j]  = gamma[j,2];
+    gamma_alpha[j] = gamma[j,3];
+    gamma_beta1[j] = gamma[j,4];
+    gamma_beta2[j] = gamma[j,5];
+  }
+}
+
+model {
+  vector[N] mu_y;                                // linear predictors for response and mediator
+  vector[N] mu_Med;
+  matrix[5,5] D;
+  matrix[5,5] DC;
+
+  // priors
+  // mediator model
+  // fixef
+  // for scale params the cauchy is a little more informative here due 
+  // to the nature of the data
+  sigma_alpha_Med ~ cauchy(0, 1);                
+  sigma_beta_Med ~ cauchy(0, 1);
+  alpha_Med ~ normal(0, sigma_alpha_Med);   
+  beta_Med  ~ normal(0, sigma_beta_Med);
+
+  // residual scale
+  sigmaMed ~ cauchy(0, 1);
+
+  // main model
+  // fixef
+  sigma_alpha ~ cauchy(0, 1);
+  sigma_beta1 ~ cauchy(0, 1);
+  sigma_beta2 ~ cauchy(0, 1);
+  alpha_Main ~ normal(0, sigma_alpha);      
+  beta1_Main ~ normal(0, sigma_beta1);
+  beta2_Main ~ normal(0, sigma_beta2);
+
+  // residual scale
+  sigma_y ~ cauchy(0, 1);
+
+  // ranef sampling via cholesky decomposition
+  sigma_ranef ~ cauchy(0, 1);
+  Omega_chol  ~  lkj_corr_cholesky(2.0);
+
+  D  = diag_matrix(sigma_ranef);
+  DC = D * Omega_chol;
+  
+  for (j in 1:J)                                 // loop for Group random effects
+    gamma[j] ~ multi_normal_cholesky(rep_vector(0, 5), DC);
+
+  // Linear predictors
+  for (n in 1:N){
+    mu_Med[n] = alpha_Med + gamma_alpha_Med[Group[n]] + 
+    (beta_Med + gamma_beta_Med[Group[n]]) * X[n];
+    
+    mu_y[n]   = alpha_Main + gamma_alpha[Group[n]] + 
+    (beta1_Main + gamma_beta1[Group[n]]) * X[n] + 
+    (beta2_Main + gamma_beta2[Group[n]]) * Med[n] ;
+  }
+  
+  
+  // sampling for primary models
+  Med ~ normal(mu_Med, sigmaMed);
+  y   ~ normal(mu_y, sigma_y);
+}
+
+generated quantities{
+  real naive_ind_effect;
+  real avg_ind_effect;
+  real total_effect;
+  matrix[5,5] cov_RE;
+  vector[N] y_hat;    
+  
+  cov_RE = diag_matrix(sigma_ranef) * tcrossprod(Omega_chol) * diag_matrix(sigma_ranef);
+
+  naive_ind_effect = beta_Med*beta2_Main;
+  avg_ind_effect   = beta_Med*beta2_Main + cov_RE[2,5];
+  total_effect     = avg_ind_effect + beta1_Main;
+  
+  for (n in 1:N){
+    y_hat[n]   = alpha_Main + gamma_alpha[Group[n]] + 
+    (beta1_Main + gamma_beta1[Group[n]]) * X[n] + 
+    (beta2_Main + gamma_beta2[Group[n]]) * Med[n] ;
+  }
+}
+```
+
+
+<!-- ######### -->
+<!-- ### Debugging and Setup ### -->
+<!-- ######### -->
+
+
+<!-- # bug detector -->
+<!-- library(rstan) -->
+<!-- p = proc.time() -->
+<!-- fit0 = stan(model_code = modelStan, data = standat, iter = 400, warmup=200,  -->
+<!--             thin=1, chains = 1, verbose = F) -->
+<!-- proc.time() - p -->
+
+<!-- # print(fit0) -->
+
+<!-- # traceplot(fit0) -->
+
+
+## Estimation
+
+Run the model and examine results.  The following assumes a character string or file (`bayes_mixed`) of the previous model code.
+
+```{r bayes-med-est, cache.rebuild=F}
+library(rstan)
+
+fit = sampling(
+  bayes_med_model,
+  data    = standat,
+  iter    = 3000,
+  warmup  = 2000,
+  thin    = 4,
+  cores   = 4,
+  control = list(adapt_delta = .99, max_treedepth = 15)
+)
+```
+
+
+
+
+## Comparison
+
+Main parameters include fixed and random effect standard deviation, plus those related to indirect effect.
+
+```{r bayes-med-comp1}
+mainpars = c(
+  'alpha_Med',
+  'beta_Med',
+  'sigmaMed',
+  'alpha_Main',
+  'beta1_Main',
+  'beta2_Main',
+  'sigma_y',
+  'sigma_ranef',
+  'naive_ind_effect',
+  'avg_ind_effect',
+  'total_effect'
+)
+
+print(
+  fit,
+  digits = 3,
+  probs  = c(.025, .5, 0.975),
+  pars   = mainpars
+)
+```
+
+
+
+We can use a piecemeal mixed model via <span class='pack'>lme4</span> for initial comparison.  However, it can't directly estimate mediated effect, and it won't pick up on correlation of random effects between models.
+
+```{r bayes-med-comp2}
+library(lme4)
+mod_Med = lmer(Med ~ X + (1 + X | group))
+summary(mod_Med)
+
+mod_Main = lmer(y ~ X + Med + (1 + X + Med | group))
+summary(mod_Main)
+
+# should equal the naive estimate in the following code
+lme_indirect_effect = fixef(mod_Med)['X'] * fixef(mod_Main)['Med']
+```
+
+
+
+Using the <span class='pack'>mediation</span> package will provide a better estimate, and can handle this simple mixed model setting.
+
+```{r bayes-med-comp3}
+# library(mediation)
+
+mediation_mixed = mediation::mediate(
+  model.m  = mod_Med,
+  model.y  = mod_Main,
+  treat    = 'X',
+  mediator = 'Med'
+)
+
+summary(mediation_mixed)
+```
+
+
+
+Extract parameters for comparison.
+
+```{r bayes-med-comapre-extract}
+pars_primary = get_posterior_mean(fit, pars = mainpars)[, 5]
+pars_re_cov  = get_posterior_mean(fit, pars = 'Omega_chol')[, 5] # or take 'cov_RE' from monte carlo sim
+pars_re      = get_posterior_mean(fit, pars = c('sigma_ranef'))[, 5]
+```
+
+
+Fixed effects and random effect variances.
+
+```{r bayes-med-compare-fe-re-var, echo = FALSE}
+tibble(
+  param = names(params),
+  true  = params,
+  bayes = pars_primary[1:12],
+  lme4  = c(
+    mod_Med@beta,
+    summary(mod_Med)$sigma,
+    mod_Main@beta,
+    summary(mod_Main)$sigma,
+    summary(mod_Med)$varcor$group[1, 1]^.5,
+    summary(mod_Med)$varcor$group[2, 2]^.5,
+    summary(mod_Main)$varcor$group[1, 1]^.5,
+    summary(mod_Main)$varcor$group[2, 2]^.5,
+    summary(mod_Main)$varcor$group[3, 3]^.5
+  )
+) %>% 
+  kable_df()
+```
+
+
+
+Compare the covariances of the random effects. The first shows the full covariance matrix for mediator and outcome, then broken out separately.
+
+```{r bayes-med-compare-re-cov, echo = FALSE}
+covmat_RE_est = diag(pars_re) %*% 
+  tcrossprod(matrix(pars_re_cov, ncol = 5, byrow = T)) %*%
+  diag(pars_re)
+
+list(true = covmat_RE, estimates = round(covmat_RE_est, 2))
+
+vcov_Med = covmat_RE_est[1:2, 1:2]
+
+list(
+  vcov_Med = covmat_RE[1:2, 1:2],
+  vcov_Med_bayes = round(vcov_Med, 2),
+  vcov_Med_lme4  = round(summary(mod_Med)$varcor$group[1:2, 1:2], 2)
+)
+
+vcov_Main = covmat_RE_est[3:5, 3:5]
+list(
+  vcov_Main = covmat_RE[3:5, 3:5],
+  vcov_Main_bayes = round(vcov_Main, 2),
+  vcov_Main_lme4  = round(summary(mod_Main)$varcor$group[1:3, 1:3], 2)
+)
+```
+
+
+
+Compare indirect effects
+
+```{r bayes-med-compare-ind, echo=FALSE}
+tibble(
+  true = beta_Med * beta2_Main + covmat_RE[2, 5],
+  est  = get_posterior_mean(fit, 'avg_ind_effect')[, 5],
+  naiveBayes = get_posterior_mean(fit, 'naive_ind_effect')[, 5],
+  naiveLme   = lme_indirect_effect,
+  mediation_pack    = mediation_mixed$d0
+) %>% 
+  kable_df()
+```
+
+
+
+
+
+## Visualization
+
+```{r bayes-med-vis}
+# interactive diagnostics
+# shinystan::launch_shinystan(fit)
+
+library(bayesplot)
+
+pp_check(
+  standat$y, 
+  rstan::extract(fit, par = 'y_hat')$y_hat[1:10, ], 
+  fun = 'dens_overlay'
+)
+```
+
+
+
+
+
+
+
