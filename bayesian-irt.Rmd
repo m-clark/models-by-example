@@ -1,0 +1,404 @@
+# Bayesian IRT
+
+The following shows some code demonstration for one through four parameter IRT models, though will only extensively explore the first two. 
+
+
+## One Parameter IRT
+
+### Data Setup
+
+This data set has the responses of 316 participants on 24 items of a questionnaire on verbal
+aggression. Other covariates are also provided.  For simplicity I will focus on the four 'DoShout' items.
+
+```{r bayes-irt-setup}
+library(tidyverse)
+
+data("VerbAgg", package = "lme4")
+
+glimpse(VerbAgg)
+
+verbagg_items = VerbAgg %>% 
+  filter(btype == 'shout', situ == 'self') %>% 
+  select(id, item, r2)
+
+verbagg_items_wide = verbagg_items %>% 
+  pivot_wider(id_cols = id, names_from = item, names_prefix = 'item_', values_from = r2)
+```
+
+While we often think of the data in 'wide form', with one row per person and multiple columns respective to each item,and the subsequent Stan code will use that, it is generally both tidier and more straightforward for modeling with this long format, where one can use standard mixed model approaches. `r2` is the target variable of interest.
+
+In the wide format, the model for a single person is as follows, where $Z$ is the latent person score, and $i$ is the $i^{th}$ item.
+
+
+$$\textrm{logit}(\pi) = \textrm{disc} (Z_p - \beta_i)$$ 
+
+Another formulation is the following, and corresponds to what brms will use.
+
+$$\textrm{logit}(\pi) =  \beta_i + \textrm{disc}\cdot Z_p$$ 
+
+
+### Model Code
+
+```{stan bayes-irt1-model, output.var='bayes_irt1_model'}
+data {
+  int N;                               // Number of people
+  int J;                               // Number of items
+  int Y[N,J];                          // Binary Target
+}
+
+transformed data{
+  
+}
+
+parameters {
+  vector[J] difficulty;                // Item difficulty
+  real<lower = 0> discrim;             // Item discrimination (constant)
+  vector[N] Z;                         // Latent person ability
+}
+
+model {
+  matrix[N, J] lmat;
+  
+  // priors
+  Z ~ normal(0, 1);
+  discrim    ~ student_t(3, 0, 5);
+  difficulty ~ student_t(3, 0, 5);
+
+  for (j in 1:J){
+    lmat[,j] = discrim * (Z - difficulty[j]);
+  }
+  
+  // likelihood
+  for (j in 1:J)  Y[,j] ~ bernoulli_logit(lmat[,j]);
+  
+}
+```
+
+
+### Estimation
+
+First we create a Stan-friendly data list and then estimate the model. The following assumes a character string or file (`bayes_irt1_model`) of the previous model code.
+
+```{r bayes-irt1-est, cache.rebuild=F, results='hide'}
+verbagg_items_wide_mat = apply(
+  as.matrix(verbagg_items_wide[, -1]) == 'Y',
+  2,
+  as.integer
+)
+
+stan_data = 
+  list(
+    N = nrow(verbagg_items_wide_mat),
+    J = ncol(verbagg_items_wide_mat),
+    Y = verbagg_items_wide_mat
+  )
+
+library(rstan)
+
+fit_1pm = sampling(
+  bayes_irt1_model,
+  data = stan_data,
+  thin = 4
+)
+```
+
+### Comparison
+
+Now we compare to brms.  I use the [author's article](https://arxiv.org/abs/1905.09501) as a guide for this model, and note that it is following the second parameterization.
+
+```{r bayes-irt1-compare-brms, results='hide'}
+library(brms)
+
+# half normal for variance parameter, full for coefficients
+prior_1pm <-
+  prior("normal(0, 3)", class = "sd", group = "id") +
+  prior("normal(0, 3)", class = "b")
+
+brms_1pm = brm(
+  r2 ~ 0 + item + (1 | id),
+  data   = verbagg_items,
+  family = bernoulli,
+  prior  = prior_1pm,
+  thin   = 4,
+  cores  = 4
+)
+```
+
+
+If you want to compare to standard IRT in either parameterization, you can use
+the ltm package.
+
+```{r nobayes-irt-ltm, eval = FALSE}
+library(ltm)
+
+irt_rasch_par1 = rasch(verbagg_items_wide_mat, IRT.param = FALSE)
+irt_rasch_par2 = rasch(verbagg_items_wide_mat, IRT.param = TRUE)
+```
+
+
+```{r bayes-irt1-compare}
+print(
+  fit_1pm,
+  digits = 3,
+  par    = c('discrim', 'difficulty'),
+  probs  = c(.025, .5, 0.975)
+)
+
+summary(brms_1pm)
+
+brms_diff = fixef(brms_1pm)[,'Estimate']
+brms_discrim = VarCorr(brms_1pm)$id$sd[1]
+fit_params = summary(fit_1pm, digits = 3, par = c('discrim', 'difficulty'))$summary[,'mean']
+```
+
+After extracting, we can show either parameterization for either model. For example brms item difficulties  =  our model `-discrim*difficulties`.
+
+```{r bayes-irt1-compare-show, echo=FALSE}
+tibble(
+  parma = names(fit_params),
+  model = fit_params,
+  brms  = c(brms_discrim, brms_diff),
+  model_par2 = c(fit_params[1], -fit_params[-1]*fit_params[1]),
+  brms_par1  = c(brms_discrim,  -brms_diff/brms_discrim)
+)
+```
+
+
+## Two Parameter IRT
+
+Now we can try a two parameter model. Data setup is the same as before.
+
+
+### Model Code
+
+```{stan bayes-irt2-model, output.var='bayes_irt2_model'}
+data {
+  int N;
+  int J;
+  int Y[N, J];
+}
+
+parameters {
+  vector[J] difficulty;
+  vector<lower = 0>[J] discrim;    // Now per-item discrimination
+  vector[N] Z;
+}
+
+model {
+  matrix[N, J] lmat;
+
+  // priors
+  Z ~ normal(0, 1);
+  discrim    ~ student_t(3, 0, 5);
+  difficulty ~ student_t(3, 0, 5);
+  
+  for (j in 1:J){
+    lmat[,j] = discrim[j] * (Z - difficulty[j]);
+  }
+
+  // likelihood
+  for (j in 1:J)  Y[,j] ~ bernoulli_logit(lmat[,j]);
+
+}
+```
+
+### Estimation
+
+First, our custom Stan model. The following assumes a character string or file (`bayes_irt2_model`) of the previous model code.
+
+```{r bayes-irt2-est, cache.rebuild=F, results='hide'}
+library(rstan)
+
+fit_2pm = sampling(
+  bayes_irt2_model,
+  data = stan_data,
+  thin = 4,
+  iter = 4000,
+  warmup = 3000,
+  cores = 4,
+  control = list(adapt_delta = .99)
+)
+```
+
+### Comparison
+
+Now we compare to brms.  I use the [author's article](https://arxiv.org/abs/1905.09501) as a guide for this model, and note that it is following the second parameterization.  Took a little over 30 seconds on my machine, though of course you may experience differently.
+
+
+```{r bayes-irt2-compare-brms, results='hide'}
+library(brms)
+
+# half normal for variance parameter, full for coefficients
+prior_2pm <-
+  prior("normal(0, 5)", class = "b",                  nlpar = "Z") +
+  prior("normal(0, 1)", class = "b",                  nlpar = "logdiscr") +
+  prior("constant(1)",  class = "sd", group = "id",   nlpar = "Z") +
+  prior("normal(0, 3)", class = "sd", group = "item", nlpar = "Z") +
+  prior("normal(0, 3)", class = "sd", group = "item", nlpar = "logdiscr")
+
+formula_2pm = bf(
+  r2 ~ exp(logdiscr) * Z,
+  Z  ~ 1 + (1 |i| item) + (1 | id),
+  logdiscr ~ 1 + (1 |i| item),
+  nl = TRUE
+)
+
+brms_2pm = brm(
+  formula_2pm,
+  data   = verbagg_items,
+  family = bernoulli,
+  prior  = prior_2pm,
+  thin   = 4,
+  iter = 3000,
+  warmup = 2000,
+  cores = 4,
+  control = list(adapt_delta = .99)
+)
+```
+
+
+
+```{r bayes-irt2-compare}
+print(
+  fit_2pm,
+  digits = 3,
+  par    = c('discrim', 'difficulty'),
+  probs  = c(.025, .5, 0.975)
+)
+
+summary(brms_2pm)
+
+brms_diff    = coef(brms_2pm)$item[,,'Z_Intercept'][,'Estimate']
+brms_discrim = exp(coef(brms_2pm)$item[,,'logdiscr_Intercept'][,'Estimate'])
+# brms_diff    = fixef(brms_2pm)[1:4,'Estimate']
+# brms_discrim = exp(fixef(brms_2pm)[5:8,'Estimate'])
+fit_diff    = summary(fit_2pm, digits = 3, par = 'difficulty')$summary[,'mean']
+fit_discrim = summary(fit_2pm, digits = 3, par = 'discrim')$summary[,'mean']
+```
+
+After extracting, we can show either parameterization for either model. For example brms item difficulties  =  our model `-discrim*difficulties`.
+
+```{r bayes-irt2-compare-show, echo=FALSE}
+tibble(
+  parma = names(c(fit_discrim, fit_diff)),
+  model = c(fit_discrim, fit_diff),
+  brms  = c(brms_discrim, brms_diff),
+  model_par2 = c(fit_discrim, -fit_discrim*fit_diff),
+  brms_par1  = c(brms_discrim, -brms_diff/brms_discrim),
+)
+```
+
+
+```{r nobayes-irt-ltm2, eval = FALSE}
+library(ltm)
+
+irt_2pm_par1 = ltm(verbagg_items_wide_mat ~ z1, IRT.param = FALSE)
+irt_2pm_par2 = ltm(verbagg_items_wide_mat ~ z1, IRT.param = TRUE)
+
+coef(irt_2pm_par1)
+coef(irt_2pm_par2)
+```
+
+
+## Three Parameter IRT
+
+
+<!-- ```{stan 3pm} -->
+<!-- data { -->
+<!--   int N; -->
+<!--   int J; -->
+<!--   int Y[N,J]; -->
+<!-- } -->
+
+<!-- transformed data{ -->
+
+<!-- } -->
+
+<!-- parameters { -->
+<!--   vector[J] difficulty; -->
+<!--   vector<lower=0>[J] discrim; -->
+<!--   vector<lower=0, upper=.25>[J] guess; -->
+<!--   vector[N] Z; -->
+<!-- } -->
+
+<!-- transformed parameters { -->
+
+<!-- } -->
+
+<!-- model { -->
+<!--   matrix[N, J] pmat; -->
+
+<!--   # priors -->
+<!--   Z ~ normal(0, 1); -->
+<!--   discrim ~ student_t(3, 0, 5); -->
+<!--   difficulty ~ student_t(3, 0, 5); -->
+<!--   guess ~ beta(1, 19); -->
+
+
+<!--   for (j in 1:J){ -->
+<!--     pmat[,j] = guess[j] + (1 - guess[j]) * inv_logit(discrim[j] * (Z - difficulty[j])); -->
+<!--   } -->
+
+
+<!--   // likelihood -->
+<!--   for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]); -->
+
+<!-- } -->
+
+<!-- generated quantities { -->
+
+<!-- } -->
+
+
+<!-- ``` -->
+
+<!-- ```{stan 4pm} -->
+<!-- data { -->
+<!--   int N; -->
+<!--   int J; -->
+<!--   int Y[N,J]; -->
+<!-- } -->
+
+<!-- transformed data{ -->
+
+<!-- } -->
+
+<!-- parameters { -->
+<!--   vector[J] difficulty; -->
+<!--   vector<lower=0>[J] discrim; -->
+<!--   vector<lower=0, upper=.25>[J] guess; -->
+<!--   vector<lower=.95, upper=1>[J] ceiling; -->
+<!--   vector[N] Z; -->
+<!-- } -->
+
+<!-- transformed parameters { -->
+
+<!-- } -->
+
+<!-- model { -->
+<!--   matrix[N, J] pmat; -->
+
+<!--   # priors -->
+<!--   Z ~ normal(0, 1); -->
+<!--   discrim ~ student_t(3, 0, 5); -->
+<!--   difficulty ~ student_t(3, 0, 5); -->
+<!--   guess ~ beta(1, 19); -->
+<!--   ceiling ~ beta(49, 1); -->
+
+
+<!--   for (j in 1:J){ -->
+<!--     pmat[,j] = guess[j] + (ceiling[j] - guess[j]) * inv_logit(discrim[j] * (Z - difficulty[j])); -->
+<!--   } -->
+
+
+<!--   // likelihood -->
+<!--   for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]); -->
+
+<!-- } -->
+
+<!-- generated quantities { -->
+
+<!-- } -->
+
+<!-- ``` -->
+
