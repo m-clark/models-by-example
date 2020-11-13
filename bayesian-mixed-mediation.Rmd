@@ -19,6 +19,8 @@ However, there will be random effects for a grouping variable for each coefficie
 Let's create data to this effect.
 
 ```{r bayes-med-setup}
+library(tidyverse)
+
 set.seed(8675309)
 
 ## random effects for mediator model

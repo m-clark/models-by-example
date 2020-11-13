@@ -13,6 +13,6 @@ This part is still in progress while I decide what to keep/retain.  In the meant
 ```{r child='bayesian-mixed-mediation.Rmd'}
 ```
 
-<!-- ```{r child='bayes-linear-regression.Rmd'} -->
-<!-- ``` -->
+```{r child='bayesian-irt.Rmd'}
+```
 
