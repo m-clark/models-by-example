@@ -453,8 +453,10 @@ pp_check(
 )
 ```
 
+## Source
 
-
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Bayesian/rstan_multilevelMediation.R
 
 
 

@@ -33,7 +33,6 @@ rmd_files: [
   elm.Rmd,
   rkhs.Rmd,
   cfa.Rmd,
-  bayes-non-parametric.Rmd,
   
   # Bayesian
   bayesian.Rmd,

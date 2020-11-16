@@ -1,0 +1,207 @@
+# Bayesian CFA
+
+
+## Data Setup
+
+For an empirical data set we can use the big five data from the psych package.  For simplicity, I will only examine three of the five factors, and only the first 3 items of each. I have a version that has already reverse-scored the items that need be, but this is not necessary.  We we will restrict ourselves to complete data and only a sample of 280 observations (~10%).
+
+
+```{r bayes-cfa-setup}
+library(tidyverse)
+
+data('big_five', package = 'noiris')
+# data('bfi', package = 'psych')
+
+big_five_no_miss = big_five %>% 
+  select(matches('(^E|^O|^N)[1-3]')) %>% 
+  drop_na()  %>% 
+  slice_sample(n = 280)
+```   
+
+## Model Code
+
+The model code is quite verbose, and definitely not efficient, but hopefully clarifies this 'latent linear model' underlying the observations.
+
+```{stan bayes-cfa-code, output.var = 'bayes_cfa'}
+data {
+  int<lower = 1> N;                              // sample size
+  int<lower = 1> P;                              // number of variables
+  int<lower = 1> K;                              // number of factors
+  matrix[N,P]  X;                                // data matrix of order [N,P]
+}
+
+transformed data {
+  int<lower = 1> L;
+  L = P - K;                                     // Number of free loadings
+}
+
+parameters {
+  vector[P] b;                                   // intercepts
+  vector[L] lambda01;                            // initial factor loadings
+  matrix[N, K] FS;                               // factor scores, matrix of order [N,K]
+  corr_matrix[K] phi;                            // factor correlations
+  vector<lower = 0, upper = 2>[K] sd_lv;         // std dev of the latent factors
+  vector<lower = 0, upper = 2>[P] sd_x;          // std dev of the disturbances
+  vector<lower = 0, upper = 5>[L] sd_lambda;     // hyper parameter for loading std dev
+}
+
+transformed parameters {
+  vector[L] lambda;                              // factor loadings
+
+  lambda = lambda01 .* sd_lambda;                // lambda as normal(0, sd_lambda)
+}
+
+model {
+  matrix[N,P] mu;
+  matrix[K,K] Ld;
+  vector[K] muFactors;
+  
+  muFactors = rep_vector(0, K);                  // Factor means, set to zero
+  Ld = diag_matrix(sd_lv) * cholesky_decompose(phi);
+
+  for(n in 1:N) {
+    mu[n,1] = b[1] + FS[n,1];                    // Extraversion
+    mu[n,2] = b[2] + FS[n,1]*lambda[1];
+    mu[n,3] = b[3] + FS[n,1]*lambda[2];
+
+    mu[n,4] = b[4] + FS[n,2];                    // Neuroticism
+    mu[n,5] = b[5] + FS[n,2]*lambda[3];
+    mu[n,6] = b[6] + FS[n,2]*lambda[4];
+    
+    mu[n,7] = b[7] + FS[n,3];                    // Openness
+    mu[n,8] = b[8] + FS[n,3]*lambda[5];
+    mu[n,9] = b[9] + FS[n,3]*lambda[6];
+  }
+
+  // priors
+  
+  phi ~ lkj_corr(2.0);
+  
+  sd_x      ~ cauchy(0, 2.5);
+  sd_lambda ~ cauchy(0, 2.5);
+  sd_lv     ~ cauchy(0, 2.5);
+  
+  b        ~ normal(0, 10);
+  lambda01 ~ normal(0, 1);
+  
+  // likelihood
+  
+  for(i in 1:N){   
+    FS[i] ~ multi_normal_cholesky(muFactors, Ld);
+    
+    X[i]  ~ normal(mu[i], sd_x);
+  }
+  
+}
+```
+
+
+## Estimation
+
+Note that this will likely take a while, but you can bump the iterations down or decrease the sample size and get roughly the same estimates.
+
+```{r bayes-cfa-est, results = 'hide', cache.rebuild=FALSE}
+stan_data = 
+  list(
+    N = nrow(big_five_no_miss),
+    P = ncol(big_five_no_miss),
+    K = 3,
+    X = big_five_no_miss
+  )
+
+library(rstan)
+
+fit_cfa = sampling(
+  bayes_cfa,
+  data  = stan_data,
+  thin  = 4,
+  cores = 4
+)
+```
+
+
+
+## Comparison
+
+
+
+Here are the raw factor loadings and factor correlations.
+
+```{r bayes-cfa-compare1, cache.rebuild=T}
+print(
+  fit_cfa,
+  digits = 3,
+  par    = c('lambda', 'phi'),
+  probs  = c(.025, .5, 0.975)
+)
+```
+
+We can compare our results with those of the <span class="pack" style = "">lavaan</span>  package, which uses standard maximum likelihood via the <span class="func" style = "">cfa</span> function default settings.
+
+```{r bayes-cfa-compare-lavaan}
+library(lavaan)
+
+mod = "
+  E =~ E1 + E2 + E3 
+  N =~ N1 + N2 + N3 
+  O =~ O1 + O2 + O3 
+"
+
+fit_lav = cfa(mod, data = big_five_no_miss)
+# summary(fit_lav)  
+```
+
+
+The following shows how to extract the parameter estimates and convert them to standardized form, followed by how to get the parameter estimates from the <span class="pack" style = "">lavaan</span> output.
+
+```{r  bayes-compare-extract}
+lambda = get_posterior_mean(fit_cfa, par = 'lambda')[,'mean-all chains']
+sd_F   = rep(get_posterior_mean(fit_cfa, par = 'sd_lv')[,'mean-all chains'], e = 3)
+
+lambda = c(1, lambda[1:2], 1, lambda[3:4], 1, lambda[5:6])
+lambda_std_F = sd_F*lambda
+x_sd = apply(stan_data$X, 2, sd)
+lambda_std_all = sd_F/x_sd*lambda
+
+fit_cors = matrix(get_posterior_mean(fit_cfa, par = 'phi')[, 5], 3, 3)
+
+lav_par = parameterEstimates(fit_lav, standardized = TRUE)
+```
+
+First we compare the loadings, both raw and standardized (either standardize the latent variable only or the latent and observed variables).
+
+```{r bayes-compare-loadings, echo = FALSE}
+lav_par %>% 
+  filter(op == '=~') %>%
+  mutate(lambda_est = lambda,
+         lambda_std_lv = lambda_std_F,
+         lambda_std_all = lambda_std_all) %>%
+  select(-(se:ci.upper)) %>% 
+  kable_df()
+```
+
+
+```{r bayes-compare-cor, echo = FALSE}
+lav_cors = lav_par %>% 
+  filter(op == '~~', !grepl(lhs, pattern = '[1-3]'), !lhs==rhs) %>% 
+  select(std.all)
+
+lav_cors = lazerhawk::create_corr(lav_cors$std.all)
+
+rownames(fit_cors) = colnames(fit_cors) = c('E', 'N', 'O')
+dimnames(lav_cors) = dimnames(fit_cors)
+```
+
+
+```{r bayes-compare-cor-show}
+fit_cors
+
+lav_cors
+```
+
+
+
+## Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Bayesian/StanBugsJags/cfa

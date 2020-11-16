@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed|Open+Sans|Lato|Lora|Fira+Sans|Yellowtail");
+@import url("https://fonts.googleapis.com/css?family=Bitter|Roboto|Roboto+Mono|Roboto+Condensed|Open+Sans|Lato|Lora|Fira+Sans|Yellowtail");
 
 
 /* title page */
@@ -52,7 +52,7 @@
     background-color: #fffff8;
     color: #585858;
     padding: 5px 15px;
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-family: Bitter, Roboto, 'Helvetica Neue', sans-serif;
     word-wrap: break-word;
     overflow: hidden;
     line-height: 1.7;

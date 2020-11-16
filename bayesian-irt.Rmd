@@ -61,6 +61,7 @@ model {
   
   // priors
   Z ~ normal(0, 1);
+  
   discrim    ~ student_t(3, 0, 5);
   difficulty ~ student_t(3, 0, 5);
 
@@ -189,6 +190,7 @@ model {
 
   // priors
   Z ~ normal(0, 1);
+  
   discrim    ~ student_t(3, 0, 5);
   difficulty ~ student_t(3, 0, 5);
   
@@ -231,28 +233,28 @@ library(brms)
 # half normal for variance parameter, full for coefficients
 prior_2pm <-
   prior("normal(0, 5)", class = "b",                  nlpar = "Z") +
-  prior("normal(0, 1)", class = "b",                  nlpar = "logdiscr") +
+  prior("normal(0, 5)", class = "b",                  nlpar = "logdiscr") +
   prior("constant(1)",  class = "sd", group = "id",   nlpar = "Z") +
   prior("normal(0, 3)", class = "sd", group = "item", nlpar = "Z") +
   prior("normal(0, 3)", class = "sd", group = "item", nlpar = "logdiscr")
 
 formula_2pm = bf(
   r2 ~ exp(logdiscr) * Z,
-  Z  ~ 1 + (1 |i| item) + (1 | id),
+  Z  ~ 1 + (1 |i| item)  + (1 | id),
   logdiscr ~ 1 + (1 |i| item),
   nl = TRUE
 )
 
 brms_2pm = brm(
   formula_2pm,
-  data   = verbagg_items,
-  family = bernoulli,
-  prior  = prior_2pm,
-  thin   = 4,
-  iter = 3000,
-  warmup = 2000,
-  cores = 4,
-  control = list(adapt_delta = .99)
+  data    = verbagg_items,
+  family  = bernoulli,
+  prior   = prior_2pm,
+  thin    = 4,
+  iter    = 4000,
+  warmup  = 3000,
+  cores   = 4,
+  control = list(adapt_delta = .99, max_treedepth = 15)
 )
 ```
 
@@ -270,8 +272,7 @@ summary(brms_2pm)
 
 brms_diff    = coef(brms_2pm)$item[,,'Z_Intercept'][,'Estimate']
 brms_discrim = exp(coef(brms_2pm)$item[,,'logdiscr_Intercept'][,'Estimate'])
-# brms_diff    = fixef(brms_2pm)[1:4,'Estimate']
-# brms_discrim = exp(fixef(brms_2pm)[5:8,'Estimate'])
+
 fit_diff    = summary(fit_2pm, digits = 3, par = 'difficulty')$summary[,'mean']
 fit_discrim = summary(fit_2pm, digits = 3, par = 'discrim')$summary[,'mean']
 ```
@@ -282,12 +283,11 @@ After extracting, we can show either parameterization for either model. For exam
 tibble(
   parma = names(c(fit_discrim, fit_diff)),
   model = c(fit_discrim, fit_diff),
-  brms  = c(brms_discrim, brms_diff),
-  model_par2 = c(fit_discrim, -fit_discrim*fit_diff),
-  brms_par1  = c(brms_discrim, -brms_diff/brms_discrim),
+  brms  = c(brms_discrim, brms_diff)
 )
 ```
 
+Here is the non-Bayesian demo if interested.
 
 ```{r nobayes-irt-ltm2, eval = FALSE}
 library(ltm)
@@ -302,103 +302,91 @@ coef(irt_2pm_par2)
 
 ## Three Parameter IRT
 
+For the three parameter model I only show the Stan code. This model adds a per-item guessing parameter, which serves as a lower bound, to the two parameter model.
 
-<!-- ```{stan 3pm} -->
-<!-- data { -->
-<!--   int N; -->
-<!--   int J; -->
-<!--   int Y[N,J]; -->
-<!-- } -->
+```{stan  bayes-irt3-model, output.var='bayes_irt3_model'}
+data {
+  int N;
+  int J;
+  int Y[N,J];
+}
 
-<!-- transformed data{ -->
+parameters {
+  vector[J] difficulty;
+  vector<lower = 0>[J] discrim;
+  vector<lower = 0, upper = .25>[J] guess;
+  vector[N] Z;
+}
 
-<!-- } -->
+model {
+  matrix[N, J] pmat;
 
-<!-- parameters { -->
-<!--   vector[J] difficulty; -->
-<!--   vector<lower=0>[J] discrim; -->
-<!--   vector<lower=0, upper=.25>[J] guess; -->
-<!--   vector[N] Z; -->
-<!-- } -->
+  // priors
+  Z ~ normal(0, 1);
+  
+  discrim    ~ student_t(3, 0, 5);
+  difficulty ~ student_t(3, 0, 5);
+  
+  guess ~ beta(1, 19);
 
-<!-- transformed parameters { -->
+  for (j in 1:J){
+    pmat[,j] = guess[j] + (1 - guess[j]) * inv_logit(discrim[j] * (Z - difficulty[j]));
+  }
 
-<!-- } -->
+  // likelihood
+  for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]);
+  
+}
+```
 
-<!-- model { -->
-<!--   matrix[N, J] pmat; -->
+## Four Parameter IRT
 
-<!--   # priors -->
-<!--   Z ~ normal(0, 1); -->
-<!--   discrim ~ student_t(3, 0, 5); -->
-<!--   difficulty ~ student_t(3, 0, 5); -->
-<!--   guess ~ beta(1, 19); -->
+For the four parameter model I only show the Stan code. This model adds a per-item ceiling parameter, which serves as an upper bound, to the three parameter model.
 
+```{stan bayes-irt4-model, output.var='bayes_irt4_model'}
+data {
+  int N;
+  int J;
+  int Y[N,J];
+}
 
-<!--   for (j in 1:J){ -->
-<!--     pmat[,j] = guess[j] + (1 - guess[j]) * inv_logit(discrim[j] * (Z - difficulty[j])); -->
-<!--   } -->
+parameters {
+  vector[J] difficulty;
+  vector<lower = 0>[J] discrim;
+  vector<lower = 0, upper = .25>[J] guess;
+  vector<lower = .95, upper = 1>[J] ceiling;
+  vector[N] Z;
+}
 
+model {
+  matrix[N, J] pmat;
 
-<!--   // likelihood -->
-<!--   for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]); -->
-
-<!-- } -->
-
-<!-- generated quantities { -->
-
-<!-- } -->
-
-
-<!-- ``` -->
-
-<!-- ```{stan 4pm} -->
-<!-- data { -->
-<!--   int N; -->
-<!--   int J; -->
-<!--   int Y[N,J]; -->
-<!-- } -->
-
-<!-- transformed data{ -->
-
-<!-- } -->
-
-<!-- parameters { -->
-<!--   vector[J] difficulty; -->
-<!--   vector<lower=0>[J] discrim; -->
-<!--   vector<lower=0, upper=.25>[J] guess; -->
-<!--   vector<lower=.95, upper=1>[J] ceiling; -->
-<!--   vector[N] Z; -->
-<!-- } -->
-
-<!-- transformed parameters { -->
-
-<!-- } -->
-
-<!-- model { -->
-<!--   matrix[N, J] pmat; -->
-
-<!--   # priors -->
-<!--   Z ~ normal(0, 1); -->
-<!--   discrim ~ student_t(3, 0, 5); -->
-<!--   difficulty ~ student_t(3, 0, 5); -->
-<!--   guess ~ beta(1, 19); -->
-<!--   ceiling ~ beta(49, 1); -->
+  // priors
+  Z ~ normal(0, 1);
+  
+  discrim    ~ student_t(3, 0, 5);
+  difficulty ~ student_t(3, 0, 5);
+  
+  guess   ~ beta(1, 19);
+  ceiling ~ beta(49, 1);
 
 
-<!--   for (j in 1:J){ -->
-<!--     pmat[,j] = guess[j] + (ceiling[j] - guess[j]) * inv_logit(discrim[j] * (Z - difficulty[j])); -->
-<!--   } -->
+  for (j in 1:J){
+    pmat[,j] = guess[j] + (ceiling[j] - guess[j]) * inv_logit(discrim[j] * 
+    (Z - difficulty[j]));
+  }
 
 
-<!--   // likelihood -->
-<!--   for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]); -->
+  // likelihood
+  for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]);
 
-<!-- } -->
+}
+```
 
-<!-- generated quantities { -->
 
-<!-- } -->
 
-<!-- ``` -->
 
+## Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian/StanBugsJags/IRT_models

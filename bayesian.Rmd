@@ -16,3 +16,9 @@ This part is still in progress while I decide what to keep/retain.  In the meant
 ```{r child='bayesian-irt.Rmd'}
 ```
 
+```{r child='bayesian-cfa.Rmd'}
+```
+
+```{r child='bayesian-non-parametric.Rmd'}
+```
+
