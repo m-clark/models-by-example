@@ -1,0 +1,216 @@
+# Bayesian Stochastic Volatility Model
+
+Stochastic Volatility Model for centered time series over $t$ equally spaced
+points. latent parameter $h$ is the log volatility, φ the persistence of the
+volatility and μ the mean log volatility. ϵ is the white-noise shock and δ the
+shock on volatility.  The Stan code is based on that in the manual (at the time
+I originally played with it).
+
+
+y_t = exp(h_t/2)*ϵ_t
+
+h_t = μ + φ\*(h_{t-1}-μ) + δ_t*σ
+
+h_1 ~ N(μ, σ/sqrt(1-φ^2))
+
+ϵ_t ~ N(0,1); δ_t ~ N(0,1) 
+
+With some rearranging:
+
+ϵ_t = y_t*exp(-h_t/2)
+
+y_t ~ N(0, exp(h_t/2)
+
+h_t ~ N(μ + φ*(h_t-μ), σ)
+
+## Data Setup
+
+The data regards inflation based on the U.S. consumer price index (`infl = 400*log(cpi_t/cpi_{t-1}`), from the second quarter of 1947 to the second quarter
+of 2011 (from Statistical Computation and Modeling 2014, chap 11).
+
+```{r bayes-sv-setup}
+library(tidyverse)
+
+d = read_csv(
+  'https://raw.githubusercontent.com/m-clark/Datasets/master/us%20cpi/USCPI.csv',
+  col_names = 'inflation'
+)
+
+inflation = pull(d, inflation)
+
+summary(inflation)
+
+inflation_cen = scale(inflation, scale = FALSE)
+```
+
+
+## Model Code
+
+This original code keeps to the above formulation but can take a long time to converge.  ϵ_t and δ_t are implicit.
+
+```{stan bayes-sv1, output.var = 'bayes_conceptual'}
+data {
+  int<lower = 0> N_t;                       // Number of time points (equally spaced)
+  vector[N_t] y;                            // mean corrected response at time t
+}
+
+parameters {
+  real mu;                                  // mean log volatility
+  real<lower = -1,upper = 1> phi;           // persistence of volatility
+  real<lower = 0> sigma;                    // white noise shock scale
+  vector[N_t] h;                            // log volatility at time t
+}
+
+model {
+  //priors
+  phi   ~ uniform(-1, 1);
+  sigma ~ cauchy(0, 5);
+  mu    ~ cauchy(0, 10);
+
+  //likelihood
+  h[1] ~ normal(mu, sigma / sqrt(1 - phi * phi));
+  for (t in 2:N_t)
+    h[t] ~ normal(mu + phi * (h[t - 1] - mu), sigma);
+
+  for (t in 1:N_t)
+    y ~ normal(0, exp(h[t] / 2));
+}
+
+```
+
+This code is more performant and will be used to actually estimate the model.
+
+```{stan bayes-sv-2, output.var='bayes_sv'}
+data {
+  int<lower = 0> N_t;                       // N time points (equally spaced)
+  vector[N_t] y;                            // mean corrected response at time t
+}
+
+parameters {
+  real mu;                                  // mean log volatility
+  real<lower = -1,upper = 1> phi;           // persistence of volatility
+  real<lower = 0> sigma;                    // white noise shock scale
+  vector[N_t] h_std;                        // standardized log volatility at time t
+}
+
+transformed parameters{
+  vector[N_t] h;                            // log volatility at time t
+  
+  h    = h_std * sigma;
+  h[1] = h[1] / sqrt(1-phi * phi);
+  h = h + mu;
+  
+  for (t in 2:N_t)
+    h[t] = h[t] + phi * (h[t-1] - mu);
+}
+
+model {
+  //priors
+  phi   ~ uniform(-1, 1);
+  sigma ~ cauchy(0, 5);
+  mu    ~ cauchy(0, 10);
+  h_std ~ normal(0, 1);
+
+  //likelihood
+  y ~ normal(0, exp(h/2));
+}
+
+generated quantities{
+  vector[N_t] y_rep;
+
+  for (t in 1:N_t){
+    y_rep[t] = normal_rng(0, exp(h[t]/2));
+  }  
+  
+}
+```
+
+## Estimation
+
+We can use `c()` to get rid of matrix format, or specify as matrix instead of vector in model code.
+
+```{r bayes-sv-est, results='hide'}
+stan_data = list(N_t = length(inflation_cen), y = c(inflation_cen))
+
+library(rstan)
+
+fit = sampling(
+  bayes_sv,
+  data  = stan_data,
+  cores = 4,
+  thin  = 4
+)
+```
+
+## Results
+
+Explore the results.
+
+```{r bayes-sv-result}
+print(
+  fit,
+  digits = 3,
+  par    = c('mu', 'phi', 'sigma'),
+  probs  = c(.025, .5, .975)
+)
+
+
+```
+
+
+## Visualization
+
+With the necessary components in place, we can visualize our predictions. Compare to fig. 11.1 in the text.
+
+
+```{r bayes-sv-vis1}
+# Create y_rep 'by-hand'
+h = extract(fit, 'h')$h
+# y_rep = apply(h, 1, function(h) rnorm(length(inflation), 0, exp(h / 2)))
+
+# or just extract
+y_rep = extract(fit, 'y_rep')$y_rep
+
+h = colMeans(h)
+
+library(lubridate)
+library(scales)
+
+series = ymd(paste0(rep(1947:2014, e = 4), '-', c('01', '04', '07', '10'), '-', '01'))
+seriestext = series[1:length(inflation)]
+```
+
+
+```{r bayes-sv-vis2, echo=FALSE}
+qplot(
+  seriestext,
+  h,
+  width = .5,
+  color = I('gray50'),
+  geom = 'line'
+)
+
+gdat0 = tibble(
+  date      = as_date(seriestext), 
+  inflation = inflation_cen[,1]
+)
+
+gdat_sim = t(y_rep[sample(1:ncol(y_rep), 10), ]) %>% 
+  as.data.frame() %>%
+  mutate(date = gdat0$date) %>%
+  pivot_longer(-date, names_to = 'iter', values_to = 'inflation')
+
+gdat0 %>%
+  ggplot(aes(date, inflation)) +
+  geom_line(aes(group = iter),
+            color = '#ff5500',
+            alpha = .1,
+            data  = gdat_sim) +
+  geom_line(color = 'gray25') +
+  labs(y = 'Inflation\ncentered')
+```
+
+## Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Bayesian/stochasticVolatility.R

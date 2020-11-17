@@ -1,0 +1,189 @@
+# Bayesian Beta Regression
+
+
+The following provides an example of beta regression using Stan/rstan, with comparison to results with R's <span class="pack" style = "">betareg</span> package.
+
+
+## Data Setup
+
+Several data sets from are available <span class="pack" style = "">betareg</span> to play with, but as they are a bit problematic in one way or another I instead focus on a simple simulated data set.
+
+```{r bayes-beta-setup}
+library(tidyverse)
+library(betareg)
+
+# Data for assessing the contribution of non-verbal IQ to children's reading
+# skills in dyslexic and non-dyslexic children.
+# issue: 30% of data has a value of .99
+# data("ReadingSkills")
+# ?ReadingSkills
+# y = ReadingSkills$accuracy 
+# 
+# brmod = betareg(accuracy ~ dyslexia + iq, data = ReadingSkills)
+# X = cbind(1, scale(model.matrix(brmod)[,c('dyslexia','iq')], scale=F))
+
+
+# or this, issue: ignores batch effects
+# data("GasolineYield")
+# ?GasolineYield
+#
+# y = GasolineYield$yield
+# X = cbind(1, scale(GasolineYield[,c('gravity','pressure','temp')]))
+
+# yet another data option, issue: only two binary predictors
+# data(WeatherTask)
+# ?WeatherTask
+#
+# y = WeatherTask$agreement
+# brmod = betareg(agreement ~ priming + eliciting, data = WeatherTask)
+# X = model.matrix(brmod)
+
+# simulated data; probably a better illustration, or at least better behaved one.
+set.seed(1234)
+
+N    = 500                    # Sample size
+x_1  = rnorm(N)               # Predictors
+x_2  = rnorm(N)
+X    = cbind(1, x_1, x_2)
+beta = c(-1, .2, -.3)
+mu   = plogis(X %*% beta)  # add noise if desired + rnorm(N, sd=.01)
+phi  = 10
+
+A = mu * phi
+B = (1 - mu) * phi
+
+y = rbeta(N, A, B)
+
+d = data.frame(x_1, x_2, y)
+
+qplot(y, geom='density')
+```
+
+
+## Model Code
+
+```{stan bayes-beta-code, output.var='bayes_beta'}
+data {
+  int<lower=1> N;                      // sample size
+  int<lower=1> K;                      // K predictors
+  vector<lower=0,upper=1>[N] y;        // response 
+  matrix[N,K] X;                       // predictor matrix
+}
+
+parameters {
+  vector[K] theta;                     // reg coefficients
+  real<lower=0> phi;                   // dispersion parameter
+}
+
+transformed parameters{
+  vector[K] beta;
+
+  beta = theta * 5;                    // same as beta ~ normal(0, 5); fairly diffuse
+}
+
+model {
+  // model calculations
+  vector[N] LP;                        // linear predictor
+  vector[N] mu;                        // transformed linear predictor
+  vector[N] A;                         // parameter for beta distn
+  vector[N] B;                         // parameter for beta distn
+
+  LP = X * beta;
+  
+  for (i in 1:N) { 
+    mu[i] = inv_logit(LP[i]);   
+  }
+
+  A = mu * phi;
+  B = (1.0 - mu) * phi;
+
+  // priors
+  theta ~ normal(0, 1);   
+  phi ~ cauchy(0, 5);                  // different options for phi  
+  //phi ~ inv_gamma(.001, .001);
+  //phi ~ uniform(0, 500);             // put upper on phi if using this
+
+  // likelihood
+  y ~ beta(A, B);
+}
+
+generated quantities {
+  vector[N] y_rep;
+  
+  for (i in 1:N) { 
+    real mu;
+    real A;
+    real B;
+    
+    mu = inv_logit(X[i] * beta);   
+    
+    A = mu * phi;
+    B = (1.0 - mu) * phi;
+    
+    y_rep[i] = beta_rng(A, B); 
+  }
+}
+```
+
+## Estimation
+
+We create a data list for Stan and estimate the model.
+
+```{r bayes-beta-est, results='hide'}
+# Stan data list
+stan_data = list(N = length(y),
+                 K = ncol(X),
+                 y = y,
+                 X = X)
+
+library(rstan)
+
+fit = sampling(
+  bayes_beta,
+  data = stan_data,
+  thin = 4,
+  verbose = FALSE
+)
+
+
+# model for later comparison
+brmod = betareg(y ~ ., data = d)
+```
+
+
+## Comparison
+
+Estimates are almost
+
+```{r bayes-beta-compare}
+print(
+  fit,
+  pars = c('beta', 'phi'),
+  digits_summary = 3,
+  probs = c(.025, .5, .975)
+)
+
+summary(brmod)
+```
+
+
+## Visualization
+
+Posterior predictive check.
+
+```{r bayes-beta-ppcheck}
+library(bayesplot)
+
+pp_check(
+  stan_data$y,
+  rstan::extract(fit, par = 'y_rep')$y_rep[1:10, ], 
+  fun = 'dens_overlay'
+) 
+```
+
+
+
+## Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Bayesian/rstanBetaRegression.R

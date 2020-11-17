@@ -1,0 +1,285 @@
+# Bayesian t-test
+
+
+The following is based on Kruschke's 2012 JEP article 'Bayesian estimation supersedes the t-test (BEST)' with only minor changes to Stan model. It uses the JAGS/BUGS code in the paper's Appendix B as the reference.              
+
+## Data Setup
+
+Create two groups of data. Play around with the specs if you like.
+
+```{r bayes-t-setup}
+library(tidyverse)
+
+set.seed(1234)
+
+N_g   = 2       # N groups
+N_1   = 50      # N for group 1
+N_2   = 50      # N for group 2
+mu_1  = 1       # mean for group 1
+mu_2  = -.5     # mean for group 1
+sigma_1 = 1     # sd for group 1
+sigma_2 = 1     # sd for group 1
+
+y_1 = rnorm(N_1, mu_1, sigma_1)
+y_2 = rnorm(N_2, mu_2, sigma_2)
+y   = c(y_1, y_2)
+
+group_id = as.numeric(gl(2, N_1))
+
+# if unbalanced
+# group = 1:2
+# group_id = rep(group, c(N_1,N_2))
+
+d = data.frame(y, group_id)
+
+tidyext::num_by(d, y, group_id)  # personal package, not necessary
+```
+
+
+
+## Model Code
+
+The Stan code.  
+
+```{stan bayes-t-test, output.var='bayes_t_test'}
+data {
+  int<lower = 1> N;                              // sample size 
+  int<lower = 2> N_g;                            // number of groups
+  vector[N] y;                                   // response
+  int<lower = 1, upper = N_g> group_id[N];       // group ID
+}
+
+transformed data{
+  real y_mean;                                   // mean of y; see mu prior
+  
+  y_mean = mean(y); 
+}
+
+parameters {
+  vector[2] mu;                                  // estimated group means and sd
+  vector<lower = 0>[2] sigma;                    // Kruschke puts upper bound as well; ignored here
+  real<lower = 0, upper = 100> nu;               // df for t distribution
+}
+
+model {
+  // priors
+  // note that there is a faster implementation of this for stan, 
+  // and that the sd here is more informative than in Kruschke paper
+  mu    ~ normal(y_mean, 10);                       
+  sigma ~ cauchy(0, 5);
+  
+  // Based on Kruschke; makes average nu 29 
+  // might consider upper bound, as if too large then might as well switch to normal
+  nu    ~ exponential(1.0/29);                
+  
+  // likelihood
+  for (n in 1:N) {
+    y[n] ~ student_t(nu, mu[group_id[n]], sigma[group_id[n]]);
+    
+    // compare to normal; remove all nu specifications if you do this;
+    //y[n] ~ normal(mu[group_id[n]], sigma[group_id[n]]);           
+  }
+}
+
+generated quantities {
+  vector[N] y_rep;                               // posterior predictive distribution
+  real mu_diff;                                  // mean difference
+  real cohens_d;                                 // effect size; see footnote 1 in Kruschke paper
+  real CLES;                                     // common language effect size
+  real CLES2;                                    // a more explicit approach; the mean should roughly equal CLES
+
+  for (n in 1:N) {
+    y_rep[n] = student_t_rng(nu, mu[group_id[n]], sigma[group_id[n]]);
+  }
+
+  mu_diff  = mu[1] - mu[2];
+  cohens_d = mu_diff / sqrt(sum(sigma)/2);
+  CLES     = normal_cdf(mu_diff / sqrt(sum(sigma)), 0, 1);
+  CLES2    = student_t_rng(nu, mu[1], sigma[1]) - student_t_rng(nu, mu[2], sigma[2]) > 0;
+}
+```
+
+
+## Estimation
+
+Run the model.
+
+```{r bayes-t-est, results='hide'}
+stan_data = list(
+  N   = length(y),
+  N_g = N_g,
+  group_id = group_id,
+  y = y
+)
+
+library(rstan) 
+
+fit = sampling(
+  bayes_t_test,
+  data = stan_data,
+  thin = 4
+)
+
+
+```
+
+
+## Comparison
+
+Let's take a look.
+
+```{r bayes-t-results}
+print(
+  fit,
+  pars   = c('mu', 'sigma', 'mu_diff', 'cohens_d', 'CLES', 'CLES2', 'nu'),
+  probs  = c(.025, .5, .975), 
+  digits = 3
+)
+```
+
+
+Now we extract quantities of interest for more processing/visualization. Compare population and observed data values to estimates in summary to the observed mean difference.
+
+```{r bayes-t-extract}
+y_rep   = extract(fit, par = 'y_rep')$y_rep
+mu_diff = extract(fit, par = 'mu_diff')$mu_diff
+
+init = d %>% 
+  group_by(group_id) %>% 
+  summarise(
+    mean = mean(y),
+    sd = sd(y),
+  )
+
+means = init$mean
+sds   = init$sd
+
+mu_1 - mu_2           # based on population values
+abs(diff(means))      # observed in data
+```
+
+Compare estimated [Cohen's d](https://en.wikipedia.org/wiki/Effect_size#Cohen's_d).
+
+```{r bayes-t-cohens-d}
+cohens_d = extract(fit, par='cohens_d')$cohens_d
+(mu_1 - mu_2) / sqrt((sigma_1 ^ 2 + sigma_2 ^ 2)/2)      # population
+(means[1] - means[2]) / sqrt(sum(sds^2)/2)               # observed
+```
+
+
+[Common language effect size](https://en.wikipedia.org/wiki/Effect_size#Common_language_effect_size) is the probability that a randomly selected score from one population will be greater than a randomly sampled score from the other.
+
+```{r bayes-t-cohens-CLES}
+CLES = extract(fit, par='CLES')$CLES
+pnorm((mu_1 - mu_2) / sqrt(sigma_1^2 + sigma_2^2))       # population
+pnorm((means[1] - means[2]) / sqrt(sum(sds^2)))          # observed
+```
+
+Compare to Welch's t-test that does not assume equal variances.
+
+```{r bayes-t-welch}
+t.test(y_1, y_2)
+```
+
+
+Compare to <span class="pack" style = "">BEST</span>. Note that it requires  <span class="pack" style = "">coda</span>, whose <span class="func" style = "">traceplot</span> function will mask <span class="pack" style = "">rstan's</span>.
+
+```{r bayes-t-BEST}
+library(BEST)
+
+BESTout = BESTmcmc(
+  y_1,
+  y_2,
+  numSavedSteps = 10000,
+  thinSteps = 10,
+  burnInSteps = 2000
+)
+
+summary(BESTout)
+```
+
+
+## Visualization
+
+We can plot posterior predictive distribution vs. observed data density.
+
+```{r bayes-t-pp-check}
+gdat = y_rep %>% 
+  as.data.frame() %>% 
+  pivot_longer(everything(), names_to =  'iteration') %>% 
+  mutate(iteration   = as.integer(str_extract(iteration, '[0-9]+')),
+         observation = factor(rep(1:nrow(y_rep), e = 100)))
+
+
+library(bayesplot)
+
+pp_check(
+  stan_data$y,
+  rstan::extract(fit, par = 'y_rep')$y_rep[1:10, ], 
+  fun = 'dens_overlay'
+)
+```
+
+We can expand this to incorporate the separate groups and observed values. Solid lines and dots represent the observed data.
+
+```{r bayes-t-vis, echo = FALSE}
+# change e to match your number of posterior draws
+gdat = gdat %>% 
+  mutate(group_id = factor(rep(group_id, e = 400)))
+
+ggplot(aes(x = value), data = gdat) +
+  geom_density(aes(group = group_id, fill = group_id),
+               color = NA,
+               alpha = .25) +
+  geom_line(aes(group = observation, color = group_id),
+            stat  = 'density',
+            alpha = .05) +
+  geom_point(
+    aes(
+      x = y,
+      y = 0,
+      color = factor(group_id)
+    ),
+    alpha = .15,
+    size = 5,
+    data = data.frame(y, group_id)
+  ) +
+  geom_density(aes(group = group_id, color = group_id, x = y),
+               alpha = .05,
+               data.frame(group_id = factor(group_id), y)) +
+  scico::scale_color_scico_d(end = .6, aesthetics = c('color', 'fill')) +
+  xlim(c(-8, 8))   # might get a warning if extreme values are cut out
+
+
+### plot mean difference or other values of interest
+ggplot(aes(x = mu_diff), data = data.frame(mu_diff = mu_diff)) +
+  geom_density(alpha = .25, color = 'gray92') +
+  geom_point(x = mu_diff,
+             y = 0,
+             alpha = .01,
+             size = 3) +
+  geom_path(
+    aes(x = quantile(mu_diff, c(.025, .975)), y = c(.2, .2)),
+    size = 2,
+    alpha = .5,
+    color = '#b2001d',
+    data = data.frame()
+  ) +
+  xlim(c(0, 3.5)) +
+  labs(x = 'μ1 - μ2')
+```
+
+Plots from the BEST model.
+
+```{r  bayes-t-vis-Best, echo=2}
+par(mfrow = c(2, 2))
+walk(c("mean", "sd", "effect", "nu"), function(p) plot(BESTout, which = p))
+layout(1)
+```
+
+
+
+## Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Bayesian/rstant_testBEST.R
