@@ -4,7 +4,7 @@
 /* title page */
 .book .book-body .page-wrapper .page-inner section.normal h1.title {
   font-size: 250%;
-  font-family: 'Fira Sans', Karla, 'Roboto Condensed', Lora, Lato, Roboto, sans;
+  font-family: Karla, 'Roboto Condensed', 'Fira Sans', Lora, Lato, Roboto, sans;
   font-style: normal;
   font-weight: 100;
 }
@@ -239,7 +239,9 @@ i {
     margin: 0 0 1.275em;
     padding: .85em 1em;
     background: #fafafa;
+    border-radius: 10px;
 }
+
 
 
 .book .book-body .page-wrapper .page-inner section.normal code,
@@ -431,5 +433,4 @@ div.datatables {
   background-repeat: no-repeat;
   background-position: center; 
 }
-
 
