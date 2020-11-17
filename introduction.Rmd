@@ -5,10 +5,10 @@ algorithms. The goal is to take away some of the mystery of them by providing
 clean code examples that are easy to run and compare with other tools.
 
 The code was collected over several years without respect to any previous code,
-so is not exactly consistent in style.  But in general, within each demo you
-will find some imported/simulated data, a primary estimating function, a
-comparison of results with some R package, and a link to the source code that is
-demonstrated.
+so is not exactly consistent in style.  However, in general, within each demo
+you will find some imported/simulated data, a primary estimating function, a
+comparison of results with some R package, and a link to the old code that was
+the initial demonstration.
 
 This code is not meant to be extensive, or used in production, and in fact, some
 of these would probably be considered of historical interest only.  To be clear,
@@ -20,13 +20,10 @@ possibly some reference text. This document is merely a learning tool for those
 wanting to dive a little deeper.
 
 
-
 The original code for these demonstrations may be found at their first home here: https://github.com/m-clark/Miscellaneous-R-Code.
 
 
-Many examples require some initial data processing or visualization via <span class="pack" style = "">ggplot2</span>, so it's assumed the <span class="pack" style = "">tidyverse</span> set of packages is loaded.
-
-
+Many examples require some initial data processing or visualization via <span class="pack" style = "">ggplot2</span>, so it's assumed the <span class="pack" style = "">tidyverse</span> set of packages is loaded for all demonstrations.
 
 While I'm happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add to it on rare occasion. This code has accumulated over years, and I just wanted it in a nicer format.  Perhaps if others would like to add to it via pull requests, I would do so.
 

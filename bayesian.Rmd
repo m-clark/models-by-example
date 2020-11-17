@@ -1,8 +1,12 @@
 # (PART\*)  Bayesian {-}
 
-# Placeholder
+# Introduction
 
-This part is still in progress while I decide what to keep/retain.  In the meantime, you can take a look at the [old repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian).
+The following demonstrations assume more background knowledge, but otherwise take a similar appoach. For example, the model fitting functions in the other demonstrations are now replaced with Stan code.  I start with the simplest of models such as a t-test and linear regression to get one comfortable. Some of the old code is so easily done now with tools like <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span>, or Stan even has built in functions (e.g. gaussian processes), that I only include ones that might otherwise not be demonstrated or as straightforward. You can take a look at the [old repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian) for a few more demos I've decided not to include here.
+
+
+```{r child='bayesian-t-test.Rmd'}
+```
 
 ```{r child='bayesian-linear-regression.Rmd'}
 ```
@@ -20,5 +24,11 @@ This part is still in progress while I decide what to keep/retain.  In the meant
 ```
 
 ```{r child='bayesian-non-parametric.Rmd'}
+```
+
+```{r child='bayesian-beta-regression.Rmd'}
+```
+
+```{r child='bayesian-stochastic-volatility.Rmd'}
 ```
 

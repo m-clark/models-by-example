@@ -4,6 +4,8 @@
 Log likelihood function to estimate parameters for a Zero-inflated Poisson model. With examples
 and comparison to <span class="pack" style = "">pscl</span> package output. Also includes approach based on Hilbe GLM text.
 
+Zero-inflated models are applied to situations in which target data has relatively many of one value, usually zero, to go along with the other observed values. They are two-part models, a logistic model for whether an observation is zero or not, and a count model for the other part. The key distinction from hurdle count models is that the count distribution contributes to the excess zeros. While the typical application is count data, the approach can be applied to any distribution in theory.
+
 
 ## Poisson
 

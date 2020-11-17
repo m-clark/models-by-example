@@ -127,7 +127,7 @@ fit_cfa = sampling(
 
 Here are the raw factor loadings and factor correlations.
 
-```{r bayes-cfa-compare1, cache.rebuild=T}
+```{r bayes-cfa-compare1}
 print(
   fit_cfa,
   digits = 3,
@@ -155,17 +155,22 @@ fit_lav = cfa(mod, data = big_five_no_miss)
 The following shows how to extract the parameter estimates and convert them to standardized form, followed by how to get the parameter estimates from the <span class="pack" style = "">lavaan</span> output.
 
 ```{r  bayes-compare-extract}
+# loadings
 lambda = get_posterior_mean(fit_cfa, par = 'lambda')[,'mean-all chains']
-sd_F   = rep(get_posterior_mean(fit_cfa, par = 'sd_lv')[,'mean-all chains'], e = 3)
-
 lambda = c(1, lambda[1:2], 1, lambda[3:4], 1, lambda[5:6])
-lambda_std_F = sd_F*lambda
+
+# standard deviations of factors and observed
+sd_F   = rep(get_posterior_mean(fit_cfa, par = 'sd_lv')[,'mean-all chains'], e = 3)
 x_sd = apply(stan_data$X, 2, sd)
+
+# standardize
+lambda_std_F = sd_F*lambda
 lambda_std_all = sd_F/x_sd*lambda
 
+# get factor correlations
 fit_cors = matrix(get_posterior_mean(fit_cfa, par = 'phi')[, 5], 3, 3)
 
-lav_par = parameterEstimates(fit_lav, standardized = TRUE)
+lav_par  = parameterEstimates(fit_lav, standardized = TRUE)
 ```
 
 First we compare the loadings, both raw and standardized (either standardize the latent variable only or the latent and observed variables).

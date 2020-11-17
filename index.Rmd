@@ -62,6 +62,8 @@ kable_df = function(data, digits = 3, ...) {
   ) %>% 
     kableExtra::kable_styling(full_width = F)
 }
+
+theme_set(visibly::theme_clean())
 ```
 
 ####
