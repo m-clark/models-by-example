@@ -1,0 +1,283 @@
+# Bayesian Multinomial Models
+
+
+I spent some time on these models to better understand them in the traditional and Bayesian context, as well as profile potential speed gains in the Stan code. If you were doing what many would call 'multinomial regression' without qualification, I can recommend <span class="pack" style = "">brms</span> with the 'categorical' distribution.  However, I'm not aware of it being able to accommodate choice-specific variables easily (though it does accommodate choice specific effects).  I show the standard model here with the usual demonstration, and show some code for the most complex setting of choice-specific, individual-specific, and choice-constant variables.
+
+See the [multinomial chapter][Multinomial] for the non-Bayesian approach.
+
+
+## Data Setup
+
+```{r bayes-multinom-setup}
+library(haven)
+library(tidyverse)
+
+program = read_dta("https://stats.idre.ucla.edu/stat/data/hsbdemo.dta") %>% 
+  as_factor() %>% 
+  mutate(prog = relevel(prog, ref = "academic"))
+
+library(mlogit)
+head(program[,1:5])
+
+programLong = program %>% 
+  select(id, prog, ses, write) %>% 
+  mlogit.data(
+    shape  = 'wide',
+    choice = 'prog',
+    id.var = 'id'
+  )
+
+head(programLong)
+
+
+X = model.matrix(prog ~ ses + write, data = program)
+y = program$prog
+
+X = X[order(y),]
+y = y[order(y)]
+```
+
+
+## Model Code
+
+```{stan bayes-multinom, output.var='bayes_multinom'}
+data {
+  int K;
+  int N;
+  int D;
+  int y[N];
+  matrix[N,D] X;
+}
+
+transformed data {
+  vector[D] zeros;
+  
+  zeros = rep_vector(0, D);
+}
+
+parameters {
+  matrix[D, K-1] beta_raw;
+}
+
+transformed parameters {
+  matrix[D, K] beta;
+  
+  beta = append_col(zeros, beta_raw);
+}
+
+model {
+  matrix[N, K] L;                   # Linear predictor
+  
+  L = X * beta;
+  
+  // prior for coefficients
+  to_vector(beta_raw) ~ normal(0, 10);
+  
+  // likelihood
+  for (n in 1:N)
+    y[n] ~ categorical_logit(to_vector(L[n]));
+}
+```
+
+
+## Estimation
+
+We'll get the data prepped for Stan, and the model code is assumed to be in an object `bayes_multinom`.
+
+```{r bayes-multinom-est}
+# N = sample size, x is the model matrix, y integer version of class outcome, k=
+# number of classes, D is dimension of model matrix
+stan_data = list(
+  N = nrow(X),
+  X = X,
+  y = as.integer(y),
+  K = n_distinct(y),
+  D = ncol(X)
+)
+
+
+library(rstan)
+
+fit = sampling(
+  bayes_multinom,
+  data  = stan_data,
+  thin  = 4,
+  cores = 4
+)
+```
+
+
+## Comparison
+
+We'll need to do a bit of reordering, but otherwise we can the models come to similar conclusions.
+
+```{r bayes-multinom-compare}
+print(
+  fit,
+  digits = 3,
+  par    = c('beta'),
+  probs  = c(.025, .5, .975)
+)
+
+fit_coefs    = get_posterior_mean(fit, par = 'beta_raw')[, 5]
+
+mlogit_mod   = mlogit(prog ~ 1 | ses + write, data = programLong)
+mlogit_coefs = coef(mlogit_mod)[c(1, 3, 5, 7, 2, 4, 6, 8)]
+```
+
+```{r bayes-multinom-compare2, echo=FALSE}
+cbind(m_logit = coef(mlogit_mod), fit = fit_coefs) %>% 
+  kable_df()
+```
+
+
+
+
+## Adding Complexity
+
+The following adds choice-specific (a.k.a. alternative-specific) variables, e.g. among product choices, this may include price.  Along with this we may have, along with choice constant, and the typical individual varying covariates.
+
+This code worked at the time, but I wasn't interested enough to try it again recently.  You can use the classic 'travel' data as a an example (available in <span class="pack" style = "">AER</span>), or <span class="objclass" style = "">fishing</span> from <span class="pack" style = "">mlogit</span>.  Essentially you'll have three separate data components-  a matrix for individual-specific covariates, one for alternative specific, and one for alternative constant covariates.
+
+
+```{stan bayes-multinom-alt-specific, output.var='bayes_multinom_alt_specific'}
+data {
+  int K;                               // number of choices
+  int N;                               // number of individuals
+  int D;                               // number of indiv specific vars
+  int G;                               // number of alt specific vars
+  int T;                               // number of alt constant vars
+  
+  int y[N*K];                          // choices
+  vector[N*K] choice;                  // choice made (logical)
+  
+  matrix[N, D] X;                      // data for indiv specific effects
+  matrix[N*K, G] Y;                    // data for alt specific effects
+  matrix[N*(K-1), T] Z;                // data for alt constant effects
+}
+
+parameters {   
+  matrix[D, K-1] beta;                 // individual specific coefs
+  matrix[G, K]  gamma;                 // choice specific coefs for alt-specific variables
+  vector[T]  theta;                    // choice constant coefs for alt-specific variables
+  
+}
+
+model {
+  matrix[N, K-1] Vx;                   // Utility for individual vars
+  
+  vector[N*K] Vy0;
+  matrix[N, K-1] Vy;                   // Utility for alt-specific/alt-varying vars
+  
+  vector[N*(K-1)] Vz0;
+  matrix[N, (K-1)] Vz;                 // Utility for alt-specific/alt-constant vars
+
+  matrix[N, K-1] V;                    // combined utilities
+  
+  vector[N] baseProbVec;               // reference group probabilities
+  real ll0;                            // intermediate log likelihood
+  real loglik;                         // final log likelihood
+
+
+  // priors  
+  to_vector(beta)  ~ normal(0, 10);    // diffuse priors on coefficients
+  to_vector(gamma) ~ normal(0, 10);
+  to_vector(theta) ~ normal(0, 10);
+  
+
+  // likelihood
+  Vx = X * beta;
+  
+  for(alt in 1:K){
+    vector[G] par;
+    int start;
+    int end;
+
+    par = gamma[,alt];
+    start = N*alt - N+1;
+    end   = N*alt;
+    Vy0[start:end] = Y[start:end,] * par;
+    if(alt > 1) Vy[,alt-1] = Vy0[start:end] - Vy0[1:N];
+  }
+  
+  Vz0 = Z * theta;
+  
+  for(alt in 1:(K-1)){
+    int start;
+    int end;
+
+    start = N*alt-N+1;
+    end = N*alt;
+    Vz[,alt] = Vz0[start:end];
+  }
+
+  V = Vx + Vy + Vz;
+
+  for(n in 1:N)  baseProbVec[n] = 1/(1 + sum(exp(V[n])));
+  
+  ll0 = dot_product(to_vector(V), choice[(N+1):(N*K)]); // just going to assume no neg index
+  loglik  = sum(log(baseProbVec)) + ll0;
+  target += loglik;
+  
+}
+
+
+generated quantities {
+  matrix[N, K-1] fitted_nonref;
+  vector[N] fitted_ref;
+  matrix[N, K] fitted;
+  
+  matrix[N, K-1] Vx;                   // Utility for individual vars
+  
+  vector[N*K] Vy0;
+  matrix[N, K-1] Vy;                   // Utility for alt-specific/alt-varying vars
+  
+  vector[N*(K-1)] Vz0;
+  matrix[N, (K-1)] Vz;                 // Utility for alt-specific/alt-constant vars
+
+  matrix[N, K-1] V;                    // combined utilities
+  
+  vector[N] baseProbVec;               // reference group probabilities
+
+  Vx = X * beta;
+  
+  for(alt in 1:K) {
+    vector[G] par;
+    int start;
+    int end;
+
+    par   = gamma[,alt];
+    start = N*alt-N+1;
+    end   = N*alt;
+    
+    Vy0[start:end] = Y[start:end, ] * par;
+    
+    if (alt > 1) Vy[,alt-1] = Vy0[start:end] - Vy0[1:N];
+  }
+  
+  Vz0 = Z * theta;
+  
+  for(alt in 1:(K-1)){
+    int start;
+    int end;
+
+    start = N*alt-N+1;
+    end = N*alt;
+    
+    Vz[,alt] = Vz0[start:end];
+  }
+
+  V = Vx + Vy + Vz;
+  
+  for(n in 1:N)  baseProbVec[n] = 1/(1 + sum(exp(V[n])));
+  fitted_nonref = exp(V) .* rep_matrix(baseProbVec, K-1);
+  
+  for(n in 1:N) fitted_ref[n] = 1-sum(fitted_nonref[n]);
+  fitted = append_col(fitted_ref, fitted_nonref);
+}
+```
+
+## Source
+
+Original code available at:
+https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian/multinomial
