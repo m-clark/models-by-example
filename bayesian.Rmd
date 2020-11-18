@@ -32,3 +32,8 @@ The following demonstrations assume more background knowledge, but otherwise tak
 ```{r child='bayesian-stochastic-volatility.Rmd'}
 ```
 
+```{r child='bayesian-multinomial-model.Rmd'}
+```
+
+```{r child='bayesian-variational.Rmd'}
+```
