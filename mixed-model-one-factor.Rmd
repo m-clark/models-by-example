@@ -34,7 +34,7 @@ y = matrix(c(22.6,20.5,20.8,
 ## Function 
  
 ```{r one-factor-re}
-one_factor_re  = function(mu, sigma2_mu, sigma2){
+one_factor_re <- function(mu, sigma2_mu, sigma2){
   # Args
   # mu: intercept
   # sigma2_mu: variance of intercept

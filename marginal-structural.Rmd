@@ -74,7 +74,7 @@ simdat = simdat %>%
 Create the likelihood function for using the weights.
 
 ```{r msm-func}
-msm_ll = function(
+msm_ll <- function(
   par,             # parameters to be estimated; first is taken to be sigma
   X,               # model matrix
   y,               # target variable

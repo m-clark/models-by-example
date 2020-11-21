@@ -1,7 +1,7 @@
 # Hidden Markov Model
 
 
-This function duplicates [hmm_viterbi.py](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/hmm_viterbi.py), which comes from the [Viterbi algorithm wikipedia page](https://en.wikipedia.org/wiki/Viterbi_algorithm) (at least as it was when I stumbled across it). This first function is just to provide R code that is similar, in case anyone is interested in a more direct comparison, but the original used lists of tuples and thus was very inefficient R-wise, and provided output that wasn't succinct.  The second function takes a vectorized approach and returns a matrix in a much more straightforward fashion.  Both will provide the same result as the Python code. See The [Markov Model chapter][Markov Chain Model] also.
+This function duplicates [hmm_viterbi.py][HMM], which comes from the [Viterbi algorithm wikipedia page](https://en.wikipedia.org/wiki/Viterbi_algorithm) (at least as it was when I stumbled across it). This first function is just to provide R code that is similar, in case anyone is interested in a more direct comparison, but the original used lists of tuples and thus was very inefficient R-wise, and provided output that wasn't succinct.  The second function takes a vectorized approach and returns a matrix in a much more straightforward fashion.  Both will provide the same result as the Python code. See The [Markov Model chapter][Markov Model] also.
 
 ## Data Setup
 
@@ -30,7 +30,7 @@ emit_p = list(
 
 ## Function
 
-This first function takes a python-esque approach in the manner of the original.
+This first function takes a Python-esque approach in the manner of the original, allowing for easier comparison.
 
 ```{r viterbi1}
 viterbi <- function(obs, states, start_p, trans_p, emit_p) {

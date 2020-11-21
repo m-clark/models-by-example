@@ -32,7 +32,7 @@ y = sleepstudy$Reaction
 The following is based on the code in Wood (6.2.2), with a couple modifications for consistent nomenclature and presentation. We use <span class='func'>optim</span> and a minimizing function, in this case the negative log likelihood, to estimate the parameters of interest, collectively $\theta$, in the code below. The (square root of the) variances will be estimated on the log scale. In Wood, he simply extracts the 'fixed effects' for the intercept and days effects using `lm` (6.2.3), and we'll do the same.
 
 ```{r mixed-ml-func}
-ll_mixed = function(y, X, Z, theta) {
+ll_mixed <- function(y, X, Z, theta) {
   tau   = exp(theta[1])
   sigma = exp(theta[2])
   n = length(y)
@@ -47,7 +47,7 @@ ll_mixed = function(y, X, Z, theta) {
   b  = coef(lm(y~X-1))
   LP = X %*% b
   
-  ll = -n/2*log(2*pi) -sum(log(diag(L))) - crossprod(y-LP)/2
+  ll = -n/2*log(2*pi) -sum(log(diag(L))) - crossprod(y - LP)/2
   -ll
 }
 ```
@@ -56,7 +56,7 @@ ll_mixed = function(y, X, Z, theta) {
 Here is an alternative function using a multivariate normal approach that doesn't use the transformation to independent, and might provide additional perspective.
 
 ```{r mixed-ml-func-mv}
-ll_mixed_mv = function(y, X, Z, theta) {
+ll_mixed_mv <- function(y, X, Z, theta) {
   tau   = exp(theta[1])
   sigma = exp(theta[2])
   n = length(y)
@@ -115,9 +115,9 @@ As we can see, both formulations produce identical results. We can now compare t
 ```{r lme4}
 library(lme4)
 
-lmeMod = lmer(Reaction ~ Days + (1|Subject), sleepstudy, REML = FALSE)
+fit_mer = lmer(Reaction ~ Days + (1|Subject), sleepstudy, REML = FALSE)
 
-lmeMod
+fit_mer
 ```
 
 We can also predict the random effects (Wood, 6.2.4), sometimes called BLUPs (Best Linear Unbiased Predictions) and after doing so again compare the results to the <span class="pack" style = "">lme4</span> estimates.
@@ -132,7 +132,7 @@ ranef_est = tausq * t(Z) %*% solve(Sigma) %*% resid(lm(y ~ X - 1))/sigmasq
 
 data.frame(
   ranef_est, 
-  lme4 = ranef(lmeMod)$Subject[[1]]
+  lme4 = ranef(fit_mer)$Subject[[1]]
 ) %>% 
   kable_df(2)
 ```

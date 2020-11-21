@@ -24,7 +24,7 @@ fish = haven::read_dta("http://www.stata-press.com/data/r11/fish.dta")
 The log likelihood function.
 
 ```{r zip-ll}
-zip_ll = function(y, X, par) {
+zip_ll <- function(y, X, par) {
   # arguments are response y, predictor matrix X, and parameter named starting points of 'logit' and 'pois'
   
   # Extract parameters
@@ -152,7 +152,7 @@ bind_rows(list(pscl = init1, zip_poisson_ll = init2), .id = '') %>%
 ### Function
 
 ```{r zinb-ll}
-zinb_ll = function(y, X, par) {
+zinb_ll <- function(y, X, par) {
   # arguments are response y, predictor matrix X, and parameter named starting points of 'logit', 'negbin', and 'theta'
   
   # Extract parameters

@@ -40,7 +40,7 @@ A maximum likelihood approach.
 
 
 ```{r logreg_ML}
-logreg_ML = function(par, X, y) {
+logreg_ML <- function(par, X, y) {
   # arguments- 
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
@@ -68,7 +68,7 @@ logreg_ML = function(par, X, y) {
 Another approach via exponential loss function.
 
 ```{r logreg_exp}
-logreg_exp = function(par, X, y) {
+logreg_exp <- function(par, X, y) {
   # arguments- 
   # par: parameters to be estimated
   # X: predictor matrix with intercept column

@@ -33,7 +33,7 @@ d = data.frame(x, y = factor(y))
 ## Function
 
 ```{r ll_ord}
-ll_ord = function(par, X, y, probit = TRUE) {
+ll_ord <- function(par, X, y, probit = TRUE) {
   K = length(unique(y))                        # number of classes K
   ncuts = K-1                                  # number of cutpoints/thresholds
   cuts  = par[(1:ncuts)]                       # cutpoints

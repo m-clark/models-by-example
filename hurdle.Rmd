@@ -20,7 +20,7 @@ fish = haven::read_dta("http://www.stata-press.com/data/r11/fish.dta")
 The likelihood function is of two parts, one a logistic model, the other, a poisson count model.
 
 ```{r pois-hurdle-ll}
-hurdle_poisson_ll = function(y, X, par) {
+hurdle_poisson_ll <- function(y, X, par) {
   # Extract parameters
   logitpars = par[grep('logit', names(par))]
   poispars  = par[grep('pois', names(par))]
@@ -141,7 +141,7 @@ bind_rows(list(pscl = init1, hurdle_poisson_ll = init2), .id = '') %>%
 The likelihood function.
 
 ```{r nb-hurdle-ll}
-hurdle_nb_ll = function(y, X, par) {
+hurdle_nb_ll <- function(y, X, par) {
   # Extract parameters
   logitpars  = par[grep('logit', names(par))]
   NegBinpars = par[grep('NegBin', names(par))]

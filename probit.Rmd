@@ -13,7 +13,7 @@ Regression] but using a different link function.
 ### Function
 
 ```{r probit_ll}
-probit_ll = function(beta, X, y){
+probit_ll <- function(beta, X, y) {
   mu = X %*% beta
   
   # these produce identical results, but the second is the typical depiction
@@ -50,8 +50,8 @@ init = rep(0, ncol(X))
 fit = optim(
   fn  = probit_ll,
   par = init,
-  X = X,
-  y = y,
+  X   = X,
+  y   = y,
   method = 'BFGS'
 )
 
@@ -95,7 +95,7 @@ For the bivariate model, we are dealing with two binary outcomes and their corre
 Here is the main function.
 
 ```{r bivariate_probit_ll}
-bivariate_probit_ll = function(pars, X, y1, y2) {
+bivariate_probit_ll <- function(pars, X, y1, y2) {
   rho = pars[1]
   mu1 = X %*% pars[2:(ncol(X) + 1)]
   mu2 = X %*% pars[(ncol(X) + 2):length(pars)]

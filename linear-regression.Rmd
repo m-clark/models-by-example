@@ -36,7 +36,7 @@ dfXy = data.frame(X, y)
 A maximum likelihood approach.
 
 ```{r lm_ml}
-lm_ml = function(par, X, y) {
+lm_ml <- function(par, X, y) {
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
   # y: response
@@ -66,7 +66,7 @@ An approach via least squares loss function.
 
 
 ```{r lm_ls}
-lm_ls = function(par, X, y) {
+lm_ls <- function(par, X, y) {
   # arguments- 
   # par: parameters to be estimated
   # X: predictor matrix with intercept column

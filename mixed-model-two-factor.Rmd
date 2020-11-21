@@ -24,7 +24,7 @@ d = data.frame(d[order(d$sire), ], y)
 The function takes the log variances `eta`* as input to keep positive.
 
 ```{r two-factor-re}
-two_factor_re = function(mu, eta_alpha, eta_gamma, eta) {
+two_factor_re <- function(mu, eta_alpha, eta_gamma, eta) {
   # Args 
   # mu: intercept 
   # eta_alpha: random effect one 
