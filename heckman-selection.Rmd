@@ -1,9 +1,9 @@
 # Heckman Selection 
 
-Based on Bleven's example here: 
-https://www3.nd.edu/~wevans1/ecoe60303/sample_selection_example.ppt, but which is 
-more or less the 'classic' example, variations of which you'll find all over
-regarding women's wages.
+This demonstration of the Heckman selection model is based on Bleven's example
+here: https://www3.nd.edu/~wevans1/ecoe60303/sample_selection_example.ppt, but
+which is more or less the 'classic' example regarding women's wages, variations
+of which you'll find all over.
 
 Description of the data:
 
@@ -76,7 +76,7 @@ The two-step approach first conducts a probit model regarding whether the indivi
 
 ```{r heckman-glm}
 probit = glm(observed_index ~ educ + age + z,
-             data = d,
+             data   = d,
              family = binomial(link = 'probit'))
 
 summary(probit)
@@ -121,7 +121,8 @@ Compare to <span class="pack" style = "">sampleSelection</span> package.
 ```{r heckman-compare-1}
 library(sampleSelection)
 
-selection_2step = selection(observed_index ~ educ + age + z, wearnl ~ educ + age, method = '2step')
+selection_2step = selection(observed_index ~ educ + age + z, wearnl ~ educ + age, 
+                            method = '2step')
 
 summary(selection_2step)
 
@@ -207,12 +208,14 @@ heckman_ml_bounded = optim(
 Comparison model.
 
 ```{r selection-package} 
-selection_ml = selection(observed_index ~ educ + age + z, wearnl ~ educ + age, method = 'ml')
+selection_ml = selection(observed_index ~ educ + age + z, wearnl ~ educ + age, 
+                         method = 'ml')
 # summary(selection_ml)
 ```
 
+We now compare the results of the different estimation approaches.
 
-```{r heckman-compare}
+```{r heckman-compare, echo=FALSE}
 library(tidyverse)
 
 # compare coefficients

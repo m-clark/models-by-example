@@ -17,8 +17,8 @@ set.seed(16)
 
 n = 1000
 simdat = data.frame(l = rnorm(n, 10, 5))
-a.lin = simdat$l - 10
-pa = plogis(a.lin)
+a_lin  = simdat$l - 10
+pa = plogis(a_lin)
 
 simdat = simdat %>% 
   mutate(
@@ -74,17 +74,17 @@ simdat = simdat %>%
 Create the likelihood function for using the weights.
 
 ```{r msm-func}
-maxlike = function(
+msm_ll = function(
   par,             # parameters to be estimated; first is taken to be sigma
   X,               # model matrix
   y,               # target variable
   wts              # estimated weights
 ) {
-  beta = par[-1]
-  lp = X %*% beta
+  beta  = par[-1]
+  lp    = X %*% beta
   sigma = exp(par[1])  # exponentiated value to stay positive
-  ll = dnorm(y, mean = lp, sd = sigma, log = TRUE)  
   
+  ll = dnorm(y, mean = lp, sd = sigma, log = TRUE)  
   -sum(ll * wts)   # weighted likelihood
   
   # same as
@@ -104,7 +104,7 @@ y = simdat$y
 
 result = optim(
   par = c(sigma = 0, intercept = 0, b = 0),
-  fn  = maxlike,
+  fn  = msm_ll,
   X   = X,
   y   = y,
   wts = wts,
@@ -127,12 +127,6 @@ glm_vcov_unsc = summary(glm_basic)$cov.unscaled          # weighted vcov unscale
 estfun = X * res * wts                  
 x = estfun %*% glm_vcov_unsc 
 ```
-
-
-
-
-
-
 
 
 ## Comparison

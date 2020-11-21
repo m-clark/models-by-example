@@ -1,12 +1,14 @@
 # Probit & Bivariate Probit
 
-Stata users seem to be the primary audience concerned with these models, but I
-thought I'd play around with one here (I've never had reason to use a probit
-model in practice).  Stata examples come from the UCLA ATS website and the Stata
-manual, so one can investigate the Stata result for comparison.
-
+Stata users seem to be the primary audience concerned with probit models, but I
+thought I'd play around with one even though I've never had reason to use it.
+Stata examples come from the UCLA ATS website and the Stata manual, so one can
+investigate the Stata result for comparison.
 
 ## Standard Probit
+
+The standard probit model is identical to the [logistic model][Logistic
+Regression] but using a different link function.
 
 ### Function
 
@@ -45,7 +47,7 @@ y = admit$admit
 
 init = rep(0, ncol(X))
 
-optimResult = optim(
+fit = optim(
   fn  = probit_ll,
   par = init,
   X = X,
@@ -53,7 +55,7 @@ optimResult = optim(
   method = 'BFGS'
 )
 
-optimResult 
+fit 
 ```
 
 
@@ -73,24 +75,27 @@ y = auto$foreign
 
 init = rep(0, ncol(X))
 
-optimResult = optim(
+fit = optim(
   fn  = probit_ll,
   par = init,
   X = X,
   y = y
 )
 
-optimResult
+fit
 ```
 
 
 
 ## Bivariate Probit
 
-Main function.
+For the bivariate model, we are dealing with two binary outcomes and their correlation.
 
-```{r bivariateprobit_ll}
-bivariateprobit_ll = function(pars, X, y1, y2) {
+
+Here is the main function.
+
+```{r bivariate_probit_ll}
+bivariate_probit_ll = function(pars, X, y1, y2) {
   rho = pars[1]
   mu1 = X %*% pars[2:(ncol(X) + 1)]
   mu2 = X %*% pars[(ncol(X) + 2):length(pars)]
@@ -109,7 +114,7 @@ bivariateprobit_ll = function(pars, X, y1, y2) {
     ll[i] = log(
       pmnorm(
         x = c(eta1[i], eta2[i]),
-        mean = c(0, 0),
+        mean   = c(0, 0),
         varcov = corr
       )
     )
@@ -128,7 +133,7 @@ bivariateprobit_ll = function(pars, X, y1, y2) {
 
 ### Example 
 
-From stata manual on bivariate probit:
+From the Stata manual on bivariate probit:
 
 > We wish to model the bivariate outcomes of whether children attend private 
 school and whether the head of the household voted for an increase in property
@@ -146,8 +151,8 @@ y2 = school$vote
 init = c(0, rep(0, ncol(X)*2))
 
 # you'll probably get a warning or two, ignore; takes a couple seconds
-optimResult = optim(
-  fn  = bivariateprobit_ll,
+fit = optim(
+  fn  = bivariate_probit_ll,
   par = init,
   X   = X,
   y1  = y1,
@@ -156,17 +161,17 @@ optimResult = optim(
 )
 
 
-loglik = optimResult$value
-rho = optimResult$par[1]
-coefsPrivate = optimResult$par[2:(ncol(X) + 1)]
-coefsVote = optimResult$par[(ncol(X) + 2):length(init)]
-names(coefsPrivate) = names(coefsVote) = c('Int', 'years', 'logptax', 'loginc')
+loglik = fit$value
+rho    = fit$par[1]
+coefs_private = fit$par[2:(ncol(X) + 1)]
+coefs_vote = fit$par[(ncol(X) + 2):length(init)]
+names(coefs_private) = names(coefs_vote) = c('Int', 'years', 'logptax', 'loginc')
 
 list(
   loglik  = loglik,
   rho     = rho,
-  Private = coefsPrivate,
-  Vote    = coefsVote
+  Private = coefs_private,
+  Vote    = coefs_vote
 )
 ```
 

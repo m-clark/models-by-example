@@ -1,18 +1,16 @@
 # Stochastic Gradient Descent
 
-Here we have 'online' learning via stochastic gradient descent.  See also, [standard 
-gradient descent][Gradient Descent] In the following, we have basic data 
-for standard regression, but in this 'online' learning case, we can assume 
-each observation comes to us as a stream over time rather than as a single 
+Here we have 'online' learning via stochastic gradient descent.  See also,
+[standard gradient descent][Gradient Descent] In the following, we have basic
+data for standard regression, but in this 'online' learning case, we can assume
+each observation comes to us as a stream over time rather than as a single
 batch, and would continue coming in.  Note that there are plenty of variations
-of this, and it can be applied in the batch case as well.  Currently no 
-stopping point is implemented in order to trace results over all data
-points/iterations.
-
+of this, and it can be applied in the batch case as well.  Currently no stopping
+point is implemented in order to trace results over all data points/iterations.
 On revisiting this much later, I thought it useful to add that I believe this
-was motivated by the example in Murphy's Probabilistic Machine Learning.  I
-also made some cleanup to my original code, added some comments, but mostly
-left it as it was.
+was motivated by the example in Murphy's Probabilistic Machine Learning.  I also
+made some cleanup to my original code, added some comments, but mostly left it
+as it was.
 
 
 ## Data Setup

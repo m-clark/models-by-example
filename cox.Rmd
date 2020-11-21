@@ -26,7 +26,7 @@ d
 Create a the likelihood function to feed to <span class="" style = "">optim</span>.
 
 ```{r cox-ll}
-pl <- function(pars, preds, died, t) {
+cox_pl <- function(pars, preds, died, t) {
   # Arguments- 
   # pars: coefficients of interest
   # preds: predictor matrix
@@ -62,9 +62,9 @@ Estimate with <span class="func" style = "">optim</span>.
 ```{r cox-ph-est}
 initial_values = c(0, 0)
 
-out = optim(
+fit = optim(
   par   = initial_values,
-  fn    = pl,
+  fn    = cox_pl,
   preds = d[, c('kittyblarg', 'kittyhappy')],
   died  = d[, 'kittydied'],
   t     = dur,
@@ -72,7 +72,7 @@ out = optim(
   hessian = T
 )
 
-out
+fit
 ```
 
 
@@ -83,8 +83,8 @@ out
 Extract results.
 
 ```{r cox-ph-extract}
-B  = out$par
-se = sqrt(diag(solve(out$hessian)))
+B  = fit$par
+se = sqrt(diag(solve(fit$hessian)))
 Z  = B/se
 
 # create a summary table
@@ -106,9 +106,20 @@ Compare to <span class="pack" style = "">survival</span> package.
 library(survival)
 
 cox_model = coxph(Surv(dur, kittydied) ~ kittyblarg + kittyhappy)
+```
 
-summary(cox_model)$coefficients
-result_tbl
+```{r coxph-compare-show, echo=FALSE}
+cox_model = data.frame(summary(cox_model)$coefficients)
+colnames(cox_model) = colnames(result_tbl)
+rownames(result_tbl) = rownames(cox_model)
+
+do.call(rbind,
+  list(
+      coxph  = cox_model,
+      cox_pl = result_tbl
+  )
+) %>%
+  kable_df()
 ```
 
 
@@ -204,7 +215,7 @@ Estimate with <span class="func" style = "">optim</span>.
 ```{r coxtv-est}
 initial_values = c(0, 0)
 
-out = optim(
+fit = optim(
   par   = initial_values,
   fn    = pl_tv,
   preds = c('kittyblarg', 'kittyhappy'),
@@ -216,7 +227,7 @@ out = optim(
   hessian = TRUE
 )
 
-# out
+# fit
 ```
 
 ### Comparison
@@ -225,8 +236,8 @@ out = optim(
 Extract results.
 
 ```{r coxtv-extract}
-B  = out$par
-se = sqrt(diag(solve(out$hessian)))
+B  = fit$par
+se = sqrt(diag(solve(fit$hessian)))
 Z  = B/se
 
 result_tbl = data.frame(
@@ -255,6 +266,19 @@ summary(cox_model_tv)$coefficients
 result_tbl
 ```
 
+```{r coxtv-compare-show, echo=FALSE}
+cox_model_tv = data.frame(summary(cox_model_tv)$coefficients)
+colnames(cox_model_tv) = colnames(result_tbl)
+rownames(result_tbl) = rownames(cox_model_tv)
+
+do.call(rbind,
+  list(
+      coxph  = cox_model_tv,
+      cox_pl = result_tbl
+  )
+) %>%
+  kable_df()
+```
 
 
 
@@ -269,7 +293,7 @@ data(ovarian, package = 'survival')
 
 ### Function
 
-Requires `pl` function above though one could extend to `pl_tv`.
+Requires `cox_pl` function above though one could extend to `pl_tv`.
 
 ```{r pl-strat-func}
 pl_strat <- function(pars, preds, died, t, strata) {
@@ -280,7 +304,7 @@ pl_strat <- function(pars, preds, died, t, strata) {
   neglls = map_dbl(
     dlist,
     function(x)
-      pl(
+      cox_pl(
         pars  = pars,
         preds = x[, colnames(preds)],
         died  = x$died,
@@ -301,7 +325,7 @@ Estimate with <span class="func" style = "">optim</span>.
 ```{r coxstrat-est}
 initial_values = c(0, 0)
 
-out = optim(
+fit = optim(
   par   = initial_values,
   fn    = pl_strat,
   preds = ovarian[, c('age', 'ecog.ps')],
@@ -312,17 +336,17 @@ out = optim(
   hessian = TRUE
 )
 
-# out
+# fit
 ```
 
 ### Comparison
 
 ```{r coxstrat-compare}
-B  = out$par
-se = sqrt(diag(solve(out$hessian)))
+B  = fit$par
+se = sqrt(diag(solve(fit$hessian)))
 Z  = B/se
 
-results_tbl = data.frame(
+result_tbl = data.frame(
   B,
   exp = exp(B),
   se,
@@ -336,11 +360,24 @@ cox_strata_model = coxph(
   data = ovarian
   )
 # cox_strata_model; cox_strata_model$loglik[2]
-
-summary(cox_model_tv)$coefficients
-
-result_tbl
 ```
+
+
+```{r coxstrat-compare-show, echo=FALSE}
+cox_strata_model_est = data.frame(summary(cox_strata_model)$coefficients)
+colnames(cox_strata_model_est) = colnames(result_tbl)
+rownames(result_tbl) = rownames(cox_strata_model_est)
+
+do.call(rbind,
+  list(
+      coxph  = cox_strata_model_est,
+      cox_pl = result_tbl
+  )
+) %>%
+  kable_df()
+```
+
+
 
 
 ## Source

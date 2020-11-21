@@ -1,7 +1,14 @@
 # Tobit
 
 
-A simple demonstration of tobit regression via maximum likelihood. The issue is one where data is censored such that while we observe the value, it is not the true value, which would extend beyond the range of the observed data. This is very commonly seen in cases where the dependent variable has been given some arbitrary cutoff at the lower or upper end of the range, often resulting in floor or ceiling effects respectively. The conceptual idea is that we are interested in modeling the underlying latent variable that would not have such restriction if it was actually observed.
+The following is a simple demonstration of tobit regression via maximum
+likelihood. The issue is one where data is censored such that while we observe
+the value, it is not the true value, which would extend beyond the range of the
+observed data. This is very commonly seen in cases where the dependent variable
+has been given some arbitrary cutoff at the lower or upper end of the range,
+often resulting in floor or ceiling effects respectively. The conceptual idea is
+that we are interested in modeling the underlying latent variable that would not
+have such restriction if it was actually observed.
 
 
 ## Censoring with an Upper Limit
@@ -30,7 +37,7 @@ init = c(coef(initmod), log_sigma = log(summary(initmod)$sigma))
 ### Function
 
 ```{r tobit-ll}
-tobit <- function(par, X, y, ul = -Inf, ll = Inf) {
+tobit_ll <- function(par, X, y, ul = -Inf, ll = Inf) {
   
   # this function only takes a lower OR upper limit
   
@@ -65,7 +72,7 @@ Estimate via <span class="func" style = "">optim</span>.
 ```{r tobit-estimate}
 res = optim(
   par = init,
-  tobit,
+  tobit_ll,
   y  = acad_apt$apt,
   X  = X,
   ul = 800,
@@ -77,7 +84,7 @@ res = optim(
 # this would be more akin to the default Stata default approach
 # optim(
 #   par = init,
-#   tobit,
+#   tobit_ll,
 #   y = acad_apt$apt,
 #   X = X,
 #   ul = 800,
@@ -113,7 +120,15 @@ rbind(
 ```
 
 
-<span class="pack" style = "">AER</span> is actually just using <span class="func" style = "">survreg</span> from the <span class="pack" style = "">survival</span> package. Survival models are usually for modeling time to some event, e.g. death in medical studies, and the censoring comes from the fact that the observed event does not occur for some people. Like our tobit function, an indicator is needed to denote who is or isn't censored. In survival models, the indicator is for the event itself, and means they are NOT censored.  So we'll reverse the indicator used in the tobit function for <span class="func" style = "">survreg</span>.
+<span class="pack" style = "">AER</span> is actually just using <span
+class="func" style = "">survreg</span> from the <span class="pack" style =
+"">survival</span> package. Survival models are usually for modeling time to
+some event, e.g. death in medical studies, and the censoring comes from the fact
+that the observed event does not occur for some people. Like our tobit function,
+an indicator is needed to denote who is or isn't censored. In survival models,
+the indicator is for the event itself, and means they are NOT censored.  So
+we'll reverse the indicator used in the tobit function for <span class="func"
+style = "">survreg</span>.
 
 ```{r tobit-surv}
 surv_mod = survreg(Surv(apt, apt < 800, type = 'right') ~ read + math + prog,
@@ -125,17 +140,17 @@ surv_mod = survreg(Surv(apt, apt < 800, type = 'right') ~ read + math + prog,
 
 Compare all results.
 
-```{r tobit-compare-surv}
+```{r tobit-compare-surv, echo=FALSE}
 rbind(
-  tobit = c(
+  tobit_ll = c(
     res$par[1:5],
     sigma = exp(res$par[6]),
     logLike = -res$value
   ),
-  AER = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod)),
+  AER      = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod)),
   survival = c(coef(surv_mod), surv_mod$scale, logLik(surv_mod))
 ) %>% 
-  round(3)
+  kable_df()
 ```
 
 
@@ -173,16 +188,16 @@ aer_mod = AER::tobit(apt2 ~ read + math + prog,
 
 ### Comparison
 
-```{r tobit-ll-compare}
+```{r tobit-ll-compare, echo=FALSE}
 rbind(
-  tobit = c(
+  tobit_ll = c(
     res$par[1:5],
-    sigma = exp(res$par[6]),
+    sigma   = exp(res$par[6]),
     logLike = -res$value
   ),
   AER = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod))
 ) %>% 
-  round(3)
+  kable_df(3)
 ```
 
 ## Source
