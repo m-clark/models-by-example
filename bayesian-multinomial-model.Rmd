@@ -137,7 +137,7 @@ cbind(m_logit = coef(mlogit_mod), fit = fit_coefs) %>%
 
 The following adds choice-specific (a.k.a. alternative-specific) variables, e.g. among product choices, this may include price.  Along with this we may have, along with choice constant, and the typical individual varying covariates.
 
-This code worked at the time, but I wasn't interested enough to try it again recently.  You can use the classic 'travel' data as a an example (available in <span class="pack" style = "">AER</span>), or <span class="objclass" style = "">fishing</span> from <span class="pack" style = "">mlogit</span>.  Essentially you'll have three separate data components-  a matrix for individual-specific covariates, one for alternative specific, and one for alternative constant covariates.
+This code worked at the time, but I wasn't interested enough to try it again recently.  You can use the classic 'travel' data as an example (available as <span class="objclass" style = "">TravelMode</span> in <span class="pack" style = "">AER</span>), or <span class="objclass" style = "">fishing</span> from <span class="pack" style = "">mlogit</span>.  Essentially you'll have three separate data components-  a matrix for individual-specific covariates, one for alternative specific, and one for alternative constant covariates. 
 
 
 ```{stan bayes-multinom-alt-specific, output.var='bayes_multinom_alt_specific'}
@@ -151,22 +151,22 @@ data {
   int y[N*K];                          // choices
   vector[N*K] choice;                  // choice made (logical)
   
-  matrix[N, D] X;                      // data for indiv specific effects
-  matrix[N*K, G] Y;                    // data for alt specific effects
+  matrix[N, D]       X;                // data for indiv specific effects
+  matrix[N*K, G]     Y;                // data for alt specific effects
   matrix[N*(K-1), T] Z;                // data for alt constant effects
 }
 
 parameters {   
   matrix[D, K-1] beta;                 // individual specific coefs
   matrix[G, K]  gamma;                 // choice specific coefs for alt-specific variables
-  vector[T]  theta;                    // choice constant coefs for alt-specific variables
+  vector[T]     theta;                 // choice constant coefs for alt-specific variables
   
 }
 
 model {
   matrix[N, K-1] Vx;                   // Utility for individual vars
   
-  vector[N*K] Vy0;
+  vector[N*K]   Vy0;
   matrix[N, K-1] Vy;                   // Utility for alt-specific/alt-varying vars
   
   vector[N*(K-1)] Vz0;
@@ -186,6 +186,8 @@ model {
   
 
   // likelihood
+  
+  // 'Utilities'
   Vx = X * beta;
   
   for(alt in 1:K){
@@ -193,9 +195,10 @@ model {
     int start;
     int end;
 
-    par = gamma[,alt];
+    par   = gamma[,alt];
     start = N*alt - N+1;
     end   = N*alt;
+    
     Vy0[start:end] = Y[start:end,] * par;
     if(alt > 1) Vy[,alt-1] = Vy0[start:end] - Vy0[1:N];
   }
@@ -206,8 +209,8 @@ model {
     int start;
     int end;
 
-    start = N*alt-N+1;
-    end = N*alt;
+    start = N*alt - N+1;
+    end   = N*alt;
     Vz[,alt] = Vz0[start:end];
   }
 
@@ -247,7 +250,7 @@ generated quantities {
     int end;
 
     par   = gamma[,alt];
-    start = N*alt-N+1;
+    start = N*alt - N+1;
     end   = N*alt;
     
     Vy0[start:end] = Y[start:end, ] * par;
@@ -269,10 +272,10 @@ generated quantities {
 
   V = Vx + Vy + Vz;
   
-  for(n in 1:N)  baseProbVec[n] = 1/(1 + sum(exp(V[n])));
+  for(n in 1:N)  baseProbVec[n] = 1 / (1 + sum(exp(V[n])));
   fitted_nonref = exp(V) .* rep_matrix(baseProbVec, K-1);
   
-  for(n in 1:N) fitted_ref[n] = 1-sum(fitted_nonref[n]);
+  for(n in 1:N) fitted_ref[n] = 1 - sum(fitted_nonref[n]);
   fitted = append_col(fitted_ref, fitted_nonref);
 }
 ```

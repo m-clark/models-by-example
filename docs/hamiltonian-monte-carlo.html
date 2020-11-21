@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Hamiltonian Monte Carlo Example | Model Estimation by Example</title>
+  <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Hamiltonian Monte Carlo Example | Model Estimation by Example" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
+  <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+  <meta property="og:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="github-repo" content="m-clark/models-by-example/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Hamiltonian Monte Carlo Example | Model Estimation by Example" />
+  
+  <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="metropolis-hastings.html"/>
+<link rel="next" href="supplemental.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class='before'><a href="./">Model Estimation by Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="part"><span><b>Models</b></span></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i>Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#data-setup"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#estimation"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Logistic Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#estimation-1"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html"><i class="fa fa-check"></i>One-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#function"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#estimation-2"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html"><i class="fa fa-check"></i>Two-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#data-setup-3"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#function-1"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#estimation-3"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html"><i class="fa fa-check"></i>Mixed Model via ML</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#introduction-1"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#data-setup-4"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#function-2"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#results"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#issues-with-ml-estimation"><i class="fa fa-check"></i>Issues with ML estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#link-with-penalized-regression"><i class="fa fa-check"></i>Link with penalized regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html"><i class="fa fa-check"></i>Probit &amp; Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#standard-probit"><i class="fa fa-check"></i>Standard Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#function-3"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#examples"><i class="fa fa-check"></i>Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#bivariate-probit"><i class="fa fa-check"></i>Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html"><i class="fa fa-check"></i>Heckman Selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#two-step-approach"><i class="fa fa-check"></i>Two step approach</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-1-probit-model"><i class="fa fa-check"></i>Step 1: Probit Model</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-2-estimate-via-linear-regression"><i class="fa fa-check"></i>Step 2: Estimate via Linear Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#maximum-likelihood"><i class="fa fa-check"></i>Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html"><i class="fa fa-check"></i>Marginal Structural Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a>
+<ul>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#create-the-weights"><i class="fa fa-check"></i>Create the Weights</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#function-4"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#estimation-4"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#censoring-with-an-upper-limit"><i class="fa fa-check"></i>Censoring with an Upper Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#data-setup-7"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#function-5"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#estimation-5"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-6"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#censoring-with-a-lower-limit"><i class="fa fa-check"></i>Censoring with a Lower Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html"><i class="fa fa-check"></i>Hurdle Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#poisson"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-6"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-6"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#negative-binomial"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-7"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-7"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#source-9"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html"><i class="fa fa-check"></i>Zero-Inflated Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#poisson-1"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#data-setup-9"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-8"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-8"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#negative-binomial-1"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-9"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-9"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#supplemental-example"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#source-10"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html"><i class="fa fa-check"></i>Cox Survival</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#standard-proportional-hazards"><i class="fa fa-check"></i>Standard Proportional Hazards</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-10"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-10"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-10"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-12"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#time-varying-coefficients"><i class="fa fa-check"></i>Time-varying coefficients</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-11"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-11"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-11"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#stratified-cox-model"><i class="fa fa-check"></i>Stratified Cox Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-12"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-12"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-12"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#source-11"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html"><i class="fa fa-check"></i>Naive Bayes</a>
+<ul>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#initialization"><i class="fa fa-check"></i>Initialization</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#source-12"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#standard-categorical-model"><i class="fa fa-check"></i>Standard (Categorical) Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#data-setup-13"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#function-13"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-16"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#alternative-specific-and-constant-variables"><i class="fa fa-check"></i>Alternative specific and constant variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-17"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#source-13"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal</a>
+<ul>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#data"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#function-14"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#estimation-13"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#comparison-18"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#source-14"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html"><i class="fa fa-check"></i>Markov Chain Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-setup-14"><i class="fa fa-check"></i>Data Setup</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-functions"><i class="fa fa-check"></i>Data Functions</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#two-states-demo"><i class="fa fa-check"></i>Two states Demo</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#three-states-demo"><i class="fa fa-check"></i>Three states demo</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#function-15"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#estimation-14"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#comparison-19"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#source-15"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html"><i class="fa fa-check"></i>Hidden Markov Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#data-setup-15"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#function-16"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#estimation-15"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#supplemental-demo"><i class="fa fa-check"></i>Supplemental demo</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#source-16"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html"><i class="fa fa-check"></i>Quantile Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#data-setup-16"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#function-17"><i class="fa fa-check"></i>Function</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#median-estimation"><i class="fa fa-check"></i>Median estimation</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#other-quantiles"><i class="fa fa-check"></i>Other quantiles</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#source-17"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html"><i class="fa fa-check"></i>Cubic Spline Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#data-setup-17"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#source-18"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html"><i class="fa fa-check"></i>Gausian Processes</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-18"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-19"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-4"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution-1"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
+<ul>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#data-setup-20"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#function-18"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#estimation-16"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#comparison-20"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#supplemental-example-1"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html"><i class="fa fa-check"></i>Reproducing Kernel Hilbert Space Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-21"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-5"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#function-to-find-the-inverse-of-a-matrix"><i class="fa fa-check"></i>Function to find the inverse of a matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#reproducing-kernel"><i class="fa fa-check"></i>Reproducing Kernel</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#gram-matrix"><i class="fa fa-check"></i>Gram matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#ridge-regression"><i class="fa fa-check"></i>Ridge regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-17"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#example-cubic-spline"><i class="fa fa-check"></i>Example: Cubic Spline</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-22"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-6"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-18"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#source-21"><i class="fa fa-check"></i>Source</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#current-supplemental-code"><i class="fa fa-check"></i>Current Supplemental Code</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#original-supplemental-code"><i class="fa fa-check"></i>Original Supplemental Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html"><i class="fa fa-check"></i>Confirmatory Factor Analysis</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#data-setup-23"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#functions-7"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-19"><i class="fa fa-check"></i>Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#raw"><i class="fa fa-check"></i>Raw</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#standardized"><i class="fa fa-check"></i>Standardized</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-23"><i class="fa fa-check"></i>Comparison</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#mplus"><i class="fa fa-check"></i>Mplus</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#source-22"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Bayesian</b></span></li>
+<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html"><i class="fa fa-check"></i>Bayesian t-test</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#model-code"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#visualization"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#source-23"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html"><i class="fa fa-check"></i>Bayesian Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#data-setup-25"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#model-code-1"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#estimation-21"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#visualize-1"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#source-24"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html"><i class="fa fa-check"></i>Bayesian Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#model-code-2"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#visualize-2"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#source-25"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html"><i class="fa fa-check"></i>Bayesian Multilevel Mediation</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#model-code-3"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#visualization-1"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#source-26"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html"><i class="fa fa-check"></i>Bayesian IRT</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#one-parameter-irt"><i class="fa fa-check"></i>One Parameter IRT</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#data-setup-28"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-4"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#two-parameter-irt"><i class="fa fa-check"></i>Two Parameter IRT</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-5"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#three-parameter-irt"><i class="fa fa-check"></i>Three Parameter IRT</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#four-parameter-irt"><i class="fa fa-check"></i>Four Parameter IRT</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#source-27"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html"><i class="fa fa-check"></i>Bayesian CFA</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#data-setup-29"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#model-code-6"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#source-28"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html"><i class="fa fa-check"></i>Bayesian Nonparametric Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#source-29"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html"><i class="fa fa-check"></i>Bayesian Beta Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#data-setup-30"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#model-code-7"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#estimation-27"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#visualization-2"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#source-30"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html"><i class="fa fa-check"></i>Bayesian Stochastic Volatility Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#model-code-8"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#estimation-28"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#results-1"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#visualization-3"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#source-31"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html"><i class="fa fa-check"></i>Bayesian Multinomial Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#data-setup-32"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#model-code-9"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#estimation-29"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#adding-complexity"><i class="fa fa-check"></i>Adding Complexity</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#source-32"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html"><i class="fa fa-check"></i>Variational Bayes Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#data-setup-33"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#function-19"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#estimation-30"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#comparison-33"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#visualization-4"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#supplemental-example-2"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#source-33"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html"><i class="fa fa-check"></i>Topic Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#data-setup-34"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#function-20"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#comparison-34"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#source-34"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Estimation</b></span></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-8"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-32"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-35"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-35"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-36"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-9"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-33"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-36"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-36"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-37"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#functions-10"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-34"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-37"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-37"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-38"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-11"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s Method</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-38"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First Version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-3"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second Version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example Function</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-40"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-39"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html"><i class="fa fa-check"></i>Expectation-Maximization</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#mixture-model"><i class="fa fa-check"></i>Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-40"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-21"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-35"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-3"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-40"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#multivariate-mixture-model"><i class="fa fa-check"></i>Multivariate Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-22"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-1-old-faithful-eruptions"><i class="fa fa-check"></i>Example 1: Old Faithful eruptions</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-2-iris-data-set"><i class="fa fa-check"></i>Example 2: Iris data set</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-41"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-model"><i class="fa fa-check"></i>Probit Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-43"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-via-maximum-likelihood"><i class="fa fa-check"></i>Probit via Maximum Likelihood</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#em-for-latent-variable-approach-to-probit"><i class="fa fa-check"></i>EM for Latent Variable Approach to Probit</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-42"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#pca"><i class="fa fa-check"></i>PCA</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-44"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-25"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-40"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-46"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-4"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-43"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probabilistic-pca"><i class="fa fa-check"></i>Probabilistic PCA</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-45"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-26"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-41"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-47"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-5"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#missing-data-example"><i class="fa fa-check"></i>Missing Data Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-44"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#state-space-model"><i class="fa fa-check"></i>State Space Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-47"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-28"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-43"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization-5"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-45"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-48"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-29"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-44"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-49"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-46"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-49"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-30"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-45"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-50"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-46"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-51"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-47"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html"><i class="fa fa-check"></i>Metropolis Hastings Example</a>
+<ul>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#data-setup-50"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#functions-12"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#estimation-47"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#comparison-52"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#source-48"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a>
+<ul>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#data-setup-51"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#functions-13"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#estimation-48"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#comparison-53"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="part"><span><b>Other</b></span></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#python-demos"><i class="fa fa-check"></i>Python Demos</a></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#julia-demos"><i class="fa fa-check"></i>Julia Demos</a></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#matlab-demos"><i class="fa fa-check"></i>Matlab Demos</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Model Estimation by Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="hamiltonian-monte-carlo-example" class="section level1">
+<h1>Hamiltonian Monte Carlo Example</h1>
+<p>The following demonstrates Hamiltonian Monte Carlo, the technique that Stan
+uses, and which is a different estimation approach than the Gibbs sampler in
+BUGS/JAGS. If you are interested in the details enough to be reading this, I
+highly recommend Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">conceptual introduction to
+HMC</a>. This example is largely based on
+the code in the appendix of Gelman.</p>
+<ul>
+<li>Gelman et al. 2013. Bayesian Data Analysis. 3rd ed.</li>
+</ul>
+<div id="data-setup-51" class="section level2">
+<h2>Data Setup</h2>
+<div class="sourceCode" id="cb855"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb855-1"><a href="hamiltonian-monte-carlo.html#cb855-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb855-2"><a href="hamiltonian-monte-carlo.html#cb855-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-3"><a href="hamiltonian-monte-carlo.html#cb855-3" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for replicability</span></span>
+<span id="cb855-4"><a href="hamiltonian-monte-carlo.html#cb855-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb855-5"><a href="hamiltonian-monte-carlo.html#cb855-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-6"><a href="hamiltonian-monte-carlo.html#cb855-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create a N x k matrix of covariates</span></span>
+<span id="cb855-7"><a href="hamiltonian-monte-carlo.html#cb855-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">250</span></span>
+<span id="cb855-8"><a href="hamiltonian-monte-carlo.html#cb855-8" aria-hidden="true" tabindex="-1"></a>K <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb855-9"><a href="hamiltonian-monte-carlo.html#cb855-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-10"><a href="hamiltonian-monte-carlo.html#cb855-10" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">=</span> <span class="fu">replicate</span>(K, <span class="fu">rnorm</span>(<span class="at">n =</span> N))</span>
+<span id="cb855-11"><a href="hamiltonian-monte-carlo.html#cb855-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(covariates) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>)</span>
+<span id="cb855-12"><a href="hamiltonian-monte-carlo.html#cb855-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-13"><a href="hamiltonian-monte-carlo.html#cb855-13" aria-hidden="true" tabindex="-1"></a><span class="co"># create the model matrix with intercept</span></span>
+<span id="cb855-14"><a href="hamiltonian-monte-carlo.html#cb855-14" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">Intercept =</span> <span class="dv">1</span>, covariates)</span>
+<span id="cb855-15"><a href="hamiltonian-monte-carlo.html#cb855-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-16"><a href="hamiltonian-monte-carlo.html#cb855-16" aria-hidden="true" tabindex="-1"></a><span class="co"># create a normally distributed variable that is a function of the covariates</span></span>
+<span id="cb855-17"><a href="hamiltonian-monte-carlo.html#cb855-17" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">5</span>, .<span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb855-18"><a href="hamiltonian-monte-carlo.html#cb855-18" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb855-19"><a href="hamiltonian-monte-carlo.html#cb855-19" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> X <span class="sc">%*%</span> coefs</span>
+<span id="cb855-20"><a href="hamiltonian-monte-carlo.html#cb855-20" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="fu">rnorm</span>(N, mu, sigma)</span>
+<span id="cb855-21"><a href="hamiltonian-monte-carlo.html#cb855-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-22"><a href="hamiltonian-monte-carlo.html#cb855-22" aria-hidden="true" tabindex="-1"></a><span class="co"># same as</span></span>
+<span id="cb855-23"><a href="hamiltonian-monte-carlo.html#cb855-23" aria-hidden="true" tabindex="-1"></a><span class="co"># y = 5 + .2*X1 - 1.5*X2 + .9*X3 + rnorm(N, mean = 0, sd = 2)</span></span>
+<span id="cb855-24"><a href="hamiltonian-monte-carlo.html#cb855-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-25"><a href="hamiltonian-monte-carlo.html#cb855-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Run lm for later comparison; but go ahead and examine now if desired</span></span>
+<span id="cb855-26"><a href="hamiltonian-monte-carlo.html#cb855-26" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">data.frame</span>(X[, <span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb855-27"><a href="hamiltonian-monte-carlo.html#cb855-27" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_lm)</span></span></code></pre></div>
+</div>
+<div id="functions-13" class="section level2">
+<h2>Functions</h2>
+<p>First we start with the log posterior function.</p>
+<div class="sourceCode" id="cb856"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb856-1"><a href="hamiltonian-monte-carlo.html#cb856-1" aria-hidden="true" tabindex="-1"></a>log_posterior <span class="ot">=</span> <span class="cf">function</span>(X, y, th) {</span>
+<span id="cb856-2"><a href="hamiltonian-monte-carlo.html#cb856-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args</span></span>
+<span id="cb856-3"><a href="hamiltonian-monte-carlo.html#cb856-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: the model matrix</span></span>
+<span id="cb856-4"><a href="hamiltonian-monte-carlo.html#cb856-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: the target vector</span></span>
+<span id="cb856-5"><a href="hamiltonian-monte-carlo.html#cb856-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># th: theta, the current parameter estimates</span></span>
+<span id="cb856-6"><a href="hamiltonian-monte-carlo.html#cb856-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb856-7"><a href="hamiltonian-monte-carlo.html#cb856-7" aria-hidden="true" tabindex="-1"></a>  beta   <span class="ot">=</span> th[<span class="sc">-</span><span class="fu">length</span>(th)]            <span class="co"># reg coefs to be estimated</span></span>
+<span id="cb856-8"><a href="hamiltonian-monte-carlo.html#cb856-8" aria-hidden="true" tabindex="-1"></a>  sigma  <span class="ot">=</span> th[<span class="fu">length</span>(th)]             <span class="co"># sigma to be estimated</span></span>
+<span id="cb856-9"><a href="hamiltonian-monte-carlo.html#cb856-9" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb856-10"><a href="hamiltonian-monte-carlo.html#cb856-10" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb856-11"><a href="hamiltonian-monte-carlo.html#cb856-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb856-12"><a href="hamiltonian-monte-carlo.html#cb856-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)</span></span>
+<span id="cb856-13"><a href="hamiltonian-monte-carlo.html#cb856-13" aria-hidden="true" tabindex="-1"></a>  priorbvarinv <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">100</span>, <span class="dv">4</span>) </span>
+<span id="cb856-14"><a href="hamiltonian-monte-carlo.html#cb856-14" aria-hidden="true" tabindex="-1"></a>  prioralpha   <span class="ot">=</span> priorbeta <span class="ot">=</span> .<span class="dv">001</span></span>
+<span id="cb856-15"><a href="hamiltonian-monte-carlo.html#cb856-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb856-16"><a href="hamiltonian-monte-carlo.html#cb856-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.nan</span>(sigma) <span class="sc">|</span> sigma<span class="sc">&lt;=</span><span class="dv">0</span>) {     <span class="co"># scale parameter must be positive, so post</span></span>
+<span id="cb856-17"><a href="hamiltonian-monte-carlo.html#cb856-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)                      <span class="co"># density is zero if it jumps below zero</span></span>
+<span id="cb856-18"><a href="hamiltonian-monte-carlo.html#cb856-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb856-19"><a href="hamiltonian-monte-carlo.html#cb856-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log posterior in this conjugate setting. conceptually it&#39;s (log) prior +</span></span>
+<span id="cb856-20"><a href="hamiltonian-monte-carlo.html#cb856-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (log) likelihood. (See commented &#39;else&#39; for alternative)</span></span>
+<span id="cb856-21"><a href="hamiltonian-monte-carlo.html#cb856-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb856-22"><a href="hamiltonian-monte-carlo.html#cb856-22" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">nrow</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">crossprod</span>(y<span class="sc">-</span>mu))) <span class="sc">+</span></span>
+<span id="cb856-23"><a href="hamiltonian-monte-carlo.html#cb856-23" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">ncol</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">t</span>(beta) <span class="sc">%*%</span> priorbvarinv <span class="sc">%*%</span> beta)) <span class="sc">+</span></span>
+<span id="cb856-24"><a href="hamiltonian-monte-carlo.html#cb856-24" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>(prioralpha <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">+</span> <span class="fu">log</span>(sigma2) <span class="sc">-</span> priorbeta<span class="sc">/</span>sigma2</span>
+<span id="cb856-25"><a href="hamiltonian-monte-carlo.html#cb856-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb856-26"><a href="hamiltonian-monte-carlo.html#cb856-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># else {</span></span>
+<span id="cb856-27"><a href="hamiltonian-monte-carlo.html#cb856-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)</span></span>
+<span id="cb856-28"><a href="hamiltonian-monte-carlo.html#cb856-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)</span></span>
+<span id="cb856-29"><a href="hamiltonian-monte-carlo.html#cb856-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)</span></span>
+<span id="cb856-30"><a href="hamiltonian-monte-carlo.html#cb856-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior = ll + priorb + priors2</span></span>
+<span id="cb856-31"><a href="hamiltonian-monte-carlo.html#cb856-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior</span></span>
+<span id="cb856-32"><a href="hamiltonian-monte-carlo.html#cb856-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># }</span></span>
+<span id="cb856-33"><a href="hamiltonian-monte-carlo.html#cb856-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The following is the numerical gradient function as given in BDA3 p. 602. It has
+the same arguments as the log posterior function.</p>
+<div class="sourceCode" id="cb857"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb857-1"><a href="hamiltonian-monte-carlo.html#cb857-1" aria-hidden="true" tabindex="-1"></a>gradient_theta <span class="ot">=</span> <span class="cf">function</span>(X, y, th) {</span>
+<span id="cb857-2"><a href="hamiltonian-monte-carlo.html#cb857-2" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">=</span> <span class="fu">length</span>(th)</span>
+<span id="cb857-3"><a href="hamiltonian-monte-carlo.html#cb857-3" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">=</span> .<span class="dv">0001</span></span>
+<span id="cb857-4"><a href="hamiltonian-monte-carlo.html#cb857-4" aria-hidden="true" tabindex="-1"></a>  diffs <span class="ot">=</span> <span class="fu">numeric</span>(d)</span>
+<span id="cb857-5"><a href="hamiltonian-monte-carlo.html#cb857-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb857-6"><a href="hamiltonian-monte-carlo.html#cb857-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>d) {</span>
+<span id="cb857-7"><a href="hamiltonian-monte-carlo.html#cb857-7" aria-hidden="true" tabindex="-1"></a>    th_hi <span class="ot">=</span> th</span>
+<span id="cb857-8"><a href="hamiltonian-monte-carlo.html#cb857-8" aria-hidden="true" tabindex="-1"></a>    th_lo <span class="ot">=</span> th</span>
+<span id="cb857-9"><a href="hamiltonian-monte-carlo.html#cb857-9" aria-hidden="true" tabindex="-1"></a>    th_hi[k] <span class="ot">=</span> th[k] <span class="sc">+</span> e</span>
+<span id="cb857-10"><a href="hamiltonian-monte-carlo.html#cb857-10" aria-hidden="true" tabindex="-1"></a>    th_lo[k] <span class="ot">=</span> th[k] <span class="sc">-</span> e</span>
+<span id="cb857-11"><a href="hamiltonian-monte-carlo.html#cb857-11" aria-hidden="true" tabindex="-1"></a>    diffs[k] <span class="ot">=</span> (<span class="fu">log_posterior</span>(X, y, th_hi) <span class="sc">-</span> <span class="fu">log_posterior</span>(X, y, th_lo)) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> e)</span>
+<span id="cb857-12"><a href="hamiltonian-monte-carlo.html#cb857-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb857-13"><a href="hamiltonian-monte-carlo.html#cb857-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb857-14"><a href="hamiltonian-monte-carlo.html#cb857-14" aria-hidden="true" tabindex="-1"></a>  diffs</span>
+<span id="cb857-15"><a href="hamiltonian-monte-carlo.html#cb857-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The following is a function for a single HMC iteration. ϵ and L are drawn randomly at each
+iteration to explore other areas of the posterior (starting with <code>epsilon0</code> and
+<code>L0</code>); The mass matrix <code>M</code>, expressed as a vector, is a bit of a magic number in
+this setting. It regards the mass of a particle whose position is represented by
+<span class="math inline">\(\theta\)</span>, and momentum by <span class="math inline">\(\phi\)</span>. See the <a href="https://mc-stan.org/docs/2_18/reference-manual/hamiltonian-monte-carlo.html">sampling section of the Stan
+manual</a>
+for more detail.</p>
+<div class="sourceCode" id="cb858"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb858-1"><a href="hamiltonian-monte-carlo.html#cb858-1" aria-hidden="true" tabindex="-1"></a>hmc_iteration <span class="ot">=</span> <span class="cf">function</span>(X, y, th, epsilon, L, M) {</span>
+<span id="cb858-2"><a href="hamiltonian-monte-carlo.html#cb858-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args</span></span>
+<span id="cb858-3"><a href="hamiltonian-monte-carlo.html#cb858-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># epsilon: the stepsize</span></span>
+<span id="cb858-4"><a href="hamiltonian-monte-carlo.html#cb858-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># L: the number of leapfrog steps</span></span>
+<span id="cb858-5"><a href="hamiltonian-monte-carlo.html#cb858-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># M: a diagonal mass matrix</span></span>
+<span id="cb858-6"><a href="hamiltonian-monte-carlo.html#cb858-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb858-7"><a href="hamiltonian-monte-carlo.html#cb858-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialization</span></span>
+<span id="cb858-8"><a href="hamiltonian-monte-carlo.html#cb858-8" aria-hidden="true" tabindex="-1"></a>  M_inv <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>M</span>
+<span id="cb858-9"><a href="hamiltonian-monte-carlo.html#cb858-9" aria-hidden="true" tabindex="-1"></a>  d   <span class="ot">=</span> <span class="fu">length</span>(th)</span>
+<span id="cb858-10"><a href="hamiltonian-monte-carlo.html#cb858-10" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> <span class="fu">rnorm</span>(d, <span class="dv">0</span>, <span class="fu">sqrt</span>(M))</span>
+<span id="cb858-11"><a href="hamiltonian-monte-carlo.html#cb858-11" aria-hidden="true" tabindex="-1"></a>  th_old <span class="ot">=</span> th</span>
+<span id="cb858-12"><a href="hamiltonian-monte-carlo.html#cb858-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-13"><a href="hamiltonian-monte-carlo.html#cb858-13" aria-hidden="true" tabindex="-1"></a>  log_p_old <span class="ot">=</span> <span class="fu">log_posterior</span>(X, y, th) <span class="sc">-</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">sum</span>(M_inv <span class="sc">*</span> phi<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb858-14"><a href="hamiltonian-monte-carlo.html#cb858-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-15"><a href="hamiltonian-monte-carlo.html#cb858-15" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> phi <span class="sc">+</span> .<span class="dv">5</span> <span class="sc">*</span> epsilon <span class="sc">*</span> <span class="fu">gradient_theta</span>(X, y, th)</span>
+<span id="cb858-16"><a href="hamiltonian-monte-carlo.html#cb858-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-17"><a href="hamiltonian-monte-carlo.html#cb858-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (l <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>L) {</span>
+<span id="cb858-18"><a href="hamiltonian-monte-carlo.html#cb858-18" aria-hidden="true" tabindex="-1"></a>    th  <span class="ot">=</span> th <span class="sc">+</span> epsilon<span class="sc">*</span>M_inv<span class="sc">*</span>phi</span>
+<span id="cb858-19"><a href="hamiltonian-monte-carlo.html#cb858-19" aria-hidden="true" tabindex="-1"></a>    phi <span class="ot">=</span> phi <span class="sc">+</span> <span class="fu">ifelse</span>(l <span class="sc">==</span> L, .<span class="dv">5</span>, <span class="dv">1</span>) <span class="sc">*</span> epsilon <span class="sc">*</span> <span class="fu">gradient_theta</span>(X, y, th)</span>
+<span id="cb858-20"><a href="hamiltonian-monte-carlo.html#cb858-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb858-21"><a href="hamiltonian-monte-carlo.html#cb858-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-22"><a href="hamiltonian-monte-carlo.html#cb858-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># here we get into standard MCMC stuff, jump or not based on a draw from a</span></span>
+<span id="cb858-23"><a href="hamiltonian-monte-carlo.html#cb858-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># proposal distribution</span></span>
+<span id="cb858-24"><a href="hamiltonian-monte-carlo.html#cb858-24" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> <span class="sc">-</span>phi</span>
+<span id="cb858-25"><a href="hamiltonian-monte-carlo.html#cb858-25" aria-hidden="true" tabindex="-1"></a>  log_p_star <span class="ot">=</span> <span class="fu">log_posterior</span>(X, y, th) <span class="sc">-</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">sum</span>(M_inv <span class="sc">*</span> phi<span class="sc">^</span><span class="dv">2</span>)    </span>
+<span id="cb858-26"><a href="hamiltonian-monte-carlo.html#cb858-26" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">exp</span>(log_p_star <span class="sc">-</span> log_p_old)</span>
+<span id="cb858-27"><a href="hamiltonian-monte-carlo.html#cb858-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-28"><a href="hamiltonian-monte-carlo.html#cb858-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.nan</span>(r)) r <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb858-29"><a href="hamiltonian-monte-carlo.html#cb858-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-30"><a href="hamiltonian-monte-carlo.html#cb858-30" aria-hidden="true" tabindex="-1"></a>  p_jump <span class="ot">=</span> <span class="fu">min</span>(r, <span class="dv">1</span>)</span>
+<span id="cb858-31"><a href="hamiltonian-monte-carlo.html#cb858-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-32"><a href="hamiltonian-monte-carlo.html#cb858-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> p_jump) {</span>
+<span id="cb858-33"><a href="hamiltonian-monte-carlo.html#cb858-33" aria-hidden="true" tabindex="-1"></a>    th_new <span class="ot">=</span> th</span>
+<span id="cb858-34"><a href="hamiltonian-monte-carlo.html#cb858-34" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb858-35"><a href="hamiltonian-monte-carlo.html#cb858-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb858-36"><a href="hamiltonian-monte-carlo.html#cb858-36" aria-hidden="true" tabindex="-1"></a>    th_new <span class="ot">=</span> th_old</span>
+<span id="cb858-37"><a href="hamiltonian-monte-carlo.html#cb858-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb858-38"><a href="hamiltonian-monte-carlo.html#cb858-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb858-39"><a href="hamiltonian-monte-carlo.html#cb858-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># returns estimates and acceptance rate</span></span>
+<span id="cb858-40"><a href="hamiltonian-monte-carlo.html#cb858-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">th =</span> th_new, <span class="at">p_jump =</span> p_jump)  </span>
+<span id="cb858-41"><a href="hamiltonian-monte-carlo.html#cb858-41" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Main HMC function.</p>
+<div class="sourceCode" id="cb859"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb859-1"><a href="hamiltonian-monte-carlo.html#cb859-1" aria-hidden="true" tabindex="-1"></a>hmc_run <span class="ot">=</span> <span class="cf">function</span>(starts, iter, warmup, epsilon_0, L_0, M, X, y) {</span>
+<span id="cb859-2"><a href="hamiltonian-monte-carlo.html#cb859-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># # Args: </span></span>
+<span id="cb859-3"><a href="hamiltonian-monte-carlo.html#cb859-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># starts:  starting values</span></span>
+<span id="cb859-4"><a href="hamiltonian-monte-carlo.html#cb859-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># iter: total number of simulations for each chain (note chain is based on the dimension of starts)</span></span>
+<span id="cb859-5"><a href="hamiltonian-monte-carlo.html#cb859-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># warmup: determines which of the initial iterations will be ignored for inference purposes</span></span>
+<span id="cb859-6"><a href="hamiltonian-monte-carlo.html#cb859-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># epsilon0: the baseline stepsize</span></span>
+<span id="cb859-7"><a href="hamiltonian-monte-carlo.html#cb859-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># L0: the baseline number of leapfrog steps</span></span>
+<span id="cb859-8"><a href="hamiltonian-monte-carlo.html#cb859-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># M: is the mass vector</span></span>
+<span id="cb859-9"><a href="hamiltonian-monte-carlo.html#cb859-9" aria-hidden="true" tabindex="-1"></a>  chains <span class="ot">=</span> <span class="fu">nrow</span>(starts)</span>
+<span id="cb859-10"><a href="hamiltonian-monte-carlo.html#cb859-10" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">=</span> <span class="fu">ncol</span>(starts)</span>
+<span id="cb859-11"><a href="hamiltonian-monte-carlo.html#cb859-11" aria-hidden="true" tabindex="-1"></a>  sims <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, </span>
+<span id="cb859-12"><a href="hamiltonian-monte-carlo.html#cb859-12" aria-hidden="true" tabindex="-1"></a>               <span class="fu">c</span>(iter, chains, d), </span>
+<span id="cb859-13"><a href="hamiltonian-monte-carlo.html#cb859-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="cn">NULL</span>, <span class="cn">NULL</span>, <span class="fu">colnames</span>(starts)))</span>
+<span id="cb859-14"><a href="hamiltonian-monte-carlo.html#cb859-14" aria-hidden="true" tabindex="-1"></a>  p_jump <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, iter, chains)</span>
+<span id="cb859-15"><a href="hamiltonian-monte-carlo.html#cb859-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb859-16"><a href="hamiltonian-monte-carlo.html#cb859-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>chains) {</span>
+<span id="cb859-17"><a href="hamiltonian-monte-carlo.html#cb859-17" aria-hidden="true" tabindex="-1"></a>    th <span class="ot">=</span> starts[j,]</span>
+<span id="cb859-18"><a href="hamiltonian-monte-carlo.html#cb859-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb859-19"><a href="hamiltonian-monte-carlo.html#cb859-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iter) {</span>
+<span id="cb859-20"><a href="hamiltonian-monte-carlo.html#cb859-20" aria-hidden="true" tabindex="-1"></a>      epsilon <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>epsilon_0)</span>
+<span id="cb859-21"><a href="hamiltonian-monte-carlo.html#cb859-21" aria-hidden="true" tabindex="-1"></a>      L    <span class="ot">=</span> <span class="fu">ceiling</span>(<span class="dv">2</span><span class="sc">*</span>L_0<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb859-22"><a href="hamiltonian-monte-carlo.html#cb859-22" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb859-23"><a href="hamiltonian-monte-carlo.html#cb859-23" aria-hidden="true" tabindex="-1"></a>      temp <span class="ot">=</span> <span class="fu">hmc_iteration</span>(X, y, th, epsilon, L, M)</span>
+<span id="cb859-24"><a href="hamiltonian-monte-carlo.html#cb859-24" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb859-25"><a href="hamiltonian-monte-carlo.html#cb859-25" aria-hidden="true" tabindex="-1"></a>      p_jump[t,j] <span class="ot">=</span> temp<span class="sc">$</span>p_jump</span>
+<span id="cb859-26"><a href="hamiltonian-monte-carlo.html#cb859-26" aria-hidden="true" tabindex="-1"></a>      sims[t,j,]  <span class="ot">=</span> temp<span class="sc">$</span>th</span>
+<span id="cb859-27"><a href="hamiltonian-monte-carlo.html#cb859-27" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb859-28"><a href="hamiltonian-monte-carlo.html#cb859-28" aria-hidden="true" tabindex="-1"></a>      th <span class="ot">=</span> temp<span class="sc">$</span>th</span>
+<span id="cb859-29"><a href="hamiltonian-monte-carlo.html#cb859-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb859-30"><a href="hamiltonian-monte-carlo.html#cb859-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb859-31"><a href="hamiltonian-monte-carlo.html#cb859-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb859-32"><a href="hamiltonian-monte-carlo.html#cb859-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># acceptance rate</span></span>
+<span id="cb859-33"><a href="hamiltonian-monte-carlo.html#cb859-33" aria-hidden="true" tabindex="-1"></a>  acc <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">colMeans</span>(p_jump[(warmup <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>iter,]), <span class="dv">3</span>)  </span>
+<span id="cb859-34"><a href="hamiltonian-monte-carlo.html#cb859-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb859-35"><a href="hamiltonian-monte-carlo.html#cb859-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&#39;Avg acceptance probability for each chain: &#39;</span>, </span>
+<span id="cb859-36"><a href="hamiltonian-monte-carlo.html#cb859-36" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(acc[<span class="dv">1</span>],<span class="st">&#39;, &#39;</span>,acc[<span class="dv">2</span>]), <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>) </span>
+<span id="cb859-37"><a href="hamiltonian-monte-carlo.html#cb859-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb859-38"><a href="hamiltonian-monte-carlo.html#cb859-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">sims =</span> sims, <span class="at">p_jump =</span> p_jump)</span>
+<span id="cb859-39"><a href="hamiltonian-monte-carlo.html#cb859-39" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="estimation-48" class="section level2">
+<h2>Estimation</h2>
+<p>With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while <span class="math inline">\(\sigma\)</span> is set to a value of one in each case. As in the other examples we’ll have 5000 total draws with warm-up set to 2500. I don’t have any thinning option here, but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.</p>
+<div class="sourceCode" id="cb860"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb860-1"><a href="hamiltonian-monte-carlo.html#cb860-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Starting values and mcmc settings</span></span>
+<span id="cb860-2"><a href="hamiltonian-monte-carlo.html#cb860-2" aria-hidden="true" tabindex="-1"></a>parnames <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">&#39;beta[&#39;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="st">&#39;]&#39;</span>), <span class="st">&#39;sigma&#39;</span>)</span>
+<span id="cb860-3"><a href="hamiltonian-monte-carlo.html#cb860-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">length</span>(parnames)</span>
+<span id="cb860-4"><a href="hamiltonian-monte-carlo.html#cb860-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb860-5"><a href="hamiltonian-monte-carlo.html#cb860-5" aria-hidden="true" tabindex="-1"></a>chains <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb860-6"><a href="hamiltonian-monte-carlo.html#cb860-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb860-7"><a href="hamiltonian-monte-carlo.html#cb860-7" aria-hidden="true" tabindex="-1"></a>theta_start <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">replicate</span>(chains, <span class="fu">c</span>(<span class="fu">runif</span>(d<span class="dv">-1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">1</span>)))</span>
+<span id="cb860-8"><a href="hamiltonian-monte-carlo.html#cb860-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(theta_start) <span class="ot">=</span> parnames</span>
+<span id="cb860-9"><a href="hamiltonian-monte-carlo.html#cb860-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb860-10"><a href="hamiltonian-monte-carlo.html#cb860-10" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb860-11"><a href="hamiltonian-monte-carlo.html#cb860-11" aria-hidden="true" tabindex="-1"></a>wu   <span class="ot">=</span> <span class="dv">500</span></span></code></pre></div>
+<p>We can fiddle with these sampling parameters to get a desirable acceptance rate of around .80. The following work well with the data we have.</p>
+<div class="sourceCode" id="cb861"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb861-1"><a href="hamiltonian-monte-carlo.html#cb861-1" aria-hidden="true" tabindex="-1"></a>stepsize <span class="ot">=</span> .<span class="dv">08</span></span>
+<span id="cb861-2"><a href="hamiltonian-monte-carlo.html#cb861-2" aria-hidden="true" tabindex="-1"></a>nLeap <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb861-3"><a href="hamiltonian-monte-carlo.html#cb861-3" aria-hidden="true" tabindex="-1"></a>vars  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">5</span>)</span>
+<span id="cb861-4"><a href="hamiltonian-monte-carlo.html#cb861-4" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> vars</span></code></pre></div>
+<p>We are now ready to run the model. On my machine and with the above settings, it took a couple seconds. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.</p>
+<div class="sourceCode" id="cb862"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb862-1"><a href="hamiltonian-monte-carlo.html#cb862-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the model</span></span>
+<span id="cb862-2"><a href="hamiltonian-monte-carlo.html#cb862-2" aria-hidden="true" tabindex="-1"></a>fit_hmc <span class="ot">=</span> <span class="fu">hmc_run</span>(</span>
+<span id="cb862-3"><a href="hamiltonian-monte-carlo.html#cb862-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">starts    =</span> theta_start,</span>
+<span id="cb862-4"><a href="hamiltonian-monte-carlo.html#cb862-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter      =</span> nsim,</span>
+<span id="cb862-5"><a href="hamiltonian-monte-carlo.html#cb862-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup    =</span> wu,</span>
+<span id="cb862-6"><a href="hamiltonian-monte-carlo.html#cb862-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">epsilon_0 =</span> stepsize,</span>
+<span id="cb862-7"><a href="hamiltonian-monte-carlo.html#cb862-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_0 =</span> nLeap,</span>
+<span id="cb862-8"><a href="hamiltonian-monte-carlo.html#cb862-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">M   =</span> mass_vector,</span>
+<span id="cb862-9"><a href="hamiltonian-monte-carlo.html#cb862-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb862-10"><a href="hamiltonian-monte-carlo.html#cb862-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y</span>
+<span id="cb862-11"><a href="hamiltonian-monte-carlo.html#cb862-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb862-12"><a href="hamiltonian-monte-carlo.html#cb862-12" aria-hidden="true" tabindex="-1"></a><span class="co"># str(fit_hmc, 1)</span></span>
+<span id="cb862-13"><a href="hamiltonian-monte-carlo.html#cb862-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb862-14"><a href="hamiltonian-monte-carlo.html#cb862-14" aria-hidden="true" tabindex="-1"></a><span class="co"># use coda if desired</span></span>
+<span id="cb862-15"><a href="hamiltonian-monte-carlo.html#cb862-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)</span>
+<span id="cb862-16"><a href="hamiltonian-monte-carlo.html#cb862-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb862-17"><a href="hamiltonian-monte-carlo.html#cb862-17" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">as.mcmc.list</span>(<span class="fu">list</span>(<span class="fu">as.mcmc</span>(fit_hmc<span class="sc">$</span>sims[(wu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim, <span class="dv">1</span>,]), </span>
+<span id="cb862-18"><a href="hamiltonian-monte-carlo.html#cb862-18" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">as.mcmc</span>(fit_hmc<span class="sc">$</span>sims[(wu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim, <span class="dv">2</span>,])))</span>
+<span id="cb862-19"><a href="hamiltonian-monte-carlo.html#cb862-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb862-20"><a href="hamiltonian-monte-carlo.html#cb862-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(theta)</span></code></pre></div>
+<pre><code>
+Iterations = 1:500
+Thinning interval = 1 
+Number of chains = 2 
+Sample size per chain = 500 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+            Mean     SD Naive SE Time-series SE
+beta[1]  4.89772 0.1279 0.004044       0.005822
+beta[2]  0.07741 0.1333 0.004217       0.005806
+beta[3] -1.47220 0.1216 0.003845       0.004795
+beta[4]  0.82477 0.1108 0.003504       0.004359
+sigma    2.01291 0.0899 0.002843       0.003583
+
+2. Quantiles for each variable:
+
+           2.5%      25%     50%     75%   97.5%
+beta[1]  4.6451  4.80901  4.9043  4.9855  5.1393
+beta[2] -0.1924 -0.01143  0.0730  0.1694  0.3336
+beta[3] -1.7102 -1.55404 -1.4713 -1.3933 -1.2244
+beta[4]  0.6124  0.75492  0.8238  0.8965  1.0424
+sigma    1.8439  1.95009  2.0120  2.0705  2.2039</code></pre>
+<div class="sourceCode" id="cb864"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb864-1"><a href="hamiltonian-monte-carlo.html#cb864-1" aria-hidden="true" tabindex="-1"></a>fit_summary <span class="ot">=</span>  <span class="fu">summary</span>(theta)<span class="sc">$</span>statistics[,<span class="st">&#39;Mean&#39;</span>]</span>
+<span id="cb864-2"><a href="hamiltonian-monte-carlo.html#cb864-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb864-3"><a href="hamiltonian-monte-carlo.html#cb864-3" aria-hidden="true" tabindex="-1"></a>beta_est  <span class="ot">=</span> fit_summary[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb864-4"><a href="hamiltonian-monte-carlo.html#cb864-4" aria-hidden="true" tabindex="-1"></a>sigma_est <span class="ot">=</span> fit_summary[<span class="dv">5</span>]</span>
+<span id="cb864-5"><a href="hamiltonian-monte-carlo.html#cb864-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb864-6"><a href="hamiltonian-monte-carlo.html#cb864-6" aria-hidden="true" tabindex="-1"></a><span class="co"># log_posterior(X, y, fit_summary)</span></span></code></pre></div>
+<p>The following table is uses <span class="pack" style="">rstan’s</span> <span class="func" style="">monitor</span> function to produce typical Stan output.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:hmc-est-show">Table 1: </span>log posterior = -301.716
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+parameter
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+sd
+</th>
+<th style="text-align:right;">
+2.5%
+</th>
+<th style="text-align:right;">
+97.5%
+</th>
+<th style="text-align:right;">
+n_eff
+</th>
+<th style="text-align:right;">
+Rhat
+</th>
+<th style="text-align:right;">
+Bulk_ESS
+</th>
+<th style="text-align:right;">
+Tail_ESS
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+beta[1]
+</td>
+<td style="text-align:right;">
+4.898
+</td>
+<td style="text-align:right;">
+0.128
+</td>
+<td style="text-align:right;">
+4.645
+</td>
+<td style="text-align:right;">
+5.139
+</td>
+<td style="text-align:right;">
+505
+</td>
+<td style="text-align:right;">
+1.006
+</td>
+<td style="text-align:right;">
+521
+</td>
+<td style="text-align:right;">
+305
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+beta[2]
+</td>
+<td style="text-align:right;">
+0.077
+</td>
+<td style="text-align:right;">
+0.133
+</td>
+<td style="text-align:right;">
+-0.192
+</td>
+<td style="text-align:right;">
+0.334
+</td>
+<td style="text-align:right;">
+560
+</td>
+<td style="text-align:right;">
+1.012
+</td>
+<td style="text-align:right;">
+566
+</td>
+<td style="text-align:right;">
+240
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+beta[3]
+</td>
+<td style="text-align:right;">
+-1.472
+</td>
+<td style="text-align:right;">
+0.122
+</td>
+<td style="text-align:right;">
+-1.710
+</td>
+<td style="text-align:right;">
+-1.224
+</td>
+<td style="text-align:right;">
+628
+</td>
+<td style="text-align:right;">
+1.010
+</td>
+<td style="text-align:right;">
+630
+</td>
+<td style="text-align:right;">
+457
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+beta[4]
+</td>
+<td style="text-align:right;">
+0.825
+</td>
+<td style="text-align:right;">
+0.111
+</td>
+<td style="text-align:right;">
+0.612
+</td>
+<td style="text-align:right;">
+1.042
+</td>
+<td style="text-align:right;">
+618
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+630
+</td>
+<td style="text-align:right;">
+569
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sigma
+</td>
+<td style="text-align:right;">
+2.013
+</td>
+<td style="text-align:right;">
+0.090
+</td>
+<td style="text-align:right;">
+1.844
+</td>
+<td style="text-align:right;">
+2.204
+</td>
+<td style="text-align:right;">
+682
+</td>
+<td style="text-align:right;">
+1.004
+</td>
+<td style="text-align:right;">
+693
+</td>
+<td style="text-align:right;">
+425
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="comparison-53" class="section level2">
+<h2>Comparison</h2>
+<p>Our estimates look pretty good, and inspection of the diagnostics would show
+good mixing and convergence as well. At this point we can compare it to the Stan
+output. For the following, I use the same inverse gamma prior and tweaked the
+control options for a little bit more similarity, but that’s not necessary.</p>
+<pre class="stan"><code>data {                      // Data block
+  int&lt;lower = 1&gt; N;           // Sample size
+  int&lt;lower = 1&gt; K;           // Dimension of model matrix
+  matrix [N, K]  X;          // Model Matrix
+  vector[N] y;              // Target variable
+}
+
+parameters {                // Parameters block; declarations only
+  vector[K] beta;           // Coefficient vector
+  real&lt;lower = 0&gt; sigma;      // Error scale
+}
+
+model {                     // Model block
+  vector[N] mu;
+
+  mu = X * beta;           // Creation of linear predictor
+  
+  
+  // priors
+  beta  ~ normal(0, 10);
+  sigma ~ inv_gamma(.001, .001); // changed to gamma a la code above
+  
+  // likelihood
+  y ~ normal(mu, sigma);
+}</code></pre>
+<pre><code>
+SAMPLING FOR MODEL &#39;36376eea30b8a42e7dd71dd3e6747dd8&#39; NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 3.6e-05 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.36 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)
+Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)
+Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)
+Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)
+Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)
+Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)
+Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)
+Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)
+Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)
+Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)
+Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
+Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 0.007385 seconds (Warm-up)
+Chain 1:                0.007252 seconds (Sampling)
+Chain 1:                0.014637 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL &#39;36376eea30b8a42e7dd71dd3e6747dd8&#39; NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 1e-05 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)
+Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)
+Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)
+Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)
+Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)
+Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)
+Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)
+Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)
+Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)
+Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)
+Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
+Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 0.023831 seconds (Warm-up)
+Chain 2:                0.023475 seconds (Sampling)
+Chain 2:                0.047306 seconds (Total)
+Chain 2: </code></pre>
+<p>Here are the results.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:hmc-compare-stan">Table 2: </span>log posterior = -1270.794
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+beta[1]
+</td>
+<td style="text-align:right;">
+1.421
+</td>
+<td style="text-align:right;">
+3.336
+</td>
+<td style="text-align:right;">
+-1.761
+</td>
+<td style="text-align:right;">
+5.095
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+beta[2]
+</td>
+<td style="text-align:right;">
+1.075
+</td>
+<td style="text-align:right;">
+0.818
+</td>
+<td style="text-align:right;">
+-0.121
+</td>
+<td style="text-align:right;">
+1.710
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+beta[3]
+</td>
+<td style="text-align:right;">
+0.220
+</td>
+<td style="text-align:right;">
+1.474
+</td>
+<td style="text-align:right;">
+-1.667
+</td>
+<td style="text-align:right;">
+1.480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+beta[4]
+</td>
+<td style="text-align:right;">
+-0.094
+</td>
+<td style="text-align:right;">
+0.786
+</td>
+<td style="text-align:right;">
+-0.738
+</td>
+<td style="text-align:right;">
+1.013
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sigma
+</td>
+<td style="text-align:right;">
+2.034
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+<td style="text-align:right;">
+1.889
+</td>
+<td style="text-align:right;">
+2.199
+</td>
+</tr>
+</tbody>
+</table>
+<p>And finally, the standard least squares fit (Residual standard error = sigma).</p>
+<table style="width:90%;">
+<colgroup>
+<col width="25%" />
+<col width="15%" />
+<col width="18%" />
+<col width="13%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Estimate</th>
+<th align="center">Std. Error</th>
+<th align="center">t value</th>
+<th align="center">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>(Intercept)</strong></td>
+<td align="center">4.898</td>
+<td align="center">0.1284</td>
+<td align="center">38.13</td>
+<td align="center">3.026e-105</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>X1</strong></td>
+<td align="center">0.08408</td>
+<td align="center">0.1296</td>
+<td align="center">0.6488</td>
+<td align="center">0.5171</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>X2</strong></td>
+<td align="center">-1.469</td>
+<td align="center">0.1261</td>
+<td align="center">-11.64</td>
+<td align="center">3.049e-25</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>X3</strong></td>
+<td align="center">0.8196</td>
+<td align="center">0.1207</td>
+<td align="center">6.793</td>
+<td align="center">8.207e-11</td>
+</tr>
+</tbody>
+</table>
+<table style="width:88%;">
+<caption>Fitting linear model: y ~ .</caption>
+<colgroup>
+<col width="20%" />
+<col width="30%" />
+<col width="12%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Observations</th>
+<th align="center">Residual Std. Error</th>
+<th align="center"><span class="math inline">\(R^2\)</span></th>
+<th align="center">Adjusted <span class="math inline">\(R^2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">250</td>
+<td align="center">2.021</td>
+<td align="center">0.4524</td>
+<td align="center">0.4458</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="metropolis-hastings.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="supplemental.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["twitter", "facebook", "linkedin", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/m-clark/models-by-example/blob/master/hamiltonian-monte-carlo.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"depth": 2,
+"scroll_highlight": true
+},
+"df_print": "kable",
+"highlight": "pygments",
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

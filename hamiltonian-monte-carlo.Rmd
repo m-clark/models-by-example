@@ -1,0 +1,379 @@
+# Hamiltonian Monte Carlo Example
+
+
+The following demonstrates Hamiltonian Monte Carlo, the technique that Stan
+uses, and which is a different estimation approach than the Gibbs sampler in
+BUGS/JAGS.  If you are interested in the details enough to be reading this, I
+highly recommend Betancourt's [conceptual introduction to
+HMC](https://arxiv.org/pdf/1701.02434.pdf).  This example is largely based on
+the code in the appendix of Gelman.
+
+- Gelman et al. 2013. Bayesian Data Analysis. 3rd ed.
+
+## Data Setup
+
+
+```{r hmc-setup}
+library(tidyverse)
+
+# set seed for replicability
+set.seed(8675309)
+
+# create a N x k matrix of covariates
+N = 250
+K = 3
+
+covariates = replicate(K, rnorm(n = N))
+colnames(covariates) = c('X1', 'X2', 'X3')
+
+# create the model matrix with intercept
+X = cbind(Intercept = 1, covariates)
+
+# create a normally distributed variable that is a function of the covariates
+coefs = c(5, .2, -1.5, .9)
+sigma = 2
+mu = X %*% coefs
+y  = rnorm(N, mu, sigma)
+
+# same as
+# y = 5 + .2*X1 - 1.5*X2 + .9*X3 + rnorm(N, mean = 0, sd = 2)
+
+# Run lm for later comparison; but go ahead and examine now if desired
+fit_lm = lm(y ~ ., data = data.frame(X[, -1]))
+# summary(fit_lm)
+```
+
+
+## Functions
+
+First we start with the log posterior function.
+
+```{r hmc-func-log-post}
+log_posterior = function(X, y, th) {
+  # Args
+  # X: the model matrix
+  # y: the target vector
+  # th: theta, the current parameter estimates
+  
+  beta   = th[-length(th)]            # reg coefs to be estimated
+  sigma  = th[length(th)]             # sigma to be estimated
+  sigma2 = sigma^2
+  mu = X %*% beta
+  
+  # priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)
+  priorbvarinv = diag(1/100, 4) 
+  prioralpha   = priorbeta = .001
+  
+  if (is.nan(sigma) | sigma<=0) {     # scale parameter must be positive, so post
+    return(-Inf)                      # density is zero if it jumps below zero
+  }
+  # log posterior in this conjugate setting. conceptually it's (log) prior +
+  # (log) likelihood. (See commented 'else' for alternative)
+  else {
+    -.5*nrow(X)*log(sigma2) - (.5*(1/sigma2) * (crossprod(y-mu))) +
+      -.5*ncol(X)*log(sigma2) - (.5*(1/sigma2) * (t(beta) %*% priorbvarinv %*% beta)) +
+      -(prioralpha + 1)*log(sigma2) + log(sigma2) - priorbeta/sigma2
+  }
+  # else {
+  #   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)
+  #   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)
+  #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)
+  #   logposterior = ll + priorb + priors2
+  #   logposterior
+  # }
+}
+```
+
+
+The following is the numerical gradient function as given in BDA3 p. 602. It has
+the same arguments as the log posterior function.
+
+```{r hmc-func-gradient}
+gradient_theta = function(X, y, th) {
+  d = length(th)
+  e = .0001
+  diffs = numeric(d)
+  
+  for (k in 1:d) {
+    th_hi = th
+    th_lo = th
+    th_hi[k] = th[k] + e
+    th_lo[k] = th[k] - e
+    diffs[k] = (log_posterior(X, y, th_hi) - log_posterior(X, y, th_lo)) / (2 * e)
+  }
+  
+  diffs
+}
+```
+
+
+The following is a function for a single HMC iteration. ϵ and L are drawn randomly at each
+iteration to explore other areas of the posterior (starting with `epsilon0` and
+`L0`);  The mass matrix `M`, expressed as a vector, is a bit of a magic number in
+this setting. It regards the mass of a particle whose position is represented by
+$\theta$, and momentum by $\phi$. See the [sampling section of the Stan
+manual](https://mc-stan.org/docs/2_18/reference-manual/hamiltonian-monte-carlo.html)
+for more detail.
+
+```{r hmc-func-iter}
+hmc_iteration = function(X, y, th, epsilon, L, M) {
+  # Args
+  # epsilon: the stepsize
+  # L: the number of leapfrog steps
+  # M: a diagonal mass matrix
+
+  # initialization
+  M_inv = 1/M
+  d   = length(th)
+  phi = rnorm(d, 0, sqrt(M))
+  th_old = th
+  
+  log_p_old = log_posterior(X, y, th) - .5*sum(M_inv * phi^2)
+  
+  phi = phi + .5 * epsilon * gradient_theta(X, y, th)
+  
+  for (l in 1:L) {
+    th  = th + epsilon*M_inv*phi
+    phi = phi + ifelse(l == L, .5, 1) * epsilon * gradient_theta(X, y, th)
+  }
+  
+  # here we get into standard MCMC stuff, jump or not based on a draw from a
+  # proposal distribution
+  phi = -phi
+  log_p_star = log_posterior(X, y, th) - .5*sum(M_inv * phi^2)    
+  r = exp(log_p_star - log_p_old)
+  
+  if (is.nan(r)) r = 0
+  
+  p_jump = min(r, 1)
+  
+  if (runif(1) < p_jump) {
+    th_new = th
+  }
+  else {
+    th_new = th_old
+  }
+  
+  # returns estimates and acceptance rate
+  list(th = th_new, p_jump = p_jump)  
+}
+```
+
+
+
+Main HMC function.
+
+
+
+```{r hmc-func-run}
+hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y) {
+  # # Args: 
+  # starts:  starting values
+  # iter: total number of simulations for each chain (note chain is based on the dimension of starts)
+  # warmup: determines which of the initial iterations will be ignored for inference purposes
+  # epsilon0: the baseline stepsize
+  # L0: the baseline number of leapfrog steps
+  # M: is the mass vector
+  chains = nrow(starts)
+  d = ncol(starts)
+  sims = array(NA, 
+               c(iter, chains, d), 
+               dimnames = list(NULL, NULL, colnames(starts)))
+  p_jump = matrix(NA, iter, chains)
+  
+  for (j in 1:chains) {
+    th = starts[j,]
+    
+    for (t in 1:iter) {
+      epsilon = runif(1, 0, 2*epsilon_0)
+      L    = ceiling(2*L_0*runif(1))
+      
+      temp = hmc_iteration(X, y, th, epsilon, L, M)
+      
+      p_jump[t,j] = temp$p_jump
+      sims[t,j,]  = temp$th
+      
+      th = temp$th
+    }
+  }
+  
+  # acceptance rate
+  acc = round(colMeans(p_jump[(warmup + 1):iter,]), 3)  
+  
+  message('Avg acceptance probability for each chain: ', 
+          paste0(acc[1],', ',acc[2]), '\n') 
+  
+  list(sims = sims, p_jump = p_jump)
+}
+```
+
+## Estimation
+
+With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while $\sigma$ is set to a value of one in each case.  As in the other examples we'll have 5000 total draws with warm-up set to 2500.  I don't have any thinning option here, but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.
+
+```{r hmc-est-initial1}
+# Starting values and mcmc settings
+parnames = c(paste0('beta[', 1:4, ']'), 'sigma')
+d = length(parnames)
+
+chains = 2
+
+theta_start = t(replicate(chains, c(runif(d-1, -1, 1), 1)))
+colnames(theta_start) = parnames
+
+nsim = 1000
+wu   = 500
+```
+
+We can fiddle with these sampling parameters to get a desirable acceptance rate of around .80. The following work well with the data we have.
+
+```{r hmc-est-initial2}
+stepsize = .08
+nLeap = 10
+vars  = rep(1, 5)
+mass_vector = 1 / vars
+```
+
+
+
+
+We are now ready to run the model.  On my machine and with the above settings, it took a couple seconds. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.
+
+```{r hmc-est}
+# Run the model
+fit_hmc = hmc_run(
+  starts    = theta_start,
+  iter      = nsim,
+  warmup    = wu,
+  epsilon_0 = stepsize,
+  L_0 = nLeap,
+  M   = mass_vector,
+  X   = X,
+  y   = y
+)
+# str(fit_hmc, 1)
+
+# use coda if desired
+library(coda)
+
+theta = as.mcmc.list(list(as.mcmc(fit_hmc$sims[(wu+1):nsim, 1,]), 
+                          as.mcmc(fit_hmc$sims[(wu+1):nsim, 2,])))
+
+summary(theta)
+fit_summary =  summary(theta)$statistics[,'Mean']
+
+beta_est  = fit_summary[1:4]
+sigma_est = fit_summary[5]
+
+# log_posterior(X, y, fit_summary)
+```
+
+The following table is uses <span class="pack" style = "">rstan's</span> <span class="func" style = "">monitor</span> function to produce typical Stan output.
+
+```{r hmc-est-show, echo=FALSE}
+init = rstan::monitor(
+  fit_hmc$sims,
+  warmup = wu,
+  digits_summary = 5,
+  probs  = c(.025, .975),
+  se     = FALSE,
+  print  = F
+) %>%
+  as_tibble(rownames = 'parameter') 
+
+init %>% 
+  select(parameter, mean, sd:Rhat, Bulk_ESS, Tail_ESS) %>% 
+  kable_df(caption = glue::glue('log posterior = ', {
+  round(log_posterior(X, y, fit_summary), 3)
+}))
+```
+
+## Comparison
+
+Our estimates look pretty good, and inspection of the diagnostics would show
+good mixing and convergence as well. At this point we can compare it to the Stan
+output.  For the following, I  use the same inverse gamma prior and tweaked the
+control options for a little bit more similarity, but that's not necessary.
+
+
+```{stan hmc-compare, output.var='stan_hmc'}
+data {                      // Data block
+  int<lower = 1> N;           // Sample size
+  int<lower = 1> K;           // Dimension of model matrix
+  matrix [N, K]  X;          // Model Matrix
+  vector[N] y;              // Target variable
+}
+
+parameters {                // Parameters block; declarations only
+  vector[K] beta;           // Coefficient vector
+  real<lower = 0> sigma;      // Error scale
+}
+
+model {                     // Model block
+  vector[N] mu;
+
+  mu = X * beta;           // Creation of linear predictor
+  
+  
+  // priors
+  beta  ~ normal(0, 10);
+  sigma ~ inv_gamma(.001, .001); // changed to gamma a la code above
+  
+  // likelihood
+  y ~ normal(mu, sigma);
+}
+```
+
+
+```{r hmc-stan-est, result='hide', echo=FALSE}
+dat = list(N = N,
+           K = ncol(X),
+           y = y,
+           X = X)
+
+library(rstan)
+
+# standard stan
+# fit = stan(
+#   model_code = stan_hmc_code_as_string,
+#   data = dat,
+#   iter = nsim,
+#   warmup = wu,
+#   thin = 1,
+#   chains = chains,
+#   verbose = F
+# )
+
+# perhaps closer to above settings?
+fit_stan = sampling(
+  stan_hmc,
+  data     = dat,
+  iter     = nsim,
+  warmup   = wu,
+  thin     = 1,
+  chains   = chains,
+  verbose  = FALSE,
+  control  = list(
+    adapt_engaged = FALSE,
+    stepsize      = stepsize,
+    adapt_t0      = nLeap
+  )
+)
+```
+
+Here are the results.
+
+```{r hmc-compare-stan, echo=FALSE}
+broom.mixed::tidy(fit_stan, conf.int = TRUE) %>%
+  kable_df(
+    caption = glue::glue('log posterior = ', round(get_posterior_mean(fit_stan, par='lp__')[,3],3))
+  )
+```
+
+
+And finally, the standard least squares fit (Residual standard error = sigma).
+
+```{r hmc-compare-lm, echo=FALSE}
+pander::pander(summary(fit_lm))
+```
+

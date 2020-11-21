@@ -3,8 +3,8 @@
 A very simple implementation of an extreme learning machine for regression. See <span class="pack" style = "">elmNN</span> and <span class="pack" style = "">ELMR</span> for some R package implementations. I add comparison to generalized additive models (elm/neural networks and GAMs are adaptive basis function models). 
 
 
-http://www.extreme-learning-machines.org
-G.-B. Huang, Q.-Y. Zhu and C.-K. Siew, "Extreme Learning Machine: Theory and Applications"
+- http://www.extreme-learning-machines.org
+- G.B. Huang, Q.Y. Zhu and C.K. Siew, Extreme Learning Machine: Theory and Applications.
 
 
 ## Data Setup
@@ -22,9 +22,11 @@ n = 5000
 x = runif(n)
 # x = rnorm(n)
 mu = sin(2*(4*x-2)) + 2* exp(-(16^2) * ((x-.5)^2))
-y = rnorm(n, mu, .3)
-qplot(x, y)
+y  = rnorm(n, mu, .3)
+
 d = data.frame(x, y) 
+
+qplot(x, y)
 ```
 
 
@@ -33,8 +35,8 @@ Motorcycle accident data.
 ```{r elm-setup2}
 data('mcycle', package = 'MASS')
 
-times  = matrix(mcycle$times, ncol = 1)
-accel  = mcycle$accel
+times = matrix(mcycle$times, ncol = 1)
+accel = mcycle$accel
 ```
 
 
@@ -107,7 +109,7 @@ d %>%
   ggplot() +
   geom_point(aes(x, y), alpha = .1) +
   geom_line(aes(x, y = fit_elm), color = '#1e90ff') +
-  geom_line(aes(x, y = fit_gam), color = 'darkred')
+  geom_line(aes(x, y = fit_gam), color = '#990024')
 ```
 
 
@@ -119,7 +121,7 @@ mcycle %>%
   ggplot(aes(times, accel)) +
   geom_point(alpha = .5) +
   geom_line(aes(y = elm_2$fit), color = '#1e90ff') +
-  geom_line(aes(y = fitted(gam_2)), color = 'darkred')
+  geom_line(aes(y = fitted(gam_2)), color = '#990024')
 ```
 
 

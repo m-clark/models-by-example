@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Placeholder | Model Estimation by Example</title>
+  <title>Introduction | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Placeholder | Model Estimation by Example" />
+  <meta property="og:title" content="Introduction | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Placeholder | Model Estimation by Example" />
+  <meta name="twitter:title" content="Introduction | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="bayes-non-parametric.html"/>
-<link rel="next" href="penalized-maximum-likelihood.html"/>
+<link rel="prev" href="cfa.html"/>
+<link rel="next" href="bayesian-t-test.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -49,6 +49,8 @@
 
 
 
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <script src="libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
 <script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
@@ -56,8 +58,6 @@
 <script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
-<script src="libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -438,89 +438,157 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#source-22"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html"><i class="fa fa-check"></i>Bayesian Nonparametric Models</a>
-<ul>
-<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
-<li class="chapter" data-level="" data-path="bayes-non-parametric.html"><a href="bayes-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
-</ul></li>
 <li class="part"><span><b>Bayesian</b></span></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html"><i class="fa fa-check"></i>Placeholder</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#bayesian-linear-regression"><i class="fa fa-check"></i>Bayesian Linear Regression</a>
+<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html"><i class="fa fa-check"></i>Bayesian t-test</a>
 <ul>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#model-code"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#visualize-1"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#model-code"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#visualization"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#source-23"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#bayesian-mixed-model"><i class="fa fa-check"></i>Bayesian Mixed Model</a>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html"><i class="fa fa-check"></i>Bayesian Linear Regression</a>
 <ul>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#data-setup-25"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#model-code-1"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#estimation-21"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#visualize-2"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#data-setup-25"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#model-code-1"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#estimation-21"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#visualize-1"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#source-24"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#bayesian-multilevel-mediation"><i class="fa fa-check"></i>Bayesian Multilevel Mediation</a>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html"><i class="fa fa-check"></i>Bayesian Mixed Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#model-code-2"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#visualization"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#model-code-2"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#visualize-2"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#source-25"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#bayesian-irt"><i class="fa fa-check"></i>Bayesian IRT</a>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html"><i class="fa fa-check"></i>Bayesian Multilevel Mediation</a>
 <ul>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#one-parameter-irt"><i class="fa fa-check"></i>One Parameter IRT</a>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#model-code-3"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#visualization-1"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#source-26"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html"><i class="fa fa-check"></i>Bayesian IRT</a>
 <ul>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#model-code-3"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#two-parameter-irt"><i class="fa fa-check"></i>Two Parameter IRT</a>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#one-parameter-irt"><i class="fa fa-check"></i>One Parameter IRT</a>
 <ul>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#model-code-4"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#data-setup-28"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-4"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html#three-parameter-irt"><i class="fa fa-check"></i>Three Parameter IRT</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#two-parameter-irt"><i class="fa fa-check"></i>Two Parameter IRT</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-5"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="part"><span><b>Algorithms</b></span></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#three-parameter-irt"><i class="fa fa-check"></i>Three Parameter IRT</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#four-parameter-irt"><i class="fa fa-check"></i>Four Parameter IRT</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#source-27"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html"><i class="fa fa-check"></i>Bayesian CFA</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#data-setup-29"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#model-code-6"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#source-28"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html"><i class="fa fa-check"></i>Bayesian Nonparametric Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#source-29"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html"><i class="fa fa-check"></i>Bayesian Beta Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#data-setup-30"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#model-code-7"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#estimation-27"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#visualization-2"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#source-30"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html"><i class="fa fa-check"></i>Bayesian Stochastic Volatility Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#model-code-8"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#estimation-28"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#results-1"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#visualization-3"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#source-31"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html"><i class="fa fa-check"></i>Bayesian Multinomial Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#data-setup-32"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#model-code-9"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#estimation-29"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#adding-complexity"><i class="fa fa-check"></i>Adding Complexity</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#source-32"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html"><i class="fa fa-check"></i>Variational Bayes Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#data-setup-33"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#function-19"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#estimation-30"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#comparison-33"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#visualization-4"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#supplemental-example-2"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#source-33"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html"><i class="fa fa-check"></i>Topic Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#data-setup-34"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#function-20"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#comparison-34"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#source-34"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Estimation</b></span></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
 <ul>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-28"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-8"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-23"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-32"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-35"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-35"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
 <ul>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-29"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-36"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-9"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-24"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-33"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-36"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-36"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
 <ul>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-30"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-37"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#functions-10"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-27"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-25"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-34"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-37"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-37"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
 <ul>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-38"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-11"><i class="fa fa-check"></i>Functions</a>
 <ul>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s Method</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-26"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-38"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
 <ul>
@@ -533,85 +601,100 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example Function</a></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-34"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-40"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-27"><i class="fa fa-check"></i>Source</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
-<ul>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-33"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-19"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-28"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-35"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-28"><i class="fa fa-check"></i>Source</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
-<ul>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-34"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-20"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-29"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-36"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
-<ul>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-30"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-37"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-29"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-39"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html"><i class="fa fa-check"></i>Expectation-Maximization</a>
 <ul>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#mixture-model"><i class="fa fa-check"></i>Mixture Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-40"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-21"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-2"><i class="fa fa-check"></i>Supplemental Example</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-30"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-35"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-3"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-40"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#multivariate-mixture-model"><i class="fa fa-check"></i>Multivariate Mixture Model</a>
 <ul>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-22"><i class="fa fa-check"></i>Function</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-1-old-faithful-eruptions"><i class="fa fa-check"></i>Example 1: Old Faithful eruptions</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-2-iris-data-set"><i class="fa fa-check"></i>Example 2: Iris data set</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-31"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-41"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-model"><i class="fa fa-check"></i>Probit Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-38"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-43"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-via-maximum-likelihood"><i class="fa fa-check"></i>Probit via Maximum Likelihood</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#em-for-latent-variable-approach-to-probit"><i class="fa fa-check"></i>EM for Latent Variable Approach to Probit</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-32"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-42"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#pca"><i class="fa fa-check"></i>PCA</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-39"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-44"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-25"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-36"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-43"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-40"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-46"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-4"><i class="fa fa-check"></i>Visualize</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-33"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-43"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#probabilistic-pca"><i class="fa fa-check"></i>Probabilistic PCA</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-40"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-45"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-26"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-37"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-44"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-41"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-47"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-5"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#missing-data-example"><i class="fa fa-check"></i>Missing Data Example</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-34"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-44"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#state-space-model"><i class="fa fa-check"></i>State Space Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-42"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-47"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-28"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-39"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization-1"><i class="fa fa-check"></i>Visualization</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-35"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-43"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization-5"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-45"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-48"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-29"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-44"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-49"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-46"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-49"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-30"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-45"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-50"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-46"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-51"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-47"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html"><i class="fa fa-check"></i>Metropolis Hastings Example</a>
+<ul>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#data-setup-50"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#functions-12"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#estimation-47"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#comparison-52"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#source-48"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a>
+<ul>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#data-setup-51"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#functions-13"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#estimation-48"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#comparison-53"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="part"><span><b>Other</b></span></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
@@ -663,1522 +746,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="placeholder" class="section level1">
-<h1>Placeholder</h1>
-<p>This part is still in progress while I decide what to keep/retain. In the meantime, you can take a look at the <a href="https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian">old repo</a>.</p>
-</div>
-<div id="bayesian-linear-regression" class="section level1">
-<h1>Bayesian Linear Regression</h1>
-<p>The following provides a simple working example of a standard regression model
-using Stan via <span class="pack" style="">rstan</span>. It will hopefully to
-allow some to more easily jump in to using Stan if they are comfortable with R.
-You would normally just use <span class="pack" style="">rstanarm</span> or
-<span class="pack" style="">brms</span> for such a model however.</p>
-<div id="data-setup-24" class="section level2">
-<h2>Data Setup</h2>
-<p>Create a correlation matrix of one’s choosing assuming response as last column/row.</p>
-<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb428-1"><a href="bayesian.html#cb428-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb428-2"><a href="bayesian.html#cb428-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb428-3"><a href="bayesian.html#cb428-3" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">=</span> <span class="fu">matrix</span>(</span>
-<span id="cb428-4"><a href="bayesian.html#cb428-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
-<span id="cb428-5"><a href="bayesian.html#cb428-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, .<span class="dv">2</span>, <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">3</span>,</span>
-<span id="cb428-6"><a href="bayesian.html#cb428-6" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">2</span>, <span class="dv">1</span>, .<span class="dv">1</span>, .<span class="dv">2</span>,</span>
-<span id="cb428-7"><a href="bayesian.html#cb428-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">1</span>, <span class="dv">1</span>, .<span class="dv">1</span>,</span>
-<span id="cb428-8"><a href="bayesian.html#cb428-8" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">3</span>, .<span class="dv">2</span>, .<span class="dv">1</span>, <span class="dv">1</span></span>
-<span id="cb428-9"><a href="bayesian.html#cb428-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb428-10"><a href="bayesian.html#cb428-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">4</span>, </span>
-<span id="cb428-11"><a href="bayesian.html#cb428-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
-<span id="cb428-12"><a href="bayesian.html#cb428-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb428-13"><a href="bayesian.html#cb428-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb428-14"><a href="bayesian.html#cb428-14" aria-hidden="true" tabindex="-1"></a>cormat</span></code></pre></div>
-<pre><code>     [,1] [,2] [,3] [,4]
-[1,]  1.0  0.2 -0.1  0.3
-[2,]  0.2  1.0  0.1  0.2
-[3,] -0.1  0.1  1.0  0.1
-[4,]  0.3  0.2  0.1  1.0</code></pre>
-<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb430-1"><a href="bayesian.html#cb430-1" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">=</span> Matrix<span class="sc">::</span><span class="fu">nearPD</span>(cormat, <span class="at">corr =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>mat</span>
-<span id="cb430-2"><a href="bayesian.html#cb430-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb430-3"><a href="bayesian.html#cb430-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb430-4"><a href="bayesian.html#cb430-4" aria-hidden="true" tabindex="-1"></a>means <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(cormat))</span>
-<span id="cb430-5"><a href="bayesian.html#cb430-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n, means, cormat, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb430-6"><a href="bayesian.html#cb430-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(d) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>, <span class="st">&#39;y&#39;</span>)</span>
-<span id="cb430-7"><a href="bayesian.html#cb430-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb430-8"><a href="bayesian.html#cb430-8" aria-hidden="true" tabindex="-1"></a>d[,<span class="st">&#39;y&#39;</span>] <span class="ot">=</span> d[,<span class="st">&#39;y&#39;</span>] <span class="sc">-</span> .<span class="dv">1</span> <span class="co"># unnecessary, just to model a non-zero intercept</span></span>
-<span id="cb430-9"><a href="bayesian.html#cb430-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb430-10"><a href="bayesian.html#cb430-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(d)</span></code></pre></div>
-<pre><code> num [1:1000, 1:4] 2.313 0.651 1.932 0.582 0.432 ...
- - attr(*, &quot;dimnames&quot;)=List of 2
-  ..$ : NULL
-  ..$ : chr [1:4] &quot;X1&quot; &quot;X2&quot; &quot;X3&quot; &quot;y&quot;</code></pre>
-<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb432-1"><a href="bayesian.html#cb432-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(d)</span></code></pre></div>
-<pre><code>     X1  X2   X3   y
-X1  1.0 0.2 -0.1 0.3
-X2  0.2 1.0  0.1 0.2
-X3 -0.1 0.1  1.0 0.1
-y   0.3 0.2  0.1 1.0</code></pre>
-<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="bayesian.html#cb434-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Prepare for Stan</span></span>
-<span id="cb434-2"><a href="bayesian.html#cb434-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb434-3"><a href="bayesian.html#cb434-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create X (add intercept column) and y for vectorized version later</span></span>
-<span id="cb434-4"><a href="bayesian.html#cb434-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, d[,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]); <span class="fu">colnames</span>(X) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Intercept&#39;</span>, <span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>)</span>
-<span id="cb434-5"><a href="bayesian.html#cb434-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> d[,<span class="dv">4</span>]</span></code></pre></div>
-</div>
-<div id="model-code" class="section level2">
-<h2>Model Code</h2>
-<p>Initial preparation, create the data list object.</p>
-<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb435-1"><a href="bayesian.html#cb435-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb435-2"><a href="bayesian.html#cb435-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> n,</span>
-<span id="cb435-3"><a href="bayesian.html#cb435-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">4</span>,</span>
-<span id="cb435-4"><a href="bayesian.html#cb435-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
-<span id="cb435-5"><a href="bayesian.html#cb435-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X</span>
-<span id="cb435-6"><a href="bayesian.html#cb435-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Create the Stan model code.</p>
-<pre class="stan"><code>data {                      // Data block; declarations only
-  int&lt;lower = 0&gt; N;         // Sample size                         
-  int&lt;lower = 0&gt; k;         // Dimension of model matrix
-  matrix [N, k] X;          // Model Matrix
-  vector[N] y;              // Target
-}
-
-/* transformed data {       // Transformed data block; declarations and statements. None needed here.
- }
-*/
-
-parameters {                // Parameters block; declarations only
-  vector[k] beta;           // Coefficient vector
-  real&lt;lower = 0&gt; sigma;    // Error scale
-}
-
-transformed parameters {    // Transformed parameters block; declarations and statements.
-
-}
-
-model {                     // Model block; declarations and statements.
-  vector[N] mu;
-  mu = X * beta;            // Linear predictor
-
-  // priors
-  beta  ~ normal(0, 1);
-  sigma ~ cauchy(0, 1);     // With sigma bounded at 0, this is half-cauchy 
-
-  // likelihood
-  y ~ normal(mu, sigma);
-}
-
-generated quantities {      // Generated quantities block; declarations and statements.
-  real rss;                
-  real totalss;
-  real R2;                  // Calculate Rsq as a demonstration
-  vector[N] y_hat;
-  
-  y_hat = X * beta;
-  rss = dot_self(y - y_hat);
-  totalss = dot_self(y - mean(y));
-  R2 = 1 - rss/totalss;
-}</code></pre>
-</div>
-<div id="estimation-20" class="section level2">
-<h2>Estimation</h2>
-<p>Run the model and examine results. The following assumes a character string or file (<code>bayes_linreg</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb437-1"><a href="bayesian.html#cb437-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb437-2"><a href="bayesian.html#cb437-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb437-3"><a href="bayesian.html#cb437-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb437-4"><a href="bayesian.html#cb437-4" aria-hidden="true" tabindex="-1"></a>  bayes_linreg,</span>
-<span id="cb437-5"><a href="bayesian.html#cb437-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> dat,</span>
-<span id="cb437-6"><a href="bayesian.html#cb437-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span>,</span>
-<span id="cb437-7"><a href="bayesian.html#cb437-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb437-8"><a href="bayesian.html#cb437-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Note the <code>pars</code> argument in the following. You must specify desired parameters or it will print out everything, including the <code>y_hat</code>, i.e. expected values. Also note that by taking into account the additional uncertainty estimating sigma, you get a shrunken Rsq (see Gelman &amp; Pardoe 2006 sec. 3).</p>
-<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="bayesian.html#cb438-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb438-2"><a href="bayesian.html#cb438-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb438-3"><a href="bayesian.html#cb438-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits_summary =</span> <span class="dv">3</span>,</span>
-<span id="cb438-4"><a href="bayesian.html#cb438-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars  =</span> <span class="fu">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma&#39;</span>, <span class="st">&#39;R2&#39;</span>),</span>
-<span id="cb438-5"><a href="bayesian.html#cb438-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
-<span id="cb438-6"><a href="bayesian.html#cb438-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>Inference for Stan model: 17507cf73e3a44aeee4c4249d3521a85.
-4 chains, each with iter=2000; warmup=1000; thin=4; 
-post-warmup draws per chain=250, total post-warmup draws=1000.
-
-          mean se_mean    sd   2.5%    50%  97.5% n_eff  Rhat
-beta[1] -0.101   0.001 0.031 -0.161 -0.102 -0.037  1001 0.998
-beta[2]  0.286   0.001 0.031  0.226  0.285  0.346   971 1.001
-beta[3]  0.132   0.001 0.030  0.074  0.133  0.189  1028 1.001
-beta[4]  0.114   0.001 0.029  0.056  0.114  0.171   920 1.006
-sigma    0.938   0.001 0.020  0.900  0.937  0.981   967 0.999
-R2       0.120   0.000 0.002  0.114  0.120  0.123   739 0.999
-
-Samples were drawn using NUTS(diag_e) at Tue Nov 10 14:01:13 2020.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).</code></pre>
-</div>
-<div id="comparison-24" class="section level2">
-<h2>Comparison</h2>
-<p>Compare to basic <span class="func" style="">lm</span> result.</p>
-<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="bayesian.html#cb440-1" aria-hidden="true" tabindex="-1"></a>modlm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="fu">data.frame</span>(d))</span>
-<span id="cb440-2"><a href="bayesian.html#cb440-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare</span></span>
-<span id="cb440-3"><a href="bayesian.html#cb440-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modlm)</span></code></pre></div>
-<pre><code>
-Call:
-lm(formula = y ~ ., data = data.frame(d))
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--2.85461 -0.63666  0.03136  0.55565  2.94898 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) -0.10000    0.02965  -3.372 0.000774 ***
-X1           0.28526    0.03051   9.349  &lt; 2e-16 ***
-X2           0.13141    0.03051   4.307 1.82e-05 ***
-X3           0.11538    0.03004   3.840 0.000131 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.9377 on 996 degrees of freedom
-Multiple R-squared:  0.1234,    Adjusted R-squared:  0.1208 
-F-statistic: 46.73 on 3 and 996 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div id="visualize-1" class="section level2">
-<h2>Visualize</h2>
-<p>Visualize the posterior predictive distribution.</p>
-<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="bayesian.html#cb442-1" aria-hidden="true" tabindex="-1"></a><span class="co"># shinystan::launch_shinystan(fit)   # diagnostic plots</span></span>
-<span id="cb442-2"><a href="bayesian.html#cb442-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb442-3"><a href="bayesian.html#cb442-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb442-4"><a href="bayesian.html#cb442-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(</span>
-<span id="cb442-5"><a href="bayesian.html#cb442-5" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>y, </span>
-<span id="cb442-6"><a href="bayesian.html#cb442-6" aria-hidden="true" tabindex="-1"></a>  rstan<span class="sc">::</span><span class="fu">extract</span>(fit, <span class="at">par =</span> <span class="st">&#39;y_hat&#39;</span>)<span class="sc">$</span>y_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ], </span>
-<span id="cb442-7"><a href="bayesian.html#cb442-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">&#39;dens_overlay&#39;</span></span>
-<span id="cb442-8"><a href="bayesian.html#cb442-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p><img src="model-demos_files/figure-html/bayes-linreg-pp-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="bayesian-mixed-model" class="section level1">
-<h1>Bayesian Mixed Model</h1>
-<p>Estimate the classic <code>sleepstudy</code> example of <span class="pack" style="">lme4</span>. Part of this code was based on that seen on this old <a href="https://groups.google.com/d/msg/stan-users/pdfignYQcas/BL0LPbGA2eMJ">Stan thread</a>, but you can look at the underlying code for <span class="pack" style="">rstanarm</span> or <span class="pack" style="">brms</span> for a fully optimized approach compared to this conceptual one.</p>
-<div id="data-setup-25" class="section level2">
-<h2>Data Setup</h2>
-<p>The data comes from the <span class="pack" style="">lme4</span> package. It deals with reaction time to some task vs. sleep deprivation over 10 days.</p>
-<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="bayesian.html#cb443-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb443-2"><a href="bayesian.html#cb443-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb443-3"><a href="bayesian.html#cb443-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb443-4"><a href="bayesian.html#cb443-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sleepstudy)</span>
-<span id="cb443-5"><a href="bayesian.html#cb443-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ?sleepstudy</span></span>
-<span id="cb443-6"><a href="bayesian.html#cb443-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb443-7"><a href="bayesian.html#cb443-7" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb443-8"><a href="bayesian.html#cb443-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">nrow</span>(sleepstudy),</span>
-<span id="cb443-9"><a href="bayesian.html#cb443-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">I =</span> <span class="fu">n_distinct</span>(sleepstudy<span class="sc">$</span>Subject),</span>
-<span id="cb443-10"><a href="bayesian.html#cb443-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Subject =</span> <span class="fu">as.numeric</span>(sleepstudy<span class="sc">$</span>Subject),</span>
-<span id="cb443-11"><a href="bayesian.html#cb443-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Days    =</span> sleepstudy<span class="sc">$</span>Days,</span>
-<span id="cb443-12"><a href="bayesian.html#cb443-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">RT      =</span> sleepstudy<span class="sc">$</span>Reaction</span>
-<span id="cb443-13"><a href="bayesian.html#cb443-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-</div>
-<div id="model-code-1" class="section level2">
-<h2>Model Code</h2>
-<p>Create the Stan model code.</p>
-<pre class="stan"><code>data {                                      // data setup
-  int&lt;lower = 1&gt; N;                         // sample size
-  int&lt;lower = 1&gt; I;                         // number of subjects
-  vector&lt;lower = 0&gt;[N] RT;                  // Response: reaction time
-  vector&lt;lower = 0&gt;[N] Days;                // Days in study
-  int&lt;lower = 1, upper = I&gt; Subject[N];     // Subject
-}
-
-transformed data {
-  real IntBase;
-  real RTsd;
-  
-  IntBase = mean(RT);                    // Intercept starting point
-  RTsd    = sd(RT);
-}
-
-parameters {
-  real Intercept01;                       // fixed effects
-  real beta01;
-  vector&lt;lower = 0&gt;[2] sigma_u;           // sd for ints and slopes
-  real&lt;lower = 0&gt; sigma_y;                // residual sd
-  vector[2] gamma[I];                     // individual effects
-  cholesky_factor_corr[2] Omega_chol;     // correlation matrix for random intercepts and slopes (chol decomp)
-}
-
-transformed parameters {
-  vector[I] gammaIntercept;               // individual effects (named)
-  vector[I] gammaDays;
-  real Intercept;
-  real beta;
-
-  Intercept = IntBase + Intercept01 * RTsd;
-  beta = beta01 * 10;
-
-  for (i in 1:I){  
-    gammaIntercept[i]  = gamma[i, 1];
-    gammaDays[i] = gamma[i, 2];
-  }
-
-} 
-
-model {
-  matrix[2,2] D;
-  matrix[2,2] DC;
-  vector[N] mu;                         // Linear predictor
-  vector[2] gamma_mu;                   // vector of Intercept and beta
-
-  D = diag_matrix(sigma_u);
-  gamma_mu[1] = Intercept;
-  gamma_mu[2] = beta;
-
-  // priors
-  Intercept01 ~ normal(0, 1);             // example of weakly informative priors;
-  beta01 ~ normal(0, 1);                  // remove to essentially duplicate lme4 via improper prior
-
-  Omega_chol ~  lkj_corr_cholesky(2.0); 
-
-  sigma_u ~ cauchy(0, 2.5);               // prior for RE scale
-  sigma_y ~ cauchy(0, 2.5);               // prior for residual scale
-
-  DC = D * Omega_chol;
-
-  for (i in 1:I)                          // loop for Subject random effects
-    gamma[i] ~ multi_normal_cholesky(gamma_mu, DC);
-
-  // likelihood
-  for (n in 1:N)                          
-    mu[n] = gammaIntercept[Subject[n]] + gammaDays[Subject[n]] * Days[n];
-
-  RT ~ normal(mu, sigma_y);
-}
-
-generated quantities {
-  matrix[2, 2] Omega;                     // correlation of RE
-  vector[N] y_hat;
-  
-  Omega = tcrossprod(Omega_chol);
-  
-  for (n in 1:N)                 
-    y_hat[n] = gammaIntercept[Subject[n]] + gammaDays[Subject[n]] * Days[n];
-}</code></pre>
-</div>
-<div id="estimation-21" class="section level2">
-<h2>Estimation</h2>
-<p>Run the model and examine results. The following assumes a character string or file (<code>bayes_mixed</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="bayesian.html#cb445-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb445-2"><a href="bayesian.html#cb445-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb445-3"><a href="bayesian.html#cb445-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb445-4"><a href="bayesian.html#cb445-4" aria-hidden="true" tabindex="-1"></a>  bayes_mixed,</span>
-<span id="cb445-5"><a href="bayesian.html#cb445-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat,</span>
-<span id="cb445-6"><a href="bayesian.html#cb445-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">4</span>,</span>
-<span id="cb445-7"><a href="bayesian.html#cb445-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb445-8"><a href="bayesian.html#cb445-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-</div>
-<div id="comparison-25" class="section level2">
-<h2>Comparison</h2>
-<p>Compare to <span class="pack" style="">lme4</span> result.</p>
-<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb446-1"><a href="bayesian.html#cb446-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb446-2"><a href="bayesian.html#cb446-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb446-3"><a href="bayesian.html#cb446-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits_summary =</span> <span class="dv">3</span>,</span>
-<span id="cb446-4"><a href="bayesian.html#cb446-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars  =</span> <span class="fu">c</span>(<span class="st">&#39;Intercept&#39;</span>, <span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma_y&#39;</span>, <span class="st">&#39;sigma_u&#39;</span>, <span class="st">&#39;Omega[1,2]&#39;</span>),</span>
-<span id="cb446-5"><a href="bayesian.html#cb446-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
-<span id="cb446-6"><a href="bayesian.html#cb446-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>Inference for Stan model: 82d45c0b016c1733e4bbc33ce7699190.
-4 chains, each with iter=2000; warmup=1000; thin=4; 
-post-warmup draws per chain=250, total post-warmup draws=1000.
-
-              mean se_mean    sd    2.5%     50%   97.5% n_eff  Rhat
-Intercept  252.070   0.206 6.596 239.208 252.029 265.202  1024 0.998
-beta        10.260   0.049 1.557   7.138  10.301  13.257  1020 1.003
-sigma_y     25.906   0.050 1.593  23.037  25.758  29.166  1025 1.002
-sigma_u[1]  23.970   0.192 6.184  12.407  23.438  37.623  1036 0.999
-sigma_u[2]   6.003   0.045 1.352   3.833   5.857   9.131   890 1.005
-Omega[1,2]   0.116   0.009 0.265  -0.374   0.110   0.626   943 1.001
-
-Samples were drawn using NUTS(diag_e) at Tue Nov 10 14:41:51 2020.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).</code></pre>
-<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb448-1"><a href="bayesian.html#cb448-1" aria-hidden="true" tabindex="-1"></a>mod_lme <span class="ot">=</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (Days <span class="sc">|</span> Subject), sleepstudy)</span>
-<span id="cb448-2"><a href="bayesian.html#cb448-2" aria-hidden="true" tabindex="-1"></a>mod_lme</span></code></pre></div>
-<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
-Formula: Reaction ~ Days + (Days | Subject)
-   Data: sleepstudy
-REML criterion at convergence: 1743.628
-Random effects:
- Groups   Name        Std.Dev. Corr
- Subject  (Intercept) 24.741       
-          Days         5.922   0.07
- Residual             25.592       
-Number of obs: 180, groups:  Subject, 18
-Fixed Effects:
-(Intercept)         Days  
-     251.41        10.47  </code></pre>
-<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="bayesian.html#cb450-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(</span>
-<span id="cb450-2"><a href="bayesian.html#cb450-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(mod_lme)<span class="sc">$</span>Subject,</span>
-<span id="cb450-3"><a href="bayesian.html#cb450-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">matrix</span>(<span class="fu">get_posterior_mean</span>(fit, <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&#39;gammaIntercept&#39;</span>, <span class="st">&#39;gammaDays&#39;</span>))[, <span class="st">&#39;mean-all chains&#39;</span>],</span>
-<span id="cb450-4"><a href="bayesian.html#cb450-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb450-5"><a href="bayesian.html#cb450-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>    (Intercept)       Days        1         2
-308    253.6637 19.6662617 254.9401 19.375944
-309    211.0064  1.8476053 213.2745  1.574232
-310    212.4447  5.0184295 214.7572  4.692619
-330    275.0957  5.6529356 272.8280  6.004261
-331    273.6654  7.3973743 272.3311  7.680547
-332    260.4447 10.1951090 260.1453 10.206502
-333    268.2456 10.2436499 267.0088 10.444546
-334    244.1725 11.5418676 245.5201 11.319058
-335    251.0714 -0.2848792 249.7039 -0.052901
-337    286.2956 19.0955511 285.3455 19.191933
-349    226.1949 11.6407181 228.6388 11.230074
-350    238.3351 17.0815038 240.2908 16.699843
-351    255.9830  7.4520239 254.7578  7.642752
-352    272.2688 14.0032871 271.5638 14.099152
-369    254.6806 11.3395008 254.8691 11.329122
-370    225.7921 15.2897709 228.3114 14.818999
-371    252.2122  9.4791297 252.2465  9.444850
-372    263.7197 11.7513080 262.8522 11.886185</code></pre>
-</div>
-<div id="visualize-2" class="section level2">
-<h2>Visualize</h2>
-<p>Visualize the posterior predictive distribution.</p>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="bayesian.html#cb452-1" aria-hidden="true" tabindex="-1"></a><span class="co"># shinystan::launch_shinystan(fit)  # diagnostic plots</span></span>
-<span id="cb452-2"><a href="bayesian.html#cb452-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb452-3"><a href="bayesian.html#cb452-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb452-4"><a href="bayesian.html#cb452-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb452-5"><a href="bayesian.html#cb452-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(</span>
-<span id="cb452-6"><a href="bayesian.html#cb452-6" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>RT, </span>
-<span id="cb452-7"><a href="bayesian.html#cb452-7" aria-hidden="true" tabindex="-1"></a>  rstan<span class="sc">::</span><span class="fu">extract</span>(fit, <span class="at">par =</span> <span class="st">&#39;y_hat&#39;</span>)<span class="sc">$</span>y_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ], </span>
-<span id="cb452-8"><a href="bayesian.html#cb452-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">&#39;dens_overlay&#39;</span></span>
-<span id="cb452-9"><a href="bayesian.html#cb452-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p><img src="model-demos_files/figure-html/bayes-mixed-pp-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="bayesian-multilevel-mediation" class="section level1">
-<h1>Bayesian Multilevel Mediation</h1>
-<p>The following demonstrates an indirect effect in a multilevel situation. It is
-based on Yuan &amp; MacKinnon 2009, which provides some Bugs code. In what follows
-we essentially have two models, one where the ‘mediator’ is the response; the
-other regards the primary response of interest (noted <code>y</code>). They will be referred
-to with Med or Main respectively.</p>
-<div id="data-setup-26" class="section level2">
-<h2>Data Setup</h2>
-<p>The two main models are expressed conceptually as follows:</p>
-<p><span class="math display">\[Mediator \sim \alpha_{Med} + \beta_{Med}\cdot X\]</span>
-<span class="math display">\[y \sim \alpha_{Main} + \beta_{1\_{Main}}\cdot X + \beta_{2\_{Main}}\cdot Mediator\]</span></p>
-<p>However, there will be random effects for a grouping variable for each coefficient, i.e. random intercepts and slopes.</p>
-<p>Let’s create data to this effect.</p>
-<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="bayesian.html#cb453-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb453-2"><a href="bayesian.html#cb453-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb453-3"><a href="bayesian.html#cb453-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb453-4"><a href="bayesian.html#cb453-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb453-5"><a href="bayesian.html#cb453-5" aria-hidden="true" tabindex="-1"></a><span class="do">## random effects for mediator model</span></span>
-<span id="cb453-6"><a href="bayesian.html#cb453-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create cov matrix of RE etc. with no covariance between model random effects</span></span>
-<span id="cb453-7"><a href="bayesian.html#cb453-7" aria-hidden="true" tabindex="-1"></a><span class="co"># covmat_RE = matrix(c(1,-.15,0,0,0,</span></span>
-<span id="cb453-8"><a href="bayesian.html#cb453-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                       -.15,.4,0,0,0,</span></span>
-<span id="cb453-9"><a href="bayesian.html#cb453-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,1,-.1,.15,</span></span>
-<span id="cb453-10"><a href="bayesian.html#cb453-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,-.1,.3,0,</span></span>
-<span id="cb453-11"><a href="bayesian.html#cb453-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,.15,0,.2), nrow=5, byrow = T)</span></span>
-<span id="cb453-12"><a href="bayesian.html#cb453-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb453-13"><a href="bayesian.html#cb453-13" aria-hidden="true" tabindex="-1"></a><span class="co"># or with slight cov added to indirect coefficient RE; both matrices are pos def</span></span>
-<span id="cb453-14"><a href="bayesian.html#cb453-14" aria-hidden="true" tabindex="-1"></a>covmat_RE <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="sc">-</span>.<span class="dv">15</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
-<span id="cb453-15"><a href="bayesian.html#cb453-15" aria-hidden="true" tabindex="-1"></a>                     <span class="sc">-</span>.<span class="dv">15</span>,.<span class="dv">64</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="sc">-</span>.<span class="dv">1</span>,</span>
-<span id="cb453-16"><a href="bayesian.html#cb453-16" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="sc">-</span>.<span class="dv">1</span>,.<span class="dv">15</span>,</span>
-<span id="cb453-17"><a href="bayesian.html#cb453-17" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">0</span>,<span class="dv">0</span>,<span class="sc">-</span>.<span class="dv">1</span>,.<span class="dv">49</span>,<span class="dv">0</span>,</span>
-<span id="cb453-18"><a href="bayesian.html#cb453-18" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">0</span>,<span class="sc">-</span>.<span class="dv">1</span>,.<span class="dv">15</span>,<span class="dv">0</span>,.<span class="dv">25</span>), <span class="at">nrow =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb453-19"><a href="bayesian.html#cb453-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb453-20"><a href="bayesian.html#cb453-20" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect</span></span>
-<span id="cb453-21"><a href="bayesian.html#cb453-21" aria-hidden="true" tabindex="-1"></a>covmat_RE</span></code></pre></div>
-<pre><code>      [,1]  [,2]  [,3]  [,4]  [,5]
-[1,]  1.00 -0.15  0.00  0.00  0.00
-[2,] -0.15  0.64  0.00  0.00 -0.10
-[3,]  0.00  0.00  1.00 -0.10  0.15
-[4,]  0.00  0.00 -0.10  0.49  0.00
-[5,]  0.00 -0.10  0.15  0.00  0.25</code></pre>
-<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="bayesian.html#cb455-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect as correlation</span></span>
-<span id="cb455-2"><a href="bayesian.html#cb455-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cov2cor</span>(covmat_RE)</span></code></pre></div>
-<pre><code>        [,1]    [,2]       [,3]       [,4]  [,5]
-[1,]  1.0000 -0.1875  0.0000000  0.0000000  0.00
-[2,] -0.1875  1.0000  0.0000000  0.0000000 -0.25
-[3,]  0.0000  0.0000  1.0000000 -0.1428571  0.30
-[4,]  0.0000  0.0000 -0.1428571  1.0000000  0.00
-[5,]  0.0000 -0.2500  0.3000000  0.0000000  1.00</code></pre>
-<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="bayesian.html#cb457-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate</span></span>
-<span id="cb457-2"><a href="bayesian.html#cb457-2" aria-hidden="true" tabindex="-1"></a>re <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">50</span>,</span>
-<span id="cb457-3"><a href="bayesian.html#cb457-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mu    =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">5</span>),</span>
-<span id="cb457-4"><a href="bayesian.html#cb457-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Sigma =</span> covmat_RE,</span>
-<span id="cb457-5"><a href="bayesian.html#cb457-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb457-6"><a href="bayesian.html#cb457-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-7"><a href="bayesian.html#cb457-7" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for mediator model</span></span>
-<span id="cb457-8"><a href="bayesian.html#cb457-8" aria-hidden="true" tabindex="-1"></a>ranef_alpha_Med <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">1</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb457-9"><a href="bayesian.html#cb457-9" aria-hidden="true" tabindex="-1"></a>ranef_beta_Med  <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">2</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb457-10"><a href="bayesian.html#cb457-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-11"><a href="bayesian.html#cb457-11" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for main model                                                 </span></span>
-<span id="cb457-12"><a href="bayesian.html#cb457-12" aria-hidden="true" tabindex="-1"></a>ranef_alpha_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">3</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb457-13"><a href="bayesian.html#cb457-13" aria-hidden="true" tabindex="-1"></a>ranef_beta1_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">4</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb457-14"><a href="bayesian.html#cb457-14" aria-hidden="true" tabindex="-1"></a>ranef_beta2_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">5</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb457-15"><a href="bayesian.html#cb457-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-16"><a href="bayesian.html#cb457-16" aria-hidden="true" tabindex="-1"></a><span class="do">## fixed effects</span></span>
-<span id="cb457-17"><a href="bayesian.html#cb457-17" aria-hidden="true" tabindex="-1"></a>alpha_Med <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb457-18"><a href="bayesian.html#cb457-18" aria-hidden="true" tabindex="-1"></a>beta_Med  <span class="ot">=</span> .<span class="dv">2</span></span>
-<span id="cb457-19"><a href="bayesian.html#cb457-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-20"><a href="bayesian.html#cb457-20" aria-hidden="true" tabindex="-1"></a>alpha_Main <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb457-21"><a href="bayesian.html#cb457-21" aria-hidden="true" tabindex="-1"></a>beta1_Main <span class="ot">=</span> .<span class="dv">3</span></span>
-<span id="cb457-22"><a href="bayesian.html#cb457-22" aria-hidden="true" tabindex="-1"></a>beta2_Main <span class="ot">=</span> <span class="sc">-</span>.<span class="dv">2</span></span>
-<span id="cb457-23"><a href="bayesian.html#cb457-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-24"><a href="bayesian.html#cb457-24" aria-hidden="true" tabindex="-1"></a><span class="co"># residual variance</span></span>
-<span id="cb457-25"><a href="bayesian.html#cb457-25" aria-hidden="true" tabindex="-1"></a>resid_Med  <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">500</span>, <span class="dv">0</span>, .<span class="dv">75</span><span class="sc">^</span><span class="dv">2</span>, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb457-26"><a href="bayesian.html#cb457-26" aria-hidden="true" tabindex="-1"></a>resid_Main <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">500</span>, <span class="dv">0</span>, .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span>, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb457-27"><a href="bayesian.html#cb457-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-28"><a href="bayesian.html#cb457-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-29"><a href="bayesian.html#cb457-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect parameters for later comparison</span></span>
-<span id="cb457-30"><a href="bayesian.html#cb457-30" aria-hidden="true" tabindex="-1"></a>params <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb457-31"><a href="bayesian.html#cb457-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Med  =</span> alpha_Med,</span>
-<span id="cb457-32"><a href="bayesian.html#cb457-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_Med   =</span> beta_Med,</span>
-<span id="cb457-33"><a href="bayesian.html#cb457-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_Med  =</span> <span class="fu">sd</span>(resid_Med),</span>
-<span id="cb457-34"><a href="bayesian.html#cb457-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Main =</span> alpha_Main,</span>
-<span id="cb457-35"><a href="bayesian.html#cb457-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta1_Main =</span> beta1_Main,</span>
-<span id="cb457-36"><a href="bayesian.html#cb457-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta2_Main =</span> beta2_Main,</span>
-<span id="cb457-37"><a href="bayesian.html#cb457-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_y   =</span> <span class="fu">sd</span>(resid_Main),</span>
-<span id="cb457-38"><a href="bayesian.html#cb457-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Med_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">1</span>]),</span>
-<span id="cb457-39"><a href="bayesian.html#cb457-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_Med_sd  =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">2</span>]),</span>
-<span id="cb457-40"><a href="bayesian.html#cb457-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">3</span>]),</span>
-<span id="cb457-41"><a href="bayesian.html#cb457-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta1_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">4</span>]),</span>
-<span id="cb457-42"><a href="bayesian.html#cb457-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta2_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">5</span>])</span>
-<span id="cb457-43"><a href="bayesian.html#cb457-43" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb457-44"><a href="bayesian.html#cb457-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb457-45"><a href="bayesian.html#cb457-45" aria-hidden="true" tabindex="-1"></a>ranefs <span class="ot">=</span>  <span class="fu">cbind</span>(</span>
-<span id="cb457-46"><a href="bayesian.html#cb457-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_alpha_Med =</span> <span class="fu">unique</span>(ranef_alpha_Med),</span>
-<span id="cb457-47"><a href="bayesian.html#cb457-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta_Med  =</span> <span class="fu">unique</span>(ranef_beta_Med),</span>
-<span id="cb457-48"><a href="bayesian.html#cb457-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_alpha    =</span> <span class="fu">unique</span>(ranef_alpha_Main),</span>
-<span id="cb457-49"><a href="bayesian.html#cb457-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta1    =</span> <span class="fu">unique</span>(ranef_beta1_Main),</span>
-<span id="cb457-50"><a href="bayesian.html#cb457-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta2    =</span> <span class="fu">unique</span>(ranef_beta2_Main)</span>
-<span id="cb457-51"><a href="bayesian.html#cb457-51" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Finally, we can create the data for analysis.</p>
-<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="bayesian.html#cb458-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
-<span id="cb458-2"><a href="bayesian.html#cb458-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb458-3"><a href="bayesian.html#cb458-3" aria-hidden="true" tabindex="-1"></a>Med <span class="ot">=</span> (alpha_Med <span class="sc">+</span> ranef_alpha_Med) <span class="sc">+</span> (beta_Med <span class="sc">+</span> ranef_beta_Med) <span class="sc">*</span> X <span class="sc">+</span> resid_Med[, <span class="dv">1</span>]</span>
-<span id="cb458-4"><a href="bayesian.html#cb458-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb458-5"><a href="bayesian.html#cb458-5" aria-hidden="true" tabindex="-1"></a>y   <span class="ot">=</span> (alpha_Main <span class="sc">+</span> ranef_alpha_Main) <span class="sc">+</span> (beta1_Main <span class="sc">+</span> ranef_beta1_Main) <span class="sc">*</span> X <span class="sc">+</span> </span>
-<span id="cb458-6"><a href="bayesian.html#cb458-6" aria-hidden="true" tabindex="-1"></a>  (beta2_Main <span class="sc">+</span> ranef_beta2_Main) <span class="sc">*</span>  Med <span class="sc">+</span> resid_Main[, <span class="dv">1</span>]</span>
-<span id="cb458-7"><a href="bayesian.html#cb458-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb458-8"><a href="bayesian.html#cb458-8" aria-hidden="true" tabindex="-1"></a>group <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb458-9"><a href="bayesian.html#cb458-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb458-10"><a href="bayesian.html#cb458-10" aria-hidden="true" tabindex="-1"></a>standat <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb458-11"><a href="bayesian.html#cb458-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb458-12"><a href="bayesian.html#cb458-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Med =</span> Med,</span>
-<span id="cb458-13"><a href="bayesian.html#cb458-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb458-14"><a href="bayesian.html#cb458-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Group =</span> group,</span>
-<span id="cb458-15"><a href="bayesian.html#cb458-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">J =</span> <span class="fu">length</span>(<span class="fu">unique</span>(group)),</span>
-<span id="cb458-16"><a href="bayesian.html#cb458-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">length</span>(y)</span>
-<span id="cb458-17"><a href="bayesian.html#cb458-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-</div>
-<div id="model-code-2" class="section level2">
-<h2>Model Code</h2>
-<p>In the following, the cholesky decomposition of the RE covariance matrix is used for efficiency. As a rough guide, the default data where <code>N = 500</code> took about 5 min to run for the main model with <code>iter=12000</code> and <code>warmup = 2000</code>.</p>
-<pre class="stan"><code>data {
-  int&lt;lower = 1&gt; N;                              // Sample size
-  vector[N] X;                                   // Explanatory variable
-  vector[N] Med;                                 // Mediator
-  vector[N] y;                                   // Response
-  int&lt;lower = 1&gt; J;                              // Number of groups
-  int&lt;lower = 1,upper = J&gt; Group[N];             // Groups
-}
-
-parameters{
-  real alpha_Med;                                // mediator model reg parameters and related
-  real beta_Med;
-  real&lt;lower = 0&gt; sigma_alpha_Med;
-  real&lt;lower = 0&gt; sigma_beta_Med;
-  real&lt;lower = 0&gt; sigmaMed;
-
-  real alpha_Main;                               // main model reg parameters and related
-  real beta1_Main;
-  real beta2_Main;
-  real&lt;lower = 0&gt; sigma_alpha;
-  real&lt;lower = 0&gt; sigma_beta1;
-  real&lt;lower = 0&gt; sigma_beta2;
-  real&lt;lower = 0&gt; sigma_y;
-
-  cholesky_factor_corr[5] Omega_chol;            // chol decomp of corr matrix for random effects
-
-  vector&lt;lower = 0&gt;[5] sigma_ranef;              // sd for random effects
-
-  matrix[J,5] gamma;                             // random effects
-}
-
-transformed parameters{
-  vector[J] gamma_alpha_Med;
-  vector[J] gamma_beta_Med;
-
-  vector[J] gamma_alpha;
-  vector[J] gamma_beta1;
-  vector[J] gamma_beta2;
-
-  for (j in 1:J){
-    gamma_alpha_Med[j] = gamma[j,1];
-    gamma_beta_Med[j]  = gamma[j,2];
-    gamma_alpha[j] = gamma[j,3];
-    gamma_beta1[j] = gamma[j,4];
-    gamma_beta2[j] = gamma[j,5];
-  }
-}
-
-model {
-  vector[N] mu_y;                                // linear predictors for response and mediator
-  vector[N] mu_Med;
-  matrix[5,5] D;
-  matrix[5,5] DC;
-
-  // priors
-  // mediator model
-  // fixef
-  // for scale params the cauchy is a little more informative here due 
-  // to the nature of the data
-  sigma_alpha_Med ~ cauchy(0, 1);                
-  sigma_beta_Med ~ cauchy(0, 1);
-  alpha_Med ~ normal(0, sigma_alpha_Med);   
-  beta_Med  ~ normal(0, sigma_beta_Med);
-
-  // residual scale
-  sigmaMed ~ cauchy(0, 1);
-
-  // main model
-  // fixef
-  sigma_alpha ~ cauchy(0, 1);
-  sigma_beta1 ~ cauchy(0, 1);
-  sigma_beta2 ~ cauchy(0, 1);
-  alpha_Main ~ normal(0, sigma_alpha);      
-  beta1_Main ~ normal(0, sigma_beta1);
-  beta2_Main ~ normal(0, sigma_beta2);
-
-  // residual scale
-  sigma_y ~ cauchy(0, 1);
-
-  // ranef sampling via cholesky decomposition
-  sigma_ranef ~ cauchy(0, 1);
-  Omega_chol  ~  lkj_corr_cholesky(2.0);
-
-  D  = diag_matrix(sigma_ranef);
-  DC = D * Omega_chol;
-  
-  for (j in 1:J)                                 // loop for Group random effects
-    gamma[j] ~ multi_normal_cholesky(rep_vector(0, 5), DC);
-
-  // Linear predictors
-  for (n in 1:N){
-    mu_Med[n] = alpha_Med + gamma_alpha_Med[Group[n]] + 
-    (beta_Med + gamma_beta_Med[Group[n]]) * X[n];
-    
-    mu_y[n]   = alpha_Main + gamma_alpha[Group[n]] + 
-    (beta1_Main + gamma_beta1[Group[n]]) * X[n] + 
-    (beta2_Main + gamma_beta2[Group[n]]) * Med[n] ;
-  }
-  
-  
-  // sampling for primary models
-  Med ~ normal(mu_Med, sigmaMed);
-  y   ~ normal(mu_y, sigma_y);
-}
-
-generated quantities{
-  real naive_ind_effect;
-  real avg_ind_effect;
-  real total_effect;
-  matrix[5,5] cov_RE;
-  vector[N] y_hat;    
-  
-  cov_RE = diag_matrix(sigma_ranef) * tcrossprod(Omega_chol) * diag_matrix(sigma_ranef);
-
-  naive_ind_effect = beta_Med*beta2_Main;
-  avg_ind_effect   = beta_Med*beta2_Main + cov_RE[2,5];
-  total_effect     = avg_ind_effect + beta1_Main;
-  
-  for (n in 1:N){
-    y_hat[n]   = alpha_Main + gamma_alpha[Group[n]] + 
-    (beta1_Main + gamma_beta1[Group[n]]) * X[n] + 
-    (beta2_Main + gamma_beta2[Group[n]]) * Med[n] ;
-  }
-}</code></pre>
-<!-- ######### -->
-<!-- ### Debugging and Setup ### -->
-<!-- ######### -->
-<!-- # bug detector -->
-<!-- library(rstan) -->
-<!-- p = proc.time() -->
-<!-- fit0 = stan(model_code = modelStan, data = standat, iter = 400, warmup=200,  -->
-<!--             thin=1, chains = 1, verbose = F) -->
-<!-- proc.time() - p -->
-<!-- # print(fit0) -->
-<!-- # traceplot(fit0) -->
-</div>
-<div id="estimation-22" class="section level2">
-<h2>Estimation</h2>
-<p>Run the model and examine results. The following assumes a character string or file (<code>bayes_mixed</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="bayesian.html#cb460-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb460-2"><a href="bayesian.html#cb460-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb460-3"><a href="bayesian.html#cb460-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb460-4"><a href="bayesian.html#cb460-4" aria-hidden="true" tabindex="-1"></a>  bayes_med_model,</span>
-<span id="cb460-5"><a href="bayesian.html#cb460-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> standat,</span>
-<span id="cb460-6"><a href="bayesian.html#cb460-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter    =</span> <span class="dv">3000</span>,</span>
-<span id="cb460-7"><a href="bayesian.html#cb460-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup  =</span> <span class="dv">2000</span>,</span>
-<span id="cb460-8"><a href="bayesian.html#cb460-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin    =</span> <span class="dv">4</span>,</span>
-<span id="cb460-9"><a href="bayesian.html#cb460-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores   =</span> <span class="dv">4</span>,</span>
-<span id="cb460-10"><a href="bayesian.html#cb460-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>, <span class="at">max_treedepth =</span> <span class="dv">15</span>)</span>
-<span id="cb460-11"><a href="bayesian.html#cb460-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-</div>
-<div id="comparison-26" class="section level2">
-<h2>Comparison</h2>
-<p>Main parameters include fixed and random effect standard deviation, plus those related to indirect effect.</p>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="bayesian.html#cb461-1" aria-hidden="true" tabindex="-1"></a>mainpars <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb461-2"><a href="bayesian.html#cb461-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;alpha_Med&#39;</span>,</span>
-<span id="cb461-3"><a href="bayesian.html#cb461-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta_Med&#39;</span>,</span>
-<span id="cb461-4"><a href="bayesian.html#cb461-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigmaMed&#39;</span>,</span>
-<span id="cb461-5"><a href="bayesian.html#cb461-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;alpha_Main&#39;</span>,</span>
-<span id="cb461-6"><a href="bayesian.html#cb461-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta1_Main&#39;</span>,</span>
-<span id="cb461-7"><a href="bayesian.html#cb461-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta2_Main&#39;</span>,</span>
-<span id="cb461-8"><a href="bayesian.html#cb461-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigma_y&#39;</span>,</span>
-<span id="cb461-9"><a href="bayesian.html#cb461-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigma_ranef&#39;</span>,</span>
-<span id="cb461-10"><a href="bayesian.html#cb461-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;naive_ind_effect&#39;</span>,</span>
-<span id="cb461-11"><a href="bayesian.html#cb461-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;avg_ind_effect&#39;</span>,</span>
-<span id="cb461-12"><a href="bayesian.html#cb461-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;total_effect&#39;</span></span>
-<span id="cb461-13"><a href="bayesian.html#cb461-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb461-14"><a href="bayesian.html#cb461-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb461-15"><a href="bayesian.html#cb461-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb461-16"><a href="bayesian.html#cb461-16" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb461-17"><a href="bayesian.html#cb461-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb461-18"><a href="bayesian.html#cb461-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>),</span>
-<span id="cb461-19"><a href="bayesian.html#cb461-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars   =</span> mainpars</span>
-<span id="cb461-20"><a href="bayesian.html#cb461-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>Inference for Stan model: baab5ebe3046f0dc079803aa2af1fb6c.
-4 chains, each with iter=2000; warmup=1000; thin=4; 
-post-warmup draws per chain=250, total post-warmup draws=1000.
-
-                   mean se_mean    sd   2.5%    50%  97.5% n_eff  Rhat
-alpha_Med         2.010   0.008 0.153  1.694  2.015  2.302   337 1.005
-beta_Med          0.161   0.007 0.124 -0.059  0.154  0.399   277 1.005
-sigmaMed          0.744   0.001 0.026  0.694  0.743  0.798   982 1.001
-alpha_Main        0.960   0.007 0.166  0.617  0.965  1.255   494 1.003
-beta1_Main        0.274   0.008 0.123  0.026  0.275  0.506   222 1.006
-beta2_Main       -0.178   0.004 0.079 -0.333 -0.179 -0.014   507 1.004
-sigma_y           0.500   0.001 0.019  0.465  0.499  0.540   924 0.997
-sigma_ranef[1]    1.067   0.004 0.116  0.855  1.062  1.311   715 0.998
-sigma_ranef[2]    0.857   0.003 0.087  0.705  0.847  1.049   953 1.000
-sigma_ranef[3]    1.014   0.005 0.136  0.784  1.009  1.307   885 0.998
-sigma_ranef[4]    0.789   0.003 0.088  0.635  0.781  0.975  1050 0.999
-sigma_ranef[5]    0.479   0.002 0.061  0.378  0.476  0.609   876 1.003
-naive_ind_effect -0.031   0.002 0.030 -0.100 -0.025  0.007   274 1.008
-avg_ind_effect   -0.149   0.003 0.074 -0.306 -0.143 -0.014   796 1.000
-total_effect      0.125   0.008 0.137 -0.139  0.120  0.383   262 1.005
-
-Samples were drawn using NUTS(diag_e) at Wed Nov 11 14:34:19 2020.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).</code></pre>
-<p>We can use a piecemeal mixed model via <span class="pack">lme4</span> for initial comparison. However, it can’t directly estimate mediated effect, and it won’t pick up on correlation of random effects between models.</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="bayesian.html#cb463-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb463-2"><a href="bayesian.html#cb463-2" aria-hidden="true" tabindex="-1"></a>mod_Med <span class="ot">=</span> <span class="fu">lmer</span>(Med <span class="sc">~</span> X <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">|</span> group))</span>
-<span id="cb463-3"><a href="bayesian.html#cb463-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_Med)</span></code></pre></div>
-<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
-Formula: Med ~ X + (1 + X | group)
-
-REML criterion at convergence: 1456.7
-
-Scaled residuals: 
-     Min       1Q   Median       3Q      Max 
--2.55601 -0.66077 -0.00442  0.57621  3.12555 
-
-Random effects:
- Groups   Name        Variance Std.Dev. Corr 
- group    (Intercept) 1.0315   1.0156        
-          X           0.6688   0.8178   -0.27
- Residual             0.5513   0.7425        
-Number of obs: 500, groups:  group, 50
-
-Fixed effects:
-            Estimate Std. Error t value
-(Intercept)   2.0221     0.1480  13.665
-X             0.2197     0.1172   1.874
-
-Correlation of Fixed Effects:
-  (Intr)
-X -0.257</code></pre>
-<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="bayesian.html#cb465-1" aria-hidden="true" tabindex="-1"></a>mod_Main <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> X <span class="sc">+</span> Med <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">+</span> Med <span class="sc">|</span> group))</span>
-<span id="cb465-2"><a href="bayesian.html#cb465-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_Main)</span></code></pre></div>
-<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
-Formula: y ~ X + Med + (1 + X + Med | group)
-
-REML criterion at convergence: 1211.9
-
-Scaled residuals: 
-    Min      1Q  Median      3Q     Max 
--2.6843 -0.6232  0.0540  0.5721  2.5242 
-
-Random effects:
- Groups   Name        Variance Std.Dev. Corr       
- group    (Intercept) 0.9208   0.9596              
-          X           0.5657   0.7521   -0.19      
-          Med         0.2051   0.4529    0.52 -0.03
- Residual             0.2479   0.4979              
-Number of obs: 500, groups:  group, 50
-
-Fixed effects:
-            Estimate Std. Error t value
-(Intercept)  0.98312    0.15318   6.418
-X            0.27141    0.10924   2.484
-Med         -0.19818    0.07234  -2.739
-
-Correlation of Fixed Effects:
-    (Intr) X     
-X   -0.144       
-Med  0.218 -0.055</code></pre>
-<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="bayesian.html#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="co"># should equal the naive estimate in the following code</span></span>
-<span id="cb467-2"><a href="bayesian.html#cb467-2" aria-hidden="true" tabindex="-1"></a>lme_indirect_effect <span class="ot">=</span> <span class="fu">fixef</span>(mod_Med)[<span class="st">&#39;X&#39;</span>] <span class="sc">*</span> <span class="fu">fixef</span>(mod_Main)[<span class="st">&#39;Med&#39;</span>]</span></code></pre></div>
-<p>Using the <span class="pack">mediation</span> package will provide a better estimate, and can handle this simple mixed model setting.</p>
-<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="bayesian.html#cb468-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(mediation)</span></span>
-<span id="cb468-2"><a href="bayesian.html#cb468-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb468-3"><a href="bayesian.html#cb468-3" aria-hidden="true" tabindex="-1"></a>mediation_mixed <span class="ot">=</span> mediation<span class="sc">::</span><span class="fu">mediate</span>(</span>
-<span id="cb468-4"><a href="bayesian.html#cb468-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.m  =</span> mod_Med,</span>
-<span id="cb468-5"><a href="bayesian.html#cb468-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.y  =</span> mod_Main,</span>
-<span id="cb468-6"><a href="bayesian.html#cb468-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">treat    =</span> <span class="st">&#39;X&#39;</span>,</span>
-<span id="cb468-7"><a href="bayesian.html#cb468-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mediator =</span> <span class="st">&#39;Med&#39;</span></span>
-<span id="cb468-8"><a href="bayesian.html#cb468-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb468-9"><a href="bayesian.html#cb468-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb468-10"><a href="bayesian.html#cb468-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mediation_mixed)</span></code></pre></div>
-<pre><code>
-Causal Mediation Analysis 
-
-Quasi-Bayesian Confidence Intervals
-
-Mediator Groups: group 
-
-Outcome Groups: group 
-
-Output Based on Overall Averages Across Groups 
-
-               Estimate 95% CI Lower 95% CI Upper p-value    
-ACME            -0.1240      -0.1997        -0.06  &lt;2e-16 ***
-ADE              0.2684       0.0581         0.48   0.012 *  
-Total Effect     0.1445      -0.0852         0.36   0.226    
-Prop. Mediated  -0.6432      -7.8472         9.27   0.226    
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Sample Size Used: 500 
-
-
-Simulations: 1000 </code></pre>
-<p>Extract parameters for comparison.</p>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="bayesian.html#cb470-1" aria-hidden="true" tabindex="-1"></a>pars_primary <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> mainpars)[, <span class="dv">5</span>]</span>
-<span id="cb470-2"><a href="bayesian.html#cb470-2" aria-hidden="true" tabindex="-1"></a>pars_re_cov  <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> <span class="st">&#39;Omega_chol&#39;</span>)[, <span class="dv">5</span>] <span class="co"># or take &#39;cov_RE&#39; from monte carlo sim</span></span>
-<span id="cb470-3"><a href="bayesian.html#cb470-3" aria-hidden="true" tabindex="-1"></a>pars_re      <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&#39;sigma_ranef&#39;</span>))[, <span class="dv">5</span>]</span></code></pre></div>
-<p>Fixed effects and random effect variances.</p>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-param
-</th>
-<th style="text-align:right;">
-true
-</th>
-<th style="text-align:right;">
-bayes
-</th>
-<th style="text-align:right;">
-lme4
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-alpha_Med
-</td>
-<td style="text-align:right;">
-2.00
-</td>
-<td style="text-align:right;">
-2.010
-</td>
-<td style="text-align:right;">
-2.022
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta_Med
-</td>
-<td style="text-align:right;">
-0.20
-</td>
-<td style="text-align:right;">
-0.161
-</td>
-<td style="text-align:right;">
-0.220
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sigma_Med
-</td>
-<td style="text-align:right;">
-0.75
-</td>
-<td style="text-align:right;">
-0.744
-</td>
-<td style="text-align:right;">
-0.743
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-alpha_Main
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-0.960
-</td>
-<td style="text-align:right;">
-0.983
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta1_Main
-</td>
-<td style="text-align:right;">
-0.30
-</td>
-<td style="text-align:right;">
-0.274
-</td>
-<td style="text-align:right;">
-0.271
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta2_Main
-</td>
-<td style="text-align:right;">
--0.20
-</td>
-<td style="text-align:right;">
--0.178
-</td>
-<td style="text-align:right;">
--0.198
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sigma_y
-</td>
-<td style="text-align:right;">
-0.50
-</td>
-<td style="text-align:right;">
-0.500
-</td>
-<td style="text-align:right;">
-0.498
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-alpha_Med_sd
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-1.067
-</td>
-<td style="text-align:right;">
-1.016
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta_Med_sd
-</td>
-<td style="text-align:right;">
-0.80
-</td>
-<td style="text-align:right;">
-0.857
-</td>
-<td style="text-align:right;">
-0.818
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-alpha_sd
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-1.014
-</td>
-<td style="text-align:right;">
-0.960
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta1_sd
-</td>
-<td style="text-align:right;">
-0.70
-</td>
-<td style="text-align:right;">
-0.789
-</td>
-<td style="text-align:right;">
-0.752
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta2_sd
-</td>
-<td style="text-align:right;">
-0.50
-</td>
-<td style="text-align:right;">
-0.479
-</td>
-<td style="text-align:right;">
-0.453
-</td>
-</tr>
-</tbody>
-</table>
-<p>Compare the covariances of the random effects. The first shows the full covariance matrix for mediator and outcome, then broken out separately.</p>
-<pre><code>$true
-      [,1]  [,2]  [,3]  [,4]  [,5]
-[1,]  1.00 -0.15  0.00  0.00  0.00
-[2,] -0.15  0.64  0.00  0.00 -0.10
-[3,]  0.00  0.00  1.00 -0.10  0.15
-[4,]  0.00  0.00 -0.10  0.49  0.00
-[5,]  0.00 -0.10  0.15  0.00  0.25
-
-$estimates
-      [,1]  [,2]  [,3]  [,4]  [,5]
-[1,]  1.14 -0.21  0.05  0.03  0.02
-[2,] -0.21  0.72  0.05  0.00 -0.11
-[3,]  0.05  0.05  0.98 -0.13  0.20
-[4,]  0.03  0.00 -0.13  0.58  0.00
-[5,]  0.02 -0.11  0.20  0.00  0.21</code></pre>
-<pre><code>$vcov_Med
-      [,1]  [,2]
-[1,]  1.00 -0.15
-[2,] -0.15  0.64
-
-$vcov_Med_bayes
-      [,1]  [,2]
-[1,]  1.14 -0.21
-[2,] -0.21  0.72
-
-$vcov_Med_lme4
-            (Intercept)     X
-(Intercept)        1.03 -0.22
-X                 -0.22  0.67</code></pre>
-<pre><code>$vcov_Main
-      [,1]  [,2] [,3]
-[1,]  1.00 -0.10 0.15
-[2,] -0.10  0.49 0.00
-[3,]  0.15  0.00 0.25
-
-$vcov_Main_bayes
-      [,1]  [,2] [,3]
-[1,]  0.98 -0.13 0.20
-[2,] -0.13  0.58 0.00
-[3,]  0.20  0.00 0.21
-
-$vcov_Main_lme4
-            (Intercept)     X   Med
-(Intercept)        0.92 -0.14  0.22
-X                 -0.14  0.57 -0.01
-Med                0.22 -0.01  0.21</code></pre>
-<p>Compare indirect effects</p>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-true
-</th>
-<th style="text-align:right;">
-est
-</th>
-<th style="text-align:right;">
-naiveBayes
-</th>
-<th style="text-align:right;">
-naiveLme
-</th>
-<th style="text-align:right;">
-mediation_pack
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
--0.14
-</td>
-<td style="text-align:right;">
--0.149
-</td>
-<td style="text-align:right;">
--0.031
-</td>
-<td style="text-align:right;">
--0.044
-</td>
-<td style="text-align:right;">
--0.124
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="visualization" class="section level2">
-<h2>Visualization</h2>
-<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="bayesian.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="co"># interactive diagnostics</span></span>
-<span id="cb474-2"><a href="bayesian.html#cb474-2" aria-hidden="true" tabindex="-1"></a><span class="co"># shinystan::launch_shinystan(fit)</span></span>
-<span id="cb474-3"><a href="bayesian.html#cb474-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb474-4"><a href="bayesian.html#cb474-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb474-5"><a href="bayesian.html#cb474-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb474-6"><a href="bayesian.html#cb474-6" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(</span>
-<span id="cb474-7"><a href="bayesian.html#cb474-7" aria-hidden="true" tabindex="-1"></a>  standat<span class="sc">$</span>y, </span>
-<span id="cb474-8"><a href="bayesian.html#cb474-8" aria-hidden="true" tabindex="-1"></a>  rstan<span class="sc">::</span><span class="fu">extract</span>(fit, <span class="at">par =</span> <span class="st">&#39;y_hat&#39;</span>)<span class="sc">$</span>y_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ], </span>
-<span id="cb474-9"><a href="bayesian.html#cb474-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">&#39;dens_overlay&#39;</span></span>
-<span id="cb474-10"><a href="bayesian.html#cb474-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p><img src="model-demos_files/figure-html/bayes-med-vis-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="bayesian-irt" class="section level1">
-<h1>Bayesian IRT</h1>
-<p>The following shows some code demonstration for one through four parameter IRT models, though will only extensively explore the first two.</p>
-<div id="one-parameter-irt" class="section level2">
-<h2>One Parameter IRT</h2>
-<div id="data-setup-27" class="section level3">
-<h3>Data Setup</h3>
-<p>This data set has the responses of 316 participants on 24 items of a questionnaire on verbal
-aggression. Other covariates are also provided. For simplicity I will focus on the four ‘DoShout’ items.</p>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="bayesian.html#cb475-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb475-2"><a href="bayesian.html#cb475-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb475-3"><a href="bayesian.html#cb475-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;VerbAgg&quot;</span>, <span class="at">package =</span> <span class="st">&quot;lme4&quot;</span>)</span>
-<span id="cb475-4"><a href="bayesian.html#cb475-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb475-5"><a href="bayesian.html#cb475-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(VerbAgg)</span></code></pre></div>
-<pre><code>Rows: 7,584
-Columns: 9
-$ Anger  &lt;int&gt; 20, 11, 17, 21, 17, 21, 39, 21, 24, 16, 15, 18, 36, 22, 16, 18, 23, 16, 21, 25, 22, 15, 26, 13, 33, 17, 17, 22, 21, 17, 19, 18, 33, 19, 25, 17, 12, 14, 25, 22, 20, 25, 12, 16, 23, 19, 22, 15, 25, 35, 24…
-$ Gender &lt;fct&gt; M, M, F, F, F, F, F, F, F, F, F, F, M, M, F, F, F, F, F, F, F, F, F, F, F, F, F, F, M, F, F, M, M, F, F, F, F, F, M, M, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, M, F, F, F, F, F, F, F, F, F…
-$ item   &lt;fct&gt; S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantCurse, S1WantC…
-$ resp   &lt;ord&gt; no, no, perhaps, perhaps, perhaps, yes, yes, no, no, yes, perhaps, yes, yes, yes, perhaps, perhaps, perhaps, perhaps, no, perhaps, perhaps, yes, yes, perhaps, no, no, yes, yes, perhaps, yes, yes, perhap…
-$ id     &lt;fct&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,…
-$ btype  &lt;fct&gt; curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse, curse,…
-$ situ   &lt;fct&gt; other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other,…
-$ mode   &lt;fct&gt; want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want…
-$ r2     &lt;fct&gt; N, N, Y, Y, Y, Y, Y, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, Y, Y, Y, Y, Y, N, N, Y, Y, Y, Y, Y, Y, N, Y, Y, Y, N, N, N, N, Y, N, Y, N, N, Y, Y, N, N, Y, N, N, Y, Y, N, Y, Y, Y, N, N, Y, Y, Y, Y, Y, N, Y, Y…</code></pre>
-<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="bayesian.html#cb477-1" aria-hidden="true" tabindex="-1"></a>verbagg_items <span class="ot">=</span> VerbAgg <span class="sc">%&gt;%</span> </span>
-<span id="cb477-2"><a href="bayesian.html#cb477-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(btype <span class="sc">==</span> <span class="st">&#39;shout&#39;</span>, situ <span class="sc">==</span> <span class="st">&#39;self&#39;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb477-3"><a href="bayesian.html#cb477-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, item, r2)</span>
-<span id="cb477-4"><a href="bayesian.html#cb477-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb477-5"><a href="bayesian.html#cb477-5" aria-hidden="true" tabindex="-1"></a>verbagg_items_wide <span class="ot">=</span> verbagg_items <span class="sc">%&gt;%</span> </span>
-<span id="cb477-6"><a href="bayesian.html#cb477-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> id, <span class="at">names_from =</span> item, <span class="at">names_prefix =</span> <span class="st">&#39;item_&#39;</span>, <span class="at">values_from =</span> r2)</span></code></pre></div>
-<p>While we often think of the data in ‘wide form’, with one row per person and multiple columns respective to each item,and the subsequent Stan code will use that, it is generally both tidier and more straightforward for modeling with this long format, where one can use standard mixed model approaches. <code>r2</code> is the target variable of interest.</p>
-<p>In the wide format, the model for a single person is as follows, where <span class="math inline">\(Z\)</span> is the latent person score, and <span class="math inline">\(i\)</span> is the <span class="math inline">\(i^{th}\)</span> item.</p>
-<p><span class="math display">\[\textrm{logit}(\pi) = \textrm{disc} (Z_p - \beta_i)\]</span></p>
-<p>Another formulation is the following, and corresponds to what brms will use.</p>
-<p><span class="math display">\[\textrm{logit}(\pi) =  \beta_i + \textrm{disc}\cdot Z_p\]</span></p>
-</div>
-<div id="model-code-3" class="section level3">
-<h3>Model Code</h3>
-<pre class="stan"><code>data {
-  int N;                               // Number of people
-  int J;                               // Number of items
-  int Y[N,J];                          // Binary Target
-}
-
-transformed data{
-  
-}
-
-parameters {
-  vector[J] difficulty;                // Item difficulty
-  real&lt;lower = 0&gt; discrim;             // Item discrimination (constant)
-  vector[N] Z;                         // Latent person ability
-}
-
-model {
-  matrix[N, J] lmat;
-  
-  // priors
-  Z ~ normal(0, 1);
-  discrim    ~ student_t(3, 0, 5);
-  difficulty ~ student_t(3, 0, 5);
-
-  for (j in 1:J){
-    lmat[,j] = discrim * (Z - difficulty[j]);
-  }
-  
-  // likelihood
-  for (j in 1:J)  Y[,j] ~ bernoulli_logit(lmat[,j]);
-  
-}</code></pre>
-</div>
-<div id="estimation-23" class="section level3">
-<h3>Estimation</h3>
-<p>First we create a Stan-friendly data list and then estimate the model. The following assumes a character string or file (<code>bayes_irt1_model</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="bayesian.html#cb479-1" aria-hidden="true" tabindex="-1"></a>verbagg_items_wide_mat <span class="ot">=</span> <span class="fu">apply</span>(</span>
-<span id="cb479-2"><a href="bayesian.html#cb479-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(verbagg_items_wide[, <span class="sc">-</span><span class="dv">1</span>]) <span class="sc">==</span> <span class="st">&#39;Y&#39;</span>,</span>
-<span id="cb479-3"><a href="bayesian.html#cb479-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>,</span>
-<span id="cb479-4"><a href="bayesian.html#cb479-4" aria-hidden="true" tabindex="-1"></a>  as.integer</span>
-<span id="cb479-5"><a href="bayesian.html#cb479-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb479-6"><a href="bayesian.html#cb479-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb479-7"><a href="bayesian.html#cb479-7" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">=</span> </span>
-<span id="cb479-8"><a href="bayesian.html#cb479-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb479-9"><a href="bayesian.html#cb479-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">N =</span> <span class="fu">nrow</span>(verbagg_items_wide_mat),</span>
-<span id="cb479-10"><a href="bayesian.html#cb479-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">J =</span> <span class="fu">ncol</span>(verbagg_items_wide_mat),</span>
-<span id="cb479-11"><a href="bayesian.html#cb479-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> verbagg_items_wide_mat</span>
-<span id="cb479-12"><a href="bayesian.html#cb479-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb479-13"><a href="bayesian.html#cb479-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb479-14"><a href="bayesian.html#cb479-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb479-15"><a href="bayesian.html#cb479-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb479-16"><a href="bayesian.html#cb479-16" aria-hidden="true" tabindex="-1"></a>fit_1pm <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb479-17"><a href="bayesian.html#cb479-17" aria-hidden="true" tabindex="-1"></a>  bayes_irt1_model,</span>
-<span id="cb479-18"><a href="bayesian.html#cb479-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
-<span id="cb479-19"><a href="bayesian.html#cb479-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">4</span></span>
-<span id="cb479-20"><a href="bayesian.html#cb479-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-</div>
-<div id="comparison-27" class="section level3">
-<h3>Comparison</h3>
-<p>Now we compare to brms. I use the <a href="https://arxiv.org/abs/1905.09501">author’s article</a> as a guide for this model, and note that it is following the second parameterization.</p>
-<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="bayesian.html#cb480-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb480-2"><a href="bayesian.html#cb480-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb480-3"><a href="bayesian.html#cb480-3" aria-hidden="true" tabindex="-1"></a><span class="co"># half normal for variance parameter, full for coefficients</span></span>
-<span id="cb480-4"><a href="bayesian.html#cb480-4" aria-hidden="true" tabindex="-1"></a>prior_1pm <span class="ot">&lt;-</span></span>
-<span id="cb480-5"><a href="bayesian.html#cb480-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;id&quot;</span>) <span class="sc">+</span></span>
-<span id="cb480-6"><a href="bayesian.html#cb480-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb480-7"><a href="bayesian.html#cb480-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb480-8"><a href="bayesian.html#cb480-8" aria-hidden="true" tabindex="-1"></a>brms_1pm <span class="ot">=</span> <span class="fu">brm</span>(</span>
-<span id="cb480-9"><a href="bayesian.html#cb480-9" aria-hidden="true" tabindex="-1"></a>  r2 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> item <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb480-10"><a href="bayesian.html#cb480-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data   =</span> verbagg_items,</span>
-<span id="cb480-11"><a href="bayesian.html#cb480-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> bernoulli,</span>
-<span id="cb480-12"><a href="bayesian.html#cb480-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior  =</span> prior_1pm,</span>
-<span id="cb480-13"><a href="bayesian.html#cb480-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin   =</span> <span class="dv">4</span>,</span>
-<span id="cb480-14"><a href="bayesian.html#cb480-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores  =</span> <span class="dv">4</span></span>
-<span id="cb480-15"><a href="bayesian.html#cb480-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>If you want to compare to standard IRT in either parameterization, you can use
-the ltm package.</p>
-<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="bayesian.html#cb481-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ltm)</span>
-<span id="cb481-2"><a href="bayesian.html#cb481-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb481-3"><a href="bayesian.html#cb481-3" aria-hidden="true" tabindex="-1"></a>irt_rasch_par1 <span class="ot">=</span> <span class="fu">rasch</span>(verbagg_items_wide_mat, <span class="at">IRT.param =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb481-4"><a href="bayesian.html#cb481-4" aria-hidden="true" tabindex="-1"></a>irt_rasch_par2 <span class="ot">=</span> <span class="fu">rasch</span>(verbagg_items_wide_mat, <span class="at">IRT.param =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="bayesian.html#cb482-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb482-2"><a href="bayesian.html#cb482-2" aria-hidden="true" tabindex="-1"></a>  fit_1pm,</span>
-<span id="cb482-3"><a href="bayesian.html#cb482-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb482-4"><a href="bayesian.html#cb482-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>),</span>
-<span id="cb482-5"><a href="bayesian.html#cb482-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>)</span>
-<span id="cb482-6"><a href="bayesian.html#cb482-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>Inference for Stan model: c6b556c97942aceb622c6a43bd60dc47.
-4 chains, each with iter=2000; warmup=1000; thin=4; 
-post-warmup draws per chain=250, total post-warmup draws=1000.
-
-               mean se_mean    sd  2.5%   50% 97.5% n_eff  Rhat
-discrim       1.870   0.007 0.194 1.521 1.868 2.269   804 1.001
-difficulty[1] 0.964   0.004 0.115 0.756 0.957 1.201   883 0.999
-difficulty[2] 0.665   0.004 0.108 0.460 0.663 0.873   928 0.998
-difficulty[3] 1.842   0.006 0.176 1.535 1.822 2.200   894 0.997
-difficulty[4] 1.253   0.004 0.132 1.013 1.245 1.524   886 1.003
-
-Samples were drawn using NUTS(diag_e) at Thu Nov 12 16:29:38 2020.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).</code></pre>
-<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="bayesian.html#cb484-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(brms_1pm)</span></code></pre></div>
-<pre><code> Family: bernoulli 
-  Links: mu = logit 
-Formula: r2 ~ 0 + item + (1 | id) 
-   Data: verbagg_items (Number of observations: 1264) 
-Samples: 4 chains, each with iter = 2000; warmup = 1000; thin = 4;
-         total post-warmup samples = 1000
-
-Group-Level Effects: 
-~id (Number of levels: 316) 
-              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(Intercept)     1.91      0.21     1.52     2.33 1.00      830      884
-
-Population-Level Effects: 
-                Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-itemS3WantShout    -1.79      0.21    -2.19    -1.37 1.00      919      882
-itemS4WantShout    -1.23      0.20    -1.61    -0.82 1.00      924      909
-itemS3DoShout      -3.43      0.30    -4.05    -2.88 1.00      899      946
-itemS4DoShout      -2.34      0.24    -2.84    -1.88 1.00      893      951
-
-Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
-and Tail_ESS are effective sample size measures, and Rhat is the potential
-scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
-<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="bayesian.html#cb486-1" aria-hidden="true" tabindex="-1"></a>brms_diff <span class="ot">=</span> <span class="fu">fixef</span>(brms_1pm)[,<span class="st">&#39;Estimate&#39;</span>]</span>
-<span id="cb486-2"><a href="bayesian.html#cb486-2" aria-hidden="true" tabindex="-1"></a>brms_discrim <span class="ot">=</span> <span class="fu">VarCorr</span>(brms_1pm)<span class="sc">$</span>id<span class="sc">$</span>sd[<span class="dv">1</span>]</span>
-<span id="cb486-3"><a href="bayesian.html#cb486-3" aria-hidden="true" tabindex="-1"></a>fit_params <span class="ot">=</span> <span class="fu">summary</span>(fit_1pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>))<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span></code></pre></div>
-<p>After extracting, we can show either parameterization for either model. For example brms item difficulties = our model <code>-discrim*difficulties</code>.</p>
-<pre><code># A tibble: 5 x 5
-  parma         model  brms model_par2 brms_par1
-  &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
-1 discrim       1.87   1.91       1.87     1.91 
-2 difficulty[1] 0.964 -1.79      -1.80     0.937
-3 difficulty[2] 0.665 -1.23      -1.24     0.643
-4 difficulty[3] 1.84  -3.43      -3.45     1.80 
-5 difficulty[4] 1.25  -2.34      -2.34     1.23 </code></pre>
-</div>
-</div>
-<div id="two-parameter-irt" class="section level2">
-<h2>Two Parameter IRT</h2>
-<p>Now we can try a two parameter model. Data setup is the same as before.</p>
-<div id="model-code-4" class="section level3">
-<h3>Model Code</h3>
-<pre class="stan"><code>data {
-  int N;
-  int J;
-  int Y[N, J];
-}
-
-parameters {
-  vector[J] difficulty;
-  vector&lt;lower = 0&gt;[J] discrim;    // Now per-item discrimination
-  vector[N] Z;
-}
-
-model {
-  matrix[N, J] lmat;
-
-  // priors
-  Z ~ normal(0, 1);
-  discrim    ~ student_t(3, 0, 5);
-  difficulty ~ student_t(3, 0, 5);
-  
-  for (j in 1:J){
-    lmat[,j] = discrim[j] * (Z - difficulty[j]);
-  }
-
-  // likelihood
-  for (j in 1:J)  Y[,j] ~ bernoulli_logit(lmat[,j]);
-
-}</code></pre>
-</div>
-<div id="estimation-24" class="section level3">
-<h3>Estimation</h3>
-<p>First, our custom Stan model. The following assumes a character string or file (<code>bayes_irt2_model</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="bayesian.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb489-2"><a href="bayesian.html#cb489-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb489-3"><a href="bayesian.html#cb489-3" aria-hidden="true" tabindex="-1"></a>fit_2pm <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb489-4"><a href="bayesian.html#cb489-4" aria-hidden="true" tabindex="-1"></a>  bayes_irt2_model,</span>
-<span id="cb489-5"><a href="bayesian.html#cb489-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
-<span id="cb489-6"><a href="bayesian.html#cb489-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">4</span>,</span>
-<span id="cb489-7"><a href="bayesian.html#cb489-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">4000</span>,</span>
-<span id="cb489-8"><a href="bayesian.html#cb489-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup =</span> <span class="dv">3000</span>,</span>
-<span id="cb489-9"><a href="bayesian.html#cb489-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb489-10"><a href="bayesian.html#cb489-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>)</span>
-<span id="cb489-11"><a href="bayesian.html#cb489-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-</div>
-<div id="comparison-28" class="section level3">
-<h3>Comparison</h3>
-<p>Now we compare to brms. I use the <a href="https://arxiv.org/abs/1905.09501">author’s article</a> as a guide for this model, and note that it is following the second parameterization. Took a little over 30 seconds on my machine, though of course you may experience differently.</p>
-<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="bayesian.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb490-2"><a href="bayesian.html#cb490-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb490-3"><a href="bayesian.html#cb490-3" aria-hidden="true" tabindex="-1"></a><span class="co"># half normal for variance parameter, full for coefficients</span></span>
-<span id="cb490-4"><a href="bayesian.html#cb490-4" aria-hidden="true" tabindex="-1"></a>prior_2pm <span class="ot">&lt;-</span></span>
-<span id="cb490-5"><a href="bayesian.html#cb490-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 5)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>,                  <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
-<span id="cb490-6"><a href="bayesian.html#cb490-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 1)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>,                  <span class="at">nlpar =</span> <span class="st">&quot;logdiscr&quot;</span>) <span class="sc">+</span></span>
-<span id="cb490-7"><a href="bayesian.html#cb490-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;constant(1)&quot;</span>,  <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;id&quot;</span>,   <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
-<span id="cb490-8"><a href="bayesian.html#cb490-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;item&quot;</span>, <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
-<span id="cb490-9"><a href="bayesian.html#cb490-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;item&quot;</span>, <span class="at">nlpar =</span> <span class="st">&quot;logdiscr&quot;</span>)</span>
-<span id="cb490-10"><a href="bayesian.html#cb490-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb490-11"><a href="bayesian.html#cb490-11" aria-hidden="true" tabindex="-1"></a>formula_2pm <span class="ot">=</span> <span class="fu">bf</span>(</span>
-<span id="cb490-12"><a href="bayesian.html#cb490-12" aria-hidden="true" tabindex="-1"></a>  r2 <span class="sc">~</span> <span class="fu">exp</span>(logdiscr) <span class="sc">*</span> Z,</span>
-<span id="cb490-13"><a href="bayesian.html#cb490-13" aria-hidden="true" tabindex="-1"></a>  Z  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span>i<span class="sc">|</span> item) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb490-14"><a href="bayesian.html#cb490-14" aria-hidden="true" tabindex="-1"></a>  logdiscr <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span>i<span class="sc">|</span> item),</span>
-<span id="cb490-15"><a href="bayesian.html#cb490-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">nl =</span> <span class="cn">TRUE</span></span>
-<span id="cb490-16"><a href="bayesian.html#cb490-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb490-17"><a href="bayesian.html#cb490-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb490-18"><a href="bayesian.html#cb490-18" aria-hidden="true" tabindex="-1"></a>brms_2pm <span class="ot">=</span> <span class="fu">brm</span>(</span>
-<span id="cb490-19"><a href="bayesian.html#cb490-19" aria-hidden="true" tabindex="-1"></a>  formula_2pm,</span>
-<span id="cb490-20"><a href="bayesian.html#cb490-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">data   =</span> verbagg_items,</span>
-<span id="cb490-21"><a href="bayesian.html#cb490-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> bernoulli,</span>
-<span id="cb490-22"><a href="bayesian.html#cb490-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior  =</span> prior_2pm,</span>
-<span id="cb490-23"><a href="bayesian.html#cb490-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin   =</span> <span class="dv">4</span>,</span>
-<span id="cb490-24"><a href="bayesian.html#cb490-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">3000</span>,</span>
-<span id="cb490-25"><a href="bayesian.html#cb490-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup =</span> <span class="dv">2000</span>,</span>
-<span id="cb490-26"><a href="bayesian.html#cb490-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb490-27"><a href="bayesian.html#cb490-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>)</span>
-<span id="cb490-28"><a href="bayesian.html#cb490-28" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="bayesian.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb491-2"><a href="bayesian.html#cb491-2" aria-hidden="true" tabindex="-1"></a>  fit_2pm,</span>
-<span id="cb491-3"><a href="bayesian.html#cb491-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb491-4"><a href="bayesian.html#cb491-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>),</span>
-<span id="cb491-5"><a href="bayesian.html#cb491-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>)</span>
-<span id="cb491-6"><a href="bayesian.html#cb491-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>Inference for Stan model: 7d8bd495d2c2cd004b52077acf14f00f.
-4 chains, each with iter=4000; warmup=3000; thin=4; 
-post-warmup draws per chain=250, total post-warmup draws=1000.
-
-               mean se_mean    sd  2.5%   50%  97.5% n_eff  Rhat
-discrim[1]    1.034   0.010 0.253 0.595 1.009  1.580   674 1.007
-discrim[2]    2.985   0.095 1.717 1.624 2.600  6.708   325 1.007
-discrim[3]    1.458   0.014 0.406 0.738 1.429  2.356   848 1.003
-discrim[4]    4.545   0.143 3.244 2.061 3.627 12.648   515 0.997
-difficulty[1] 1.421   0.012 0.320 0.939 1.371  2.159   714 1.003
-difficulty[2] 0.587   0.004 0.104 0.399 0.579  0.816   865 1.000
-difficulty[3] 2.204   0.016 0.454 1.571 2.114  3.422   788 1.004
-difficulty[4] 1.026   0.005 0.122 0.808 1.018  1.299   679 0.999
-
-Samples were drawn using NUTS(diag_e) at Thu Nov 12 18:31:44 2020.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).</code></pre>
-<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="bayesian.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(brms_2pm)</span></code></pre></div>
-<pre><code> Family: bernoulli 
-  Links: mu = logit 
-Formula: r2 ~ exp(logdiscr) * Z 
-         Z ~ 1 + (1 | i | item) + (1 | id)
-         logdiscr ~ 1 + (1 | i | item)
-   Data: verbagg_items (Number of observations: 1264) 
-Samples: 4 chains, each with iter = 3000; warmup = 2000; thin = 4;
-         total post-warmup samples = 1000
-
-Group-Level Effects: 
-~id (Number of levels: 316) 
-                Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(Z_Intercept)     1.00      0.00     1.00     1.00 1.00     1000     1000
-
-~item (Number of levels: 4) 
-                                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(Z_Intercept)                         1.09      0.72     0.33     3.13 1.00      785      748
-sd(logdiscr_Intercept)                  0.83      0.64     0.05     2.59 1.00      432      636
-cor(Z_Intercept,logdiscr_Intercept)     0.21      0.50    -0.84     0.93 1.00      954      756
-
-Population-Level Effects: 
-                   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-Z_Intercept           -1.26      0.61    -2.56    -0.13 1.00      747      813
-logdiscr_Intercept     0.53      0.41    -0.45     1.28 1.00      925      840
-
-Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
-and Tail_ESS are effective sample size measures, and Rhat is the potential
-scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
-<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb495-1"><a href="bayesian.html#cb495-1" aria-hidden="true" tabindex="-1"></a>brms_diff    <span class="ot">=</span> <span class="fu">coef</span>(brms_2pm)<span class="sc">$</span>item[,,<span class="st">&#39;Z_Intercept&#39;</span>][,<span class="st">&#39;Estimate&#39;</span>]</span>
-<span id="cb495-2"><a href="bayesian.html#cb495-2" aria-hidden="true" tabindex="-1"></a>brms_discrim <span class="ot">=</span> <span class="fu">exp</span>(<span class="fu">coef</span>(brms_2pm)<span class="sc">$</span>item[,,<span class="st">&#39;logdiscr_Intercept&#39;</span>][,<span class="st">&#39;Estimate&#39;</span>])</span>
-<span id="cb495-3"><a href="bayesian.html#cb495-3" aria-hidden="true" tabindex="-1"></a><span class="co"># brms_diff    = fixef(brms_2pm)[1:4,&#39;Estimate&#39;]</span></span>
-<span id="cb495-4"><a href="bayesian.html#cb495-4" aria-hidden="true" tabindex="-1"></a><span class="co"># brms_discrim = exp(fixef(brms_2pm)[5:8,&#39;Estimate&#39;])</span></span>
-<span id="cb495-5"><a href="bayesian.html#cb495-5" aria-hidden="true" tabindex="-1"></a>fit_diff    <span class="ot">=</span> <span class="fu">summary</span>(fit_2pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="st">&#39;difficulty&#39;</span>)<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span>
-<span id="cb495-6"><a href="bayesian.html#cb495-6" aria-hidden="true" tabindex="-1"></a>fit_discrim <span class="ot">=</span> <span class="fu">summary</span>(fit_2pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="st">&#39;discrim&#39;</span>)<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span></code></pre></div>
-<p>After extracting, we can show either parameterization for either model. For example brms item difficulties = our model <code>-discrim*difficulties</code>.</p>
-<pre><code># A tibble: 8 x 5
-  parma         model   brms model_par2 brms_par1
-  &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
-1 discrim[1]    1.03   1.19        1.03     1.19 
-2 discrim[2]    2.99   2.37        2.99     2.37 
-3 discrim[3]    1.46   1.61        1.46     1.61 
-4 discrim[4]    4.54   2.95        4.54     2.95 
-5 difficulty[1] 1.42  -1.28       -1.47     1.08 
-6 difficulty[2] 0.587 -0.622      -1.75     0.262
-7 difficulty[3] 2.20  -1.98       -3.21     1.23 
-8 difficulty[4] 1.03  -1.09       -4.66     0.370</code></pre>
-<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb497-1"><a href="bayesian.html#cb497-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ltm)</span>
-<span id="cb497-2"><a href="bayesian.html#cb497-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb497-3"><a href="bayesian.html#cb497-3" aria-hidden="true" tabindex="-1"></a>irt_2pm_par1 <span class="ot">=</span> <span class="fu">ltm</span>(verbagg_items_wide_mat <span class="sc">~</span> z1, <span class="at">IRT.param =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb497-4"><a href="bayesian.html#cb497-4" aria-hidden="true" tabindex="-1"></a>irt_2pm_par2 <span class="ot">=</span> <span class="fu">ltm</span>(verbagg_items_wide_mat <span class="sc">~</span> z1, <span class="at">IRT.param =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb497-5"><a href="bayesian.html#cb497-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb497-6"><a href="bayesian.html#cb497-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(irt_2pm_par1)</span>
-<span id="cb497-7"><a href="bayesian.html#cb497-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(irt_2pm_par2)</span></code></pre></div>
-</div>
-</div>
-<div id="three-parameter-irt" class="section level2">
-<h2>Three Parameter IRT</h2>
-<!-- ```{stan 3pm} -->
-<!-- data { -->
-<!--   int N; -->
-<!--   int J; -->
-<!--   int Y[N,J]; -->
-<!-- } -->
-<!-- transformed data{ -->
-<!-- } -->
-<!-- parameters { -->
-<!--   vector[J] difficulty; -->
-<!--   vector<lower=0>[J] discrim; -->
-<!--   vector<lower=0, upper=.25>[J] guess; -->
-<!--   vector[N] Z; -->
-<!-- } -->
-<!-- transformed parameters { -->
-<!-- } -->
-<!-- model { -->
-<!--   matrix[N, J] pmat; -->
-<!--   # priors -->
-<!--   Z ~ normal(0, 1); -->
-<!--   discrim ~ student_t(3, 0, 5); -->
-<!--   difficulty ~ student_t(3, 0, 5); -->
-<!--   guess ~ beta(1, 19); -->
-<!--   for (j in 1:J){ -->
-<!--     pmat[,j] = guess[j] + (1 - guess[j]) * inv_logit(discrim[j] * (Z - difficulty[j])); -->
-<!--   } -->
-<!--   // likelihood -->
-<!--   for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]); -->
-<!-- } -->
-<!-- generated quantities { -->
-<!-- } -->
-<!-- ``` -->
-<!-- ```{stan 4pm} -->
-<!-- data { -->
-<!--   int N; -->
-<!--   int J; -->
-<!--   int Y[N,J]; -->
-<!-- } -->
-<!-- transformed data{ -->
-<!-- } -->
-<!-- parameters { -->
-<!--   vector[J] difficulty; -->
-<!--   vector<lower=0>[J] discrim; -->
-<!--   vector<lower=0, upper=.25>[J] guess; -->
-<!--   vector<lower=.95, upper=1>[J] ceiling; -->
-<!--   vector[N] Z; -->
-<!-- } -->
-<!-- transformed parameters { -->
-<!-- } -->
-<!-- model { -->
-<!--   matrix[N, J] pmat; -->
-<!--   # priors -->
-<!--   Z ~ normal(0, 1); -->
-<!--   discrim ~ student_t(3, 0, 5); -->
-<!--   difficulty ~ student_t(3, 0, 5); -->
-<!--   guess ~ beta(1, 19); -->
-<!--   ceiling ~ beta(49, 1); -->
-<!--   for (j in 1:J){ -->
-<!--     pmat[,j] = guess[j] + (ceiling[j] - guess[j]) * inv_logit(discrim[j] * (Z - difficulty[j])); -->
-<!--   } -->
-<!--   // likelihood -->
-<!--   for (j in 1:J)  Y[,j] ~ bernoulli(pmat[,j]); -->
-<!-- } -->
-<!-- generated quantities { -->
-<!-- } -->
-<!-- ``` -->
+<div id="introduction-2" class="section level1">
+<h1>Introduction</h1>
+<p>The following demonstrations will likely assume more background knowledge, but otherwise take a similar approach. For example, the model fitting functions in the previous demonstrations are now replaced with Stan code. I start with the simplest of models such as a t-test and linear regression to get one comfortable. For more introduction, see <a href="https://m-clark.github.io/bayesian-basics/">my document</a>.</p>
+<p>Note that some of the old code is now easily accomplished with tools like <span class="pack" style="">rstanarm</span> or <span class="pack" style="">brms</span> (e.g. for standard linear and mixed models), or Stan even has built in functions (e.g. gaussian process covariance functions). As such, I didn’t copy all of my old efforts to this document. So you can take a look at the <a href="https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian">old repo</a> for a few more demos I probably won’t include here.</p>
 
 </div>
-</div>
-
-
-
             </section>
 
           </div>
         </div>
       </div>
-<a href="bayes-non-parametric.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="penalized-maximum-likelihood.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="cfa.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bayesian-t-test.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

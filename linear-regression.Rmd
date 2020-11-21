@@ -4,14 +4,14 @@
 
 # Linear Regression
 
-A standard regression model via maximum likelihood or least squares loss.
-Also examples for QR decomposition and normal equations. Can serve as an
-entry point for those starting out to the wider world of computational
-statistics as maximum likelihood is the fundamental approach used in most
-applied statistics, but which is also a key aspect of the Bayesian approach.
-Least squares loss is not confined to the standard regression setting, but is
-widely used in more predictive/'algorithmic' approaches e.g. in machine learning
-and elsewhere.
+We start our demonstrations with a standard regression model via maximum
+likelihood or least squares loss. Also included are examples for QR
+decomposition and normal equations. This can serve as an entry point for those
+starting out in the wider world of computational statistics, as maximum
+likelihood is the fundamental approach used in most applied statistics, but
+which is also a key aspect of the Bayesian approach. Least squares loss is not
+confined to the standard regression setting, but is widely used in more
+predictive/'algorithmic' approaches e.g. in machine learning and elsewhere.
 
 
 ## Data Setup

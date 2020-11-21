@@ -153,8 +153,6 @@ print(
   par    = c('mu', 'phi', 'sigma'),
   probs  = c(.025, .5, .975)
 )
-
-
 ```
 
 

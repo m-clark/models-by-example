@@ -2,38 +2,9 @@
 
 # Introduction
 
-The following demonstrations assume more background knowledge, but otherwise take a similar appoach. For example, the model fitting functions in the other demonstrations are now replaced with Stan code.  I start with the simplest of models such as a t-test and linear regression to get one comfortable. Some of the old code is so easily done now with tools like <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span>, or Stan even has built in functions (e.g. gaussian processes), that I only include ones that might otherwise not be demonstrated or as straightforward. You can take a look at the [old repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian) for a few more demos I've decided not to include here.
+The following demonstrations will likely assume more background knowledge, but otherwise take a similar approach. For example, the model fitting functions in the previous demonstrations are now replaced with Stan code.  I start with the simplest of models such as a t-test and linear regression to get one comfortable. For more introduction, see [my document](https://m-clark.github.io/bayesian-basics/).
 
 
-```{r child='bayesian-t-test.Rmd'}
-```
+Note that some of the old code is now easily accomplished with tools like <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span> (e.g. for standard linear and mixed models), or Stan even has built in functions (e.g. gaussian process covariance functions). As such, I didn't copy all of my old efforts to this document. So you can take a look at the [old repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian) for a few more demos I probably won't include here.
 
-```{r child='bayesian-linear-regression.Rmd'}
-```
 
-```{r child='bayesian-mixed-model.Rmd'}
-```
-
-```{r child='bayesian-mixed-mediation.Rmd'}
-```
-
-```{r child='bayesian-irt.Rmd'}
-```
-
-```{r child='bayesian-cfa.Rmd'}
-```
-
-```{r child='bayesian-non-parametric.Rmd'}
-```
-
-```{r child='bayesian-beta-regression.Rmd'}
-```
-
-```{r child='bayesian-stochastic-volatility.Rmd'}
-```
-
-```{r child='bayesian-multinomial-model.Rmd'}
-```
-
-```{r child='bayesian-variational.Rmd'}
-```

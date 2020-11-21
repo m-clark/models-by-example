@@ -73,7 +73,7 @@ rbind(resrq, t(resoptim)) %>% round(2)
 
 Let's visualize the results.
 
-```{r, results='hide'}
+```{r qr-vis, results='hide'}
 engel %>%
   qplot(data = .,
         income,

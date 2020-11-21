@@ -5,14 +5,16 @@
 
 
 
-A standard regression model via penalized likelihood.  See the [linear
-regression example][Linear Regression] code for comparison. Here the
-penalty is specified (via lambda argument) but one would typically estimate via
-cross-validation or some other fashion. Two penalties are possible with the
+This demonstration regards a standard regression model via penalized likelihood.
+See the [linear regression example][Linear Regression] code for comparison. Here
+the penalty is specified (via `lambda` argument) but one would typically estimate
+via cross-validation or some other fashion. Two penalties are possible with the
 function.  One using the (squared) L2 norm (aka ridge regression, Tikhonov
 regularization), another using the L1 norm (aka lasso) which has the possibility
 of penalizing coefficients to zero, and thus can serve as a model selection
-procedure. I have more technical approaches to the lasso and ridge in the [lasso][L1 (lasso) regularization] and [ridge][L2 (ridge) regularization] chapters.
+procedure. I have more technical approaches to the lasso and ridge in the
+[lasso][L1 (lasso) regularization] and [ridge][L2 (ridge) regularization]
+chapters.
 
 Note that both L2 and L1 approaches can be seen as maximum a posteriori (MAP)
 estimates for a Bayesian regression with a specific prior on the

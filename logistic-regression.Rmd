@@ -1,13 +1,13 @@
 # Logistic Regression
 
 
-A standard logistic regression model via maximum likelihood or exponential
-loss. Can serve as an entry point for those starting out to the wider world of
-computational statistics as maximum likelihood is the fundamental approach used
-in most applied statistics, but which is also a key aspect of the Bayesian
-approach.  Exponential loss is not confined to the standard GLM setting, but
-is widely used in more predictive/'algorithmic' approaches e.g. in
-machine learning and elsewhere.
+The following demo regards a standard logistic regression model via maximum
+likelihood or exponential loss. This can serve as an entry point for those
+starting out to the wider world of computational statistics as maximum
+likelihood is the fundamental approach used in most applied statistics, but
+which is also a key aspect of the Bayesian approach.  Exponential loss is not
+confined to the standard GLM setting, but is widely used in more
+predictive/'algorithmic' approaches e.g. in machine learning and elsewhere.
 
 This follows the [linear regression model][Linear Regression] approach.
 
