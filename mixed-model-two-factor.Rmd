@@ -71,32 +71,41 @@ Xgamma = diag(10) %x% rep(1,2)
 
 
 
-Estimation.
+Estimate at starting values.
+
 
 ```{r two-factor-re-est}
-two_factor_re(starts[[1]], starts[[2]], starts[[3]], starts[[4]])
+two_factor_re(
+  mu  = starts[[1]],
+  eta_alpha = starts[[2]],
+  eta_gamma = starts[[3]],
+  eta = starts[[4]]
+)
 ```
 
+Package <span class="pack" style = "">bbmle</span> has an <span class="func" style = "">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style = "">optim</span>, and produces a nice summary table. LBFGS-B is used to place lower bounds on the variance estimates.
 
+```{r two-factor-re-bbmle}
+library(bbmle)
+
+fit_mle = mle2(two_factor_re, start = starts,  method = 'BFGS')
+```
 
 
 ## Comparison
 
+We can compare to the <span class="pack" style = "">lme4</span> model result.
 
 ```{r two-factor-re-compare}
-library(bbmle)
-
-mlout = mle2(two_factor_re, start=starts,  method='BFGS')  
-
 ### lme4 comparison
 library(lme4)
 
-lme = lmer(y ~ (1 | sire) + (1 | dam:sire), d, REML = F)
+fit_mer = lmer(y ~ (1 | sire) + (1 | dam:sire), d, REML = FALSE)
 
-summary(mlout)
-exp(coef(mlout)[-1])
+summary(fit_mle)
+exp(coef(fit_mle)[-1])
 
-summary(lme)
+summary(fit_mer)
 ```
 
 

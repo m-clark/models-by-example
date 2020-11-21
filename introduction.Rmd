@@ -10,6 +10,12 @@ you will find some imported/simulated data, a primary estimating function, a
 comparison of results with some R package, and a link to the old code that was
 the initial demonstration.
 
+The document has several sections:
+- **Models**: More or less standard/traditional statistical models and more
+- **Bayesian**: Demonstrations of models using Stan
+- **Estimation**: Algorithms used in model estimation (e.g. penalized likelihood, stochastic gradient descent)
+- **Supplemental**: A handful of examples in languages other than R, possibly other miscellany
+
 This code is not meant to be extensive, or used in production, and in fact, some
 of these would probably be considered of historical interest only.  To be clear,
 almost everything here has a package/module that would do the same thing far
@@ -26,6 +32,8 @@ The original code for these demonstrations may be found at their first home here
 Many examples require some initial data processing or visualization via <span class="pack" style = "">ggplot2</span>, so it's assumed the <span class="pack" style = "">tidyverse</span> set of packages is loaded for all demonstrations.
 
 While I'm happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add a demo on rare occasion. This code has accumulated over years, and I just wanted it in a nicer format.  Perhaps if others would like to add to it via pull requests, I would do so.
+
+
 
 
 Last updated: `r Sys.Date()`.

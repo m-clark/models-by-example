@@ -2,7 +2,13 @@
 
 
 
-An approach for one factor random effects model via maximum likelihood in R Matlab and Julia. It's based on Statistical Modeling and Computation (2014) Chapter 10, example 10.10. Unfortunately I did this before knowing they had both Matlab and R code on their website, though the R code here is a little cleaner and has comments. The data regards crop yield from 10 randomly selected locations and three collections at each.  See [one_factor_RE.m](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.m) and  [one_factor_RE.jl](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.jl) for the related Matlab and Julia files, and the respective `twofactorRE.*` for the associated two factor random effects examples.
+The following is an approach for one factor random effects model via maximum
+likelihood in R (and Matlab and Julia in the [Supplemental
+Section][One-factor]). It's based on Statistical Modeling and Computation (2014)
+Chapter 10, example 10.10. Unfortunately I did this before knowing they had both
+Matlab and R code on their website, though the R code here is a little cleaner
+and has comments. The data regards crop yield from 10 randomly selected
+locations and three collections at each.  
 
 
 
@@ -21,14 +27,15 @@ y = matrix(c(22.6,20.5,20.8,
              20.8,19.1,21.3,
              17.4,18.6,18.6,
              25.1,24.8,24.9,
-             14.9,16.3,16.6), 10, 3, byrow=T)
+             14.9,16.3,16.6), 10, 3, byrow = TRUE)
 ```
+
 
 ## Function 
  
 ```{r one-factor-re}
 one_factor_re  = function(mu, sigma2_mu, sigma2){
-  # Args -
+  # Args
   # mu: intercept
   # sigma2_mu: variance of intercept
   # sigma2: residual variance of y
@@ -62,39 +69,43 @@ Starting values
 starts = list(
   mu = mean(y),
   sigma2_mu = var(rowMeans(y)),
-  sigma2 = mean(apply(y, 1, var))
+  sigma2    = mean(apply(y, 1, var))
 )
 ```
 
 
-Estimate
+Estimate at starting values.
 
 ```{r one-factor-re-est}
-one_factor_re(starts[[1]], starts[[2]], starts[[3]])
+one_factor_re(mu = starts[[1]],
+              sigma2_mu = starts[[2]],
+              sigma2    = starts[[3]])
 ```
 
+
+Package <span class="pack" style = "">bbmle</span> has an <span class="func" style = "">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style = "">optim</span>, and produces a nice summary table. LBFGS-B is used to place lower bounds on the variance estimates.
+
+```{r one-factor-re-bbmle}
+library(bbmle)
+
+fit_mle = mle2(
+  one_factor_re ,
+  start  = starts,
+  method = 'L-BFGS-B',
+  lower  = c(
+    mu        = -Inf,
+    sigma2_mu = 0,
+    sigma2    = 0
+  ),
+  trace = TRUE
+)
+```
 
 
 ## Comparison
 
 
-Package <span class="pack" style = "">bbmle</span> has an <span class="func" style = "">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style = "">optim</span>. LBFGS-B is used to place lower bounds on the variance estimates.
-
-```{r one-factor-re-bbmle}
-library(bbmle)
-
-mlout = mle2(
-  one_factor_re ,
-  start = starts,
-  method = 'L-BFGS-B',
-  lower = c(
-    mu = -Inf,
-    sigma2_mu = 0,
-    sigma2 = 0
-  ),
-  trace = T
-)
-```
+We can compare to the <span class="pack" style = "">lme4</span> model result.
 
 
 ```{r one-factor-re-compare}
@@ -107,11 +118,11 @@ d = data.frame(y) %>%
   group_by(x) %>% 
   mutate(group = 1:n())
 
-lme = lmer(value ~ 1 | group, data = d, REML = F)
+fit_mer = lmer(value ~ 1 | group, data = d, REML = FALSE)
 
-summary(mlout)
-summary(lme)
--2 * logLik(lme)
+summary(fit_mle)
+summary(fit_mer)
+-2 * logLik(fit_mer)
 ```
 
 
