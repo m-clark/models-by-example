@@ -6,8 +6,6 @@ can compare it with a logit link, which will result in values roughly
 1.7*parameters estimates from the probit.
 
 
-
-
 ## Data
 
 This data generation is from the probit perspective, where the underlying continuous latent variable is normally distributed.
@@ -19,7 +17,7 @@ set.seed(808)
 
 N = 1000                                       # Sample size
 x = cbind(x1 = rnorm(N), x2 = rnorm(N))        # predictor variables
-beta = c(1,-1)                                 # coefficients
+beta   = c(1,-1)                               # coefficients
 y_star = rnorm(N, mean = x %*% beta)           # the underlying latent variable
 y_1 = y_star > -1.5                            # -1.50 first cutpoint
 y_2 = y_star > .75                             #  0.75 second cutpoint
@@ -38,11 +36,11 @@ d = data.frame(x, y = factor(y))
 ll_ord = function(par, X, y, probit = TRUE) {
   K = length(unique(y))                        # number of classes K
   ncuts = K-1                                  # number of cutpoints/thresholds
-  cuts = par[(1:ncuts)]                        # cutpoints
-  beta = par[-(1:ncuts)]                       # regression coefficients
-  lp = X %*% beta                              # linear predictor
-  ll = rep(0, length(y))                       # log likelihood
-  pfun = ifelse(probit, pnorm, plogis)         # which link to use
+  cuts  = par[(1:ncuts)]                       # cutpoints
+  beta  = par[-(1:ncuts)]                      # regression coefficients
+  lp    = X %*% beta                           # linear predictor
+  ll    = rep(0, length(y))                    # log likelihood
+  pfun  = ifelse(probit, pnorm, plogis)        # which link to use
   
   for(k in 1:K){
     if (k==1) {
@@ -68,7 +66,7 @@ init = c(-1, 1, 2, 0, 0)         # initial values
 ```
 
 ```{r ordinal-est}
-result_probit = optim(
+fit_probit = optim(
   init,
   ll_ord,
   y = y,
@@ -77,7 +75,7 @@ result_probit = optim(
   control = list(reltol = 1e-10)
 )
 
-result_logit  = optim(
+fit_logit  = optim(
   init,
   ll_ord,
   y = y,
@@ -96,22 +94,26 @@ We can compare our results with the <span class="pack" style = "">ordinal</span>
 
 ```{r ordinal-compare}
 library(ordinal)
-result_ordpack_probit = clm(y ~ x1 + x2, data = d, link = 'probit')
-result_ordpack_logit  = clm(y ~ x1 + x2, data = d, link = 'logit')
+fit_ordpack_probit = clm(y ~ x1 + x2, data = d, link = 'probit')
+fit_ordpack_logit  = clm(y ~ x1 + x2, data = d, link = 'logit')
+```
 
 
+```{r ordinal-compare-show, echo=FALSE}
 resprobit = data.frame(method = c('ll_ord', 'ordpack'),
-                       rbind(coef(result_probit), coef(result_ordpack_probit)))
+                       rbind(coef(fit_probit), coef(fit_ordpack_probit)))
 colnames(resprobit) = c('method', paste0('cut_', 1:3), 'beta1', 'beta2')
 
-resprobit
+
 
 reslogit = data.frame(method = c('ll_ord', 'ordpack'),
-                      rbind(coef(result_logit), coef(result_ordpack_logit)))
+                      rbind(coef(fit_logit), coef(fit_ordpack_logit)))
 colnames(reslogit) = c('method', paste0('cut_', 1:3), 'beta1', 'beta2')
 
-reslogit
+bind_rows(list(probit = resprobit, logit = reslogit), .id = '') %>% 
+  kable_df()
 ```
+
 
 
 

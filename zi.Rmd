@@ -24,7 +24,7 @@ fish = haven::read_dta("http://www.stata-press.com/data/r11/fish.dta")
 The log likelihood function.
 
 ```{r zip-ll}
-ZIP = function(y, X, par) {
+zip_ll = function(y, X, par) {
   # arguments are response y, predictor matrix X, and parameter named starting points of 'logit' and 'pois'
   
   # Extract parameters
@@ -90,9 +90,9 @@ names(starts) = c(paste0('pois.', names(coef(initial_model))),
 Estimate with <span class="func" style = "">optim</span>.
 
 ```{r zip-est}
-optPois1 = optim(
+fit = optim(
   par = starts ,
-  fn  = ZIP,
+  fn  = zip_ll,
   X   = initial_model$x,
   y   = initial_model$y,
   method  = "BFGS",
@@ -100,7 +100,7 @@ optPois1 = optim(
   hessian = TRUE
 )
 
-# optPois1
+# fit
 ```
 
 
@@ -111,8 +111,8 @@ optPois1 = optim(
 Extract for clean display.
 
 ```{r zip-extract}
-B  = optPois1$par
-se = sqrt(diag(solve((optPois1$hessian))))
+B  = fit$par
+se = sqrt(diag(solve((fit$hessian))))
 Z  = B/se
 p  = pnorm(abs(Z), lower = FALSE)*2
 ```
@@ -122,15 +122,27 @@ Results from <span class="pack" style = "">pscl</span>.
 ```{r zip-pscl}
 library(pscl)
 
-zipoismod = zeroinfl(count ~ persons + livebait, data = fish, dist = "poisson") 
+fit_pscl = zeroinfl(count ~ persons + livebait, data = fish, dist = "poisson") 
 ```
 
 Compare.
 
-```{r zip-compare}
-summary(zipoismod)$coefficients
-round(data.frame(B, se, Z, p), 4)
+```{r zip-compare-show, echo=FALSE}
+init1 = purrr::map(summary(fit_pscl)$coefficients, function(x) {
+  data.frame(x)
+  colnames(x) = colnames(summary_table)
+  x
+}) %>%
+  do.call(rbind, .) %>%
+  as.data.frame() %>%
+  rownames_to_column('coef') 
+
+init2 = data.frame(B, se, Z, p) %>% rownames_to_column('coef')
+
+bind_rows(list(pscl = init1, zip_poisson_ll = init2), .id = '') %>% 
+  kable_df()
 ```
+
 
 
 
@@ -140,7 +152,7 @@ round(data.frame(B, se, Z, p), 4)
 ### Function
 
 ```{r zinb-ll}
-ZINB = function(y, X, par) {
+zinb_ll = function(y, X, par) {
   # arguments are response y, predictor matrix X, and parameter named starting points of 'logit', 'negbin', and 'theta'
   
   # Extract parameters
@@ -216,16 +228,16 @@ starts = c(
 Estimate with <span class="func" style = "">optim</span>.
 
 ```{r zinb-est}
-optNB1 = optim(
+fit_nb = optim(
   par = starts ,
-  fn  = ZINB,
+  fn  = zinb_ll,
   X   = initial_model,
   y   = fish$count,
   method  = "BFGS",
   control = list(maxit = 5000, reltol = 1e-12),
   hessian = TRUE
 )
-# optNB1
+# fit_nb
 ```
 
 
@@ -235,8 +247,8 @@ optNB1 = optim(
 Extract for clean display.
 
 ```{r zinb-extract}
-B  = optNB1$par
-se = sqrt(diag(solve((optNB1$hessian))))
+B  = fit_nb$par
+se = sqrt(diag(solve((fit_nb$hessian))))
 Z  = B/se
 p  = pnorm(abs(Z), lower = FALSE)*2
 ```
@@ -247,19 +259,39 @@ Results from <span class="pack" style = "">pscl</span>.
 # pscl results
 library(pscl)
 
-zinbmod1 = zeroinfl(count ~ persons + livebait, data = fish, dist = "negbin")
+fit_pscl = zeroinfl(count ~ persons + livebait, data = fish, dist = "negbin")
 ```
 
 Compare.
 
-```{r zinb-compare}
-summary(zinbmod1)
-round(data.frame(B, se, Z, p), 4)  # note that theta here is actually log(theta)
+
+```{r zinb-compare-show, echo=FALSE}
+init1 = purrr::map(summary(fit_pscl)$coefficients, function(x) {
+  data.frame(x)
+  colnames(x) = colnames(summary_table)
+  x
+}) %>%
+  do.call(rbind, .) %>%
+  as.data.frame() %>%
+  rownames_to_column('coef') 
+
+init2 = data.frame(B, se, Z, p) %>% rownames_to_column('coef')
+
+bind_rows(list(pscl = init1, zinb_ll = init2), .id = '') %>% 
+  kable_df()
 ```
 
 
 ## Supplemental Example
 
+This supplemental example uses the bioChemists data. It contains a sample of 915 biochemistry graduate students with the following information:
+
+- **art**: count of articles produced during last 3 years of Ph.D.
+- **fem**: factor indicating gender of student, with levels Men and Women
+- **mar**: factor indicating marital status of student, with levels Single and Married
+- **kid5**: number of children aged 5 or younger
+- **phd**: prestige of Ph.D. department
+- **ment**: count of articles produced by Ph.D. mentor during last 3 years
 
 
 ```{r zinb-supplemental}
@@ -280,36 +312,36 @@ starts = c(
 #            theta = 1)
 
 
-optNB2 = optim(
+fit_nb_pub = optim(
   par = starts ,
-  fn  = ZINB,
+  fn  = zinb_ll,
   X   = initial_model,
   y   = bioChemists$art,
   method  = "BFGS",
   control = list(maxit = 5000, reltol = 1e-12),
   hessian = TRUE
 )
-# optNB2
+# fit_nb_pub
 
 
-B  = optNB2$par
-se = sqrt(diag(solve((optNB2$hessian))))
+B  = fit_nb_pub$par
+se = sqrt(diag(solve((fit_nb_pub$hessian))))
 Z  = B/se
 p  = pnorm(abs(Z), lower = FALSE)*2
 
 
 library(pscl)
-zinbmod = zeroinfl(art ~ . | ., data = bioChemists, dist = "negbin")
+fit_pscl = zeroinfl(art ~ . | ., data = bioChemists, dist = "negbin")
 
-summary(zinbmod)$coefficients
-round(data.frame(B,se, Z, p), 4)
+summary(fit_pscl)$coefficients
+round(data.frame(B, se, Z, p), 4)
 ```
 
 
 
 ## Source
 
-Original code for ZIP found at
+Original code for zip_ll found at
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/poiszeroinfl.R
 
-Original code for ZINB found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/NBzeroinfl.R
+Original code for zinb_ll found at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/NBzeroinfl.R

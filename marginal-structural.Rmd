@@ -42,7 +42,7 @@ ipwplot(ipw_result$ipw.weights)
 
 
 
-### Create the Weights
+We create the weights as follows using the probabilities from a logistic regression.
 
 ```{r msm-weights}
 ps_num = fitted(glm(a ~ 1, data = simdat, family = 'binomial'))
@@ -102,7 +102,7 @@ We want to estimate the marginal structural model for the causal effect of `a` o
 X = cbind(1, simdat$a)
 y = simdat$y
 
-result = optim(
+fit = optim(
   par = c(sigma = 0, intercept = 0, b = 0),
   fn  = msm_ll,
   X   = X,
@@ -113,8 +113,8 @@ result = optim(
   control = list(abstol = 1e-12)
 )
 
-dispersion = exp(result$par[1])^2
-beta = result$par[-1]
+dispersion = exp(fit$par[1])^2
+beta = fit$par[-1]
 ```
 
 Now we compute the standard errors. The following uses the <span class="pack" style = "">survey</span> package raw version to get the appropriate standard errors, which the <span class="pack" style = "">ipw</span> approach uses.
@@ -134,12 +134,12 @@ x = estfun %*% glm_vcov_unsc
 ```{r msm-svy}
 library("survey")
 
-msm = svyglm(
+fit_msm = svyglm(
   y ~ a,
   design = svydesign(~ 1, weights = ~ sw, data = simdat)
 )
 
-summary(msm)
+summary(fit_msm)
 ```
 
 Now  get the standard errors.
@@ -147,7 +147,7 @@ Now  get the standard errors.
 ```{r msm-se-2}
 se = sqrt(diag(crossprod(x) * n/(n-1)))                  # a robust standard error
 se_robust = sqrt(diag(sandwich::sandwich(glm_basic)))    # an easier way to get it
-se_msm    = sqrt(diag(vcov(msm)))                        # extract from msm model
+se_msm    = sqrt(diag(vcov(fit_msm)))                        # extract from msm model
 ```
 
 Compare standard errors.
@@ -156,21 +156,23 @@ Compare standard errors.
 tibble(se, se_robust, se_msm)
 ```
 
-Compare general result.
+Inspect the general fit and compare with the other.
 
-```{r msm-comparison}
+```{r msm-comparison- show, echo=FALSE}
 tibble(
   Estimate  = beta,
-  init_se   = sqrt(diag(solve(result$hessian)))[c('intercept', 'b')],  # same as scaled se from glm_basic
+  init_se   = sqrt(diag(solve(fit$hessian)))[c('intercept', 'b')],  # same as scaled se from glm_basic
   se_robust = se_robust,
   t = Estimate/se,
   p = 2*pt(abs(t), df = n - ncol(X), lower.tail = FALSE),  
   dispersion = dispersion             
-)
+) %>% 
+  kable_df(caption = 'msm_ll')
 
-# compare to msm
-broom::tidy(msm)
+broom::tidy(fit_msm) %>% 
+  kable_df(caption = 'svyglm')
 ```
+
 
 ## Source
 

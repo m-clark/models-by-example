@@ -23,7 +23,7 @@ d
 
 ### Function
 
-Create a the likelihood function to feed to <span class="" style = "">optim</span>.
+Create a the (partial) likelihood function to feed to <span class="" style = "">optim</span>.
 
 ```{r cox-ll}
 cox_pl <- function(pars, preds, died, t) {
@@ -174,7 +174,7 @@ d
 ### Function
 
 ```{r pltv-func}
-pl_tv <- function(pars, preds, died, t1, t2, data) {
+cox_pl_tv <- function(pars, preds, died, t1, t2, data) {
   # Same arguments as before though will take a data object
   # plus variable names via string input. Also requires beginning
   # and end time point (t1, t2)
@@ -217,7 +217,7 @@ initial_values = c(0, 0)
 
 fit = optim(
   par   = initial_values,
-  fn    = pl_tv,
+  fn    = cox_pl_tv,
   preds = c('kittyblarg', 'kittyhappy'),
   died  = 'kittydied',
   data  = d,
@@ -293,10 +293,10 @@ data(ovarian, package = 'survival')
 
 ### Function
 
-Requires `cox_pl` function above though one could extend to `pl_tv`.
+Requires `cox_pl` function above though one could extend to `cox_pl_tv`.
 
 ```{r pl-strat-func}
-pl_strat <- function(pars, preds, died, t, strata) {
+cox_pl_strat <- function(pars, preds, died, t, strata) {
   strat = as.factor(strata)
   d = data.frame(preds, died, t, strat)
   dlist = split(d, strata)
@@ -327,7 +327,7 @@ initial_values = c(0, 0)
 
 fit = optim(
   par   = initial_values,
-  fn    = pl_strat,
+  fn    = cox_pl_strat,
   preds = ovarian[, c('age', 'ecog.ps')],
   died  = ovarian$fustat,
   t     = ovarian$futime,

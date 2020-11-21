@@ -1,7 +1,7 @@
 # Heckman Selection 
 
 This demonstration of the Heckman selection model is based on Bleven's example
-here: https://www3.nd.edu/~wevans1/ecoe60303/sample_selection_example.ppt, but
+[here](https://www3.nd.edu/~wevans1/ecoe60303/sample_selection_example.ppt), but
 which is more or less the 'classic' example regarding women's wages, variations
 of which you'll find all over.
 
@@ -70,7 +70,7 @@ summary(lm_obs) # smaller coefs, resid standard error
 
 ## Two step approach
 
-The two-step approach first conducts a probit model regarding whether the individual is observed or not, in order to calculate the inverse mills ratio, or 'nonselection hazard'. The second step is a standard lm.
+The two-step approach first conducts a probit model regarding whether the individual is observed or not, in order to calculate the [inverse mills ratio](https://en.wikipedia.org/wiki/Mills_ratio#Inverse_Mills_ratio), or 'nonselection hazard'. The second step is a standard linear model.
 
 ### Step 1: Probit Model
 
@@ -134,6 +134,7 @@ coef(lm_select)['imr'] / summary(selection_2step)$estimate['sigma', 'Estimate']
 ## Maximum Likelihood
 
 The following likelihood function takes arguments as follows:
+
 - **par**: the regression coefficients pertaining to the two models, the residual standard error
 - **sigma** and rho for the correlation estimate
 - **X**: observed data model matrix for the linear regression model
@@ -160,7 +161,7 @@ select_ll <- function(par, X, Z, y, observed_index) {
             log.p = TRUE)
     )
   
-  - ll
+  -ll
 }
 ```
 
@@ -233,7 +234,7 @@ tibble(
   ),
   sampselpack_2step = coef(selection_2step)[-8]
 ) %>%
-  mutate_if(is.numeric, round, digits = 3)
+  kable_df()
 
 # compare standard errors
 tibble(
@@ -256,7 +257,7 @@ tibble(
   ),
   sampselpack_2step = summary(selection_2step)$estimate[-8, 2]
 ) %>%
-  mutate(across(where(is.numeric), round, digits = 3))
+  kable_df()
 ```
 
 

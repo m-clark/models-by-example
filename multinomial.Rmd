@@ -1,12 +1,18 @@
 # Multinomial 
 
-For more detail on these types of models, see my document at https://m-clark.github.io/docs/logregmodels.html.
+For more detail on these types of models, see [my document](https://m-clark.github.io/docs/logregmodels.html).  In general we can use
+multinomial models for multi-category target variables, or more generally,
+multi-count data.
 
 ## Standard (Categorical) Model
 
 ### Data Setup
 
-First, lets get some data.
+First, lets get some data. 200 entering high school students make program
+choices: general program, vocational program, and academic program. We will be
+interested in their choice, using their writing score as a proxy for scholastic
+ability and their socioeconomic status, a categorical variable of low, middle,
+and high values.
 
 ```{r multinomial-setup}
 library(haven)
@@ -33,11 +39,11 @@ programLong = program %>%
 head(programLong)
 ```
 
-We go ahead and run a model via mlogit for later comparison.
+We go ahead and run a model via <span class="func" style = "">mlogit</span> for later comparison.
 
 ```{r mlogit}
-mlogit_mod   = mlogit(prog ~ 1| write + ses, data = programLong)
-mlogit_coefs = coef(mlogit_mod)[c(1,5,7,3,2,6,8,4)]  # reorder
+fit_mlogit   = mlogit(prog ~ 1| write + ses, data = programLong)
+mlogit_coefs = coef(fit_mlogit)[c(1,5,7,3,2,6,8,4)]  # reorder
 ```
 
 
@@ -48,10 +54,10 @@ mlogit_coefs = coef(mlogit_mod)[c(1,5,7,3,2,6,8,4)]  # reorder
 
 Multinomial model via maximum likelihood
 
-```{r multinomregML}
-multinomregML <- function(par, X, y) {
+```{r multinom_ml-func}
+multinom_ml <- function(par, X, y) {
   levs = levels(y)
-  ref  = levs[1]              # reference level (category label 1)
+  ref  = levs[1]                # reference level (category label 1)
   
   y0 = y == ref
   y1 = y == levs[2]             # category 2
@@ -75,9 +81,9 @@ multinomregML <- function(par, X, y) {
 
 
 ```{r multinom-est}
-out = optim(
+fit = optim(
   runif(8,-.1, .1),
-  multinomregML,
+  multinom_ml,
   X = model.matrix(prog ~ ses + write, data = program),
   y = program$prog,
   control = list(
@@ -91,7 +97,7 @@ out = optim(
   method = 'BFGS'
 )
 
-# out$par
+# fit$par
 ```
 
 
@@ -99,26 +105,25 @@ out = optim(
 
 An initial comparison.
 
-```{r multinom-compare-1}
-cbind(out$par, mlogit_coefs) %>% 
-  round(4)
+```{r multinom-compare-1, echo=FALSE}
+cbind(fit_coefs = fit$par, mlogit_coefs) %>% 
+  kable_df(4)
 ```
 
 
-
-
-The following use <span class="func" style = "">dmultinom</span> for the likelihood, similar to other modeling demonstrations in this document. 
+The following uses <span class="func" style = "">dmultinom</span> for the likelihood, similar to other modeling demonstrations in this document. 
 
 ```{r dmultinom-setup}
 X = model.matrix(prog ~ ses + write, data = program)
 y = program$prog
-pars = matrix(out$par, ncol = 2)
+pars = matrix(fit$par, ncol = 2)
 V = X %*% pars
 acadprob   = 1 / (1+rowSums(exp(V)))
 fitnonacad = exp(V) * matrix(rep(acadprob, 2), ncol = 2)
 fits = cbind(acadprob, fitnonacad)
 yind = model.matrix( ~ -1 + prog, data = program)
 ```
+
 
 ```{r multinom-ll}
 # because dmultinom can't take matrix for prob
@@ -133,9 +138,9 @@ for (i in 1:200){
 
 ll
 
-out$value
+fit$value
 
-logLik(mlogit_mod)
+logLik(fit_mlogit)
 ```
 
 
@@ -146,9 +151,13 @@ logLik(mlogit_mod)
 
 ## Alternative specific and constant variables
 
-Now we add *alternative specific* and *alternative constant* variables to the previous *individual specific* covariates.. In this example, `price` is alternative invariant (`Z`) `income` is individual/alternative specific (`X`), and `catch` is alternative specific (`Y`).
+Now we add *alternative specific* and *alternative constant* variables to the
+previous *individual specific* covariates.. In this example, `price` is
+alternative invariant (`Z`) `income` is individual/alternative specific (`X`),
+and `catch` is alternative specific (`Y`).
 
-We can use the `fish` data from the <span class="pack" style = "">mnlogit</span> package.
+We can use the `fish` data from the <span class="pack" style = "">mnlogit</span>
+package.
 
 ```{r mlogit-fish-data}
 library(mnlogit)
@@ -158,16 +167,17 @@ head(Fish)
 
 fm  = formula(mode ~ price | income | catch)
 
-fit = mnlogit(fm, Fish)
-# fit = mlogit(fm, Fish)
-summary(fit)
+fit_mnlogit = mnlogit(fm, Fish)
+# fit_mnlogit = mlogit(fm, Fish)
+# summary(fit_mnlogit)
 ```
 
 The likelihood function.
 
-```{r multinomregML2}
-multinomregML2 <- function(par, X, Y, Z, respVec, choice) {
+```{r multinom_ml}
+multinom_ml <- function(par, X, Y, Z, respVec, choice) {
 
+  # Args-
   # X dim nrow(Fish)/K x p + 1 (intercept)
   # Z, Y nrow(N); Y has alt specific coefs; then for Z ref group dropped so nrow = nrow*(K-1)/K
   # for ll everything through previous X the same
@@ -177,7 +187,7 @@ multinomregML2 <- function(par, X, Y, Z, respVec, choice) {
   K = length(unique(respVec))
   levs = levels(respVec)
   
-  xpar = matrix(par[1:6], ncol = K-1)
+  xpar = matrix(par[1:6],  ncol = K-1)
   ypar = matrix(par[7:10], ncol = K)
   zpar = matrix(par[length(par)], ncol = 1)
   
@@ -250,11 +260,11 @@ respVec = mdat$`_Alt_Indx_` # first 10 should be 0 0 1 0 1 0 0 0 1 1 after beach
 ```
 
 ```{r multinom2-est}
-multinomregML2(inits, X, Y, Z, respVec, choice = mdat$mode)
+multinom_ml(inits, X, Y, Z, respVec, choice = mdat$mode)
 
-out = optim(
+fit = optim(
   par = rep(0, 11),
-  multinomregML2,
+  multinom_ml,
   X = X,
   Y = Y,
   Z = Z,
@@ -277,14 +287,12 @@ out = optim(
 
 Compare fits.
 
-```{r multinom2-compare}
-# out
+```{r multinom2-compare, echo=FALSE}
+bind_cols(fit_coefs = fit$par, mnlogit_coefs = coef(fit_mnlogit)) %>% 
+  kable_df()
 
-# round(out$par, 3)
-
-round(cbind(out$par, coef(fit)), 3)
-
-cbind(logLik(fit), out$value)
+bind_cols(fit_ll = fit$value, mnlogit_ll = logLik(fit_mnlogit)) %>% 
+  kable_df()
 ```
 
 

@@ -33,7 +33,7 @@ probit_ll = function(beta, X, y){
 
 ### Examples
 
-Example 1 available at https://stats.idre.ucla.edu/stata/dae/probit-regression/
+Example 1 detail available [here](https://stats.idre.ucla.edu/stata/dae/probit-regression/).
 
 ```{r probit-example-1}
 library(tidyverse)
@@ -61,7 +61,7 @@ fit
 
 
 
-Example 2 from Stata manual on [standard probit](http://www.stata.com/manuals13/rprobit.pdf) 
+Example 2 from Stata manual on [standard probit](http://www.stata.com/manuals13/rprobit.pdf).
 
 > We have data on the make, weight, and mileage rating of 22 foreign and 52 domestic automobiles. We wish to fit a probit model explaining whether a car is foreign based on its weight and mileage."
 

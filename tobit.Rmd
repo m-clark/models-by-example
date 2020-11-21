@@ -15,7 +15,11 @@ have such restriction if it was actually observed.
 
 ### Data Setup 
 
-Data regards academic aptitude (GRE scores) with will be modeled using reading and math test scores, as well as the type of program the student is enrolled in (academic, general, or vocational).  See this for an applied example and more detail- https://stats.idre.ucla.edu/r/dae/tobit-models/
+Data regards academic aptitude (GRE scores) with will be modeled using reading
+and math test scores, as well as the type of program the student is enrolled in
+(academic, general, or vocational).  See
+[this](https://stats.idre.ucla.edu/r/dae/tobit-models/) for an applied example
+and more detail.
 
 ```{r tobit-setup}
 library(tidyverse)
@@ -59,7 +63,7 @@ tobit_ll <- function(par, X, y, ul = -Inf, ll = Inf) {
   
   # log likelihood
   ll = sum(indicator * log((1/sigma)*dnorm((y-lp)/sigma)) ) + 
-    sum((1-indicator) * log(pnorm((lp-limit)/sigma, lower=is.infinite(ll))))
+    sum((1-indicator) * log(pnorm((lp-limit)/sigma, lower = is.infinite(ll))))
   
   -ll
 }
@@ -116,7 +120,7 @@ rbind(
   ),
   AER = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod))
 ) %>% 
-  round(3)
+  kable_df()
 ```
 
 
@@ -197,7 +201,7 @@ rbind(
   ),
   AER = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod))
 ) %>% 
-  kable_df(3)
+  kable_df()
 ```
 
 ## Source

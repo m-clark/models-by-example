@@ -20,7 +20,7 @@ fish = haven::read_dta("http://www.stata-press.com/data/r11/fish.dta")
 The likelihood function is of two parts, one a logistic model, the other, a poisson count model.
 
 ```{r pois-hurdle-ll}
-hurdpoisloglik = function(y, X, par) {
+hurdle_poisson_ll = function(y, X, par) {
   # Extract parameters
   logitpars = par[grep('logit', names(par))]
   poispars  = par[grep('pois', names(par))]
@@ -74,15 +74,15 @@ starts = c(logit = coef(init_mod), pois = coef(init_mod))
 Use <span class="func" style = "">optim</span>. to estimate parameters. I fiddle with some options to reproduce the  hurdle function as much as possible.
  
 ```{r pois-hurdle-est}
-optPois1 = optim(
+fit = optim(
   par = starts,
-  fn  = hurdpoisloglik,
+  fn  = hurdle_poisson_ll,
   X   = init_mod$x,
   y   = init_mod$y,
   control = list(maxit = 5000, reltol = 1e-12),
   hessian = TRUE
 )
-# optPois1
+# fit
 ```
 
 
@@ -90,13 +90,13 @@ optPois1 = optim(
 Extract the elements from the output to create a summary table.
 
 ```{r pois-hurdle-ext}
-B  = optPois1$par
-se = sqrt(diag(solve(optPois1$hessian)))
+B  = fit$par
+se = sqrt(diag(solve(fit$hessian)))
 Z  = B/se
 p  = ifelse(Z >= 0, pnorm(Z, lower = FALSE)*2, pnorm(Z)*2)
-summarytable = round(data.frame(B, se, Z, p), 3)
+summary_table = round(data.frame(B, se, Z, p), 3)
 
-list(summary = summarytable, ll = optPois1$value)
+list(summary = summary_table, ll = fit$value)
 ```
 
 ### Comparison
@@ -106,15 +106,29 @@ Compare to <span class="func" style = "">hurdle</span> from <span class="pack" s
 ```{r pois-hurdle-pscl}
 library(pscl)
 
-poismod = hurdle(
+fit_pscl = hurdle(
   count ~ persons + livebait,
   data = fish,
   zero.dist = "binomial",
   dist = "poisson"
 )
+```
 
-summary(poismod)$coefficients
-summarytable
+
+```{r pois-hurdle-pscl-show, echo=FALSE}
+init1 = purrr::map(summary(fit_pscl)$coefficients, function(x) {
+  data.frame(x)
+  colnames(x) = colnames(summary_table)
+  x
+}) %>%
+  do.call(rbind, .) %>%
+  as.data.frame() %>%
+  rownames_to_column('coef') 
+
+init2 = summary_table %>% rownames_to_column('coef')
+
+bind_rows(list(pscl = init1, hurdle_poisson_ll = init2), .id = '') %>% 
+  kable_df()
 ```
 
 
@@ -127,7 +141,7 @@ summarytable
 The likelihood function.
 
 ```{r nb-hurdle-ll}
-hurdNBloglik = function(y, X, par) {
+hurdle_nb_ll = function(y, X, par) {
   # Extract parameters
   logitpars  = par[grep('logit', names(par))]
   NegBinpars = par[grep('NegBin', names(par))]
@@ -172,7 +186,7 @@ starts =  c(
 
 optNB1 = optim(
   par = starts,
-  fn  = hurdNBloglik,
+  fn  = hurdle_nb_ll,
   X   = init_mod$x,
   y   = init_mod$y,
   control = list(maxit = 5000, reltol = 1e-12),
@@ -186,9 +200,9 @@ se = sqrt(diag(solve(optNB1$hessian)))
 Z  = B/se
 p  = ifelse(Z >= 0, pnorm(Z, lower = FALSE)*2, pnorm(Z)*2)
 
-summarytable = round(data.frame(B, se, Z, p), 3)
+summary_table = round(data.frame(B, se, Z, p), 3)
 
-list(summary = summarytable, ll = optNB1$value)
+list(summary = summary_table, ll = optNB1$value)
 ```
 
 
@@ -197,15 +211,31 @@ list(summary = summarytable, ll = optNB1$value)
 
 
 ```{r nb-hurdle-compare}
-NBmod = hurdle(
+fit_pscl = hurdle(
   count ~ persons + livebait,
   data = fish,
   zero.dist = "binomial",
   dist = "negbin"
 )
 
-summary(NBmod)$coefficients
-summarytable
+# summary(fit_pscl)$coefficients
+# summary_table
+```
+
+```{r nb-hurdle-pscl-show, echo=FALSE}
+init1 = purrr::map(summary(fit_pscl)$coefficients, function(x) {
+  data.frame(x)
+  colnames(x) = colnames(summary_table)
+  x
+}) %>%
+  do.call(rbind, .) %>%
+  as.data.frame() %>%
+  rownames_to_column('coef') 
+
+init2 = summary_table %>% rownames_to_column('coef')
+
+bind_rows(list(pscl = init1, hurdle_nb_ll = init2), .id = '') %>% 
+  kable_df()
 ```
 
 
