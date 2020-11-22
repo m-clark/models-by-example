@@ -1,22 +1,28 @@
 
 # Quantile Regression
 
-### Data Setup
+## Data Setup
 
 We'll use the <span class="pack" style = "">quantreg</span> package for comparison, and the classic data set on Belgian household income and food expenditure.  Scale income if you want a meaningful 'centercept'.
 
 ```{r qr-setup}
+library(tidyverse)
+
 library(quantreg)
+
 data(engel)          
-### engel$income = scale(engel$income)
+# engel$income = scale(engel$income)
+
+X = cbind(1, engel$income)
+colnames(X) = c('Intercept', 'income')
 ```
 
 ## Function
 
-Loss function.
+Loss function.  It really is this simple.
 
-```{r qreg}
-qreg = function(par, X, y, tau) {
+```{r qr-func}
+qreg <- function(par, X, y, tau) {
   lp = X%*%par
   res = y - lp
   loss = ifelse(res < 0 , -(1 - tau)*res, tau*res)
@@ -24,15 +30,15 @@ qreg = function(par, X, y, tau) {
 }
 ```
 
-### Median estimation
+## Estimation
 
-Compare `optim` output with <span class="pack" style = "">quantreg</span> package.
+We'll estimate the median to start. Compare `optim` output with <span class="pack" style = "">quantreg</span> package.
 
 ```{r qr-est}
 optim(
-  par = c(0, 0),
+  par = c(intercept = 0, income = 0),
   fn  = qreg,
-  X   = cbind(1, engel$income),
+  X   = X,
   y   = engel$foodexp,
   tau = .5
 )$par
@@ -45,46 +51,56 @@ rq(foodexp ~ income, tau = .5, data = engel)
 
 Now we will add additional quantiles to estimate.
 
-```{r qreg-quants}
+```{r qr-quants}
 # quantiles
 qs = c(.05, .1, .25, .5, .75, .9, .95)
 
-resrq = coef(rq(foodexp ~ income, tau = qs, data = engel))
+fit_rq = coef(rq(foodexp ~ income, tau = qs, data = engel))
 
-
-resoptim = map_df(qs, function(tau)
+fit = map_df(qs, function(tau)
   data.frame(t(
     optim(
-      par = c(0, 0),
+      par = c(intercept = 0, income = 0),
       fn  = qreg,
-      X   = cbind(1, engel$income),
+      X   = X,
       y   = engel$foodexp,
       tau = tau
     )$par
   )))
-
-
-# compare results
-
-rbind(resrq, t(resoptim)) %>% round(2)
 ```
 
-### Visualize
+
+## Comparison
+
+Compare results.
+
+```{r qr-compare, echo =FALSE}
+rbind(fit_rq, t(fit)) %>% 
+  as.data.frame() %>% 
+  rownames_to_column('coef') %>% 
+  mutate(` ` = rep(c('fit_rq', 'fit_est'), each = 2)) %>% 
+  select(` `, everything()) %>% 
+  kable_df()
+```
+
+
+## Visualize
 
 Let's visualize the results.
 
-```{r qr-vis, results='hide'}
+```{r qr-vis, echo=FALSE}
 engel %>%
   qplot(data = .,
         income,
         foodexp,
         color = I(scales::alpha('orange', .25))) +
   geom_abline(aes(
-    intercept = X1,
-    slope = X2,
+    intercept = intercept,
+    slope = income,
     color = group
   ),
-  data = data.frame(resoptim, group = factor(qs)))
+  data = data.frame(fit, group = factor(qs))) +
+  scico::scale_color_scico_d(palette = 'vik')
 ```
 
 

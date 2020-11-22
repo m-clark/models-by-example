@@ -1,11 +1,10 @@
 # Gausian Processes
 
+## Noise-Free Demonstration
 
-'Noise-free' gaussian process demo.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail. Murphy's original Matlab code can be found [here](https://github.com/probml/pmtk3), though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
+We'll start with the 'Noise-free' gaussian process.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail. Murphy's original Matlab code can be found [here](https://github.com/probml/pmtk3), though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
 
 The goal of this code is to plot samples from the prior and posterior predictive of a gaussian process in which `y = sin(x)`. It will reproduce figure 15.2 in Murphy 2012 and 2.2 in Rasmussen and Williams 2006.
-
-## Noise-Free Demonstration
 
 ### Data Setup
 
@@ -23,11 +22,11 @@ Generate noise-less training data.
 
 ```{r gp-data-gen}
 X_train = c(-4, -3, -2, -1, 1)
-y_train  = sin(X_train)
-n_train  = length(X_train)
+y_train = sin(X_train)
+n_train = length(X_train)
 
 X_test = seq(-5, 5, .2)
-n_test  = length(X_test)
+n_test = length(X_test)
 ```
 
 
@@ -53,14 +52,14 @@ gp_K <- function(x, l = 1, sigma_f = 1){
 
 ### Visualize the prior distribution
 
-Data setup.
+Data setup for the prior and plot.
 
 ```{r gp-prior-data}
 x_prior = seq(-5, 5, .2)
 
 y_prior = MASS::mvrnorm(
-  n = n_prior,
-  mu    = gp_mu(x_prior),
+  n  = n_prior,
+  mu = gp_mu(x_prior),
   Sigma = gp_K(x_prior, l = l, sigma_f = sigma_f)
 )
 ```
@@ -74,9 +73,8 @@ prior_data = data.frame(
   pivot_longer(-c(x, sd), names_to = 'variable')
 
 g1 = ggplot(aes(x = x, y = value), data = prior_data) +
-  geom_line(aes(group = variable), color = '#FF5500', alpha = .5) +
-  labs(title = 'Prior') +
-  theme_minimal()
+  geom_line(aes(group = variable), color = '#FF550080', alpha = .5) +
+  labs(title = 'Prior')
 
 g1
 ```
@@ -89,10 +87,10 @@ Create `K`, `K*`, and `K**` matrices as defined in the texts.
 
 ```{r gp-K-gen}
 K  = gp_K(X_train, l = l, sigma_f = sigma_f)
-K_ = gp_K(c(X_train, X_test), l = l, sigma_f = sigma_f)      # initial matrix
+K_ = gp_K(c(X_train, X_test), l = l, sigma_f = sigma_f)        # initial matrix
 
 K_star  = K_[1:n_train, (n_train+1):ncol(K_)]                  # dim = N x N*
-tK_star = t(K_star)                                          # dim = N* x N
+tK_star = t(K_star)                                            # dim = N* x N
 K_starstar = K_[(n_train+1):nrow(K_), (n_train+1):ncol(K_)] +  # dim = N* x N*
   k_eps * diag(n_test)    # the k_eps part is for positive definiteness
 
@@ -115,8 +113,10 @@ Generate draws from posterior predictive.
 ```{r gp-pp}
 y_pp = data.frame(
   t(MASS::mvrnorm(n_post_pred, mu = post_mu, Sigma = post_K))
-  )
-# y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) # alternative
+)
+
+# alternative if using R and L above
+# y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) 
 ```
 
 
@@ -138,17 +138,16 @@ pp_data = data.frame(
 g2 = ggplot(aes(x = x, y = value), data = pp_data) +
   geom_ribbon(aes(ymin = se_lower, ymax = se_upper, group = variable), 
               fill = 'gray92') +
-  geom_line(aes(group = variable), color = '#FF5500') +
+  geom_line(aes(group = variable), color = '#FF550080') +
   geom_point(aes(x = X_train, y = y_train), data = data.frame(X_train, y_train)) +
-  labs(title = 'Posterior Predictive') +
-  theme_minimal()
+  labs(title = 'Posterior Predictive')
 
 g2
 ```
 
 Plot prior and posterior predictive together.
 
-```{r gp-prior-pp-plot}
+```{r gp-prior-pp-plot, layout='l-body-outset', out.width='1200px', fig.asp=.5}
 library(patchwork)
 
 g1 + g2
@@ -159,10 +158,10 @@ g1 + g2
 
 
 
-'Noisy' gaussian process demo.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail.  Murphy's Matlab code can be found here: https://github.com/probml/pmtk3, though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
+'Noisy' gaussian process demo.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail. Murphy's original Matlab code can be found [here](https://github.com/probml/pmtk3), though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
                                                                               
 The goal of this code is to plot samples from the prior and posterior predictive
-of a gaussian process in which y = sin(x) + noise. It will reproduce an example 
+of a gaussian process in which `y = sin(x) + noise`. It will reproduce an example 
 akin to figure 15.3 in Murphy 2012.                                             
 
 
@@ -199,7 +198,7 @@ gp_mu <- function(x) {
 }
 ```
 
-The covariance function. here it is the squared exponential kernel. `l` is the horizontal scale, `sigma_f` is the vertical scale, and, unlike the previous function, `sigma_n` the noise.
+The covariance function. Here it is the squared exponential kernel. `l` is the horizontal scale, `sigma_f` is the vertical scale, and, unlike the previous function, `sigma_n` the noise.
 
 ```{r gp-noise-cov-func}
 gp_K <- function(
@@ -250,9 +249,8 @@ prior_data = data.frame(
   pivot_longer(-c(x, sd), names_to = 'variable')
 
 g1 = ggplot(aes(x = x, y = value), data = prior_data) +
-  geom_line(aes(group = variable), color = '#FF5500', alpha = .5) +
-  labs(title = 'Prior') +
-  theme_minimal()
+  geom_line(aes(group = variable), color = '#FF550080', alpha = .5) +
+  labs(title = 'Prior')
 
 g1
 ```
@@ -280,9 +278,9 @@ K_ = gp_K(
   sigma_n = sigma_n
 )
 
-Kstar  = K_[1:n_train, (n_train+1):ncol(K_)]                      # dim = N x N*
+Kstar  = K_[1:n_train, (n_train+1):ncol(K_)]                    # dim = N x N*
 tKstar = t(Kstar)                                               # dim = N* x N
-Kstarstar = K_[(n_train+1):nrow(K_), (n_train+1):ncol(K_)] +      # dim = N* x N*
+Kstarstar = K_[(n_train+1):nrow(K_), (n_train+1):ncol(K_)] +    # dim = N* x N*
   k_eps*diag(n_test)      # the k_eps part is for positive definiteness
 
 Kyinv = solve(Ky)
@@ -296,6 +294,7 @@ Calculate posterior mean and covariance.
 post_mu = gp_mu(X_test) + tKstar %*% Kyinv %*% (y_train - gp_mu(X_train))
 post_K  = Kstarstar - tKstar %*% Kyinv %*% Kstar
 s2 = diag(post_K)
+
 # R = chol(post_K)  
 # L = t(R)      # L is used in alternative formulation below based on gaussSample.m
 ```
@@ -305,7 +304,9 @@ Generate draws from posterior predictive.
 
 ```{r  gp-noisy-pp}
 y_pp = data.frame(t(MASS::mvrnorm(n_post_pred, mu = post_mu, Sigma = post_K)))
-# y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) # alternative
+
+# alternative
+# y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu)))
 ```
 
 
@@ -327,28 +328,23 @@ pp_data = data.frame(
 g2 = ggplot(aes(x = x, y = value), data = pp_data) +
   geom_ribbon(aes(ymin = se_lower, ymax = se_upper, group = variable), 
               fill = 'gray92') +
-  geom_line(aes(group = variable), color = '#FF5500') +
+  geom_line(aes(group = variable), color = '#FF550080') +
   geom_point(aes(x = X_train, y = y_train), data = data.frame(X_train, y_train)) +
-  labs(title = 'Posterior Predictive') +
-  theme_minimal()
+  labs(title = 'Posterior Predictive')
 
 g2
 ```
 
 Plot prior and posterior predictive together.
 
-```{r gp-noisy-prior-pp-plot}
+```{r gp-noisy-prior-pp-plot, layout='l-body-outset', out.width='1200px', fig.asp=.5}
 library(patchwork)
 
 g1 + g2
 ```
 
 
-
-
-
-
-### Source
+## Source
 
 Original code available at:
 https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/gp%20Examples/gaussianprocessNoiseFree.R (noise-free)

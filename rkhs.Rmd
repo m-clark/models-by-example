@@ -11,7 +11,8 @@ To start, we will use an example for [ridge regression][L2 (ridge) regularizatio
 ```{r rkhs-setup}
 library(tidyverse)
 
-data(longley)
+data(longley)    # avaiable in base R
+
 y = longley[,1]
 X = as.matrix(longley[,2:7])
 X = apply(X, 2, scales::rescale, to = c(0, 1))
@@ -23,15 +24,17 @@ X = apply(X, 2, scales::rescale, to = c(0, 1))
 
 ### Function to find the inverse of a matrix
 
-We can use `base::solve`, though this function avoids a computationally singular result.
+We can use `base::solve`, but this function avoids a computationally singular result.
 
 ```{r rk-inv-func}
 inverse <- function(X, eps = 1e-12) {
   eig.X = eigen(X, symmetric = TRUE)
   P = eig.X[[2]] 
-  lambda = eig.X[[1]] 
+  lambda = eig.X[[1]]
+  
   ind = lambda > eps
-  lambda[ind] = 1/lambda[ind] 
+  
+  lambda[ind]  = 1/lambda[ind] 
   lambda[!ind] = 0
   
   P %*% diag(lambda) %*% t(P)
@@ -80,7 +83,7 @@ ridge <- function(X, y, lambda) {
   gamma_hat = crossprod(M_inv, crossprod(Q, y))
   f_hat = Q %*% gamma_hat
   
-  A    = Q %*% M_inv %*% t(Q)
+  A = Q %*% M_inv %*% t(Q)
   tr_A = sum(diag(A))                             # trace of hat matrix
   
   rss  = crossprod(y - f_hat)                     # residual sum of squares
@@ -116,9 +119,9 @@ ridge_coefs = map_df(gcv_search, function(x)
   )
 ```
 
-Compare with Figure 3.
+Compare with Figure 3 in the article.
 
-```{r rk-ridge-plot}
+```{r rk-ridge-plot, out.width='1200px', fig.asp=.5, layout = 'l-body-outset'}
 gcv_plot = qplot(
   lambda,
   V,
@@ -126,15 +129,15 @@ gcv_plot = qplot(
   main = 'GCV score',
   ylab = 'GCV'
 ) +
-  scale_x_log10() +
-  theme_minimal()
+  scale_x_log10()
 
 beta_plot = ridge_coefs %>% 
   ggplot(aes(x = lambda, y = value, color = coef)) +
   geom_line() +
   scale_x_log10() +
-  labs(title = 'Betas Across Lambda') +
-  theme_minimal()
+  scico::scale_color_scico_d(end = .8) +
+  labs(title = 'Betas Across Lambda')
+
 
 library(patchwork)
 
@@ -144,16 +147,16 @@ gcv_plot + beta_plot
 Pick the best model and obtain the estimates.
 
 ```{r rk-ridge-best}
-ridge_model = ridge(X, y, lambda[which.min(V)])     # fit optimal model
-### finding beta.0, beta.1 and beta.2 ##########
+ridge_model = ridge(X, y, lambda[which.min(V)])  # fit optimal model
+
 gamma_hat = ridge_model$gamma_hat
-beta_0    = ridge_model$gamma_hat[1]               # intercept
+beta_0    = ridge_model$gamma_hat[1]             # intercept
 beta_hat  = crossprod(gamma_hat[-1,], X)         # slope and noise term coefficients
 ```
 
 ## Comparison
 
-I add a comparison to <span class="pack" style = "">glmnet</span>, where `alpha = 0` is equivalent to ridge regression.
+I add a comparison to <span class="pack" style = "">glmnet</span>, where setting `alpha = 0` is equivalent to ridge regression.
 
 ```{r rk-ridge-compare-glmnet, message=FALSE}
 c(beta_0, beta_hat)
@@ -174,13 +177,13 @@ cbind(
 
 ## Example: Cubic Spline
 
-
-
 ### Data Setup
+
+For this example we'll use the `MASS::mcycle` data.
 
 ```{r rk-spline-setup}
 x = as.matrix(MASS::mcycle$times)
-x = scales::rescale(x, to = c(0,1)) # rescale predictor to [0,1]
+x = scales::rescale(x, to = c(0, 1)) # rescale predictor to [0,1]
 y = MASS::mcycle$accel
 ```
 
@@ -252,17 +255,16 @@ gcv_plot = qplot(
   main = 'GCV score',
   ylab = 'GCV'
 ) +
-  scale_x_log10() +
-  theme_minimal()
+  scale_x_log10()
 
-gcv_plot
+# gcv_plot
 ```
 
 ### Comparison
 
-I've added comparison to an additive model using <span class="mgcv" style = "">mgcv</span>. Compare the result to Figure 2 of the Supplementary Material.
+I've added comparison to an additive model using <span class="pack" style = "">mgcv</span>. Compare the result to Figure 2 of the Supplementary Material.
 
-```{r rk-spline-comparison}
+```{r rk-spline-comparison, out.width='1200px', fig.asp=.5, layout = 'l-body-outset'}
 spline_model = smoothing_spline(x, y, lambda[which.min(V)])       # fit optimal model
 gam_model    = mgcv::gam(y ~ s(x))
 
@@ -272,9 +274,9 @@ fit_plot = MASS::mcycle %>%
   arrange(times) %>%
   pivot_longer(-c(times, accel), names_to = 'fit', values_to = 'value')  %>%
   ggplot(aes(times, accel)) +
-  geom_point(color = '#FF550080') +
+  geom_point(color = '#FF55001A') +
   geom_line(aes(y = value, color = fit)) +
-  theme_minimal()
+  scico::scale_color_scico_d(palette = 'hawaii', begin = .2, end = .8)
 
 
 library(patchwork)
