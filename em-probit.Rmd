@@ -207,8 +207,7 @@ gdat = result_em %>%
   arrange(iter, coef)
 
 ggplot(aes(x = iter, y = value), data = gdat) +
-  geom_line(aes(group = coef, color = coef)) +
-  theme_minimal()
+  geom_line(aes(group = coef, color = coef))
 ```
 
 

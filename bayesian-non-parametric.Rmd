@@ -80,8 +80,7 @@ map_df(
   rename(cluster = x) %>% 
   ggplot(aes(cluster, Freq)) +
   geom_col() +
-  facet_grid(~ result) +
-  theme_minimal()
+  facet_grid(~ result)
 ```
 
 

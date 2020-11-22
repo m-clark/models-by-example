@@ -161,21 +161,18 @@ Visualize.
 library(ggplot2)
 
 ggplot(aes(x = eruptions, y = waiting), data = faithful) +
-  geom_point(aes(color = factor(mix_faithful$cluster))) +
-  theme_minimal()
+  geom_point(aes(color = factor(mix_faithful$cluster)))
 
 faithful %>% 
   mutate(prob_clus_1 = mix_faithful$resp[, 1]) %>% 
   ggplot(aes(x = eruptions, y = waiting)) +
-  geom_point(aes(color = prob_clus_1)) +
-  theme_minimal()
+  geom_point(aes(color = prob_clus_1))
 
 # relatively speaking, these are extremely well-separated clusters
 worst = apply(mix_faithful$resp, 1, function(x)  max(x) < .99) 
 
 ggplot(aes(x = eruptions, y = waiting), data = faithful) +
-  geom_point(aes(color = worst)) +
-  theme_minimal()
+  geom_point(aes(color = worst))
 ```
 
 #### Comparison

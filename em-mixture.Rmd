@@ -191,20 +191,18 @@ list(
   clusterpobs = cbind(prob_membership, prob_membership_flex)
 )
 
-qplot(x = eruptions, y = waiting, data = faithful) + theme_minimal()
+qplot(x = eruptions, y = waiting, data = faithful)
 
 ggplot(aes(x = eruptions, y = waiting), data = faithful) +
   geom_point(aes(color = factor(mix_waiting$cluster))) +
-  geom_density2d() +
-  theme_minimal()
+  geom_density2d()
 
 
 faithful %>% 
   mutate(prob_clus_1 = mix_waiting$resp[, 1]) %>% 
   ggplot(aes(x = eruptions, y = waiting)) +
   geom_point(aes(color = prob_clus_1)) +
-  geom_density2d() +
-  theme_minimal()
+  geom_density2d()
 ```
 
 
@@ -272,15 +270,14 @@ list(
 
 # Some plots
 library(ggplot2)
-qplot(x = eruptions, y = waiting, data = faithful) + theme_minimal()
+
+qplot(x = eruptions, y = waiting, data = faithful)
 
 ggplot(aes(x = eruptions, y = waiting), data = faithful) +
-  geom_point(aes(color = factor(mix_waiting$cluster))) +
-  theme_minimal()
+  geom_point(aes(color = factor(mix_waiting$cluster)))
 
 ggplot(aes(x = eruptions, y = waiting), data = faithful) +
-  geom_point(aes(color = mix_waiting$resp[, 1])) +
-  theme_minimal()
+  geom_point(aes(color = mix_waiting$resp[, 1]))
 ```
 
 

@@ -188,8 +188,7 @@ data.frame(
   geom_smooth(formula = y ~ s(x),       # compare to generalized additive model (thicker line) 
               se = FALSE,
               method = 'gam') +
-  scale_x_date(date_breaks = '10 years') +
-  theme_minimal()
+  scale_x_date(date_breaks = '10 years')
 ```
 
 

@@ -159,8 +159,7 @@ data = gd) +
     angle = 45,
     size  = 4,
     data  = filter(gd, Iteration == n)
-  ) +
-  theme_minimal()
+  )
 ```
 
 
@@ -253,8 +252,7 @@ ggplot(aes(x = Iteration,
     data = filter(gd, Iteration %in% c(n, n + n2, n + n2 + n3)),
     size = 4,
     show.legend = FALSE
-  ) +
-  theme_minimal()
+  )
 ```
 
 
