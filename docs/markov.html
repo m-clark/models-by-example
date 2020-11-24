@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Markov Chain Model | Model Estimation by Example</title>
+  <title>Markov Model | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Markov Chain Model | Model Estimation by Example" />
+  <meta property="og:title" content="Markov Model | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Markov Chain Model | Model Estimation by Example" />
+  <meta name="twitter:title" content="Markov Model | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -182,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#data-setup-4"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#function-2"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#results"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#estimation-4"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#issues-with-ml-estimation"><i class="fa fa-check"></i>Issues with ML estimation</a></li>
 <li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#link-with-penalized-regression"><i class="fa fa-check"></i>Link with penalized regression</a></li>
 </ul></li>
@@ -217,12 +217,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html"><i class="fa fa-check"></i>Marginal Structural Model</a>
 <ul>
-<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a>
-<ul>
-<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#create-the-weights"><i class="fa fa-check"></i>Create the Weights</a></li>
-</ul></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#function-4"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#estimation-4"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#estimation-5"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#source-7"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -232,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#data-setup-7"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#function-5"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#estimation-5"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#estimation-6"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-6"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#censoring-with-a-lower-limit"><i class="fa fa-check"></i>Censoring with a Lower Limit</a>
@@ -241,65 +238,65 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#source-8"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html"><i class="fa fa-check"></i>Cox Survival</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#standard-proportional-hazards"><i class="fa fa-check"></i>Standard Proportional Hazards</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-6"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-7"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#time-varying-coefficients"><i class="fa fa-check"></i>Time-varying coefficients</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-9"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-7"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-8"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#stratified-cox-model"><i class="fa fa-check"></i>Stratified Cox Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-10"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-8"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-9"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#source-9"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html"><i class="fa fa-check"></i>Hurdle Model</a>
 <ul>
 <li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#poisson"><i class="fa fa-check"></i>Poisson</a>
 <ul>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-6"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-6"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#data-setup-11"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-9"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-10"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#negative-binomial"><i class="fa fa-check"></i>Negative Binomial</a>
 <ul>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-7"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-7"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-10"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-11"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-12"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#source-9"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#source-10"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="zi.html"><a href="zi.html"><i class="fa fa-check"></i>Zero-Inflated Model</a>
 <ul>
 <li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#poisson-1"><i class="fa fa-check"></i>Poisson</a>
 <ul>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#data-setup-9"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-8"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-8"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#data-setup-12"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-11"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-12"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#negative-binomial-1"><i class="fa fa-check"></i>Negative Binomial</a>
 <ul>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-9"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-9"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-12"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-13"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#supplemental-example"><i class="fa fa-check"></i>Supplemental Example</a></li>
-<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#source-10"><i class="fa fa-check"></i>Source</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html"><i class="fa fa-check"></i>Cox Survival</a>
-<ul>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#standard-proportional-hazards"><i class="fa fa-check"></i>Standard Proportional Hazards</a>
-<ul>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-10"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-10"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-10"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-12"><i class="fa fa-check"></i>Comparison</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#time-varying-coefficients"><i class="fa fa-check"></i>Time-varying coefficients</a>
-<ul>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-11"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-11"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-11"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#stratified-cox-model"><i class="fa fa-check"></i>Stratified Cox Model</a>
-<ul>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-12"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-12"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-12"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#source-11"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#source-11"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html"><i class="fa fa-check"></i>Naive Bayes</a>
 <ul>
@@ -325,11 +322,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#data"><i class="fa fa-check"></i>Data</a></li>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#function-14"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#estimation-13"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#estimation-14"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#comparison-18"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#source-14"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html"><i class="fa fa-check"></i>Markov Chain Model</a>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html"><i class="fa fa-check"></i>Markov Model</a>
 <ul>
 <li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-setup-14"><i class="fa fa-check"></i>Data Setup</a>
 <ul>
@@ -338,7 +335,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#three-states-demo"><i class="fa fa-check"></i>Three states demo</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#function-15"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#estimation-14"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#estimation-15"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#comparison-19"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#source-15"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -346,19 +343,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#data-setup-15"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#function-16"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#estimation-15"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#estimation-16"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#supplemental-demo"><i class="fa fa-check"></i>Supplemental demo</a></li>
 <li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#source-16"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html"><i class="fa fa-check"></i>Quantile Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#data-setup-16"><i class="fa fa-check"></i>Data Setup</a></li>
-<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#function-17"><i class="fa fa-check"></i>Function</a>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#function-17"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#estimation-17"><i class="fa fa-check"></i>Estimation</a>
 <ul>
-<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#median-estimation"><i class="fa fa-check"></i>Median estimation</a></li>
 <li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#other-quantiles"><i class="fa fa-check"></i>Other quantiles</a></li>
-<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#comparison-20"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#source-17"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html"><i class="fa fa-check"></i>Cubic Spline Model</a>
@@ -386,15 +384,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution-1"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
-<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
 <ul>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#data-setup-20"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#function-18"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#estimation-16"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#comparison-20"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#estimation-18"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#supplemental-example-1"><i class="fa fa-check"></i>Supplemental Example</a></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#source-20"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -408,14 +406,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#gram-matrix"><i class="fa fa-check"></i>Gram matrix</a></li>
 <li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#ridge-regression"><i class="fa fa-check"></i>Ridge regression</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-17"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-19"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#example-cubic-spline"><i class="fa fa-check"></i>Example: Cubic Spline</a>
 <ul>
 <li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-22"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-6"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-18"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-23"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#source-21"><i class="fa fa-check"></i>Source</a>
 <ul>
@@ -427,12 +425,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#data-setup-23"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#functions-7"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-19"><i class="fa fa-check"></i>Estimation</a>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-21"><i class="fa fa-check"></i>Estimation</a>
 <ul>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#raw"><i class="fa fa-check"></i>Raw</a></li>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#standardized"><i class="fa fa-check"></i>Standardized</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-23"><i class="fa fa-check"></i>Comparison</a>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-24"><i class="fa fa-check"></i>Comparison</a>
 <ul>
 <li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#mplus"><i class="fa fa-check"></i>Mplus</a></li>
 </ul></li>
@@ -444,8 +442,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#model-code"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#visualization"><i class="fa fa-check"></i>Visualization</a></li>
 <li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#source-23"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -453,8 +451,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#data-setup-25"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#model-code-1"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#estimation-21"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#visualize-1"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#source-24"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -462,8 +460,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#model-code-2"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#comparison-26"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#visualize-2"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#source-25"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -471,8 +469,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#model-code-3"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#visualization-1"><i class="fa fa-check"></i>Visualization</a></li>
 <li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#source-26"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -482,14 +480,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#data-setup-28"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-4"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#two-parameter-irt"><i class="fa fa-check"></i>Two Parameter IRT</a>
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-5"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-27"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#three-parameter-irt"><i class="fa fa-check"></i>Three Parameter IRT</a></li>
 <li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#four-parameter-irt"><i class="fa fa-check"></i>Four Parameter IRT</a></li>
@@ -499,8 +497,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#data-setup-29"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#model-code-6"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#estimation-28"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#source-28"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html"><i class="fa fa-check"></i>Bayesian Nonparametric Models</a>
@@ -513,8 +511,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#data-setup-30"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#model-code-7"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#estimation-27"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#estimation-29"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#visualization-2"><i class="fa fa-check"></i>Visualization</a></li>
 <li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#source-30"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -522,8 +520,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#model-code-8"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#estimation-28"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#results-1"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#estimation-30"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#results"><i class="fa fa-check"></i>Results</a></li>
 <li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#visualization-3"><i class="fa fa-check"></i>Visualization</a></li>
 <li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#source-31"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -531,8 +529,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#data-setup-32"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#model-code-9"><i class="fa fa-check"></i>Model Code</a></li>
-<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#estimation-29"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#comparison-33"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#adding-complexity"><i class="fa fa-check"></i>Adding Complexity</a></li>
 <li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#source-32"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -540,8 +538,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#data-setup-33"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#function-19"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#estimation-30"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#comparison-33"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#estimation-32"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#comparison-34"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#visualization-4"><i class="fa fa-check"></i>Visualization</a></li>
 <li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#supplemental-example-2"><i class="fa fa-check"></i>Supplemental Example</a></li>
 <li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#source-33"><i class="fa fa-check"></i>Source</a></li>
@@ -550,8 +548,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#data-setup-34"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#function-20"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#comparison-34"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#estimation-33"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#comparison-35"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#source-34"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="part"><span><b>Estimation</b></span></li>
@@ -559,24 +557,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-8"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-32"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-35"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-34"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-36"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-35"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
 <ul>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-36"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-9"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-33"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-36"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-35"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-37"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-36"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
 <ul>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-37"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#functions-10"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-34"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-37"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-36"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-37"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
@@ -587,7 +585,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s Method</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-39"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-38"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
@@ -601,7 +599,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-function"><i class="fa fa-check"></i>Example Function</a></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-40"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-39"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -611,8 +609,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-40"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-21"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-35"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-37"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-42"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-3"><i class="fa fa-check"></i>Supplemental Example</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-40"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -634,8 +632,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-44"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-25"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-40"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-46"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-42"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-47"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-4"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-43"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -643,8 +641,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-45"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-26"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-41"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-47"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-43"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-48"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-5"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#missing-data-example"><i class="fa fa-check"></i>Missing Data Example</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-44"><i class="fa fa-check"></i>Source</a></li>
@@ -653,7 +651,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-47"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-28"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-43"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-45"><i class="fa fa-check"></i>Estimation</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization-5"><i class="fa fa-check"></i>Visualization</a></li>
 <li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-45"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
@@ -662,21 +660,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-48"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-29"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-44"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-49"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-46"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-50"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-46"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
 <ul>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-49"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-30"><i class="fa fa-check"></i>Function</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-45"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-50"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-47"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-51"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
 <ul>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-46"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-51"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-48"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-52"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-47"><i class="fa fa-check"></i>Source</a></li>
@@ -685,16 +683,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#data-setup-50"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#functions-12"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#estimation-47"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#comparison-52"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#estimation-49"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#comparison-53"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#source-48"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a>
 <ul>
 <li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#data-setup-51"><i class="fa fa-check"></i>Data Setup</a></li>
 <li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#functions-13"><i class="fa fa-check"></i>Functions</a></li>
-<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#estimation-48"><i class="fa fa-check"></i>Estimation</a></li>
-<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#comparison-53"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#estimation-50"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#comparison-54"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
 <li class="part"><span><b>Other</b></span></li>
 <li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
@@ -746,23 +744,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="markov-chain-model" class="section level1">
-<h1>Markov Chain Model</h1>
-<p>Initial demo of <span class="pack" style="">markovchain</span> package. Not shown. You may want to play with it to get a feel for how it works. We will use it for comparison later. Do go ahead and load the package</p>
-<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="markov.html#cb256-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb256-2"><a href="markov.html#cb256-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb256-3"><a href="markov.html#cb256-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(markovchain)</span>
-<span id="cb256-4"><a href="markov.html#cb256-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb256-5"><a href="markov.html#cb256-5" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>, .<span class="dv">9</span>, .<span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb256-6"><a href="markov.html#cb256-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb256-7"><a href="markov.html#cb256-7" aria-hidden="true" tabindex="-1"></a>dtmcA <span class="ot">=</span> <span class="fu">new</span>(</span>
-<span id="cb256-8"><a href="markov.html#cb256-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;markovchain&#39;</span>,</span>
-<span id="cb256-9"><a href="markov.html#cb256-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">transitionMatrix =</span> A,</span>
-<span id="cb256-10"><a href="markov.html#cb256-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">states =</span> <span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>),</span>
-<span id="cb256-11"><a href="markov.html#cb256-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&#39;MarkovChain A&#39;</span></span>
-<span id="cb256-12"><a href="markov.html#cb256-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb256-13"><a href="markov.html#cb256-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb256-14"><a href="markov.html#cb256-14" aria-hidden="true" tabindex="-1"></a>dtmcA</span></code></pre></div>
+<div id="markov-model" class="section level1">
+<h1>Markov Model</h1>
+<p>Here we demonstrate a <a href="https://en.wikipedia.org/wiki/Markov_model">Markov model</a>. We start by showing how to create some data and estimate such a model via the <span class="pack" style="">markovchain</span> package. You may want to play with it to get a better feel for how it works, as we will use it for comparison later.</p>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="markov.html#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb209-2"><a href="markov.html#cb209-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb209-3"><a href="markov.html#cb209-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(markovchain)</span>
+<span id="cb209-4"><a href="markov.html#cb209-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb209-5"><a href="markov.html#cb209-5" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>, .<span class="dv">9</span>, .<span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb209-6"><a href="markov.html#cb209-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb209-7"><a href="markov.html#cb209-7" aria-hidden="true" tabindex="-1"></a>dtmcA <span class="ot">=</span> <span class="fu">new</span>(</span>
+<span id="cb209-8"><a href="markov.html#cb209-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;markovchain&#39;</span>,</span>
+<span id="cb209-9"><a href="markov.html#cb209-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">transitionMatrix =</span> A,</span>
+<span id="cb209-10"><a href="markov.html#cb209-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">states =</span> <span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>),</span>
+<span id="cb209-11"><a href="markov.html#cb209-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&#39;MarkovChain A&#39;</span></span>
+<span id="cb209-12"><a href="markov.html#cb209-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb209-13"><a href="markov.html#cb209-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb209-14"><a href="markov.html#cb209-14" aria-hidden="true" tabindex="-1"></a>dtmcA</span></code></pre></div>
 <pre><code>MarkovChain A 
  A  2 - dimensional discrete Markov Chain defined by the following states: 
  a, b 
@@ -770,26 +768,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     a   b
 a 0.7 0.3
 b 0.9 0.1</code></pre>
-<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="markov.html#cb258-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dtmcA)</span></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="markov.html#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dtmcA)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/markov-chain-demo-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="markov.html#cb259-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transitionProbability</span>(dtmcA, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;b&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="markov.html#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transitionProbability</span>(dtmcA, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;b&#39;</span>)</span></code></pre></div>
 <pre><code>[1] 0.1</code></pre>
-<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="markov.html#cb261-1" aria-hidden="true" tabindex="-1"></a>initialState <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb261-2"><a href="markov.html#cb261-2" aria-hidden="true" tabindex="-1"></a>steps <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb261-3"><a href="markov.html#cb261-3" aria-hidden="true" tabindex="-1"></a>finalState <span class="ot">=</span> initialState <span class="sc">*</span> dtmcA <span class="sc">^</span> steps <span class="co">#using power operator</span></span>
-<span id="cb261-4"><a href="markov.html#cb261-4" aria-hidden="true" tabindex="-1"></a>finalState</span></code></pre></div>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="markov.html#cb214-1" aria-hidden="true" tabindex="-1"></a>initialState <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb214-2"><a href="markov.html#cb214-2" aria-hidden="true" tabindex="-1"></a>steps <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb214-3"><a href="markov.html#cb214-3" aria-hidden="true" tabindex="-1"></a>finalState <span class="ot">=</span> initialState <span class="sc">*</span> dtmcA <span class="sc">^</span> steps <span class="co">#using power operator</span></span>
+<span id="cb214-4"><a href="markov.html#cb214-4" aria-hidden="true" tabindex="-1"></a>finalState</span></code></pre></div>
 <pre><code>          a      b
 [1,] 0.7488 0.2512</code></pre>
-<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="markov.html#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="fu">steadyStates</span>(dtmcA)</span></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="markov.html#cb216-1" aria-hidden="true" tabindex="-1"></a><span class="fu">steadyStates</span>(dtmcA)</span></code></pre></div>
 <pre><code>        a    b
 [1,] 0.75 0.25</code></pre>
-<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="markov.html#cb265-1" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>), <span class="dv">50</span>, <span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb265-2"><a href="markov.html#cb265-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb265-3"><a href="markov.html#cb265-3" aria-hidden="true" tabindex="-1"></a><span class="fu">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="markov.html#cb218-1" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>), <span class="dv">50</span>, <span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb218-2"><a href="markov.html#cb218-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb218-3"><a href="markov.html#cb218-3" aria-hidden="true" tabindex="-1"></a><span class="fu">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
 <pre><code>   a  b
 a 24 11
 b 11  3</code></pre>
-<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="markov.html#cb267-1" aria-hidden="true" tabindex="-1"></a><span class="fu">markovchainFit</span>(observed_states)</span></code></pre></div>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="markov.html#cb220-1" aria-hidden="true" tabindex="-1"></a><span class="fu">markovchainFit</span>(observed_states)</span></code></pre></div>
 <pre><code>$estimate
 MLE Fit 
  A  2 - dimensional discrete Markov Chain defined by the following states: 
@@ -825,36 +823,40 @@ $logLikelihood
 <div id="data-functions" class="section level3">
 <h3>Data Functions</h3>
 <p>A recursive function to take a matrix power.</p>
-<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="markov.html#cb269-1" aria-hidden="true" tabindex="-1"></a>mat_power <span class="ot">=</span> <span class="cf">function</span>(M, N){</span>
-<span id="cb269-2"><a href="markov.html#cb269-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (N <span class="sc">==</span> <span class="dv">1</span>) <span class="fu">return</span>(M)</span>
-<span id="cb269-3"><a href="markov.html#cb269-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb269-4"><a href="markov.html#cb269-4" aria-hidden="true" tabindex="-1"></a>  M <span class="sc">%*%</span> <span class="fu">mat_power</span>(M, N<span class="dv">-1</span>)</span>
-<span id="cb269-5"><a href="markov.html#cb269-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="markov.html#cb222-1" aria-hidden="true" tabindex="-1"></a>mat_power <span class="ot">&lt;-</span> <span class="cf">function</span>(M, N) {</span>
+<span id="cb222-2"><a href="markov.html#cb222-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (N <span class="sc">==</span> <span class="dv">1</span>) <span class="fu">return</span>(M)</span>
+<span id="cb222-3"><a href="markov.html#cb222-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb222-4"><a href="markov.html#cb222-4" aria-hidden="true" tabindex="-1"></a>  M <span class="sc">%*%</span> <span class="fu">mat_power</span>(M, N <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb222-5"><a href="markov.html#cb222-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>A function to create a sequence.</p>
-<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="markov.html#cb270-1" aria-hidden="true" tabindex="-1"></a>createSequence <span class="ot">=</span> <span class="cf">function</span>(states, len, tmat) {</span>
-<span id="cb270-2"><a href="markov.html#cb270-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># states: number of states</span></span>
-<span id="cb270-3"><a href="markov.html#cb270-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># len: length of sequence</span></span>
-<span id="cb270-4"><a href="markov.html#cb270-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tmat: the transition matrix</span></span>
-<span id="cb270-5"><a href="markov.html#cb270-5" aria-hidden="true" tabindex="-1"></a>  states_numeric <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(states))</span>
-<span id="cb270-6"><a href="markov.html#cb270-6" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">=</span> <span class="fu">numeric</span>(len)</span>
-<span id="cb270-7"><a href="markov.html#cb270-7" aria-hidden="true" tabindex="-1"></a>  out[<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">sample</span>(states_numeric, <span class="dv">1</span>, <span class="at">prob=</span><span class="fu">colMeans</span>(tmat)) <span class="co"># initial state</span></span>
-<span id="cb270-8"><a href="markov.html#cb270-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb270-9"><a href="markov.html#cb270-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>len){</span>
-<span id="cb270-10"><a href="markov.html#cb270-10" aria-hidden="true" tabindex="-1"></a>    out[i] <span class="ot">=</span> <span class="fu">sample</span>(states_numeric, <span class="dv">1</span>, <span class="at">prob =</span> tmat[out[i <span class="sc">-</span> <span class="dv">1</span>], ])</span>
-<span id="cb270-11"><a href="markov.html#cb270-11" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb270-12"><a href="markov.html#cb270-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb270-13"><a href="markov.html#cb270-13" aria-hidden="true" tabindex="-1"></a>  states[out]</span>
-<span id="cb270-14"><a href="markov.html#cb270-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="markov.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="co"># example</span></span>
-<span id="cb271-2"><a href="markov.html#cb271-2" aria-hidden="true" tabindex="-1"></a>result.mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">4</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
-<span id="cb271-3"><a href="markov.html#cb271-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mat_power</span>(result.mat, <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="markov.html#cb223-1" aria-hidden="true" tabindex="-1"></a>create_sequence  <span class="ot">&lt;-</span> <span class="cf">function</span>(states, len, tmat) {</span>
+<span id="cb223-2"><a href="markov.html#cb223-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># states: number of states</span></span>
+<span id="cb223-3"><a href="markov.html#cb223-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># len: length of sequence</span></span>
+<span id="cb223-4"><a href="markov.html#cb223-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tmat: the transition matrix</span></span>
+<span id="cb223-5"><a href="markov.html#cb223-5" aria-hidden="true" tabindex="-1"></a>  states_numeric <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(states))</span>
+<span id="cb223-6"><a href="markov.html#cb223-6" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">=</span> <span class="fu">numeric</span>(len)</span>
+<span id="cb223-7"><a href="markov.html#cb223-7" aria-hidden="true" tabindex="-1"></a>  out[<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">sample</span>(states_numeric, <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">colMeans</span>(tmat)) <span class="co"># initial state</span></span>
+<span id="cb223-8"><a href="markov.html#cb223-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb223-9"><a href="markov.html#cb223-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>len){</span>
+<span id="cb223-10"><a href="markov.html#cb223-10" aria-hidden="true" tabindex="-1"></a>    out[i] <span class="ot">=</span> <span class="fu">sample</span>(states_numeric, <span class="dv">1</span>, <span class="at">prob =</span> tmat[out[i <span class="sc">-</span> <span class="dv">1</span>], ])</span>
+<span id="cb223-11"><a href="markov.html#cb223-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb223-12"><a href="markov.html#cb223-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb223-13"><a href="markov.html#cb223-13" aria-hidden="true" tabindex="-1"></a>  states[out]</span>
+<span id="cb223-14"><a href="markov.html#cb223-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="markov.html#cb224-1" aria-hidden="true" tabindex="-1"></a><span class="co"># example</span></span>
+<span id="cb224-2"><a href="markov.html#cb224-2" aria-hidden="true" tabindex="-1"></a>test_matrix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">4</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb224-3"><a href="markov.html#cb224-3" aria-hidden="true" tabindex="-1"></a>test_matrix</span></code></pre></div>
+<pre><code>     [,1] [,2]
+[1,]    2    2
+[2,]    2    2</code></pre>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="markov.html#cb226-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mat_power</span>(test_matrix, <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>     [,1] [,2]
 [1,]    8    8
 [2,]    8    8</code></pre>
-<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="markov.html#cb273-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transition matrix</span></span>
-<span id="cb273-2"><a href="markov.html#cb273-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>, .<span class="dv">4</span>, .<span class="dv">6</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb273-3"><a href="markov.html#cb273-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb273-4"><a href="markov.html#cb273-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mat_power</span>(A, <span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="markov.html#cb228-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transition matrix</span></span>
+<span id="cb228-2"><a href="markov.html#cb228-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>, .<span class="dv">4</span>, .<span class="dv">6</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb228-3"><a href="markov.html#cb228-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb228-4"><a href="markov.html#cb228-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mat_power</span>(A, <span class="dv">10</span>)</span></code></pre></div>
 <pre><code>          [,1]      [,2]
 [1,] 0.5714311 0.4285689
 [2,] 0.5714252 0.4285748</code></pre>
@@ -862,212 +864,211 @@ $logLikelihood
 <div id="two-states-demo" class="section level3">
 <h3>Two states Demo</h3>
 <p>Note that a notably long sequence is needed to get close to recovering the true transition matrix.</p>
-<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="markov.html#cb275-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>, .<span class="dv">9</span>, .<span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb275-2"><a href="markov.html#cb275-2" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">createSequence</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>), <span class="dv">5000</span>, <span class="at">tmat =</span> A)</span>
-<span id="cb275-3"><a href="markov.html#cb275-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb275-4"><a href="markov.html#cb275-4" aria-hidden="true" tabindex="-1"></a><span class="fu">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
-<pre><code>     a    b
-a 2637 1124
-b 1124  114</code></pre>
-<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="markov.html#cb277-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">createSequenceMatrix</span>(observed_states), <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="markov.html#cb230-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">7</span>, .<span class="dv">3</span>, .<span class="dv">9</span>, .<span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb230-2"><a href="markov.html#cb230-2" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">create_sequence</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>), <span class="dv">500</span>, <span class="at">tmat =</span> A)</span>
+<span id="cb230-3"><a href="markov.html#cb230-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb230-4"><a href="markov.html#cb230-4" aria-hidden="true" tabindex="-1"></a><span class="fu">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
+<pre><code>    a   b
+a 288 100
+b 101  10</code></pre>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="markov.html#cb232-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">createSequenceMatrix</span>(observed_states), <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>          a          b
-a 0.7011433 0.29885669
-b 0.9079160 0.09208401</code></pre>
-<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="markov.html#cb279-1" aria-hidden="true" tabindex="-1"></a><span class="fu">markovchainFit</span>(observed_states)</span></code></pre></div>
+a 0.7422680 0.25773196
+b 0.9099099 0.09009009</code></pre>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="markov.html#cb234-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">markovchainFit</span>(observed_states)</span>
+<span id="cb234-2"><a href="markov.html#cb234-2" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div>
 <pre><code>$estimate
 MLE Fit 
  A  2 - dimensional discrete Markov Chain defined by the following states: 
  a, b 
  The transition matrix  (by rows)  is defined as follows: 
           a          b
-a 0.7011433 0.29885669
-b 0.9079160 0.09208401
+a 0.7422680 0.25773196
+b 0.9099099 0.09009009
 
 
 $standardError
-           a           b
-a 0.01365374 0.008914148
-b 0.02708086 0.008624457
+           a          b
+a 0.04373856 0.02577320
+b 0.09053942 0.02848899
 
 $confidenceLevel
 [1] 0.95
 
 $lowerEndpointMatrix
           a          b
-a 0.6743825 0.28138528
-b 0.8548385 0.07518038
+a 0.6565420 0.20721741
+b 0.7324559 0.03425269
 
 $upperEndpointMatrix
           a         b
-a 0.7279042 0.3163281
-b 0.9609935 0.1089876
+a 0.8279941 0.3082465
+b 1.0000000 0.1459275
 
 $logLikelihood
-[1] -2674.284</code></pre>
-<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="markov.html#cb281-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">markovchainFit</span>(observed_states)</span>
-<span id="cb281-2"><a href="markov.html#cb281-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb281-3"><a href="markov.html#cb281-3" aria-hidden="true" tabindex="-1"></a><span class="co"># log likelihood</span></span>
-<span id="cb281-4"><a href="markov.html#cb281-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">createSequenceMatrix</span>(observed_states) <span class="sc">*</span> <span class="fu">log</span>(res<span class="sc">$</span>estimate<span class="sc">@</span>transitionMatrix))</span></code></pre></div>
-<pre><code>[1] -2674.284</code></pre>
+[1] -255.0253</code></pre>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="markov.html#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="co"># log likelihood</span></span>
+<span id="cb236-2"><a href="markov.html#cb236-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">createSequenceMatrix</span>(observed_states) <span class="sc">*</span> <span class="fu">log</span>(fit<span class="sc">$</span>estimate<span class="sc">@</span>transitionMatrix))</span></code></pre></div>
+<pre><code>[1] -255.0253</code></pre>
 </div>
 <div id="three-states-demo" class="section level3">
 <h3>Three states demo</h3>
-<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="markov.html#cb283-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(</span>
-<span id="cb283-2"><a href="markov.html#cb283-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(.<span class="dv">70</span>, .<span class="dv">20</span>, .<span class="dv">10</span>,</span>
-<span id="cb283-3"><a href="markov.html#cb283-3" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">20</span>, .<span class="dv">40</span>, .<span class="dv">40</span>,</span>
-<span id="cb283-4"><a href="markov.html#cb283-4" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">05</span>, .<span class="dv">05</span>, .<span class="dv">90</span>), </span>
-<span id="cb283-5"><a href="markov.html#cb283-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow  =</span> <span class="dv">3</span>, </span>
-<span id="cb283-6"><a href="markov.html#cb283-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
-<span id="cb283-7"><a href="markov.html#cb283-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb283-8"><a href="markov.html#cb283-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb283-9"><a href="markov.html#cb283-9" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">createSequence</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>), <span class="dv">500</span>, <span class="at">tmat =</span> A)</span>
-<span id="cb283-10"><a href="markov.html#cb283-10" aria-hidden="true" tabindex="-1"></a><span class="fu">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="markov.html#cb238-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(</span>
+<span id="cb238-2"><a href="markov.html#cb238-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(.<span class="dv">70</span>, .<span class="dv">20</span>, .<span class="dv">10</span>,</span>
+<span id="cb238-3"><a href="markov.html#cb238-3" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">20</span>, .<span class="dv">40</span>, .<span class="dv">40</span>,</span>
+<span id="cb238-4"><a href="markov.html#cb238-4" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">05</span>, .<span class="dv">05</span>, .<span class="dv">90</span>), </span>
+<span id="cb238-5"><a href="markov.html#cb238-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow  =</span> <span class="dv">3</span>, </span>
+<span id="cb238-6"><a href="markov.html#cb238-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb238-7"><a href="markov.html#cb238-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb238-8"><a href="markov.html#cb238-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb238-9"><a href="markov.html#cb238-9" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">create_sequence</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>), <span class="dv">500</span>, <span class="at">tmat =</span> A)</span>
+<span id="cb238-10"><a href="markov.html#cb238-10" aria-hidden="true" tabindex="-1"></a><span class="fu">createSequenceMatrix</span>(observed_states)</span></code></pre></div>
 <pre><code>   a  b   c
-a 77 27  12
-b 20 28  22
-c 18 15 280</code></pre>
-<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="markov.html#cb285-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">createSequenceMatrix</span>(observed_states), <span class="dv">1</span>)</span></code></pre></div>
-<pre><code>           a          b         c
-a 0.66379310 0.23275862 0.1034483
-b 0.28571429 0.40000000 0.3142857
-c 0.05750799 0.04792332 0.8945687</code></pre>
-<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="markov.html#cb287-1" aria-hidden="true" tabindex="-1"></a><span class="fu">markovchainFit</span>(observed_states)</span></code></pre></div>
+a 92 20  11
+b 11 24  22
+c 20 13 286</code></pre>
+<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="markov.html#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">createSequenceMatrix</span>(observed_states), <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>           a          b          c
+a 0.74796748 0.16260163 0.08943089
+b 0.19298246 0.42105263 0.38596491
+c 0.06269592 0.04075235 0.89655172</code></pre>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="markov.html#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="fu">markovchainFit</span>(observed_states)</span></code></pre></div>
 <pre><code>$estimate
 MLE Fit 
  A  3 - dimensional discrete Markov Chain defined by the following states: 
  a, b, c 
  The transition matrix  (by rows)  is defined as follows: 
-           a          b         c
-a 0.66379310 0.23275862 0.1034483
-b 0.28571429 0.40000000 0.3142857
-c 0.05750799 0.04792332 0.8945687
+           a          b          c
+a 0.74796748 0.16260163 0.08943089
+b 0.19298246 0.42105263 0.38596491
+c 0.06269592 0.04075235 0.89655172
 
 
 $standardError
            a          b          c
-a 0.07564624 0.04479442 0.02986294
-b 0.06388766 0.07559289 0.06700594
-c 0.01355476 0.01237375 0.05346070
+a 0.07798100 0.03635883 0.02696443
+b 0.05818640 0.08594701 0.08228800
+c 0.01401923 0.01130267 0.05301421
 
 $confidenceLevel
 [1] 0.95
 
 $lowerEndpointMatrix
            a          b          c
-a 0.51552916 0.14496316 0.04491797
-b 0.16049675 0.25184062 0.18295646
-c 0.03094114 0.02367122 0.78978761
+a 0.59512750 0.09133962 0.03658157
+b 0.07893918 0.25259956 0.22468337
+c 0.03521872 0.01859952 0.79264575
 
 $upperEndpointMatrix
            a          b         c
-a 0.81205705 0.32055408 0.1619786
-b 0.41093182 0.54815938 0.4456150
-c 0.08407484 0.07217543 0.9993498
+a 0.90080746 0.23386364 0.1422802
+b 0.30702573 0.58950571 0.5472465
+c 0.09017313 0.06290518 1.0000000
 
 $logLikelihood
-[1] -302.4854</code></pre>
+[1] -277.6268</code></pre>
 </div>
 </div>
 <div id="function-15" class="section level2">
 <h2>Function</h2>
 <p>Now we create a function to calculate the (negative) log likelihood.</p>
-<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="markov.html#cb289-1" aria-hidden="true" tabindex="-1"></a>markov_ll <span class="ot">=</span> <span class="cf">function</span>(par, x) {</span>
-<span id="cb289-2"><a href="markov.html#cb289-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par should be the c(A) of transition probabilities A</span></span>
-<span id="cb289-3"><a href="markov.html#cb289-3" aria-hidden="true" tabindex="-1"></a>  nstates <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(x))</span>
-<span id="cb289-4"><a href="markov.html#cb289-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb289-5"><a href="markov.html#cb289-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create transition matrix</span></span>
-<span id="cb289-6"><a href="markov.html#cb289-6" aria-hidden="true" tabindex="-1"></a>  par <span class="ot">=</span> <span class="fu">matrix</span>(par, <span class="at">ncol=</span>nstates)</span>
-<span id="cb289-7"><a href="markov.html#cb289-7" aria-hidden="true" tabindex="-1"></a>  par <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">apply</span>(par, <span class="dv">1</span>, <span class="cf">function</span>(x) x<span class="sc">/</span><span class="fu">sum</span>(x)))</span>
-<span id="cb289-8"><a href="markov.html#cb289-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb289-9"><a href="markov.html#cb289-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create seq matrix</span></span>
-<span id="cb289-10"><a href="markov.html#cb289-10" aria-hidden="true" tabindex="-1"></a>  seqMat <span class="ot">=</span> <span class="fu">table</span>(x[<span class="sc">-</span><span class="fu">length</span>(x)], x[<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb289-11"><a href="markov.html#cb289-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb289-12"><a href="markov.html#cb289-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate log likelihood</span></span>
-<span id="cb289-13"><a href="markov.html#cb289-13" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="fu">sum</span>(seqMat <span class="sc">*</span> <span class="fu">log</span>(par))</span>
-<span id="cb289-14"><a href="markov.html#cb289-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb289-15"><a href="markov.html#cb289-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
-<span id="cb289-16"><a href="markov.html#cb289-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="markov.html#cb290-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(</span>
-<span id="cb290-2"><a href="markov.html#cb290-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(.<span class="dv">70</span>, .<span class="dv">20</span>, .<span class="dv">10</span>,</span>
-<span id="cb290-3"><a href="markov.html#cb290-3" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">40</span>, .<span class="dv">20</span>, .<span class="dv">40</span>,</span>
-<span id="cb290-4"><a href="markov.html#cb290-4" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">10</span>, .<span class="dv">15</span>, .<span class="dv">75</span>),</span>
-<span id="cb290-5"><a href="markov.html#cb290-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow  =</span> <span class="dv">3</span>,</span>
-<span id="cb290-6"><a href="markov.html#cb290-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
-<span id="cb290-7"><a href="markov.html#cb290-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb290-8"><a href="markov.html#cb290-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb290-9"><a href="markov.html#cb290-9" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">createSequence</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>), <span class="dv">1000</span>, <span class="at">tmat =</span> A)</span></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="markov.html#cb244-1" aria-hidden="true" tabindex="-1"></a>markov_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(par, x) {</span>
+<span id="cb244-2"><a href="markov.html#cb244-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par should be the c(A) of transition probabilities A</span></span>
+<span id="cb244-3"><a href="markov.html#cb244-3" aria-hidden="true" tabindex="-1"></a>  nstates <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(x))</span>
+<span id="cb244-4"><a href="markov.html#cb244-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb244-5"><a href="markov.html#cb244-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create transition matrix</span></span>
+<span id="cb244-6"><a href="markov.html#cb244-6" aria-hidden="true" tabindex="-1"></a>  par <span class="ot">=</span> <span class="fu">matrix</span>(par, <span class="at">ncol =</span> nstates)</span>
+<span id="cb244-7"><a href="markov.html#cb244-7" aria-hidden="true" tabindex="-1"></a>  par <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">apply</span>(par, <span class="dv">1</span>, <span class="cf">function</span>(x) x <span class="sc">/</span> <span class="fu">sum</span>(x)))</span>
+<span id="cb244-8"><a href="markov.html#cb244-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb244-9"><a href="markov.html#cb244-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create seq matrix</span></span>
+<span id="cb244-10"><a href="markov.html#cb244-10" aria-hidden="true" tabindex="-1"></a>  seq_mat <span class="ot">=</span> <span class="fu">table</span>(x[<span class="sc">-</span><span class="fu">length</span>(x)], x[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb244-11"><a href="markov.html#cb244-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb244-12"><a href="markov.html#cb244-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate log likelihood</span></span>
+<span id="cb244-13"><a href="markov.html#cb244-13" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="fu">sum</span>(seq_mat <span class="sc">*</span> <span class="fu">log</span>(par))</span>
+<span id="cb244-14"><a href="markov.html#cb244-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb244-15"><a href="markov.html#cb244-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
+<span id="cb244-16"><a href="markov.html#cb244-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="markov.html#cb245-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(</span>
+<span id="cb245-2"><a href="markov.html#cb245-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(.<span class="dv">70</span>, .<span class="dv">20</span>, .<span class="dv">10</span>,</span>
+<span id="cb245-3"><a href="markov.html#cb245-3" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">40</span>, .<span class="dv">20</span>, .<span class="dv">40</span>,</span>
+<span id="cb245-4"><a href="markov.html#cb245-4" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">10</span>, .<span class="dv">15</span>, .<span class="dv">75</span>),</span>
+<span id="cb245-5"><a href="markov.html#cb245-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow  =</span> <span class="dv">3</span>,</span>
+<span id="cb245-6"><a href="markov.html#cb245-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb245-7"><a href="markov.html#cb245-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb245-8"><a href="markov.html#cb245-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb245-9"><a href="markov.html#cb245-9" aria-hidden="true" tabindex="-1"></a>observed_states <span class="ot">=</span> <span class="fu">create_sequence</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>), <span class="dv">1000</span>, <span class="at">tmat =</span> A)</span></code></pre></div>
 </div>
-<div id="estimation-14" class="section level2">
+<div id="estimation-15" class="section level2">
 <h2>Estimation</h2>
 <p>Note that initial state values will be transformed to rowsum to one, so the specific initial values don’t matter (i.e. they don’t have to be probabilities). With the basic <span class="func" style="">optim</span> approach, sometimes log(0) will occur and produce a warning. Can be ignored, or use <code>LFBGS</code> as demonstrated at the end.</p>
-<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="markov.html#cb291-1" aria-hidden="true" tabindex="-1"></a>initpar <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">9</span>)</span>
-<span id="cb291-2"><a href="markov.html#cb291-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb291-3"><a href="markov.html#cb291-3" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb291-4"><a href="markov.html#cb291-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> initpar,</span>
-<span id="cb291-5"><a href="markov.html#cb291-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> markov_ll,</span>
-<span id="cb291-6"><a href="markov.html#cb291-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x   =</span> observed_states,</span>
-<span id="cb291-7"><a href="markov.html#cb291-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
-<span id="cb291-8"><a href="markov.html#cb291-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
-<span id="cb291-9"><a href="markov.html#cb291-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb291-10"><a href="markov.html#cb291-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb291-11"><a href="markov.html#cb291-11" aria-hidden="true" tabindex="-1"></a><span class="co"># get estimates on prob scale</span></span>
-<span id="cb291-12"><a href="markov.html#cb291-12" aria-hidden="true" tabindex="-1"></a>estmat <span class="ot">=</span> <span class="fu">matrix</span>(result<span class="sc">$</span>par, <span class="at">ncol =</span> <span class="dv">3</span>)</span>
-<span id="cb291-13"><a href="markov.html#cb291-13" aria-hidden="true" tabindex="-1"></a>estmat <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">apply</span>(estmat, <span class="dv">1</span>, <span class="cf">function</span>(x)  x <span class="sc">/</span> <span class="fu">sum</span>(x)))</span></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="markov.html#cb246-1" aria-hidden="true" tabindex="-1"></a>initpar <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">9</span>)</span>
+<span id="cb246-2"><a href="markov.html#cb246-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb246-3"><a href="markov.html#cb246-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb246-4"><a href="markov.html#cb246-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> initpar,</span>
+<span id="cb246-5"><a href="markov.html#cb246-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> markov_ll,</span>
+<span id="cb246-6"><a href="markov.html#cb246-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x   =</span> observed_states,</span>
+<span id="cb246-7"><a href="markov.html#cb246-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
+<span id="cb246-8"><a href="markov.html#cb246-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb246-9"><a href="markov.html#cb246-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb246-10"><a href="markov.html#cb246-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb246-11"><a href="markov.html#cb246-11" aria-hidden="true" tabindex="-1"></a><span class="co"># get estimates on prob scale</span></span>
+<span id="cb246-12"><a href="markov.html#cb246-12" aria-hidden="true" tabindex="-1"></a>est_mat <span class="ot">=</span> <span class="fu">matrix</span>(fit<span class="sc">$</span>par, <span class="at">ncol =</span> <span class="dv">3</span>)</span>
+<span id="cb246-13"><a href="markov.html#cb246-13" aria-hidden="true" tabindex="-1"></a>est_mat <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">apply</span>(est_mat, <span class="dv">1</span>, <span class="cf">function</span>(x)  x <span class="sc">/</span> <span class="fu">sum</span>(x)))</span></code></pre></div>
 </div>
 <div id="comparison-19" class="section level2">
 <h2>Comparison</h2>
 <p>Compare with <span class="pack" style="">markovchain</span> package.</p>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="markov.html#cb292-1" aria-hidden="true" tabindex="-1"></a>compare_result <span class="ot">=</span> <span class="fu">markovchainFit</span>(observed_states)</span>
-<span id="cb292-2"><a href="markov.html#cb292-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb292-3"><a href="markov.html#cb292-3" aria-hidden="true" tabindex="-1"></a><span class="co"># compare log likelihood</span></span>
-<span id="cb292-4"><a href="markov.html#cb292-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="sc">-</span>result<span class="sc">$</span>value, compare_result<span class="sc">$</span>logLikelihood)</span></code></pre></div>
-<pre><code>[1] -844.459 -844.459</code></pre>
-<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="markov.html#cb294-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare estimated transition matrix</span></span>
-<span id="cb294-2"><a href="markov.html#cb294-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb294-3"><a href="markov.html#cb294-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Estimated via optim</span><span class="st">`</span> <span class="ot">=</span> estmat,</span>
-<span id="cb294-4"><a href="markov.html#cb294-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">markovchain Package</span><span class="st">`</span> <span class="ot">=</span> compare_result<span class="sc">$</span>estimate<span class="sc">@</span>transitionMatrix,</span>
-<span id="cb294-5"><a href="markov.html#cb294-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Analytical Solution</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">prop.table</span>(</span>
-<span id="cb294-6"><a href="markov.html#cb294-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(observed_states[<span class="sc">-</span><span class="fu">length</span>(observed_states)], observed_states[<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb294-7"><a href="markov.html#cb294-7" aria-hidden="true" tabindex="-1"></a>    , <span class="dv">1</span>)</span>
-<span id="cb294-8"><a href="markov.html#cb294-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb294-9"><a href="markov.html#cb294-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(round, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="markov.html#cb247-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="ot">=</span> <span class="fu">markovchainFit</span>(observed_states)</span>
+<span id="cb247-2"><a href="markov.html#cb247-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb247-3"><a href="markov.html#cb247-3" aria-hidden="true" tabindex="-1"></a><span class="co"># compare log likelihood</span></span>
+<span id="cb247-4"><a href="markov.html#cb247-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="sc">-</span>fit<span class="sc">$</span>value, fit_compare<span class="sc">$</span>logLikelihood)</span></code></pre></div>
+<pre><code>[1] -815.6466 -815.6466</code></pre>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="markov.html#cb249-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare estimated transition matrix</span></span>
+<span id="cb249-2"><a href="markov.html#cb249-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb249-3"><a href="markov.html#cb249-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Estimated via optim</span><span class="st">`</span> <span class="ot">=</span> est_mat,</span>
+<span id="cb249-4"><a href="markov.html#cb249-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">markovchain Package</span><span class="st">`</span> <span class="ot">=</span> fit_compare<span class="sc">$</span>estimate<span class="sc">@</span>transitionMatrix,</span>
+<span id="cb249-5"><a href="markov.html#cb249-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Analytical Solution</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">prop.table</span>(</span>
+<span id="cb249-6"><a href="markov.html#cb249-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(observed_states[<span class="sc">-</span><span class="fu">length</span>(observed_states)], observed_states[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb249-7"><a href="markov.html#cb249-7" aria-hidden="true" tabindex="-1"></a>    , <span class="dv">1</span>)</span>
+<span id="cb249-8"><a href="markov.html#cb249-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb249-9"><a href="markov.html#cb249-9" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(round, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>$`Estimated via optim`
       [,1]  [,2]  [,3]
-[1,] 0.698 0.191 0.111
-[2,] 0.369 0.235 0.396
-[3,] 0.113 0.162 0.725
+[1,] 0.674 0.242 0.084
+[2,] 0.462 0.126 0.412
+[3,] 0.106 0.151 0.743
 
 $`markovchain Package`
       a     b     c
-a 0.698 0.191 0.111
-b 0.369 0.235 0.396
-c 0.113 0.162 0.725
+a 0.674 0.242 0.084
+b 0.462 0.126 0.412
+c 0.106 0.151 0.743
 
 $`Analytical Solution`
    
         a     b     c
-  a 0.698 0.191 0.111
-  b 0.369 0.235 0.396
-  c 0.113 0.162 0.725</code></pre>
+  a 0.674 0.242 0.084
+  b 0.462 0.126 0.412
+  c 0.106 0.151 0.743</code></pre>
 <p>Visualize.</p>
-<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="markov.html#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb296-2"><a href="markov.html#cb296-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">new</span>(</span>
-<span id="cb296-3"><a href="markov.html#cb296-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;markovchain&#39;</span>,</span>
-<span id="cb296-4"><a href="markov.html#cb296-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">transitionMatrix =</span> estmat,</span>
-<span id="cb296-5"><a href="markov.html#cb296-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">states =</span> <span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>),</span>
-<span id="cb296-6"><a href="markov.html#cb296-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&#39;Estimated Markov Chain&#39;</span></span>
-<span id="cb296-7"><a href="markov.html#cb296-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb296-8"><a href="markov.html#cb296-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="markov.html#cb251-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb251-2"><a href="markov.html#cb251-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">new</span>(</span>
+<span id="cb251-3"><a href="markov.html#cb251-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;markovchain&#39;</span>,</span>
+<span id="cb251-4"><a href="markov.html#cb251-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">transitionMatrix =</span> est_mat,</span>
+<span id="cb251-5"><a href="markov.html#cb251-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">states =</span> <span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>),</span>
+<span id="cb251-6"><a href="markov.html#cb251-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&#39;Estimated Markov Chain&#39;</span></span>
+<span id="cb251-7"><a href="markov.html#cb251-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb251-8"><a href="markov.html#cb251-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/markov-vis-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 <p>If you don’t want warnings due to zeros use constraints (<code>?constrOptim</code>).</p>
-<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="markov.html#cb297-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb297-2"><a href="markov.html#cb297-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> initpar,</span>
-<span id="cb297-3"><a href="markov.html#cb297-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> markov_ll,</span>
-<span id="cb297-4"><a href="markov.html#cb297-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x   =</span> observed_states,</span>
-<span id="cb297-5"><a href="markov.html#cb297-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;L-BFGS&#39;</span>,</span>
-<span id="cb297-6"><a href="markov.html#cb297-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower   =</span> <span class="fu">rep</span>(<span class="fl">1e-20</span>, <span class="fu">length</span>(initpar)),</span>
-<span id="cb297-7"><a href="markov.html#cb297-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">pgtol =</span> <span class="fl">1e-12</span>)</span>
-<span id="cb297-8"><a href="markov.html#cb297-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="markov.html#cb252-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb252-2"><a href="markov.html#cb252-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> initpar,</span>
+<span id="cb252-3"><a href="markov.html#cb252-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> markov_ll,</span>
+<span id="cb252-4"><a href="markov.html#cb252-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x   =</span> observed_states,</span>
+<span id="cb252-5"><a href="markov.html#cb252-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;L-BFGS&#39;</span>,</span>
+<span id="cb252-6"><a href="markov.html#cb252-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower   =</span> <span class="fu">rep</span>(<span class="fl">1e-20</span>, <span class="fu">length</span>(initpar)),</span>
+<span id="cb252-7"><a href="markov.html#cb252-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">pgtol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb252-8"><a href="markov.html#cb252-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="source-15" class="section level2">
 <h2>Source</h2>
