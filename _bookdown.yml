@@ -51,6 +51,7 @@ rmd_files: [
   bayesian-topic-model.Rmd,
   
   # Algos
+  maximum-likelihood.Rmd,
   penalized-maximum-likelihood.Rmd,
   lasso.Rmd,
   ridge.Rmd,

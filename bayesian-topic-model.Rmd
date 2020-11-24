@@ -90,7 +90,7 @@ topic_model = function(
   dotsortext = 'dots'
 ) {
   
-  ### Arguments: 
+  # Arguments: 
   # alpha and beta: hyperparameters
   # nsim: the total number of simulations
   # warmup: the number of initial sims to discard
@@ -404,10 +404,10 @@ We can visualizes as follows, red implies documents are more dissimilar.
 ```{r tm-kldiv-doc-all-vis, echo = FALSE}
 heatmaply::heatmaply_cor(
   kl_divergence,
-  Rowv = FALSE,
-  Colv = FALSE,
+  Rowv   = FALSE,
+  Colv   = FALSE,
   limits = NULL,
-  main = 'Kullback-Liebler Divergence'
+  main   = 'Kullback-Liebler Divergence'
 )
 ```
 
@@ -427,10 +427,10 @@ dimnames(js_divergence) = list(rownames(dtm))
 
 heatmaply::heatmaply_cor(
   js_divergence,
-  Rowv = FALSE,
-  Colv = FALSE,
+  Rowv   = FALSE,
+  Colv   = FALSE,
   limits = NULL,
-  main = 'Jensen-Shannon Divergence'
+  main   = 'Jensen-Shannon Divergence'
 )
 ```
 
