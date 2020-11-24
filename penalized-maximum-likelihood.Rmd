@@ -3,20 +3,20 @@
 
 
 This demonstration regards a standard regression model via penalized likelihood.
-See the [linear regression example][Linear Regression] code for comparison. Here
-the penalty is specified (via `lambda` argument) but one would typically estimate
-via cross-validation or some other fashion. Two penalties are possible with the
-function.  One using the (squared) L2 norm (aka ridge regression, Tikhonov
-regularization), another using the L1 norm (aka lasso) which has the possibility
-of penalizing coefficients to zero, and thus can serve as a model selection
-procedure. I have more technical approaches to the lasso and ridge in the
-[lasso][L1 (lasso) regularization] and [ridge][L2 (ridge) regularization]
-chapters.
+See the [Maximum Likelihood chapter][Maximum Likelihood] for a starting point. Here
+the penalty is specified (via `lambda` argument), but one would typically
+estimate the model via cross-validation or some other fashion. Two penalties are
+possible with the function.  One using the (squared) L2 norm (aka ridge
+regression, Tikhonov regularization), another using the L1 norm (aka lasso)
+which has the possibility of penalizing coefficients to zero, and thus can serve
+as a model selection procedure. I have more technical approaches to the lasso
+and ridge in the [lasso][L1 (lasso) regularization] and [ridge][L2 (ridge)
+regularization] chapters.
 
 Note that both L2 and L1 approaches can be seen as maximum a posteriori (MAP)
 estimates for a Bayesian regression with a specific prior on the
 coefficients. The L2 approach is akin to a normal prior with zero mean, while
-L1 is akin to a zero mean Laplace prior.  See the [Bayesian regression chapter][Bayesian Linear Regression] for an approach.
+L1 is akin to a zero mean Laplace prior.  See the [Bayesian regression chapter][Bayesian Linear Regression] for an approach in that regard.
 
 
 
@@ -44,14 +44,16 @@ dfXy = data.frame(X,y)
 
 ## Functions
 
-A maximum likelihood approach.
+A straightforward function to estimate the log likelihood.
 
 ```{r penalized_ML}
-penalized_ML = function(par,
-                        X,
-                        y,
-                        lambda = .1,
-                        type = 'L2') {
+penalized_ML = function(
+  par,
+  X,
+  y,
+  lambda = .1,
+  type = 'L2'
+) {
   # arguments- 
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
@@ -60,17 +62,16 @@ penalized_ML = function(par,
   # type: penalty approach
   
   # setup
-  beta = par[-1]                               # coefficients
-  sigma2 = par[1]                              # error variance
-  sigma = sqrt(sigma2)
+  beta   = par[-1]                               # coefficients
+  sigma2 = par[1]                                # error variance
+  sigma  = sqrt(sigma2)
   N = nrow(X)
-  
-  # linear predictor
-  LP = X %*% beta                              # linear predictor
-  mu = LP                                      # identity link in the glm sense
+
+  LP = X %*% beta                                # linear predictor
+  mu = LP                                        # identity link in the glm sense
   
   # calculate likelihood
-  L = dnorm(y, mean = mu, sd = sigma, log = T) # log likelihood
+  L = dnorm(y, mean = mu, sd = sigma, log = T)   # log likelihood
   
   PL = switch(type,
               'L2' = -sum(L) + lambda * crossprod(beta[-1]),   # the intercept is not penalized
@@ -83,16 +84,20 @@ penalized_ML = function(par,
 
 
 
-`glmnet` style approach that will put the lambda coefficient on equivalent
-scale. Uses a different objective function.  Note that `glmnet` is actually
-`elasticnet` and mixes both L1 and L2 penalties.
+This next function is a <span class="pack" style = "">glmnet</span>  style
+approach that will put the lambda coefficient on equivalent scale. It uses a
+different objective function.  Note that <span class="pack" style =
+"">glmnet</span> is actually using `elasticnet`, which mixes both L1 and L2
+penalties.
 
 ```{r penalized_ML2}
-penalized_ML2 = function(par,
-                         X,
-                         y,
-                         lambda = .1,
-                         type = 'L2') {
+penalized_ML2 = function(
+  par,
+  X,
+  y,
+  lambda = .1,
+  type = 'L2'
+) {
   
   # arguments- 
   # par: parameters to be estimated
@@ -118,10 +123,6 @@ penalized_ML2 = function(par,
 
 
 
-
-
-
-
 ## Estimation
 
 Setup the model matrix for use with <span class="func" style = "">optim</span>.
@@ -132,9 +133,9 @@ X = cbind(1, X)
 
 
 
-Initial values. note we'd normally want to handle the sigma differently as
-it's bounded by zero, but we'll ignore for demonstration. Also sigma2 is not
-required for the LS approach.
+We'll need to set initial values.  Note we'd normally want to handle the sigma
+parameter differently as it's bounded by zero, but we'll ignore for
+demonstration.
 
 ```{r penalized-ml-est}
 init = c(1, rep(0, ncol(X)))
@@ -165,11 +166,9 @@ parspenalized_MLL1 = optlmpenalized_MLL1$par
 
 
 
-
-
-
 ## Comparison
-Compare to `lm.`
+
+Compare to `lm` in base R.
 
 ```{r penalized-ml-compare}
 modlm = lm(y ~ ., dfXy)
@@ -186,10 +185,10 @@ round(
 
 
 
-Compare to `glmnet`. Setting alpha to 0 and 1 is equivalent to L2 and L1
-penalties respectively. You also wouldn't want to specify lambda normally,
-and rather let it come about as part of the estimation procedure.  We do so
-here just for demonstration.
+Compare to <span class="pack" style = "">glmnet</span>. Setting alpha to 0 and 1
+is equivalent to L2 and L1 penalties respectively. You also wouldn't want to
+specify lambda normally, and rather let it come about as part of the estimation
+procedure.  We do so here just for demonstration.
 
 
 ```{r penalized-ml-compare-glmnet}
@@ -229,17 +228,17 @@ pars_L1 = optim(
   type    = 'L1',
   control = list(reltol = 1e-12)
 )$par
+```
 
 
-round(
-  rbind(
+```{r penalized-ml-compare-glmnet-show, echo=FALSE}
+rbind(
     glmnet_L2 = t(as.matrix(coef(glmnetL2))),
     pars_L2   = pars_L2,
     glmnet_L1 = t(as.matrix(coef(glmnetL1))),
     pars_L1   = pars_L1
-  ),
-  digits = 4
-)
+  ) %>% 
+  kable_df(digits = 4)
 ```
 
 

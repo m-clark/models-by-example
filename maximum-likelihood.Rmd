@@ -67,7 +67,7 @@ y = rnorm(1000, mean = 5, sd = 2)
 starting_values = c(0, 1)
 
 # the log likelihood function
-LL = function(mu, sigma, verbose = TRUE) {
+simple_ll = function(mu, sigma, verbose = TRUE) {
   
   ll = sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))
   
@@ -78,7 +78,7 @@ LL = function(mu, sigma, verbose = TRUE) {
 }
 ```
 
-The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r starting_values[1]` and `r starting_values[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point.  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console if `trace = TRUE`.
+The <span class="func">simple_ll</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r starting_values[1]` and `r starting_values[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point.  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console if `trace = TRUE`.
 
 We are now ready to obtain maximum likelihood estimates for the parameters.  For comparison we will use <span class="pack" style = "">bbmle</span> due to its nice summary result, but you can use optim as in the other demonstrations. For the <span class="func">mle2</span> function we will need the function we've created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>).  In this case we will use an optimization procedure that will allow us to set a lower bound for $\sigma$.  This isn't strictly necessary, but otherwise you would get warnings and possibly lack of convergence if negative estimates for $\sigma$ were allowed.
 
@@ -86,7 +86,7 @@ We are now ready to obtain maximum likelihood estimates for the parameters.  For
 # using optim, and L-BFGS-B so as to constrain sigma to be positive by setting
 # the lower bound at zero
 mlnorm = bbmle::mle2(
-  LL,
+  simple_ll,
   start  = list(mu = 2, sigma = 1),
   method = "L-BFGS-B",
   lower  = c(sigma = 0),
