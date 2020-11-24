@@ -1,7 +1,7 @@
 # Bayesian Stochastic Volatility Model
 
 Stochastic Volatility Model for centered time series over $t$ equally spaced
-points. latent parameter $h$ is the log volatility, φ the persistence of the
+points. The latent parameter $h$ is the log volatility, φ the persistence of the
 volatility and μ the mean log volatility. ϵ is the white-noise shock and δ the
 shock on volatility.  The Stan code is based on that in the manual (at the time
 I originally played with it).
@@ -23,9 +23,11 @@ y_t ~ N(0, exp(h_t/2)
 
 h_t ~ N(μ + φ*(h_t-μ), σ)
 
+
+
 ## Data Setup
 
-The data regards inflation based on the U.S. consumer price index (`infl = 400*log(cpi_t/cpi_{t-1}`), from the second quarter of 1947 to the second quarter
+The data regards inflation based on the U.S. consumer price index (`inflation = 400*log(cpi_t/cpi_{t-1}`), from the second quarter of 1947 to the second quarter
 of 2011 (from Statistical Computation and Modeling 2014, chap 11).
 
 ```{r bayes-sv-setup}
@@ -185,7 +187,8 @@ qplot(
   h,
   width = .5,
   color = I('gray50'),
-  geom = 'line'
+  geom = 'line',
+  ylab = 'log volatility'
 )
 
 gdat0 = tibble(
@@ -205,7 +208,7 @@ gdat0 %>%
             alpha = .1,
             data  = gdat_sim) +
   geom_line(color = 'gray25') +
-  labs(y = 'Inflation\ncentered')
+  labs(y = 'Inflation\ncentered', caption = '10 posterior predictive draws shown in color')
 ```
 
 ## Source

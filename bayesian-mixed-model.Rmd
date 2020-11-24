@@ -2,8 +2,9 @@
 
 
 
-Estimate the classic `sleepstudy` example of <span class="pack" style = "">lme4</span>.  Part of this code was based on that seen on this old [Stan thread](https://groups.google.com/d/msg/stan-users/pdfignYQcas/BL0LPbGA2eMJ), but you can look at the underlying code for <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span> for a fully optimized approach compared to this conceptual one.
+Explore the classic `sleepstudy` example of <span class="pack" style = "">lme4</span>.  Part of this code was based on that seen on this old [Stan thread](https://groups.google.com/d/msg/stan-users/pdfignYQcas/BL0LPbGA2eMJ), but you can look at the underlying code for <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span> for a fully optimized approach compared to this conceptual one.
             
+
 ## Data Setup
 
 The data comes from the <span class="pack" style = "">lme4</span> package.  It deals with reaction time to some task vs. sleep deprivation over 10 days.
@@ -25,9 +26,6 @@ dat = list(
 ```
 
 
-
-
-
 ## Model Code
 
 Create the Stan model code.
@@ -45,21 +43,21 @@ transformed data {
   real IntBase;
   real RTsd;
   
-  IntBase = mean(RT);                    // Intercept starting point
+  IntBase = mean(RT);                       // Intercept starting point
   RTsd    = sd(RT);
 }
 
 parameters {
-  real Intercept01;                       // fixed effects
+  real Intercept01;                         // fixed effects
   real beta01;
-  vector<lower = 0>[2] sigma_u;           // sd for ints and slopes
-  real<lower = 0> sigma_y;                // residual sd
+  vector<lower = 0>[2] sigma_u;             // sd for ints and slopes
+  real<lower = 0> sigma_y;                  // residual sd
   vector[2] gamma[I];                     // individual effects
-  cholesky_factor_corr[2] Omega_chol;     // correlation matrix for random intercepts and slopes (chol decomp)
+  cholesky_factor_corr[2] Omega_chol;       // correlation matrix for random intercepts and slopes (chol decomp)
 }
 
 transformed parameters {
-  vector[I] gammaIntercept;               // individual effects (named)
+  vector[I] gammaIntercept;                 // individual effects (named)
   vector[I] gammaDays;
   real Intercept;
   real beta;
@@ -77,25 +75,25 @@ transformed parameters {
 model {
   matrix[2,2] D;
   matrix[2,2] DC;
-  vector[N] mu;                         // Linear predictor
-  vector[2] gamma_mu;                   // vector of Intercept and beta
+  vector[N] mu;                             // Linear predictor
+  vector[2] gamma_mu;                       // vector of Intercept and beta
 
   D = diag_matrix(sigma_u);
   gamma_mu[1] = Intercept;
   gamma_mu[2] = beta;
 
   // priors
-  Intercept01 ~ normal(0, 1);             // example of weakly informative priors;
-  beta01 ~ normal(0, 1);                  // remove to essentially duplicate lme4 via improper prior
+  Intercept01 ~ normal(0, 1);               // example of weakly informative priors;
+  beta01 ~ normal(0, 1);                    // remove to essentially duplicate lme4 via improper prior
 
   Omega_chol ~  lkj_corr_cholesky(2.0); 
 
-  sigma_u ~ cauchy(0, 2.5);               // prior for RE scale
-  sigma_y ~ cauchy(0, 2.5);               // prior for residual scale
+  sigma_u ~ cauchy(0, 2.5);                 // prior for RE scale
+  sigma_y ~ cauchy(0, 2.5);                 // prior for residual scale
 
   DC = D * Omega_chol;
 
-  for (i in 1:I)                          // loop for Subject random effects
+  for (i in 1:I)                            // loop for Subject random effects
     gamma[i] ~ multi_normal_cholesky(gamma_mu, DC);
 
   // likelihood
@@ -106,7 +104,7 @@ model {
 }
 
 generated quantities {
-  matrix[2, 2] Omega;                     // correlation of RE
+  matrix[2, 2] Omega;                       // correlation of RE
   vector[N] y_hat;
   
   Omega = tcrossprod(Omega_chol);

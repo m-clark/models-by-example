@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Metropolis Hastings Example | Model Estimation by Example</title>
+  <title>Basics | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Metropolis Hastings Example | Model Estimation by Example" />
+  <meta property="og:title" content="Basics | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Metropolis Hastings Example | Model Estimation by Example" />
+  <meta name="twitter:title" content="Basics | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
-<link rel="prev" href="stochastic-gradient-descent.html"/>
-<link rel="next" href="hamiltonian-monte-carlo.html"/>
+<link rel="prev" href="bayesian.html"/>
+<link rel="next" href="bayesian-t-test.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -753,585 +753,271 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="metropolis-hastings-example" class="section level1">
-<h1>Metropolis Hastings Example</h1>
-<p>The following demonstrates a random walk <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm">Metropolis-Hastings
-algorithm</a>
-using the data and model from prior sections of the document. I had several
-texts open while cobbling together this code (noted below), and some
-oriented towards the social sciences. Some parts of the code reflect
-information and code examples found therein, and follows Lynch’s code a bit
-more.</p>
-<p>References:</p>
-<ul>
-<li><p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. Bayesian Data Analysis. 3rd ed.</p></li>
-<li><p>Gill, Jeff. 2008. Bayesian Methods : A Social and Behavioral Sciences Approach. Second.</p></li>
-<li><p>Jackman, Simon. 2009. Bayesian Analysis for the Social Sciences.</p></li>
-<li><p>Lynch, Scott M. 2007. Introduction to Applied Bayesian Statistics and Estimation for Social Scientists.</p></li>
-</ul>
-<div id="data-setup-50" class="section level2">
-<h2>Data Setup</h2>
-<div class="sourceCode" id="cb824"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb824-1"><a href="metropolis-hastings.html#cb824-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb824-2"><a href="metropolis-hastings.html#cb824-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb824-3"><a href="metropolis-hastings.html#cb824-3" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for replicability</span></span>
-<span id="cb824-4"><a href="metropolis-hastings.html#cb824-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb824-5"><a href="metropolis-hastings.html#cb824-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb824-6"><a href="metropolis-hastings.html#cb824-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create a N x k matrix of covariates</span></span>
-<span id="cb824-7"><a href="metropolis-hastings.html#cb824-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">250</span></span>
-<span id="cb824-8"><a href="metropolis-hastings.html#cb824-8" aria-hidden="true" tabindex="-1"></a>K <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb824-9"><a href="metropolis-hastings.html#cb824-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb824-10"><a href="metropolis-hastings.html#cb824-10" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">=</span> <span class="fu">replicate</span>(K, <span class="fu">rnorm</span>(<span class="at">n =</span> N))</span>
-<span id="cb824-11"><a href="metropolis-hastings.html#cb824-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(covariates) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>)</span>
-<span id="cb824-12"><a href="metropolis-hastings.html#cb824-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb824-13"><a href="metropolis-hastings.html#cb824-13" aria-hidden="true" tabindex="-1"></a><span class="co"># create the model matrix with intercept</span></span>
-<span id="cb824-14"><a href="metropolis-hastings.html#cb824-14" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">Intercept =</span> <span class="dv">1</span>, covariates)</span>
-<span id="cb824-15"><a href="metropolis-hastings.html#cb824-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb824-16"><a href="metropolis-hastings.html#cb824-16" aria-hidden="true" tabindex="-1"></a><span class="co"># create a normally distributed variable that is a function of the covariates</span></span>
-<span id="cb824-17"><a href="metropolis-hastings.html#cb824-17" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">5</span>, .<span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.5</span>, .<span class="dv">9</span>)</span>
-<span id="cb824-18"><a href="metropolis-hastings.html#cb824-18" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb824-19"><a href="metropolis-hastings.html#cb824-19" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> X <span class="sc">%*%</span> coefs</span>
-<span id="cb824-20"><a href="metropolis-hastings.html#cb824-20" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="fu">rnorm</span>(N, mu, sigma)</span>
-<span id="cb824-21"><a href="metropolis-hastings.html#cb824-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb824-22"><a href="metropolis-hastings.html#cb824-22" aria-hidden="true" tabindex="-1"></a><span class="co"># same as</span></span>
-<span id="cb824-23"><a href="metropolis-hastings.html#cb824-23" aria-hidden="true" tabindex="-1"></a><span class="co"># y = 5 + .2*X1 - 1.5*X2 + .9*X3 + rnorm(N, mean = 0, sd = 2)</span></span>
-<span id="cb824-24"><a href="metropolis-hastings.html#cb824-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb824-25"><a href="metropolis-hastings.html#cb824-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Run lm for later comparison; but go ahead and examine now if desired</span></span>
-<span id="cb824-26"><a href="metropolis-hastings.html#cb824-26" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">data.frame</span>(X[, <span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb824-27"><a href="metropolis-hastings.html#cb824-27" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_lm)</span></span></code></pre></div>
+<div id="basics" class="section level1">
+<h1>Basics</h1>
+<div id="prior-likelihood-posterior-distributions" class="section level2">
+<h2>Prior, likelihood, &amp; posterior distributions</h2>
+<p>The following is an attempt to provide a small example to show the connection between prior distribution, likelihood and posterior distribution. It is taken directly from <a href="https://m-clark.github.io/bayesian-basics/example.html">my document</a> with mostly just cleaned up code and visualization.</p>
+<p>Let’s say we want to estimate the probability that a soccer/football player will score a penalty kick in a shootout. We will employ the binomial distribution to model this. Our goal is to estimate a parameter <span class="math inline">\(\theta\)</span>, the probability that the random knucklehead from your favorite football team will score the penalty in an overtime shootout. Let’s say that for this match it takes 10 shots per team before the game is decided.</p>
+<p>We can represent the following data for your team as follows, as well as set up some other things for later.</p>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="bayesian-basics.html#cb370-1" aria-hidden="true" tabindex="-1"></a>shots <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;miss&#39;</span>,<span class="st">&#39;miss&#39;</span>,</span>
+<span id="cb370-2"><a href="bayesian-basics.html#cb370-2" aria-hidden="true" tabindex="-1"></a>          <span class="st">&#39;goal&#39;</span>,<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;miss&#39;</span>,<span class="st">&#39;miss&#39;</span>,<span class="st">&#39;goal&#39;</span>)</span>
+<span id="cb370-3"><a href="bayesian-basics.html#cb370-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb370-4"><a href="bayesian-basics.html#cb370-4" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to numeric, arbitrarily picking goal = 1, miss = 0</span></span>
+<span id="cb370-5"><a href="bayesian-basics.html#cb370-5" aria-hidden="true" tabindex="-1"></a>shots_01 <span class="ot">=</span> <span class="fu">as.numeric</span>(shots <span class="sc">==</span> <span class="st">&#39;goal&#39;</span>)</span>
+<span id="cb370-6"><a href="bayesian-basics.html#cb370-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb370-7"><a href="bayesian-basics.html#cb370-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="fu">length</span>(shots)                        <span class="co"># sample size</span></span>
+<span id="cb370-8"><a href="bayesian-basics.html#cb370-8" aria-hidden="true" tabindex="-1"></a>n_goals  <span class="ot">=</span> <span class="fu">sum</span>(shots <span class="sc">==</span> <span class="st">&#39;goal&#39;</span>)          <span class="co"># number of shots made</span></span>
+<span id="cb370-9"><a href="bayesian-basics.html#cb370-9" aria-hidden="true" tabindex="-1"></a>n_missed <span class="ot">=</span> <span class="fu">sum</span>(shots <span class="sc">==</span> <span class="st">&#39;miss&#39;</span>)          <span class="co"># number of those miss</span></span></code></pre></div>
+<p>Recall the binomial distribution where we specify the number of trials for a particular observation and the probability of an event. Let’s look at the distribution for a couple values for <span class="math inline">\(\theta\)</span> equal to .5 and .85, and <span class="math inline">\(N=10\)</span> observations. We will repeat this 1000 times.</p>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="bayesian-basics.html#cb371-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb371-2"><a href="bayesian-basics.html#cb371-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb371-3"><a href="bayesian-basics.html#cb371-3" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">1000</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">p =</span> .<span class="dv">5</span>)</span>
+<span id="cb371-4"><a href="bayesian-basics.html#cb371-4" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">1000</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">p =</span> .<span class="dv">85</span>)</span>
+<span id="cb371-5"><a href="bayesian-basics.html#cb371-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb371-6"><a href="bayesian-basics.html#cb371-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x1)</span></code></pre></div>
+<pre><code>[1] 5.043</code></pre>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="bayesian-basics.html#cb373-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(x1, <span class="at">geom =</span> <span class="st">&#39;histogram&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="bayesian-basics.html#cb374-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x2)</span></code></pre></div>
+<pre><code>[1] 8.569</code></pre>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb376-1"><a href="bayesian-basics.html#cb376-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(x2, <span class="at">geom =</span> <span class="st">&#39;histogram&#39;</span>)</span></code></pre></div>
+<p>The histograms are not shown, but we can see the means are roughly around <span class="math inline">\(N*p\)</span> as we expect with the binomial.</p>
 </div>
-<div id="functions-12" class="section level2">
-<h2>Functions</h2>
-<p>The primary functions that we need to specify regard the posterior distribution, an update step for beta coefficients, and an update step for the variance estimate. We assume a normal distribution for the β coefficients, inverse gamma on σ<sup>2</sup>.</p>
-<div class="sourceCode" id="cb825"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb825-1"><a href="metropolis-hastings.html#cb825-1" aria-hidden="true" tabindex="-1"></a>log_posterior <span class="ot">=</span> <span class="cf">function</span>(x, y, b, s2) {</span>
-<span id="cb825-2"><a href="metropolis-hastings.html#cb825-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args: X is the model matrix; y the target vector; b and s2 the parameters</span></span>
-<span id="cb825-3"><a href="metropolis-hastings.html#cb825-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># to be estimated</span></span>
-<span id="cb825-4"><a href="metropolis-hastings.html#cb825-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb825-5"><a href="metropolis-hastings.html#cb825-5" aria-hidden="true" tabindex="-1"></a>  beta   <span class="ot">=</span> b           </span>
-<span id="cb825-6"><a href="metropolis-hastings.html#cb825-6" aria-hidden="true" tabindex="-1"></a>  sigma  <span class="ot">=</span> <span class="fu">sqrt</span>(s2)</span>
-<span id="cb825-7"><a href="metropolis-hastings.html#cb825-7" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> s2</span>
-<span id="cb825-8"><a href="metropolis-hastings.html#cb825-8" aria-hidden="true" tabindex="-1"></a>  mu     <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb825-9"><a href="metropolis-hastings.html#cb825-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb825-10"><a href="metropolis-hastings.html#cb825-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># priors are b0 ~ N(0, sd = 10), sigma2 ~ invGamma(.001, .001)</span></span>
-<span id="cb825-11"><a href="metropolis-hastings.html#cb825-11" aria-hidden="true" tabindex="-1"></a>  priorbvarinv <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">100</span>, <span class="dv">4</span>) </span>
-<span id="cb825-12"><a href="metropolis-hastings.html#cb825-12" aria-hidden="true" tabindex="-1"></a>  prioralpha   <span class="ot">=</span> priorbeta <span class="ot">=</span> .<span class="dv">001</span></span>
-<span id="cb825-13"><a href="metropolis-hastings.html#cb825-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb825-14"><a href="metropolis-hastings.html#cb825-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.nan</span>(sigma) <span class="sc">|</span> sigma<span class="sc">&lt;=</span><span class="dv">0</span>) {     <span class="co"># scale parameter must be positive</span></span>
-<span id="cb825-15"><a href="metropolis-hastings.html#cb825-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
-<span id="cb825-16"><a href="metropolis-hastings.html#cb825-16" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb825-17"><a href="metropolis-hastings.html#cb825-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb825-18"><a href="metropolis-hastings.html#cb825-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note that you will not find the exact same presentation across texts and </span></span>
-<span id="cb825-19"><a href="metropolis-hastings.html#cb825-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># other media for the log posterior in this conjugate setting.  In the end</span></span>
-<span id="cb825-20"><a href="metropolis-hastings.html#cb825-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># they are conceptually still (log) prior + (log) likelihood (See commented &#39;else&#39;)</span></span>
-<span id="cb825-21"><a href="metropolis-hastings.html#cb825-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {                            </span>
-<span id="cb825-22"><a href="metropolis-hastings.html#cb825-22" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">nrow</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">crossprod</span>(y<span class="sc">-</span>mu))) <span class="sc">+</span></span>
-<span id="cb825-23"><a href="metropolis-hastings.html#cb825-23" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">ncol</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">t</span>(beta) <span class="sc">%*%</span> priorbvarinv <span class="sc">%*%</span> beta)) <span class="sc">+</span> </span>
-<span id="cb825-24"><a href="metropolis-hastings.html#cb825-24" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>(prioralpha <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">+</span> <span class="fu">log</span>(sigma2) <span class="sc">-</span> priorbeta<span class="sc">/</span>sigma2 </span>
-<span id="cb825-25"><a href="metropolis-hastings.html#cb825-25" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb825-26"><a href="metropolis-hastings.html#cb825-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># else {</span></span>
-<span id="cb825-27"><a href="metropolis-hastings.html#cb825-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)</span></span>
-<span id="cb825-28"><a href="metropolis-hastings.html#cb825-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)</span></span>
-<span id="cb825-29"><a href="metropolis-hastings.html#cb825-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)</span></span>
-<span id="cb825-30"><a href="metropolis-hastings.html#cb825-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior = ll + priorb + priors2</span></span>
-<span id="cb825-31"><a href="metropolis-hastings.html#cb825-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior</span></span>
-<span id="cb825-32"><a href="metropolis-hastings.html#cb825-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># }</span></span>
-<span id="cb825-33"><a href="metropolis-hastings.html#cb825-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>Update functions.</p>
-<div class="sourceCode" id="cb826"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb826-1"><a href="metropolis-hastings.html#cb826-1" aria-hidden="true" tabindex="-1"></a><span class="co"># update step for regression coefficients</span></span>
-<span id="cb826-2"><a href="metropolis-hastings.html#cb826-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb826-3"><a href="metropolis-hastings.html#cb826-3" aria-hidden="true" tabindex="-1"></a>updatereg <span class="ot">=</span> <span class="cf">function</span>(i, x, y, b, s2) {</span>
-<span id="cb826-4"><a href="metropolis-hastings.html#cb826-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args are the same as above but with additional i iterator argument.</span></span>
-<span id="cb826-5"><a href="metropolis-hastings.html#cb826-5" aria-hidden="true" tabindex="-1"></a>  b[i, ] <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">1</span>, <span class="at">mu =</span> b[i<span class="dv">-1</span>, ], <span class="at">Sigma =</span> b_var_scale)  <span class="co"># proposal/jumping distribution</span></span>
-<span id="cb826-6"><a href="metropolis-hastings.html#cb826-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb826-7"><a href="metropolis-hastings.html#cb826-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compare to past- does it increase the posterior probability?</span></span>
-<span id="cb826-8"><a href="metropolis-hastings.html#cb826-8" aria-hidden="true" tabindex="-1"></a>  post_diff <span class="ot">=</span> </span>
-<span id="cb826-9"><a href="metropolis-hastings.html#cb826-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log_posterior</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">b =</span> b[i, ],   <span class="at">s2 =</span> s2[i<span class="dv">-1</span>]) <span class="sc">-</span> </span>
-<span id="cb826-10"><a href="metropolis-hastings.html#cb826-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log_posterior</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">b =</span> b[i<span class="dv">-1</span>, ], <span class="at">s2 =</span> s2[i<span class="dv">-1</span>]) </span>
-<span id="cb826-11"><a href="metropolis-hastings.html#cb826-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb826-12"><a href="metropolis-hastings.html#cb826-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Acceptance phase</span></span>
-<span id="cb826-13"><a href="metropolis-hastings.html#cb826-13" aria-hidden="true" tabindex="-1"></a>  unidraw <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
-<span id="cb826-14"><a href="metropolis-hastings.html#cb826-14" aria-hidden="true" tabindex="-1"></a>  accept  <span class="ot">=</span> unidraw <span class="sc">&lt;</span> <span class="fu">min</span>(<span class="fu">exp</span>(post_diff), <span class="dv">1</span>)  <span class="co"># accept if so</span></span>
-<span id="cb826-15"><a href="metropolis-hastings.html#cb826-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb826-16"><a href="metropolis-hastings.html#cb826-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (accept) b[i,]</span>
-<span id="cb826-17"><a href="metropolis-hastings.html#cb826-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> b[i<span class="dv">-1</span>,]</span>
-<span id="cb826-18"><a href="metropolis-hastings.html#cb826-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb826-19"><a href="metropolis-hastings.html#cb826-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb826-20"><a href="metropolis-hastings.html#cb826-20" aria-hidden="true" tabindex="-1"></a><span class="co"># update step for sigma2</span></span>
-<span id="cb826-21"><a href="metropolis-hastings.html#cb826-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb826-22"><a href="metropolis-hastings.html#cb826-22" aria-hidden="true" tabindex="-1"></a>updates2 <span class="ot">=</span> <span class="cf">function</span>(i, x, y, b, s2) {</span>
-<span id="cb826-23"><a href="metropolis-hastings.html#cb826-23" aria-hidden="true" tabindex="-1"></a>  s2candidate <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, s2[i<span class="dv">-1</span>], <span class="at">sd =</span> sigma_scale)</span>
-<span id="cb826-24"><a href="metropolis-hastings.html#cb826-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb826-25"><a href="metropolis-hastings.html#cb826-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (s2candidate <span class="sc">&lt;</span> <span class="dv">0</span>) {</span>
-<span id="cb826-26"><a href="metropolis-hastings.html#cb826-26" aria-hidden="true" tabindex="-1"></a>    accept <span class="ot">=</span> <span class="cn">FALSE</span></span>
-<span id="cb826-27"><a href="metropolis-hastings.html#cb826-27" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb826-28"><a href="metropolis-hastings.html#cb826-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
-<span id="cb826-29"><a href="metropolis-hastings.html#cb826-29" aria-hidden="true" tabindex="-1"></a>    s2_diff <span class="ot">=</span> </span>
-<span id="cb826-30"><a href="metropolis-hastings.html#cb826-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">log_posterior</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">b =</span> b[i, ], <span class="at">s2 =</span> s2candidate) <span class="sc">-</span> </span>
-<span id="cb826-31"><a href="metropolis-hastings.html#cb826-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">log_posterior</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">b =</span> b[i, ], <span class="at">s2 =</span> s2[i <span class="sc">-</span> <span class="dv">1</span>])</span>
-<span id="cb826-32"><a href="metropolis-hastings.html#cb826-32" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb826-33"><a href="metropolis-hastings.html#cb826-33" aria-hidden="true" tabindex="-1"></a>    unidraw <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
-<span id="cb826-34"><a href="metropolis-hastings.html#cb826-34" aria-hidden="true" tabindex="-1"></a>    accept  <span class="ot">=</span> unidraw <span class="sc">&lt;</span> <span class="fu">min</span>(<span class="fu">exp</span>(s2_diff), <span class="dv">1</span>)</span>
-<span id="cb826-35"><a href="metropolis-hastings.html#cb826-35" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb826-36"><a href="metropolis-hastings.html#cb826-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb826-37"><a href="metropolis-hastings.html#cb826-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(accept, s2candidate, s2[i <span class="sc">-</span> <span class="dv">1</span>])</span>
-<span id="cb826-38"><a href="metropolis-hastings.html#cb826-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div id="prior" class="section level2">
+<h2>Prior</h2>
+<p>For our current situation, we don’t know <span class="math inline">\(\theta\)</span> and are trying to estimate it. We will start by supplying some possible values. To keep things simple, we’ll only consider 10 values that fall between 0 and 1.</p>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="bayesian-basics.html#cb377-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from   =</span> <span class="dv">1</span><span class="sc">/</span>(N <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb377-2"><a href="bayesian-basics.html#cb377-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">to     =</span> N<span class="sc">/</span>(N <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb377-3"><a href="bayesian-basics.html#cb377-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">length =</span> <span class="dv">10</span>)</span></code></pre></div>
+<p>For the Bayesian approach we must choose a <em>prior distribution</em> representing our initial beliefs about the estimates we might potentially consider. I provide three possibilities, and note that any one of them would work just fine for this situation. We’ll go with a triangular distribution, which will put most of the weight toward values around <span class="math inline">\(.5\)</span>. While we will only work with one prior, do play with the others.</p>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="bayesian-basics.html#cb378-1" aria-hidden="true" tabindex="-1"></a><span class="do">### prior distribution</span></span>
+<span id="cb378-2"><a href="bayesian-basics.html#cb378-2" aria-hidden="true" tabindex="-1"></a><span class="co"># triangular as in Kruschke text example</span></span>
+<span id="cb378-3"><a href="bayesian-basics.html#cb378-3" aria-hidden="true" tabindex="-1"></a>p_theta <span class="ot">=</span> <span class="fu">pmin</span>(theta, <span class="dv">1</span> <span class="sc">-</span> theta)</span>
+<span id="cb378-4"><a href="bayesian-basics.html#cb378-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb378-5"><a href="bayesian-basics.html#cb378-5" aria-hidden="true" tabindex="-1"></a><span class="co"># uniform</span></span>
+<span id="cb378-6"><a href="bayesian-basics.html#cb378-6" aria-hidden="true" tabindex="-1"></a><span class="co"># p_theta = dunif(theta)</span></span>
+<span id="cb378-7"><a href="bayesian-basics.html#cb378-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb378-8"><a href="bayesian-basics.html#cb378-8" aria-hidden="true" tabindex="-1"></a><span class="co"># beta prior with mean = .5</span></span>
+<span id="cb378-9"><a href="bayesian-basics.html#cb378-9" aria-hidden="true" tabindex="-1"></a><span class="co"># p_theta = dbeta(theta, 10, 10)</span></span>
+<span id="cb378-10"><a href="bayesian-basics.html#cb378-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb378-11"><a href="bayesian-basics.html#cb378-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize so that values sum to 1</span></span>
+<span id="cb378-12"><a href="bayesian-basics.html#cb378-12" aria-hidden="true" tabindex="-1"></a>p_theta <span class="ot">=</span> p_theta <span class="sc">/</span> <span class="fu">sum</span>(p_theta) </span></code></pre></div>
+<p>So, given some estimate of <span class="math inline">\(\theta\)</span>, we have a probability of that value based on our chosen prior.</p>
 </div>
-<div id="estimation-49" class="section level2">
-<h2>Estimation</h2>
-<p>Now we can set things up for the MCMC chain. Aside from the typical MCMC setup and initializing the parameter matrices to hold the draws from the posterior, we also require scale parameters to use for the jumping/proposal distribution. While this code regards only one chain, though a simple loop or any number of other approaches would easily extend it to two or more.</p>
-<div class="sourceCode" id="cb827"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb827-1"><a href="metropolis-hastings.html#cb827-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup, starting values etc. </span></span>
-<span id="cb827-2"><a href="metropolis-hastings.html#cb827-2" aria-hidden="true" tabindex="-1"></a>nsim   <span class="ot">=</span> <span class="dv">5000</span></span>
-<span id="cb827-3"><a href="metropolis-hastings.html#cb827-3" aria-hidden="true" tabindex="-1"></a>warmup <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb827-4"><a href="metropolis-hastings.html#cb827-4" aria-hidden="true" tabindex="-1"></a>thin   <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb827-5"><a href="metropolis-hastings.html#cb827-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb827-6"><a href="metropolis-hastings.html#cb827-6" aria-hidden="true" tabindex="-1"></a>b  <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, nsim, <span class="fu">ncol</span>(X))        <span class="co"># initialize beta update matrix</span></span>
-<span id="cb827-7"><a href="metropolis-hastings.html#cb827-7" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, nsim)                    <span class="co"># initialize sigma vector</span></span></code></pre></div>
-<p>For the following, this <code>c_</code> term comes from BDA3 12.2 and will produce an acceptance rate of .44 in 1 dimension and declining from there to about .23 in high dimensions. For the sigma_scale, the magic number comes from starting with a value of one and fiddling from there to get around .44.</p>
-<div class="sourceCode" id="cb828"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb828-1"><a href="metropolis-hastings.html#cb828-1" aria-hidden="true" tabindex="-1"></a>c_    <span class="ot">=</span> <span class="fl">2.4</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">ncol</span>(b))</span>
-<span id="cb828-2"><a href="metropolis-hastings.html#cb828-2" aria-hidden="true" tabindex="-1"></a>b_var <span class="ot">=</span> <span class="fu">vcov</span>(fit_lm) </span>
-<span id="cb828-3"><a href="metropolis-hastings.html#cb828-3" aria-hidden="true" tabindex="-1"></a>b_var_scale  <span class="ot">=</span> b_var <span class="sc">*</span> c_<span class="sc">^</span><span class="dv">2</span>               </span>
-<span id="cb828-4"><a href="metropolis-hastings.html#cb828-4" aria-hidden="true" tabindex="-1"></a>sigma_scale  <span class="ot">=</span> .<span class="dv">9</span></span></code></pre></div>
-<p>We can now run and summarize the model with tools from the <span class="pack">coda</span> package.</p>
-<div class="sourceCode" id="cb829"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb829-1"><a href="metropolis-hastings.html#cb829-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run</span></span>
-<span id="cb829-2"><a href="metropolis-hastings.html#cb829-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>nsim) {</span>
-<span id="cb829-3"><a href="metropolis-hastings.html#cb829-3" aria-hidden="true" tabindex="-1"></a>  b[i, ] <span class="ot">=</span> <span class="fu">updatereg</span>(</span>
-<span id="cb829-4"><a href="metropolis-hastings.html#cb829-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">i  =</span> i,</span>
-<span id="cb829-5"><a href="metropolis-hastings.html#cb829-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y  =</span> y,</span>
-<span id="cb829-6"><a href="metropolis-hastings.html#cb829-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x  =</span> X,</span>
-<span id="cb829-7"><a href="metropolis-hastings.html#cb829-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">b  =</span> b,</span>
-<span id="cb829-8"><a href="metropolis-hastings.html#cb829-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">s2 =</span> s2</span>
-<span id="cb829-9"><a href="metropolis-hastings.html#cb829-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb829-10"><a href="metropolis-hastings.html#cb829-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb829-11"><a href="metropolis-hastings.html#cb829-11" aria-hidden="true" tabindex="-1"></a>  s2[i] <span class="ot">=</span> <span class="fu">updates2</span>(</span>
-<span id="cb829-12"><a href="metropolis-hastings.html#cb829-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">i  =</span> i,</span>
-<span id="cb829-13"><a href="metropolis-hastings.html#cb829-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y  =</span> y,</span>
-<span id="cb829-14"><a href="metropolis-hastings.html#cb829-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x  =</span> X,</span>
-<span id="cb829-15"><a href="metropolis-hastings.html#cb829-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">b  =</span> b,</span>
-<span id="cb829-16"><a href="metropolis-hastings.html#cb829-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">s2 =</span> s2</span>
-<span id="cb829-17"><a href="metropolis-hastings.html#cb829-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb829-18"><a href="metropolis-hastings.html#cb829-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb829-19"><a href="metropolis-hastings.html#cb829-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb829-20"><a href="metropolis-hastings.html#cb829-20" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate acceptance rates</span></span>
-<span id="cb829-21"><a href="metropolis-hastings.html#cb829-21" aria-hidden="true" tabindex="-1"></a>b_acc_rate  <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">diff</span>(b[(warmup<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim,]) <span class="sc">!=</span> <span class="dv">0</span>)</span>
-<span id="cb829-22"><a href="metropolis-hastings.html#cb829-22" aria-hidden="true" tabindex="-1"></a>s2_acc_rate <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">diff</span>(s2[(warmup<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim]) <span class="sc">!=</span> <span class="dv">0</span>)         </span>
-<span id="cb829-23"><a href="metropolis-hastings.html#cb829-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb829-24"><a href="metropolis-hastings.html#cb829-24" aria-hidden="true" tabindex="-1"></a>b_acc_rate</span>
-<span id="cb829-25"><a href="metropolis-hastings.html#cb829-25" aria-hidden="true" tabindex="-1"></a>s2_acc_rate</span>
-<span id="cb829-26"><a href="metropolis-hastings.html#cb829-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb829-27"><a href="metropolis-hastings.html#cb829-27" aria-hidden="true" tabindex="-1"></a><span class="co"># get final chain</span></span>
-<span id="cb829-28"><a href="metropolis-hastings.html#cb829-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)</span>
-<span id="cb829-29"><a href="metropolis-hastings.html#cb829-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb829-30"><a href="metropolis-hastings.html#cb829-30" aria-hidden="true" tabindex="-1"></a>b_mcmc  <span class="ot">=</span> <span class="fu">as.mcmc</span>(b[<span class="fu">seq</span>(warmup <span class="sc">+</span> <span class="dv">1</span>, nsim, <span class="at">by =</span> thin),])</span>
-<span id="cb829-31"><a href="metropolis-hastings.html#cb829-31" aria-hidden="true" tabindex="-1"></a>s2_mcmc <span class="ot">=</span> <span class="fu">as.mcmc</span>(s2[<span class="fu">seq</span>(warmup <span class="sc">+</span> <span class="dv">1</span>, nsim, <span class="at">by =</span> thin)])</span>
-<span id="cb829-32"><a href="metropolis-hastings.html#cb829-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb829-33"><a href="metropolis-hastings.html#cb829-33" aria-hidden="true" tabindex="-1"></a><span class="co"># get summaries</span></span>
-<span id="cb829-34"><a href="metropolis-hastings.html#cb829-34" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(b_mcmc)</span>
-<span id="cb829-35"><a href="metropolis-hastings.html#cb829-35" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(s2_mcmc)</span></code></pre></div>
-<div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb830-1"><a href="metropolis-hastings.html#cb830-1" aria-hidden="true" tabindex="-1"></a>b_acc_rate  <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">diff</span>(b[(warmup<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim,]) <span class="sc">!=</span> <span class="dv">0</span>)</span>
-<span id="cb830-2"><a href="metropolis-hastings.html#cb830-2" aria-hidden="true" tabindex="-1"></a>s2_acc_rate <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">diff</span>(s2[(warmup<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim]) <span class="sc">!=</span> <span class="dv">0</span>)</span></code></pre></div>
+<div id="likelihood" class="section level2">
+<h2>Likelihood</h2>
+<p>Next we will compute the <em>likelihood</em> of the data given some value of <span class="math inline">\(\theta\)</span>. Generally, the likelihood for some target variable <span class="math inline">\(y\)</span>, with observed values <span class="math inline">\(i \dots n\)</span>, given some (set of) parameter(s) <span class="math inline">\(\theta\)</span>, can be expressed as follows:</p>
+<p><span class="math display">\[p(y|\theta) = \prod_{i}^{n} p(y_i|\theta)\]</span></p>
+<p>Specifically, the likelihood function for the binomial can be expressed as:</p>
+<p><span class="math display">\[p(y|\theta) = {N \choose k}\, \theta^k\,  (1-\theta)^{N-k}\]</span></p>
+<p>where <span class="math inline">\(N\)</span> is the total number of possible times in which the event of interest could occur, and <span class="math inline">\(k\)</span> number of times the event of interest occurs. Our maximum likelihood estimate in this simple setting would simply be the proportion of events witnessed out of the total number of samples. We’ll use the formula presented above. Technically, the first term is not required, but it serves to normalize the likelihood as we did with the prior.</p>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="bayesian-basics.html#cb379-1" aria-hidden="true" tabindex="-1"></a>p_data_given_theta <span class="ot">=</span> <span class="fu">choose</span>(N, n_goals) <span class="sc">*</span> theta<span class="sc">^</span>n_goals <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>theta)<span class="sc">^</span>n_missed</span></code></pre></div>
+</div>
+<div id="posterior" class="section level2">
+<h2>Posterior</h2>
+<p>Given the prior and likelihood, we can now compute the <em>posterior distribution</em> via Bayes theorem. The only thing left to calculate is the denominator from Bayes theorem, then plug in the rest.</p>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb380-1"><a href="bayesian-basics.html#cb380-1" aria-hidden="true" tabindex="-1"></a>p_data <span class="ot">=</span> p_data_given_theta<span class="sc">*</span>p_theta  <span class="co"># marginal probability of the data</span></span>
+<span id="cb380-2"><a href="bayesian-basics.html#cb380-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb380-3"><a href="bayesian-basics.html#cb380-3" aria-hidden="true" tabindex="-1"></a>p_theta_given_data <span class="ot">=</span> p_data_given_theta<span class="sc">*</span>p_theta <span class="sc">/</span> <span class="fu">sum</span>(p_data)  <span class="co"># Bayes theorem</span></span></code></pre></div>
+<p>Now let’s examine what all we’ve got.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:right;">
-b_acc_rate
+theta
 </th>
 <th style="text-align:right;">
-s2_acc_rate
+prior
+</th>
+<th style="text-align:right;">
+likelihood
+</th>
+<th style="text-align:right;">
+posterior
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:right;">
-0.298
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.091
 </td>
-<td style="text-align:right;">
-0.43
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.033
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.000
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.182
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.067
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.003
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.002
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.273
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.100
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.024
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.018
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.364
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.133
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.080
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.079
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.455
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.167
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.164
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.203
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.545
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.167
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.236
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.293
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.636
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.133
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.244
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.242
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.727
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.100
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.172
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.128
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.818
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.067
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.069
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.034
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.909
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.033
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.008
+</td>
+<td style="text-align:right;width: 100px; font-size: 90%">
+0.002
 </td>
 </tr>
 </tbody>
 </table>
-<p>Summarize results.</p>
-<p>The following table is uses <span class="pack" style="">rstan’s</span> <span class="func" style="">monitor</span> function to produce typical Stan output.</p>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-parameter
-</th>
-<th style="text-align:right;">
-mean
-</th>
-<th style="text-align:right;">
-sd
-</th>
-<th style="text-align:right;">
-2.5%
-</th>
-<th style="text-align:right;">
-97.5%
-</th>
-<th style="text-align:right;">
-n_eff
-</th>
-<th style="text-align:right;">
-Rhat
-</th>
-<th style="text-align:right;">
-Bulk_ESS
-</th>
-<th style="text-align:right;">
-Tail_ESS
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-beta.1
-</td>
-<td style="text-align:right;">
-4.900
-</td>
-<td style="text-align:right;">
-0.135
-</td>
-<td style="text-align:right;">
-4.638
-</td>
-<td style="text-align:right;">
-5.162
-</td>
-<td style="text-align:right;">
-258
-</td>
-<td style="text-align:right;">
-1.007
-</td>
-<td style="text-align:right;">
-252
-</td>
-<td style="text-align:right;">
-235
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta.2
-</td>
-<td style="text-align:right;">
-0.083
-</td>
-<td style="text-align:right;">
-0.136
-</td>
-<td style="text-align:right;">
--0.192
-</td>
-<td style="text-align:right;">
-0.354
-</td>
-<td style="text-align:right;">
-289
-</td>
-<td style="text-align:right;">
-1.003
-</td>
-<td style="text-align:right;">
-294
-</td>
-<td style="text-align:right;">
-425
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta.3
-</td>
-<td style="text-align:right;">
--1.468
-</td>
-<td style="text-align:right;">
-0.122
-</td>
-<td style="text-align:right;">
--1.706
-</td>
-<td style="text-align:right;">
--1.232
-</td>
-<td style="text-align:right;">
-304
-</td>
-<td style="text-align:right;">
-1.001
-</td>
-<td style="text-align:right;">
-306
-</td>
-<td style="text-align:right;">
-427
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-beta.4
-</td>
-<td style="text-align:right;">
-0.831
-</td>
-<td style="text-align:right;">
-0.120
-</td>
-<td style="text-align:right;">
-0.598
-</td>
-<td style="text-align:right;">
-1.061
-</td>
-<td style="text-align:right;">
-354
-</td>
-<td style="text-align:right;">
-1.000
-</td>
-<td style="text-align:right;">
-359
-</td>
-<td style="text-align:right;">
-518
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sigmasq
-</td>
-<td style="text-align:right;">
-4.091
-</td>
-<td style="text-align:right;">
-0.377
-</td>
-<td style="text-align:right;">
-3.431
-</td>
-<td style="text-align:right;">
-4.880
-</td>
-<td style="text-align:right;">
-843
-</td>
-<td style="text-align:right;">
-1.001
-</td>
-<td style="text-align:right;">
-832
-</td>
-<td style="text-align:right;">
-964
-</td>
-</tr>
-</tbody>
-</table>
+<p>Starting with the prior column, we can see that with the triangular distribution, we’ve given most of our prior probability to the middle values with probability tapering off somewhat slowly towards either extreme. The likelihood, on the other hand, suggests the data is most likely for <span class="math inline">\(\theta\)</span> values .55-.64, though we know the specific maximum likelihood estimate for <span class="math inline">\(\theta\)</span> is the proportion for the sample, or .6. Our posterior estimate will therefore fall somewhere between the prior and likelihood estimates, and we can see it has shifted the bulk of the probability slightly away from the most likely values suggested by the prior distribution, and towards a <span class="math inline">\(\theta\)</span> value suggested by the data of .6.</p>
+<p>Let’s go ahead and see what the mean is:</p>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="bayesian-basics.html#cb381-1" aria-hidden="true" tabindex="-1"></a>posterior_mean <span class="ot">=</span> <span class="fu">sum</span>(p_theta_given_data<span class="sc">*</span>theta)</span>
+<span id="cb381-2"><a href="bayesian-basics.html#cb381-2" aria-hidden="true" tabindex="-1"></a>posterior_mean</span></code></pre></div>
+<pre><code>[1] 0.5623611</code></pre>
+<p>So, we start with a prior centered on a value of <span class="math inline">\(\theta=.5\)</span>, add data whose ML estimate is <span class="math inline">\(\theta=.6\)</span>, and our posterior distribution suggests we end up somewhere in between.</p>
+<p>We can perhaps understand this further via the following visualizations. In each of these the prior is represented by the blue density, the likelihood by the red, and the posterior by purple. This first is based on a different prior than just used in our example, and instead employs the beta distribution noted among the possibilities in the <a href="bayesian-basics.html#prior">code above</a>. The beta distribution is highly flexible, and with shape parameters <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{B}\)</span> set to 10 and 10 we get a symmetric distribution centered on <span class="math inline">\(\theta = .5\)</span>. This would actually be a somewhat stronger prior than we might normally want to use, but serves to illustrate a point. The mean of the beta is <span class="math inline">\(\frac{\mathcal{A}}{\mathcal{A}+\mathcal{B}}\)</span>, and thus has a nice interpretation as a prior based on data with sample size equal to <span class="math inline">\(\mathcal{A}+\mathcal{B}\)</span>. The posterior distribution that results would have a mean somewhere between the maximum likelihood value and that of the prior. With the stronger prior, the posterior is pulled closer to it.</p>
+<p><img src="model-demos_files/figure-html/bayes-basics-prior2post_1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<p>The second utilizes a more diffuse prior of <span class="math inline">\(\beta(2,2)\)</span>. The result of using the vague prior is that the likelihood gets more weight with regard to the posterior. In fact, if we used a uniform distribution, we would essentially be doing the equivalent of maximum likelihood estimation. In that sense, many of the commonly used methods that implement maximum likelihood can be seen as a special case of a Bayesian approach.</p>
+<p><img src="model-demos_files/figure-html/bayes-basics-prior2post_2-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<p>The third graph employs the initial <span class="math inline">\(\beta(10,10)\)</span> prior again, but this time we add more observations to the data. This serves to give more weight to the likelihood, which is what we want. As scientists, we’d want the evidence, i.e. data, to eventually outweigh our prior beliefs about the state of things the more we have of it.</p>
+<p><img src="model-demos_files/figure-html/bayes-basics-prior2post_3-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<p>For an interactive demonstration of the above, <a href="https://micl.shinyapps.io/prior2post/">see this</a>.</p>
 </div>
-<div id="comparison-53" class="section level2">
-<h2>Comparison</h2>
-<p>We can compare to the <code>lm</code> result or <span class="pack" style="">rstanarm</span>.</p>
-<div class="sourceCode" id="cb831"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb831-1"><a href="metropolis-hastings.html#cb831-1" aria-hidden="true" tabindex="-1"></a>fit_rstan <span class="ot">=</span> rstanarm<span class="sc">::</span><span class="fu">stan_glm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">data.frame</span>(X[, <span class="sc">-</span><span class="dv">1</span>]))</span></code></pre></div>
-<pre><code>
-SAMPLING FOR MODEL &#39;continuous&#39; NOW (CHAIN 1).
-Chain 1: 
-Chain 1: Gradient evaluation took 7e-05 seconds
-Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.7 seconds.
-Chain 1: Adjust your expectations accordingly!
-Chain 1: 
-Chain 1: 
-Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 1: 
-Chain 1:  Elapsed Time: 0.029119 seconds (Warm-up)
-Chain 1:                0.042325 seconds (Sampling)
-Chain 1:                0.071444 seconds (Total)
-Chain 1: 
-
-SAMPLING FOR MODEL &#39;continuous&#39; NOW (CHAIN 2).
-Chain 2: 
-Chain 2: Gradient evaluation took 8e-06 seconds
-Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.08 seconds.
-Chain 2: Adjust your expectations accordingly!
-Chain 2: 
-Chain 2: 
-Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 2: 
-Chain 2:  Elapsed Time: 0.028329 seconds (Warm-up)
-Chain 2:                0.042675 seconds (Sampling)
-Chain 2:                0.071004 seconds (Total)
-Chain 2: 
-
-SAMPLING FOR MODEL &#39;continuous&#39; NOW (CHAIN 3).
-Chain 3: 
-Chain 3: Gradient evaluation took 1.6e-05 seconds
-Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.
-Chain 3: Adjust your expectations accordingly!
-Chain 3: 
-Chain 3: 
-Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 3: 
-Chain 3:  Elapsed Time: 0.031293 seconds (Warm-up)
-Chain 3:                0.041503 seconds (Sampling)
-Chain 3:                0.072796 seconds (Total)
-Chain 3: 
-
-SAMPLING FOR MODEL &#39;continuous&#39; NOW (CHAIN 4).
-Chain 4: 
-Chain 4: Gradient evaluation took 1e-05 seconds
-Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
-Chain 4: Adjust your expectations accordingly!
-Chain 4: 
-Chain 4: 
-Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 4: 
-Chain 4:  Elapsed Time: 0.030578 seconds (Warm-up)
-Chain 4:                0.042411 seconds (Sampling)
-Chain 4:                0.072989 seconds (Total)
-Chain 4: </code></pre>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-parameter
-</th>
-<th style="text-align:right;">
-fit
-</th>
-<th style="text-align:right;">
-lm
-</th>
-<th style="text-align:right;">
-rstanarm
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-4.900
-</td>
-<td style="text-align:right;">
-4.898
-</td>
-<td style="text-align:right;">
-4.898
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-X1
-</td>
-<td style="text-align:right;">
-0.083
-</td>
-<td style="text-align:right;">
-0.084
-</td>
-<td style="text-align:right;">
-0.088
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-X2
-</td>
-<td style="text-align:right;">
--1.468
-</td>
-<td style="text-align:right;">
--1.469
-</td>
-<td style="text-align:right;">
--1.468
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-X3
-</td>
-<td style="text-align:right;">
-0.831
-</td>
-<td style="text-align:right;">
-0.820
-</td>
-<td style="text-align:right;">
-0.821
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sigma_sq
-</td>
-<td style="text-align:right;">
-4.091
-</td>
-<td style="text-align:right;">
-4.084
-</td>
-<td style="text-align:right;">
-4.110
-</td>
-</tr>
-</tbody>
-</table>
+<div id="posterior-predictive" class="section level2">
+<h2>Posterior predictive</h2>
+<p>At this point it is hoped you have a better understanding of the process of Bayesian estimation. Conceptually, one starts with prior beliefs about the state of the world and adds evidence to one’s understanding, ultimately coming to a conclusion that serves as a combination of evidence and prior belief. More concretely, we have a prior distribution regarding parameters, a distribution regarding the data given those parameters, and finally a posterior distribution that is the weighted combination of the two.</p>
+<p>However, there is yet another distribution of interest to us- the <em>posterior predictive distribution</em>. Stated simply, once we have the posterior distribution for <span class="math inline">\(\theta\)</span>, we can then feed (possibly new or unobserved) data into the data generating process and get distributions for <span class="math inline">\(\tilde{y}\)</span>. Where <span class="math inline">\(\tilde{y}\)</span> can regard <em>any</em> potential observation, we can distinguish it from the case where we use the current data to produce <span class="math inline">\(y^{\textrm{Rep}}\)</span>, i.e. a replicate of <span class="math inline">\(y\)</span>. For example, if a regression model had predictor variables <span class="math inline">\(X\)</span>, the predictor variables are identical for producing <span class="math inline">\(y^{\textrm{Rep}}\)</span> as they were in modeling <span class="math inline">\(y\)</span>. However, <span class="math inline">\(\tilde{y}\)</span> might be based on any values <span class="math inline">\(\tilde{X}\)</span> that might be feasible or interesting, whether actually observed in the data or not. Since <span class="math inline">\(y^{\textrm{Rep}}\)</span> is an attempt to replicate the observed data based on the parameters <span class="math inline">\(\theta\)</span>, we can compare our simulated data to the observed data to see how well they match.</p>
+<p>We can implement the simulation process with the data and model at hand, given a sample of values of <span class="math inline">\(\theta\)</span> drawn from the posterior. I provide the results of such a process with the following graph. Each bar graph of frequencies represents a replication of the 10 shots taken, i.e. <span class="math inline">\(y^{\textrm{Rep}}\)</span>, given an estimate of <span class="math inline">\(\theta\)</span> from the posterior distribution (16 total). These are eleven plausible sets of 10 makes and misses, given <span class="math inline">\(\theta\)</span> shown against the observed.</p>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb383-1"><a href="bayesian-basics.html#cb383-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span>
+<span id="cb383-2"><a href="bayesian-basics.html#cb383-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb383-3"><a href="bayesian-basics.html#cb383-3" aria-hidden="true" tabindex="-1"></a>shotres <span class="ot">=</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb383-4"><a href="bayesian-basics.html#cb383-4" aria-hidden="true" tabindex="-1"></a>  shots_01 <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb383-5"><a href="bayesian-basics.html#cb383-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data   =</span> <span class="fu">data.frame</span>(shots_01),</span>
+<span id="cb383-6"><a href="bayesian-basics.html#cb383-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&#39;binomial&#39;</span>,</span>
+<span id="cb383-7"><a href="bayesian-basics.html#cb383-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter   =</span> <span class="dv">500</span>,</span>
+<span id="cb383-8"><a href="bayesian-basics.html#cb383-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup =</span> <span class="dv">250</span>,</span>
+<span id="cb383-9"><a href="bayesian-basics.html#cb383-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior  =</span> <span class="fu">student_t</span>()</span>
+<span id="cb383-10"><a href="bayesian-basics.html#cb383-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb383-11"><a href="bayesian-basics.html#cb383-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb383-12"><a href="bayesian-basics.html#cb383-12" aria-hidden="true" tabindex="-1"></a><span class="co"># pp_check(shotres)</span></span></code></pre></div>
+<p><img src="model-demos_files/figure-html/bayes-basics-binomPostPred-show-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+<p>With an understanding of the key elements of Bayesian inference in hand, we can proceed to more complex settings.</p>
 </div>
-<div id="source-49" class="section level2">
+<div id="source-23" class="section level2">
 <h2>Source</h2>
-<p>Original demo here:</p>
-<p><a href="https://m-clark.github.io/bayesian-basics/appendix.html#metropolis-hastings-example" class="uri">https://m-clark.github.io/bayesian-basics/appendix.html#metropolis-hastings-example</a></p>
+<p>Original code available at:
+<a href="https://m-clark.github.io/bayesian-basics/example.html" class="uri">https://m-clark.github.io/bayesian-basics/example.html</a></p>
 
 </div>
 </div>
@@ -1340,8 +1026,8 @@ sigma_sq
           </div>
         </div>
       </div>
-<a href="stochastic-gradient-descent.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="hamiltonian-monte-carlo.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bayesian.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bayesian-t-test.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -1374,7 +1060,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/m-clark/models-by-example/blob/master/metropolis-hastings.Rmd",
+"link": "https://github.com/m-clark/models-by-example/blob/master/bayesian-basics.Rmd",
 "text": "Edit"
 },
 "history": {

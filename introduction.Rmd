@@ -11,6 +11,7 @@ comparison of results with some R package, and a link to the old code that was
 the initial demonstration.
 
 The document has several sections:
+
 - **Models**: More or less standard/traditional statistical models and more
 - **Bayesian**: Demonstrations of models using Stan
 - **Estimation**: Algorithms used in model estimation (e.g. penalized likelihood, stochastic gradient descent)

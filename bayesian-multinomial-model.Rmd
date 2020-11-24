@@ -1,12 +1,14 @@
 # Bayesian Multinomial Models
 
 
-I spent some time on these models to better understand them in the traditional and Bayesian context, as well as profile potential speed gains in the Stan code. If you were doing what many would call 'multinomial regression' without qualification, I can recommend <span class="pack" style = "">brms</span> with the 'categorical' distribution.  However, I'm not aware of it being able to accommodate choice-specific variables easily (though it does accommodate choice specific effects).  I show the standard model here with the usual demonstration, and show some code for the most complex setting of choice-specific, individual-specific, and choice-constant variables.
+I spent some time on these models to better understand them in the traditional and Bayesian context, as well as profile potential speed gains in the Stan code. If you were doing what many would call 'multinomial regression' without qualification, I can recommend <span class="pack" style = "">brms</span> with the 'categorical' distribution.  However, I'm not aware of it being able to accommodate choice-specific variables easily, i.e. ones that vary across choices (though it does accommodate choice specific effects).  I show the standard model here with the usual demonstration, and show some code for the most complex setting of choice-specific, individual-specific, and choice-constant variables.
 
 See the [multinomial chapter][Multinomial] for the non-Bayesian approach.
 
 
 ## Data Setup
+
+Depending on the complexity of the data, you may need to create a data set specific to the problem.
 
 ```{r bayes-multinom-setup}
 library(haven)
@@ -16,8 +18,11 @@ program = read_dta("https://stats.idre.ucla.edu/stat/data/hsbdemo.dta") %>%
   as_factor() %>% 
   mutate(prog = relevel(prog, ref = "academic"))
 
-library(mlogit)
+
 head(program[,1:5])
+
+
+library(mlogit)
 
 programLong = program %>% 
   select(id, prog, ses, write) %>% 
@@ -109,7 +114,7 @@ fit = sampling(
 
 ## Comparison
 
-We'll need to do a bit of reordering, but otherwise we can the models come to similar conclusions.
+We'll need to do a bit of reordering, but otherwise we can see that the models come to similar conclusions.
 
 ```{r bayes-multinom-compare}
 print(
@@ -144,9 +149,9 @@ This code worked at the time, but I wasn't interested enough to try it again rec
 data {
   int K;                               // number of choices
   int N;                               // number of individuals
-  int D;                               // number of indiv specific vars
-  int G;                               // number of alt specific vars
-  int T;                               // number of alt constant vars
+  int D;                               // number of indiv specific variables
+  int G;                               // number of alt specific variables
+  int T;                               // number of alt constant variables
   
   int y[N*K];                          // choices
   vector[N*K] choice;                  // choice made (logical)
@@ -230,13 +235,13 @@ generated quantities {
   vector[N] fitted_ref;
   matrix[N, K] fitted;
   
-  matrix[N, K-1] Vx;                   // Utility for individual vars
+  matrix[N, K-1] Vx;                   // Utility for individual variables
   
   vector[N*K] Vy0;
-  matrix[N, K-1] Vy;                   // Utility for alt-specific/alt-varying vars
+  matrix[N, K-1] Vy;                   // Utility for alt-specific/alt-varying variables
   
   vector[N*(K-1)] Vz0;
-  matrix[N, (K-1)] Vz;                 // Utility for alt-specific/alt-constant vars
+  matrix[N, (K-1)] Vz;                 // Utility for alt-specific/alt-constant variables
 
   matrix[N, K-1] V;                    // combined utilities
   

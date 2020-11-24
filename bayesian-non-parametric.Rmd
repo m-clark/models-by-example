@@ -1,11 +1,11 @@
 # Bayesian Nonparametric Models
 
 
-The following provides some conceptual code for the Chinese restaurant and Indian buffet process for categorical and continuous latent variables respectively.  For more detail, see the Bayesian nonparametric section of my [structural equation modeling document](https://m-clark.github.io/sem/bayesian-nonparametric-models.html). 
+The following provides some conceptual code for the [Chinese restaurant](https://en.wikipedia.org/wiki/Chinese_restaurant_process) and [Indian buffet process](https://en.wikipedia.org/wiki/Chinese_restaurant_process#The_Indian_buffet_process) for categorical and continuous/combinations of categorical latent variables respectively.  For more detail, see the Bayesian nonparametric section of my [structural equation modeling document](https://m-clark.github.io/sem/bayesian-nonparametric-models.html). 
 
 ## Chinese Restaurant Process
 
-To start, a couple functions demonstrating the Chinese restaurant process.  The first is succinct and more conceptual, but notably slower.
+To start, we have a couple functions demonstrating the Chinese restaurant process.  The first is succinct and more conceptual, but notably slower.
  
 ```{r crp-func-1}
 crp <- function(alpha, n) {

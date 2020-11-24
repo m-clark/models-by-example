@@ -36,14 +36,15 @@ rmd_files: [
   
   # Bayesian
   bayesian.Rmd,
+  bayesian-basics.Rmd,
   bayesian-t-test.Rmd,
   bayesian-linear-regression.Rmd,
+  bayesian-beta-regression.Rmd,
   bayesian-mixed-model.Rmd,
   bayesian-mixed-mediation.Rmd,
   bayesian-irt.Rmd,
   bayesian-cfa.Rmd,
   bayesian-non-parametric.Rmd,
-  bayesian-beta-regression.Rmd,
   bayesian-stochastic-volatility.Rmd,
   bayesian-multinomial-model.Rmd,
   bayesian-variational.Rmd,

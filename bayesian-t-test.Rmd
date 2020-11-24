@@ -161,9 +161,10 @@ abs(diff(means))      # observed in data
 Compare estimated [Cohen's d](https://en.wikipedia.org/wiki/Effect_size#Cohen's_d).
 
 ```{r bayes-t-cohens-d}
-cohens_d = extract(fit, par='cohens_d')$cohens_d
+cohens_d = extract(fit, par = 'cohens_d')$cohens_d
 (mu_1 - mu_2) / sqrt((sigma_1 ^ 2 + sigma_2 ^ 2)/2)      # population
 (means[1] - means[2]) / sqrt(sum(sds^2)/2)               # observed
+mean(cohens_d)                                           # bayesian estimate
 ```
 
 
@@ -173,6 +174,7 @@ cohens_d = extract(fit, par='cohens_d')$cohens_d
 CLES = extract(fit, par='CLES')$CLES
 pnorm((mu_1 - mu_2) / sqrt(sigma_1^2 + sigma_2^2))       # population
 pnorm((means[1] - means[2]) / sqrt(sum(sds^2)))          # observed
+mean(CLES)                                               # bayesian estimate
 ```
 
 Compare to Welch's t-test that does not assume equal variances.
@@ -201,9 +203,11 @@ summary(BESTout)
 
 ## Visualization
 
-We can plot posterior predictive distribution vs. observed data density.
+We can plot the posterior predictive distribution vs. observed data density.
 
 ```{r bayes-t-pp-check}
+# by hand
+
 gdat = y_rep %>% 
   as.data.frame() %>% 
   pivot_longer(everything(), names_to =  'iteration') %>% 

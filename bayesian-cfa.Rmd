@@ -3,7 +3,7 @@
 
 ## Data Setup
 
-For an empirical data set we can use the big five data from the psych package.  For simplicity, I will only examine three of the five factors, and only the first 3 items of each. I have a version that has already reverse-scored the items that need be, but this is not necessary.  We we will restrict ourselves to complete data and only a sample of 280 observations (~10%).
+For an empirical data set we can use the big five data from the <span class="pack" style = "">psych</span> package.  For simplicity, I will only examine three of the five factors, and only the first 3 items of each. I have a version that has already reverse-scored the items that need be, but this is not necessary.  We we will restrict ourselves to complete data and only a sample of 280 observations (~10%).
 
 
 ```{r bayes-cfa-setup}
@@ -98,9 +98,9 @@ model {
 
 ## Estimation
 
-Note that this will likely take a while, but you can bump the iterations down or decrease the sample size and get roughly the same estimates.
+Note that this will likely take a while with the full data set, but you can bump the iterations down or decrease the sample size and get roughly the same estimates.  With these defaults you might get some divergent warnings or other issues to possibly deal with.
 
-```{r bayes-cfa-est, results = 'hide', cache.rebuild=FALSE}
+```{r bayes-cfa-est, results = 'hide'}
 stan_data = 
   list(
     N = nrow(big_five_no_miss),
@@ -113,9 +113,10 @@ library(rstan)
 
 fit_cfa = sampling(
   bayes_cfa,
-  data  = stan_data,
-  thin  = 4,
-  cores = 4
+  data    = stan_data,
+  thin    = 4,
+  cores   = 4,
+  control = list(adapt_delta = .95, max_treedepth = 15)
 )
 ```
 
@@ -175,7 +176,7 @@ lav_par  = parameterEstimates(fit_lav, standardized = TRUE)
 
 First we compare the loadings, both raw and standardized (either standardize the latent variable only or the latent and observed variables).
 
-```{r bayes-compare-loadings, echo = FALSE}
+```{r bayes-compare-loadings, echo = FALSE, cache.rebuild=F}
 lav_par %>% 
   filter(op == '=~') %>%
   mutate(lambda_est = lambda,
@@ -186,7 +187,7 @@ lav_par %>%
 ```
 
 
-```{r bayes-compare-cor, echo = FALSE}
+```{r bayes-compare-cor, echo = FALSE, cache.rebuild=F}
 lav_cors = lav_par %>% 
   filter(op == '~~', !grepl(lhs, pattern = '[1-3]'), !lhs==rhs) %>% 
   select(std.all)
@@ -198,7 +199,7 @@ dimnames(lav_cors) = dimnames(fit_cors)
 ```
 
 
-```{r bayes-compare-cor-show}
+```{r bayes-compare-cor-show, cache.rebuild=F}
 fit_cors
 
 lav_cors

@@ -1,7 +1,7 @@
 # Topic Model
 
 An implementation of Gibbs sampling for topic models for the example in  section
-4 of [Steyvers and Griffiths (2007)](http://cocosci.berkeley.edu/tom/papers/SteyversGriffiths.pdf). A very clear intro in my opinion. The core of the functions's code comprises mostly cosmetic
+4 of [Steyvers and Griffiths (2007)](http://cocosci.berkeley.edu/tom/papers/SteyversGriffiths.pdf). A very clear intro in my opinion. The core of the function's code comprises mostly cosmetic
 changes to that found [here](https://bcomposes.wordpress.com/2012/05/29/gibbs-sampler-for-toy-topic-model-example/). Added are the creation of a function with several arguments, plotting etc.
 
 
@@ -43,12 +43,12 @@ dtm = matrix(c(0,0,4,6,6,
                4,7,5,0,0,
                5,7,4,0,0), ncol = v, byrow = TRUE)
 
-row.names(dtm) = paste0('doc', 1:d)
+rownames(dtm) = paste0('doc', 1:d)
 colnames(dtm) = vocab
 ```
 
 
-Next we create additional aspects to initialize the setup.
+Next we create additional objects to initialize the setup.
 
 ```{r tm-setup3}
 # matrix of words in each document
@@ -63,7 +63,7 @@ C_wt = sapply(vocab, function(word)  cbind(sum(T0[wordmat == word] == 1),
                                            sum(T0[wordmat == word] == 2)))
 
 C_wt = t(C_wt)
-row.names(C_wt) = vocab
+rownames(C_wt) = vocab
 
 
 # topic by document matrix of counts containing the number of times topic j is
@@ -102,18 +102,19 @@ topic_model = function(
   # fiddle with your viewing area size so that terms don't appear to run
   # together; plotting will increase runtime
   
-  ### requires corrplot and abind packages.
+  # requires corrplot for visualizations, and abind to create arrays from the
+  # lists.
   
   # initialize 
-  Z = T0                                                   # topic assignments
-  saveSim   = seq(warmup + 1, nsim, thin)                  # iterations to save
-  thetaList = list()                                       # saved theta estimates
-  phiList   = list()                                       # saved phi estimates
+  Z = T0                                         # topic assignments
+  saveSim   = seq(warmup + 1, nsim, thin)        # iterations to save
+  theta_list = list()                             # saved theta estimates
+  phi_list   = list()                             # saved phi estimates
   p = proc.time()
   
-  # for every simulation
+  # for every simulation...
   for (s in 1:nsim) {
-    if(verbose && s %% 100 == 0) {                         # paste every 100th iteration if desired
+    if(verbose && s %% 100 == 0) {               # paste every 100th iteration if desired
       secs = round((proc.time() - p)[3],2)
       min  = round(secs/60, 2)
       message(paste0(
@@ -126,7 +127,7 @@ topic_model = function(
     }
     
     # Visualization
-    if(plot > 0 && s >1 &&  s %% plot == 0) {                # plot every value of argument
+    if(plot > 0 && s >1 &&  s %% plot == 0) {    # plot every value of argument
       require(corrplot)
       
       layout(matrix(c(1, 1, 2, 2, 3, 3, 3, 3, 3, 3), ncol = 10))
@@ -210,22 +211,20 @@ topic_model = function(
     
     # save simulations
     if (s %in% saveSim){
-      thetaList[[paste(s)]] = theta
-      phiList[[paste(s)]]   = phi
+      theta_list[[paste(s)]] = theta
+      phi_list[[paste(s)]]   = phi
     }
   }
   
   layout(1) # reset plot window
   
   
-  results = list(
+  list(
     theta = theta,
     phi   = phi,
-    thetaSims = abind::abind(thetaList, along = 3),  # abind creates arrays from the lists
-    phiSims   = abind::abind(phiList, along = 3)
+    theta_sims = abind::abind(theta_list, along = 3),
+    phi_sims   = abind::abind(phi_list, along = 3)
   )
-  
-  results
 }
 ```
 
@@ -236,6 +235,8 @@ topic_model = function(
 We use the values of alpha and beta as suggested in paper.  The following will result in 500 posterior sample points, so bump if you want more than that.  These settings take around 20 seconds.
 
 ```{r tm-est}
+set.seed(1234)
+
 alpha = K/50
 beta  = .01
 
@@ -261,7 +262,7 @@ str(fit_tm, 1)
 purrr::map(fit_tm[1:2], round, 2)
 ```
 
-Now we can compare our result to reported paper estimates for phi and <span class="pack" style = "">topicmodels</span> package (note delta is the beta above; the vignette actually references Steyvers & Griffiths paper).
+Now we can compare our result to reported paper estimates for $\phi$ and <span class="pack" style = "">topicmodels</span> package (note delta is the beta above; the vignette actually references Steyvers & Griffiths paper).
 
 ```{r tm-LDA}
 library(topicmodels)
@@ -282,7 +283,7 @@ fit_lda = LDA(
 
 ```
 
-Start with $\phi$ estimates. Note that the labels of what is topic 1 vs. topic 2 is arbitrary.
+Start with $\phi$ estimates. Note that the labels of what is topic 1 vs. topic 2 is arbitrary, the main thing is the separation of the words that should go to different topics, while bank is probable for both topics.
 
 
 ```{r tm-compare-phi, echo=FALSE}
@@ -310,8 +311,8 @@ Interval estimates for term probabilities for each topic.
 ```{r tm-phi-interval}
 library(coda)
 
-phi_estimates_topic_1 = as.mcmc(t(fit_tm$phiSims[, 1, ]))
-phi_estimates_topic_2 = as.mcmc(t(fit_tm$phiSims[, 2, ]))
+phi_estimates_topic_1 = as.mcmc(t(fit_tm$phi_sims[, 1, ]))
+phi_estimates_topic_2 = as.mcmc(t(fit_tm$phi_sims[, 2, ]))
 
 # summary(phi_estimates_topic_1)
 ```
@@ -331,17 +332,17 @@ map_df(list(
 Symmetrized or mean [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) for topic (dis)similarity.
 
 ```{r tm-kldiv-topic}
-KLdivs = .5 * sum(
+kl_divergence = .5 * sum(
   apply(
     fit_tm$phi, 
     1, function(row)  row[1] * log2(row[1] / row[2]) + row[2] * log2(row[2] / row[1])
     )
   )
 
-KLdivs
+kl_divergence
 ```
 
-We can compare with various other packages for KL-divergence.  
+We can compare with various other packages for KL-divergence (not shown).  
 
 ```{r tm-kldiv-topic-compare, eval = FALSE}
 mean(c(
@@ -387,19 +388,22 @@ Now apply to all pairs of documents.
 ```{r tm-kldiv-doc-all}
 # Now do for all
 docpairs = combn(1:d, 2)
-KLdivs = apply(docpairs, 2, divergence)
-mat0 = matrix(0, d, d)
-mat0[lower.tri(mat0)] = KLdivs
 
-KLdivs = mat0 + t(mat0)
-dimnames(KLdivs) = list(row.names(dtm))
+kl_divergence = apply(docpairs, 2, divergence)
+
+mat0 = matrix(0, d, d)
+mat0[lower.tri(mat0)] = kl_divergence
+
+kl_divergence = mat0 + t(mat0)
+
+dimnames(kl_divergence) = list(rownames(dtm))
 ```
 
 We can visualizes as follows, red implies documents are more dissimilar.
 
 ```{r tm-kldiv-doc-all-vis, echo = FALSE}
 heatmaply::heatmaply_cor(
-  KLdivs,
+  kl_divergence,
   Rowv = FALSE,
   Colv = FALSE,
   limits = NULL,
@@ -419,7 +423,7 @@ js_divergence = apply(docpairs, 2, divergence, method = 'JS')
 mat0 = matrix(0, d, d)
 mat0[lower.tri(mat0)] = js_divergence
 js_divergence = mat0 + t(mat0)
-dimnames(js_divergence) = list(row.names(dtm))
+dimnames(js_divergence) = list(rownames(dtm))
 
 heatmaply::heatmaply_cor(
   js_divergence,

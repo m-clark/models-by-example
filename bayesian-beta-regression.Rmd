@@ -153,7 +153,7 @@ brmod = betareg(y ~ ., data = d)
 
 ## Comparison
 
-Estimates are almost
+Estimates are almost idential in this particular case.
 
 ```{r bayes-beta-compare}
 print(

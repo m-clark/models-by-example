@@ -3,9 +3,10 @@
 
 The following provides a function for estimating the parameters of a linear regression via variational inference.  See Drugowitsch (2014) for an overview of the method outlined in Bishop (2006).
 
-For the primary function I will use the notation used in the Drugowitsch article in most cases. Here w, represents the coefficients, and τ the precision (inverse variance). The likelihood for response y is N(Xw, τ<sup>-1</sup>). Priors for w and tau are normal inverse gamma N(0, (τα)<sup>-1</sup>) Gamma(a0, b0). 
+For the primary function I will use the notation used in the Drugowitsch article in most cases. Here w, represents the coefficients, and τ the precision (inverse variance). The likelihood for target y is N(Xw, τ<sup>-1</sup>). Priors for w and tau are normal inverse gamma N(0, (τα)<sup>-1</sup>) Gamma(a0, b0). 
 
 References:
+
 - Drugowitsch: <http://arxiv.org/abs/1310.5438> 
 - See [here](https://github.com/DrugowitschLab/VBLinLogit/blob/master/src/vb_linear_fit.m) and [here](https://github.com/DrugowitschLab/VBLinLogit/blob/master/src/vb_linear_fit_ard.m) for his Matlab implementations.
 - Bishop: Pattern Recognition and Machine Learning
@@ -13,7 +14,7 @@ References:
 
 ## Data Setup
 
-We can simulate some data as a starting point, in this case, basic tabular data used in the standard regression problem. Note that here, I explicitly note the intercept, as it is added to the model matrix within the vb_reg function.
+We can simulate some data as a starting point, in this case, basic tabular data used in the standard regression problem. Here, I explicitly note the intercept, as it is added to the model matrix within the <span class="func" style = "">vb_reg</span> function.
 
 ```{r vb-setup}
 library(tidyverse)
@@ -51,7 +52,7 @@ y_test = X_test %*% coefs + rnorm(ntest, sd = sigma)
 
 ## Function
 
-First, the main function.  Here automatic relevance determination is an argument rather than a separate function.
+First, the main function.  For this demo, automatic relevance determination is an argument rather than a separate function.
 
 ```{r vb_reg}
 vb_reg = function(
@@ -141,9 +142,10 @@ vb_reg = function(
     tol   = tolCurrent
   )
   
-  if (iter >= maxiter) {
-    res = append(res, warning('Maximum iterations reached.'))
-  } else {res}
+  if (iter >= maxiter)
+    append(res, warning('Maximum iterations reached.'))
+  else
+    res
 }
 ```
 
@@ -199,14 +201,14 @@ tibble(no_ard = fit_small$coef[, 1],
 For the higher dimensional data, we will compare root mean square error.
 
 ```{r vbreg-compare-big, echo=FALSE}
-mseResults = data.frame(
+mse_results = data.frame(
   vb  = c(vb_train_error, vb_test_error),
   glm = c(glm_train_error, glm_test_error)
 )
 
-rownames(mseResults) = c('train', 'test')
+rownames(mse_results) = c('train', 'test')
 
-mseResults %>% kable_df()
+mse_results %>% kable_df()
 ```
 
 
@@ -223,7 +225,7 @@ gcoef = tibble(source = rep(c('true', 'vb', 'glm'), each = length(coefs)),
 
 gcoef %>% 
   ggplot(aes(coef, value, color = source)) +
-  geom_line(alpha = .2) +
+  # geom_line(alpha = .2) +
   geom_point(alpha = .5) +
   scico::scale_color_scico_d(end = .6)
 
@@ -237,7 +239,7 @@ gpred = tibble(
 
 gpred %>% 
   ggplot(aes(prediction, y)) +
-  geom_point() +
+  geom_point(alpha = .5, color = '#ff5500') +
   labs(x = 'Test Prediction', y = 'Observed') +
   facet_grid(~source)
 ```
@@ -247,7 +249,7 @@ gpred %>%
 
 And now for a notably higher dimension case with irrelevant predictors as in Drugowitsch section 2.6.3.  This is problematic for the GLM with having more covariates than data points (rank deficient), and as such it will throw a warning, as will the predict function.  It's really not even worth looking at but I have the code for consistency.
 
-This will take a while for the standard vb_reg, and even bumping up the iterations to 2000, it will still likely hit the max before reaching the default tolerance level.  However, the results appear very similar to that of Drugowitsch Figure 2.
+This will take a while to estimate, and without ARD, even bumping up the iterations to 2000 it will still likely hit the max before reaching the default tolerance level.  However, the results appear very similar to that of Drugowitsch Figure 2.
 
 ```{r vbreg-supp-setup}
 set.seed(1234)
@@ -301,14 +303,14 @@ vb_ard_test_error  = yardstick::rmse_vec(y_test[,1], vb_ard_pred_test[,1])
 
 
 ```{r vbreg-supp-rmse}
-mseResults = data.frame(
+mse_results = data.frame(
   vb = c(vb_train_error, vb_test_error),
   vbARD = c(vb_ard_train_error, vb_ard_test_error)#,
   # glm = c(glm_train_error, glm_test_error)
 )
-rownames(mseResults) = c('train', 'test')
+rownames(mse_results) = c('train', 'test')
 
-kable_df(mseResults)
+kable_df(mse_results)
 ```
 
 
@@ -331,7 +333,6 @@ gcoef = tibble(source = rep(c('true', 'vb', 'vb_ard'), each = 1001),
 
 gcoef %>% 
   ggplot(aes(coef, value, color = source)) +
-  geom_line(alpha = .2) +
   geom_point(alpha = .5) +
   scico::scale_color_scico_d(end = .6)
 ```

@@ -11,10 +11,10 @@ to with Med or Main respectively.
 
 The two main models are expressed conceptually as follows:
 
-$$Mediator \sim \alpha_{Med} + \beta_{Med}\cdot X$$
-$$y \sim \alpha_{Main} + \beta_{1\_{Main}}\cdot X + \beta_{2\_{Main}}\cdot Mediator$$
+$$\textrm{Mediator} \sim \alpha_{Med} + \beta_{Med}\cdot X$$
+$$y \sim \alpha_{Main} + \beta_{1\_{Main}}\cdot X + \beta_{2\_{Main}}\cdot \textrm{Mediator}$$
 
-However, there will be random effects for a grouping variable for each coefficient, i.e. random intercepts and slopes.
+However, there will be random effects for a grouping variable for each coefficient, i.e. random intercepts and slopes, for both the mediator model and the outcome model.
 
 Let's create data to this effect.
 
@@ -23,7 +23,7 @@ library(tidyverse)
 
 set.seed(8675309)
 
-## random effects for mediator model
+# random effects for mediator model
 # create cov matrix of RE etc. with no covariance between model random effects
 # covmat_RE = matrix(c(1,-.15,0,0,0,
 #                       -.15,.4,0,0,0,
@@ -32,11 +32,11 @@ set.seed(8675309)
 #                       0,0,.15,0,.2), nrow=5, byrow = T)
 
 # or with slight cov added to indirect coefficient RE; both matrices are pos def
-covmat_RE = matrix(c(1,-.15,0,0,0,
-                     -.15,.64,0,0,-.1,
-                     0,0,1,-.1,.15,
-                     0,0,-.1,.49,0,
-                     0,-.1,.15,0,.25), nrow = 5, byrow = TRUE)
+covmat_RE = matrix(c( 1.00, -0.15,  0.00,  0.00,  0.00,
+                     -0.15,  0.64,  0.00,  0.00, -0.10,
+                      0.00,  0.00,  1.00, -0.10,  0.15,
+                      0.00,  0.00, -0.10,  0.49,  0.00,
+                      0.00, -0.10,  0.15,  0.00,  0.25), nrow = 5, byrow = TRUE)
 
 # inspect
 covmat_RE
@@ -69,7 +69,7 @@ beta2_Main = -.2
 
 # residual variance
 resid_Med  = MASS::mvrnorm(500, 0, .75^2, empirical = TRUE)
-resid_Main = MASS::mvrnorm(500, 0, .5^2, empirical = TRUE)
+resid_Main = MASS::mvrnorm(500, 0, .50^2, empirical = TRUE)
 
 
 # Collect parameters for later comparison
@@ -80,7 +80,7 @@ params = c(
   alpha_Main = alpha_Main,
   beta1_Main = beta1_Main,
   beta2_Main = beta2_Main,
-  sigma_y   = sd(resid_Main),
+  sigma_y    = sd(resid_Main),
   alpha_Med_sd = sqrt(diag(covmat_RE)[1]),
   beta_Med_sd  = sqrt(diag(covmat_RE)[2]),
   alpha_sd = sqrt(diag(covmat_RE)[3]),
@@ -91,9 +91,9 @@ params = c(
 ranefs =  cbind(
   gamma_alpha_Med = unique(ranef_alpha_Med),
   gamma_beta_Med  = unique(ranef_beta_Med),
-  gamma_alpha    = unique(ranef_alpha_Main),
-  gamma_beta1    = unique(ranef_beta1_Main),
-  gamma_beta2    = unique(ranef_beta2_Main)
+  gamma_alpha = unique(ranef_alpha_Main),
+  gamma_beta1 = unique(ranef_beta1_Main),
+  gamma_beta2 = unique(ranef_beta2_Main)
 )
 ```
 
@@ -104,7 +104,7 @@ X = rnorm(500, sd = 2)
 
 Med = (alpha_Med + ranef_alpha_Med) + (beta_Med + ranef_beta_Med) * X + resid_Med[, 1]
 
-y   = (alpha_Main + ranef_alpha_Main) + (beta1_Main + ranef_beta1_Main) * X + 
+y = (alpha_Main + ranef_alpha_Main) + (beta1_Main + ranef_beta1_Main) * X + 
   (beta2_Main + ranef_beta2_Main) *  Med + resid_Main[, 1]
 
 group = rep(1:50, e = 10)
@@ -118,12 +118,6 @@ standat = list(
   N = length(y)
 )
 ```
-
-
-
-
-
-
 
 
 ## Model Code
@@ -261,26 +255,10 @@ generated quantities{
 ```
 
 
-<!-- ######### -->
-<!-- ### Debugging and Setup ### -->
-<!-- ######### -->
-
-
-<!-- # bug detector -->
-<!-- library(rstan) -->
-<!-- p = proc.time() -->
-<!-- fit0 = stan(model_code = modelStan, data = standat, iter = 400, warmup=200,  -->
-<!--             thin=1, chains = 1, verbose = F) -->
-<!-- proc.time() - p -->
-
-<!-- # print(fit0) -->
-
-<!-- # traceplot(fit0) -->
-
 
 ## Estimation
 
-Run the model and examine results.  The following assumes a character string or file (`bayes_mixed`) of the previous model code.
+Run the model and examine results.  The following assumes a character string or file (`bayes_med_model`) of the previous model code.
 
 ```{r bayes-med-est, cache.rebuild=F}
 library(rstan)
@@ -434,16 +412,42 @@ tibble(
   kable_df()
 ```
 
+Note that you can use <span class="pack" style = "">brms</span> to estimate this model as follows.  The `i` allows the random effects to correlate across Mediator and outcome models.  We have to convert the correlation estimate back to the covariance estimate to get the indirect value to compare to our base Stan result.
+
+```{r bayes-med-brms, results='hide'}
+library(brms)
+
+f = 
+  bf(Med ~ X + (1 + X |i| group)) +
+  bf(y   ~ X + Med + (1 + X + Med |i| group)) +
+  set_rescor(FALSE)
+       
+
+fit_brm = brm(
+  f,
+  data  = data.frame(X, Med, y, group),
+  cores = 4,
+  thin  = 4,
+  seed  = 1234
+)
+```
 
 
+```{r bayes-med-brms-show}
+summary(fit_brm)
+
+hypothesis(
+  fit_brm,
+  'b_y_Med*b_Med_X + cor_group__Med_X__y_Med*sd_group__Med_X*sd_group__y_Med = 0',
+  class = NULL,
+  seed  =  1234
+)
+```
 
 
 ## Visualization
 
 ```{r bayes-med-vis}
-# interactive diagnostics
-# shinystan::launch_shinystan(fit)
-
 library(bayesplot)
 
 pp_check(

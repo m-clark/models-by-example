@@ -1,6 +1,6 @@
 # Bayesian IRT
 
-The following shows some code demonstration for one through four parameter IRT models, though will only extensively explore the first two. 
+The following shows some code demonstration for one through four parameter IRT models, though will only extensively explore the first two. You can learn more about IRT models in general in [my structural equation modeling document](https://m-clark.github.io/sem/item-response-theory.html).
 
 
 ## One Parameter IRT
@@ -21,18 +21,22 @@ verbagg_items = VerbAgg %>%
   filter(btype == 'shout', situ == 'self') %>% 
   select(id, item, r2)
 
+head(verbagg_items)
+
 verbagg_items_wide = verbagg_items %>% 
   pivot_wider(id_cols = id, names_from = item, names_prefix = 'item_', values_from = r2)
+
+head(verbagg_items_wide)
 ```
 
-While we often think of the data in 'wide form', with one row per person and multiple columns respective to each item,and the subsequent Stan code will use that, it is generally both tidier and more straightforward for modeling with this long format, where one can use standard mixed model approaches. `r2` is the target variable of interest.
+While we often think of the data in 'wide form', with one row per person and multiple columns respective to each item, and the subsequent Stan code will use that, it is generally both tidier and more straightforward for modeling with the long format, where one can use standard mixed model approaches. `r2` is the target variable of interest in that case.
 
-In the wide format, the model for a single person is as follows, where $Z$ is the latent person score, and $i$ is the $i^{th}$ item.
+In the long format, the model for a single person is as follows, where $Z$ is the latent person ($p$)score, and $i$ is the $i^{th}$ item.
 
 
 $$\textrm{logit}(\pi) = \textrm{disc} (Z_p - \beta_i)$$ 
 
-Another formulation is the following, and corresponds to what brms will use.
+Another formulation is the following, and corresponds to what <span class="pack" style = "">brms</span> will use.
 
 $$\textrm{logit}(\pi) =  \beta_i + \textrm{disc}\cdot Z_p$$ 
 
@@ -105,7 +109,7 @@ fit_1pm = sampling(
 
 ### Comparison
 
-Now we compare to brms.  I use the [author's article](https://arxiv.org/abs/1905.09501) as a guide for this model, and note that it is following the second parameterization.
+Now we compare to <span class="pack" style = "">brms</span>.  I use the [author's article](https://arxiv.org/abs/1905.09501) as a guide for this model, and note again that it is following the second parameterization depicted above.
 
 ```{r bayes-irt1-compare-brms, results='hide'}
 library(brms)
@@ -127,7 +131,7 @@ brms_1pm = brm(
 
 
 If you want to compare to standard IRT in either parameterization, you can use
-the ltm package.
+the <span class="pack" style = "">ltm</span> package.
 
 ```{r nobayes-irt-ltm, eval = FALSE}
 library(ltm)
@@ -152,7 +156,7 @@ brms_discrim = VarCorr(brms_1pm)$id$sd[1]
 fit_params = summary(fit_1pm, digits = 3, par = c('discrim', 'difficulty'))$summary[,'mean']
 ```
 
-After extracting, we can show either parameterization for either model. For example brms item difficulties  =  our model `-discrim*difficulties`.
+After extracting, we can show either parameterization for either model. For example, <span class="pack" style = "">brms</span> item difficulties  =  our model `-discrim*difficulties`.
 
 ```{r bayes-irt1-compare-show, echo=FALSE}
 tibble(
@@ -224,7 +228,7 @@ fit_2pm = sampling(
 
 ### Comparison
 
-Now we compare to brms.  I use the [author's article](https://arxiv.org/abs/1905.09501) as a guide for this model, and note that it is following the second parameterization.  Took a little over 30 seconds on my machine, though of course you may experience differently.
+Now we compare to <span class="pack" style = "">brms</span>.  I use the [author's article](https://arxiv.org/abs/1905.09501) as a guide for this model, and note that it is following the second parameterization.  Took a little over 30 seconds on my machine, though of course you may experience differently.
 
 
 ```{r bayes-irt2-compare-brms, results='hide'}
@@ -277,7 +281,7 @@ fit_diff    = summary(fit_2pm, digits = 3, par = 'difficulty')$summary[,'mean']
 fit_discrim = summary(fit_2pm, digits = 3, par = 'discrim')$summary[,'mean']
 ```
 
-After extracting, we can show either parameterization for either model. For example brms item difficulties  =  our model `-discrim*difficulties`.
+
 
 ```{r bayes-irt2-compare-show, echo=FALSE}
 tibble(
