@@ -131,7 +131,7 @@ loadings_em = fit_em$loadings
 scores_em   = fit_em$scores
 ```
 
-Compare results to output from <span class="pack" style = "">pcaMethods</span>, which also has probabilistic PCA (demonstrated next). Note that the signs for loadings/scores may be different in sign, but otherwise shoudl be comparable.
+Compare results to output from <span class="pack" style = "">pcaMethods</span>, which also has probabilistic PCA (demonstrated next). Note that the signs for loadings/scores may be different in sign, but otherwise should be comparable.
 
 ```{r em-pca-compare}
 library(pcaMethods)  # install via BiocManager::install("pcaMethods")

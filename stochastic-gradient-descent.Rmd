@@ -1,19 +1,19 @@
 # Stochastic Gradient Descent
 
-Here we have 'online' learning via stochastic gradient descent.  See also,
-[standard gradient descent][Gradient Descent] In the following, we have basic
-data for standard regression, but in this 'online' learning case, we can assume
-each observation comes to us as a stream over time rather than as a single
-batch, and would continue coming in.  Note that there are plenty of variations
-of this, and it can be applied in the batch case as well.  Currently no stopping
-point is implemented in order to trace results over all data points/iterations.
-On revisiting this much later, I thought it useful to add that I believe this
-was motivated by the example in Murphy's Probabilistic Machine Learning.  I also
-made some cleanup to my original code, added some comments, but mostly left it
-as it was.
-
+Here we have 'online' learning via stochastic gradient descent.  See the
+[standard gradient descent][Gradient Descent] chapter. In the following, we have
+basic data for standard regression, but in this 'online' learning case, we can
+assume each observation comes to us as a stream over time rather than as a
+single batch, and would continue coming in.  Note that there are plenty of
+variations of this, and it can be applied in the batch case as well.  Currently
+no stopping point is implemented in order to trace results over all data
+points/iterations. On revisiting this much later, I thought it useful to add
+that I believe this was motivated by the example in Murphy's Probabilistic
+Machine Learning text.
 
 ## Data Setup
+
+Create some data for a standard linear regression.
 
 ```{r sgd-setup}
 library(tidyverse)
@@ -32,8 +32,10 @@ X  = cbind(Intercept = 1, x1, x2)
 
 ## Function
 
+The estimating function.
+
 ```{r sgd}
-sgd = function(
+sgd <- function(
   par,                                      # parameter estimates
   X,                                        # model matrix
   y,                                        # target variable
@@ -96,18 +98,18 @@ For any particular data you might have to fiddle with the `stepsize`, perhaps
 choosing one based on cross-validation with old data.
 
 ```{r sgd-est}
-sgd_result = sgd(
+fit_sgd = sgd(
   init,
   X = X,
   y = y,
-  stepsize = .1,
+  stepsize    = .1,
   stepsizeTau = .5,
   average = FALSE
 )
 
-str(sgd_result)
+str(fit_sgd)
 
-sgd_result$par
+fit_sgd$par
 ```
 
 
@@ -119,11 +121,14 @@ We can compare to standard linear regression.
 ```{r sgd-compare-lm}
 # summary(lm(y ~ x1 + x2))
 coef1 = coef(lm(y ~ x1 + x2))
+```
 
+```{r sgd-compare-lm-show, echo=FALSE}
 rbind(
-  sgd_result = sgd_result$par[, 1],
+  fit_sgd = fit_sgd$par[, 1],
   lm = coef1
-)
+) %>% 
+  kable_df()
 ```
 
 
@@ -132,10 +137,10 @@ rbind(
 ## Visualize Estimates
 
 
-```{r sgd-visualize}
+```{r sgd-visualize, echo=FALSE}
 library(tidyverse)
 
-gd = data.frame(sgd_result$parvec) %>% 
+gd = data.frame(fit_sgd$parvec) %>% 
   mutate(Iteration = 1:n())
 
 gd = gd %>%
@@ -159,7 +164,8 @@ data = gd) +
     angle = 45,
     size  = 4,
     data  = filter(gd, Iteration == n)
-  )
+  ) + 
+  scico::scale_color_scico_d(end = .75)
 ```
 
 
@@ -168,7 +174,7 @@ data = gd) +
 
 ## Data Set Shift
 
-This data includes a shift of the previous data.
+This data includes a shift of the previous data, where the data fundamentally changes at certain times.
 
 ```{r sgd-shift-setup}
 set.seed(1234)
@@ -189,7 +195,6 @@ coef3 = coef(lm(y3 ~ x1.3 + x2.3))
 
 X3 = rbind(X2, cbind(1, x1.3, x2.3))
 y3 = c(y2, y3)
-
 ```
 
 
@@ -198,35 +203,47 @@ y3 = c(y2, y3)
 
 ### Estimation
 
+We'll use the same function as before.
+
 ```{r sgd-est-2}
-sgd_result2 = sgd(
+fit_sgd2 = sgd(
   init,
   X = X3,
   y = y3,
-  stepsize = 1,
+  stepsize    = 1,
   stepsizeTau = 0,
   average = FALSE
 )
 
-str(sgd_result2)
+str(fit_sgd2)
 ```
 
 ### Comparison
 
-Compare with `lm` for each data part.
+Compare with <span class="func" style = "">lm</span> result for each data part.
 
-```{r sgd-compare-2}
-sgd_result2$parvec[c(n, n + n2, n + n2 + n3), ]
-rbind(coef1, coef2, coef3)
+```{r sgd-compare-2, echo=F}
+lm_coef = rbind(lm_part1 = coef1, lm_part2 = coef2, lm_part3 = coef3) %>% 
+  data.frame() %>% 
+  rename(Intercept = X.Intercept.)
+
+sgd_coef = fit_sgd2$parvec[c(n, n + n2, n + n2 + n3), ] %>% 
+  data.frame()
+
+rownames(sgd_coef) = c('sgd_part1','sgd_part2','sgd_part3')
+colnames(sgd_coef) = colnames(lm_coef)
+
+bind_rows(lm_coef, sgd_coef) %>% 
+  kable_df()
 ```
 
 
 ### Visualize Estimates
 
-Visualize estimates.
+Visualize estimates across iterations.
 
-```{r sgd-visualize-2}
-gd = data.frame(sgd_result2$parvec) %>% 
+```{r sgd-visualize-2, echo=FALSE}
+gd = data.frame(fit_sgd2$parvec) %>% 
   mutate(Iteration = 1:n())
 
 gd = gd %>% 
@@ -252,11 +269,9 @@ ggplot(aes(x = Iteration,
     data = filter(gd, Iteration %in% c(n, n + n2, n + n2 + n3)),
     size = 4,
     show.legend = FALSE
-  )
+  ) + 
+  scico::scale_color_scico_d(end = .75, alpha = .5)
 ```
-
-
-
 
 
 

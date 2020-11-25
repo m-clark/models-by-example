@@ -119,8 +119,6 @@ fit = sampling(
   data = stan_data,
   thin = 4
 )
-
-
 ```
 
 
@@ -206,15 +204,6 @@ summary(BESTout)
 We can plot the posterior predictive distribution vs. observed data density.
 
 ```{r bayes-t-pp-check}
-# by hand
-
-gdat = y_rep %>% 
-  as.data.frame() %>% 
-  pivot_longer(everything(), names_to =  'iteration') %>% 
-  mutate(iteration   = as.integer(str_extract(iteration, '[0-9]+')),
-         observation = factor(rep(1:nrow(y_rep), e = 100)))
-
-
 library(bayesplot)
 
 pp_check(
@@ -227,9 +216,17 @@ pp_check(
 We can expand this to incorporate the separate groups and observed values. Solid lines and dots represent the observed data.
 
 ```{r bayes-t-vis, echo = FALSE}
+gdat = y_rep %>% 
+  as.data.frame() %>% 
+  # slice_sample(n = 50) %>% 
+  mutate(iteration = 1:n()) %>% 
+  pivot_longer(-iteration, names_to =  'observation') %>% 
+  mutate(observation  = as.integer(str_extract(observation, '[0-9]+')))
+
+
 # change e to match your number of posterior draws
 gdat = gdat %>% 
-  mutate(group_id = factor(rep(group_id, e = 400)))
+  mutate(group_id = factor(ifelse(observation <= 50, 1, 2)))
 
 ggplot(aes(x = value), data = gdat) +
   geom_density(aes(group = group_id, fill = group_id),

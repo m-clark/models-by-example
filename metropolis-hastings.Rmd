@@ -1,4 +1,4 @@
-# Metropolis Hastings Example
+# Metropolis Hastings
 
 The following demonstrates a random walk [Metropolis-Hastings
 algorithm](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm)
@@ -22,6 +22,8 @@ References:
 
 
 ## Data Setup
+
+Here we create some data based on a standard linear regression.
 
 ```{r mh-setup}
 library(tidyverse)
@@ -59,7 +61,7 @@ fit_lm = lm(y ~ ., data = data.frame(X[, -1]))
 The primary functions that we need to specify regard the posterior distribution, an update step for beta coefficients, and an update step for the variance estimate. We assume a normal distribution for the β coefficients, inverse gamma on σ^2^.
 
 ```{r mh-func-posterior}
-log_posterior = function(x, y, b, s2) {
+log_posterior <- function(x, y, b, s2) {
   # Args: X is the model matrix; y the target vector; b and s2 the parameters
   # to be estimated
 
@@ -99,7 +101,7 @@ Update functions.
 ```{r mh-func-update}
 # update step for regression coefficients
 
-updatereg = function(i, x, y, b, s2) {
+update_coef <- function(i, x, y, b, s2) {
   # Args are the same as above but with additional i iterator argument.
   b[i, ] = MASS::mvrnorm(1, mu = b[i-1, ], Sigma = b_var_scale)  # proposal/jumping distribution
   
@@ -118,22 +120,22 @@ updatereg = function(i, x, y, b, s2) {
 
 # update step for sigma2
 
-updates2 = function(i, x, y, b, s2) {
-  s2candidate = rnorm(1, s2[i-1], sd = sigma_scale)
+update_s2 <- function(i, x, y, b, s2) {
+  s2_candidate = rnorm(1, s2[i-1], sd = sigma_scale)
   
-  if (s2candidate < 0) {
+  if (s2_candidate < 0) {
     accept = FALSE
   } 
   else {
     s2_diff = 
-      log_posterior(x = x, y = y, b = b[i, ], s2 = s2candidate) - 
+      log_posterior(x = x, y = y, b = b[i, ], s2 = s2_candidate) - 
       log_posterior(x = x, y = y, b = b[i, ], s2 = s2[i - 1])
     
     unidraw = runif(1)
     accept  = unidraw < min(exp(s2_diff), 1)
   }
   
-  ifelse(accept, s2candidate, s2[i - 1])
+  ifelse(accept, s2_candidate, s2[i - 1])
 }
 ```
 
@@ -169,7 +171,7 @@ We can now run and summarize the model with tools from the <span class="pack">co
 ```{r mh-est-code, eval=F}
 # Run
 for (i in 2:nsim) {
-  b[i, ] = updatereg(
+  b[i, ] = update_coef(
     i  = i,
     y  = y,
     x  = X,
@@ -177,7 +179,7 @@ for (i in 2:nsim) {
     s2 = s2
   )
   
-  s2[i] = updates2(
+  s2[i] = update_s2(
     i  = i,
     y  = y,
     x  = X,
@@ -196,7 +198,7 @@ s2_acc_rate
 # get final chain
 library(coda)
 
-b_mcmc  = as.mcmc(b[seq(warmup + 1, nsim, by = thin),])
+b_mcmc  = as.mcmc(b[seq(warmup + 1,  nsim, by = thin),])
 s2_mcmc = as.mcmc(s2[seq(warmup + 1, nsim, by = thin)])
 
 # get summaries
@@ -207,7 +209,7 @@ summary(s2_mcmc)
 ```{r mh-est-show, echo=F}
 # Run
 for (i in 2:nsim) {
-  b[i, ] = updatereg(
+  b[i, ] = update_coef(
     i  = i,
     y  = y,
     x  = X,
@@ -215,7 +217,7 @@ for (i in 2:nsim) {
     s2 = s2
   )
   
-  s2[i] = updates2(
+  s2[i] = update_s2(
     i  = i,
     y  = y,
     x  = X,
@@ -273,11 +275,13 @@ init %>%
 
 ## Comparison
 
-We can compare to the `lm` result or <span class="pack" style = "">rstanarm</span>.
+We can compare to the <span class="func" style = "">lm</span> result or <span class="pack" style = "">rstanarm</span>.
 
-```{r mh-compare, echo=1}
+```{r mh-compare, echo=1, results='hide'}
 fit_rstan = rstanarm::stan_glm(y ~ ., data = data.frame(X[, -1]))
+```
 
+```{r mh-compare-show, echo=FALSE}
 tibble(
   parameter = c(names(coef(fit_lm)), 'sigma_sq'),
   fit = init$mean,

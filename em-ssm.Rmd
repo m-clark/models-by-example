@@ -2,7 +2,7 @@
 
 The following regards chapter 11 in Statistical Modeling and Computation, the
 first example for an unobserved components model.  The data regards  inflation
-based on the U.S. consumer price index ($infl = 400*log(cpi_t/cpi_{t-1})$), from
+based on the U.S. consumer price index ($\textrm{infl} = 400*log(cpi_t/cpi_{t-1})$), from
 the second quarter of 1947 to the second  quarter of 2011.  You can acquire the
 data [here](http://www.maths.uq.edu.au/~kroese/statbook/Statespace/USCPI.csv) or
 in [Datasets repo](https://github.com/m-clark/Datasets). Just note that it has 2
@@ -13,7 +13,7 @@ easier fashion [here](https://fred.stlouisfed.org/series/CPIAUCSL).
 
 
 For the following I use `n` instead of `t` or `T` because those are transpose and `TRUE`
-in R. The model is basically y = τ + ϵ, with ϵ ~ N(0, σ^2^), and τ = τ_{n-1} +
+in R. The model is basically y = τ + ϵ, with ϵ ~ N(0, σ^2^), and τ = τ<sub>n-1<sub> +
 υ_n with υ ~ N(0, ω^2^).  Thus each y is associated with a latent variable that
 follows a random walk over time. ω^2^ serves as a smoothing parameter, which
 itself may be estimated but which is fixed in the following. See the text for

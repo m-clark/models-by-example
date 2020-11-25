@@ -1,4 +1,4 @@
-# Hamiltonian Monte Carlo Example
+# Hamiltonian Monte Carlo
 
 
 The following demonstrates Hamiltonian Monte Carlo, the technique that Stan
@@ -12,6 +12,7 @@ the code in the appendix of Gelman.
 
 ## Data Setup
 
+As with the [Metropolis Hastings chapter][Metropolis Hastings], we use some data for a standard linear regression.
 
 ```{r hmc-setup}
 library(tidyverse)
@@ -49,7 +50,7 @@ fit_lm = lm(y ~ ., data = data.frame(X[, -1]))
 First we start with the log posterior function.
 
 ```{r hmc-func-log-post}
-log_posterior = function(X, y, th) {
+log_posterior <- function(X, y, th) {
   # Args
   # X: the model matrix
   # y: the target vector
@@ -89,7 +90,7 @@ The following is the numerical gradient function as given in BDA3 p. 602. It has
 the same arguments as the log posterior function.
 
 ```{r hmc-func-gradient}
-gradient_theta = function(X, y, th) {
+gradient_theta <- function(X, y, th) {
   d = length(th)
   e = .0001
   diffs = numeric(d)
@@ -116,7 +117,7 @@ manual](https://mc-stan.org/docs/2_18/reference-manual/hamiltonian-monte-carlo.h
 for more detail.
 
 ```{r hmc-func-iter}
-hmc_iteration = function(X, y, th, epsilon, L, M) {
+hmc_iteration <- function(X, y, th, epsilon, L, M) {
   # Args
   # epsilon: the stepsize
   # L: the number of leapfrog steps
@@ -166,7 +167,7 @@ Main HMC function.
 
 
 ```{r hmc-func-run}
-hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y) {
+hmc_run <- function(starts, iter, warmup, epsilon_0, L_0, M, X, y) {
   # # Args: 
   # starts:  starting values
   # iter: total number of simulations for each chain (note chain is based on the dimension of starts)
@@ -252,14 +253,17 @@ fit_hmc = hmc_run(
   y   = y
 )
 # str(fit_hmc, 1)
+```
 
-# use coda if desired
+Using <span class="pack" style = "">coda</span>, we can get some nice summary information. Results not shown.
+
+```{r hmc-est-coda}
 library(coda)
 
 theta = as.mcmc.list(list(as.mcmc(fit_hmc$sims[(wu+1):nsim, 1,]), 
                           as.mcmc(fit_hmc$sims[(wu+1):nsim, 2,])))
 
-summary(theta)
+# summary(theta)
 fit_summary =  summary(theta)$statistics[,'Mean']
 
 beta_est  = fit_summary[1:4]
@@ -268,7 +272,8 @@ sigma_est = fit_summary[5]
 # log_posterior(X, y, fit_summary)
 ```
 
-The following table is uses <span class="pack" style = "">rstan's</span> <span class="func" style = "">monitor</span> function to produce typical Stan output.
+
+Instead we can use <span class="pack" style = "">rstan's</span> <span class="func" style = "">monitor</span> function on `fit_hmc$sims` to produce typical Stan output.
 
 ```{r hmc-est-show, echo=FALSE}
 init = rstan::monitor(
@@ -297,27 +302,27 @@ control options for a little bit more similarity, but that's not necessary.
 
 
 ```{stan hmc-compare, output.var='stan_hmc'}
-data {                      // Data block
-  int<lower = 1> N;           // Sample size
-  int<lower = 1> K;           // Dimension of model matrix
-  matrix [N, K]  X;          // Model Matrix
-  vector[N] y;              // Target variable
+data {                            // Data block
+  int<lower = 1> N;               // Sample size
+  int<lower = 1> K;               // Dimension of model matrix
+  matrix [N, K]  X;               // Model Matrix
+  vector[N] y;                    // Target variable
 }
 
-parameters {                // Parameters block; declarations only
-  vector[K] beta;           // Coefficient vector
-  real<lower = 0> sigma;      // Error scale
+parameters {                      // Parameters block; declarations only
+  vector[K] beta;                 // Coefficient vector
+  real<lower = 0> sigma;          // Error scale
 }
 
-model {                     // Model block
+model {                           // Model block
   vector[N] mu;
 
-  mu = X * beta;           // Creation of linear predictor
+  mu = X * beta;                  // Creation of linear predictor
   
   
   // priors
   beta  ~ normal(0, 10);
-  sigma ~ inv_gamma(.001, .001); // changed to gamma a la code above
+  sigma ~ inv_gamma(.001, .001);  // changed to gamma a la code above
   
   // likelihood
   y ~ normal(mu, sigma);
@@ -325,7 +330,7 @@ model {                     // Model block
 ```
 
 
-```{r hmc-stan-est, result='hide', echo=FALSE}
+```{r hmc-stan-est, results='hide', echo=FALSE}
 dat = list(N = N,
            K = ncol(X),
            y = y,
@@ -376,4 +381,10 @@ And finally, the standard least squares fit (Residual standard error = sigma).
 ```{r hmc-compare-lm, echo=FALSE}
 pander::pander(summary(fit_lm))
 ```
+
+## Source
+
+Original demo here:
+
+https://m-clark.github.io/bayesian-basics/appendix.html#hamiltonian-monte-carlo-example
 

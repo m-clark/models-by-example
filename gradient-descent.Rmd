@@ -1,11 +1,7 @@
 # Gradient Descent
 
 
-Gradient descent for a standard linear regression model.  The function takes
-arguments starting points for the parameters to be estimated, a tolerance or
-maximum iteration value to provide a stopping point, stepsize (or starting
-stepsize for adaptive approach), whether to print out iterations, and whether
-to plot the loss over each iteration.
+The following demonstration regards Gradient descent for a standard linear regression model.  
 
 
 ## Data Setup
@@ -28,10 +24,14 @@ X  = cbind(Intercept = 1, x1, x2)  # model matrix
 
 ## Function
 
-(Batch) Gradient Descent Algorithm.
+(Batch) Gradient Descent Algorithm.  The function takes arguments starting
+points for the parameters to be estimated, a tolerance or maximum iteration
+value to provide a stopping point, stepsize (or starting stepsize for adaptive
+approach), whether to print out iterations, and whether to plot the loss over
+each iteration.
 
 ```{r gd}
-gd = function(
+gd <- function(
   par,
   X,
   y,
@@ -96,7 +96,7 @@ be assessed via cross-validation, or alternatively one can use an
 adaptive approach, a simple one of which is implemented in this function.
 
 ```{r gd-result}
-gd_result = gd(
+fit_gd = gd(
   init,
   X = X,
   y = y,
@@ -105,7 +105,7 @@ gd_result = gd(
   adapt     = TRUE
 )
 
-str(gd_result)
+str(fit_gd)
 ```
 
 
@@ -114,11 +114,12 @@ str(gd_result)
 
 We can compare to standard linear regression.
 
-```{r gd-compare}
+```{r gd-compare, echo=FALSE}
 rbind(
-  gd = round(gd_result$par[, 1], 5),
+  gd = round(fit_gd$par[, 1], 5),
   lm = coef(lm(y ~ x1 + x2))
-)
+) %>% 
+  kable_df()
 
 # summary(lm(y ~ x1 + x2))
 ```

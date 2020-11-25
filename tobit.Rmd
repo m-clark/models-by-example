@@ -176,7 +176,7 @@ Estimate and use <span class="pack" style = "">AER</span> for comparison.
 ```{r tobit-ll-est}
 res = optim(
   par = init,
-  tobit,
+  tobit_ll,
   y  = acad_apt$apt2,
   X  = X,
   ll = 400,

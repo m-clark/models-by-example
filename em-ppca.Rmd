@@ -37,7 +37,7 @@ orth <- function(M) {
 
 em_ppca <- function(
   X,
-  nComp = 2,
+  n_comp = 2,
   tol   = .00001,
   maxits  = 100,
   showits = TRUE
@@ -45,7 +45,7 @@ em_ppca <- function(
   
   # Arguments 
   # X: numeric data
-  # nComp: number of components
+  # n_comp: number of components
   # tol = tolerance level
   # maxits: maximum iterations
   # showits: show iterations
@@ -57,7 +57,7 @@ em_ppca <- function(
   # starting points and other initializations
   N = nrow(X)
   D = ncol(X)
-  L = nComp
+  L = n_comp
 
   S = (1/N) * t(X)%*%X
   
@@ -158,7 +158,7 @@ em_ppca <- function(
 ```{r em-ppca-est}
 fit_em = em_ppca(
   X = X,
-  nComp = 2,
+  n_comp = 2,
   tol   = 1e-12,
   maxit = 100
 )
@@ -288,9 +288,9 @@ X_miss[NAindex] = NA
 This estimating function largely follows the previous
 
 ```{r em-ppca-miss-func}
-em_ppca_miss = function(
+em_ppca_miss <- function(
   X,
-  nComp   = 2,
+  n_comp  = 2,
   tol     = .00001,
   maxits  = 100,
   showits = TRUE
@@ -298,7 +298,7 @@ em_ppca_miss = function(
   
   # Arguments 
   # X: numeric data
-  # nComp: number of components
+  # n_comp: number of components
   # tol: tolerance level
   # maxits: maximum iterations
   # showits: show iterations
@@ -311,7 +311,7 @@ em_ppca_miss = function(
   X = X
   N = nrow(X_orig)
   D = ncol(X_orig)
-  L = nComp
+  L = n_comp
   NAs = is.na(X_orig)
 
   X[NAs] = 0
@@ -417,7 +417,7 @@ Run the PCA.
 ```{r em-ppca-miss-est}
 fit_em_miss = em_ppca_miss(
   X = X_miss,
-  nComp = 2,
+  n_comp = 2,
   tol   = 1e-8,
   maxit = 100
 )
@@ -441,7 +441,7 @@ scores_em   = fit_em_miss$scores
 Compare to standard pca on full data set if desired.
 
 ```{r em-ppca-miss-compare-pca, eval=FALSE}
-standard_pca =  princomp(scale(state.x77))
+standard_pca =  prin_comp(scale(state.x77))
 
 scores_standard_pca   = standard_pca$scores[,1:2]
 loadings_standard_pca = standard_pca$loadings[,1:2]

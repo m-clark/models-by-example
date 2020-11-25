@@ -302,7 +302,7 @@ This was the old original code from the supplemental section for the article, bu
 
 #### A.1
 
-```{r eval=FALSE}
+```{r rkhs-a.1, eval=FALSE}
 ###### Data ########
 set.seed(3)
 n <- 20
@@ -422,7 +422,7 @@ Now we have to find an optimal lambda using GCV...
 framework we discussed in Section 4.3. We also provide a graph with our
 estimation along with the true function and data.
 
-```{r eval=FALSE}
+```{r rkhs-a.2, eval=FALSE}
 ###### Data ######## 
 set.seed(3) 
 n <- 50
