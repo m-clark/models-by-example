@@ -38,16 +38,12 @@ dfXy = data.frame(X,y)
 ```
 
 
-
-
-
-
 ## Functions
 
 A straightforward function to estimate the log likelihood.
 
 ```{r penalized_ML}
-penalized_ML = function(
+penalized_ML <- function(
   par,
   X,
   y,
@@ -82,8 +78,6 @@ penalized_ML = function(
 
 
 
-
-
 This next function is a <span class="pack" style = "">glmnet</span>  style
 approach that will put the lambda coefficient on equivalent scale. It uses a
 different objective function.  Note that <span class="pack" style =
@@ -91,7 +85,7 @@ different objective function.  Note that <span class="pack" style =
 penalties.
 
 ```{r penalized_ML2}
-penalized_ML2 = function(
+penalized_ML2 <- function(
   par,
   X,
   y,
@@ -132,7 +126,6 @@ X = cbind(1, X)
 ```
 
 
-
 We'll need to set initial values.  Note we'd normally want to handle the sigma
 parameter differently as it's bounded by zero, but we'll ignore for
 demonstration.
@@ -163,7 +156,6 @@ optlmpenalized_MLL1 = optim(
 parspenalized_MLL2 = optlmpenalized_MLL2$par
 parspenalized_MLL1 = optlmpenalized_MLL1$par
 ```
-
 
 
 ## Comparison

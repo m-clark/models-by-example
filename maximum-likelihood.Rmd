@@ -67,7 +67,7 @@ y = rnorm(1000, mean = 5, sd = 2)
 starting_values = c(0, 1)
 
 # the log likelihood function
-simple_ll = function(mu, sigma, verbose = TRUE) {
+simple_ll <- function(mu, sigma, verbose = TRUE) {
   
   ll = sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))
   
@@ -247,7 +247,7 @@ beta = c(5, 2)
 # add intercept to X and create y with some noise
 y = cbind(1, X) %*% beta + rnorm(1000, sd = 2.5)
 
-regression_ll = function(sigma = 1, Int = 0, b1 = 0) {
+regression_ll <- function(sigma = 1, Int = 0, b1 = 0) {
   coefs = c(Int, b1)
   
   mu = cbind(1,X)%*%coefs

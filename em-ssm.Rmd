@@ -2,7 +2,7 @@
 
 The following regards chapter 11 in Statistical Modeling and Computation, the
 first example for an unobserved components model.  The data regards  inflation
-based on the U.S. consumer price index (infl = 400*log(cpi_t/cpi_{t-1})), from
+based on the U.S. consumer price index ($infl = 400*log(cpi_t/cpi_{t-1})$), from
 the second quarter of 1947 to the second  quarter of 2011.  You can acquire the
 data [here](http://www.maths.uq.edu.au/~kroese/statbook/Statespace/USCPI.csv) or
 in [Datasets repo](https://github.com/m-clark/Datasets). Just note that it has 2
@@ -13,11 +13,12 @@ easier fashion [here](https://fred.stlouisfed.org/series/CPIAUCSL).
 
 
 For the following I use `n` instead of `t` or `T` because those are transpose and `TRUE`
-in R. The model is basically y = τ + ϵ, with ϵ ~ N(0, σ^2), and τ = τ_{n-1} +
-υ_n with υ ~ N(0, ω^2).  Thus each y is associated with a latent variable that
-follows a random walk over time. ω^2 serves as a smoothing parameter, which
+in R. The model is basically y = τ + ϵ, with ϵ ~ N(0, σ^2^), and τ = τ_{n-1} +
+υ_n with υ ~ N(0, ω^2^).  Thus each y is associated with a latent variable that
+follows a random walk over time. ω^2^ serves as a smoothing parameter, which
 itself may be estimated but which is fixed in the following. See the text for
 more details.
+
 
 ### Data Setup
 
@@ -51,7 +52,7 @@ em_state_space <- function(
   showits = FALSE
 ) {
   
-  # Arguments are 
+  # Arguments 
   # params: starting parameters (variance as 'sigma2'), 
   # y: data, 
   # tol: tolerance,
@@ -168,27 +169,32 @@ series = ymd(
 
 
 
-The following corresponds to Fig. 11.1 in the text.
+The following corresponds to Fig. 11.1 in the text.  We'll also compare to generalized additive model via <span class="func" style = "">geom_smooth</span> (greenish line).  We can see the .1 model (light blue) is overly smooth.
 
 ```{r em-ssm-vis}
 library(tidyverse)
 
 data.frame(
-  series    = series[1:length(inflation)],
+  series = series[1:length(inflation)],
   inflation = inflation,
-  Mod_1     = ss_mod_1$tau,
-  Mod_.5    = ss_mod_.5$tau,
-  Mod_.1     = ss_mod_.1$tau
+  Mod_1  = ss_mod_1$tau,
+  Mod_.5 = ss_mod_.5$tau,
+  Mod_.1 = ss_mod_.1$tau
 ) %>% 
   ggplot(aes(x = series, y = inflation)) +
-  geom_point(color = 'gray50') +
+  geom_point(color = 'gray50', alpha = .25) +
   geom_line(aes(y = Mod_1),  color = '#ff5500') +
-  geom_line(aes(y = Mod_.5), color = 'skyblue3') +
+  geom_line(aes(y = Mod_.5), color = '#9E1B34') +
   geom_line(aes(y = Mod_.1), color = '#00aaff') +
-  geom_smooth(formula = y ~ s(x),       # compare to generalized additive model (thicker line) 
-              se = FALSE,
-              method = 'gam') +
-  scale_x_date(date_breaks = '10 years')
+  geom_smooth(
+    formula = y ~ s(x, bs = 'gp', k = 50),
+    se = FALSE,
+    color = '#1b9e86',
+    method = 'gam',
+    size = .5
+  ) +
+  scale_x_date(date_breaks = '10 years') +
+  labs(x = '')
 ```
 
 

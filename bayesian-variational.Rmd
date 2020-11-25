@@ -55,7 +55,7 @@ y_test = X_test %*% coefs + rnorm(ntest, sd = sigma)
 First, the main function.  For this demo, automatic relevance determination is an argument rather than a separate function.
 
 ```{r vb_reg}
-vb_reg = function(
+vb_reg <- function(
   X,
   y,
   a0 = 10e-2,

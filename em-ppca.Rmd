@@ -2,12 +2,14 @@
 
 The following is an EM algorithm for probabilistic principal components
 analysis. Based on Tipping and Bishop, 1999, and also Murphy 2012 Probabilistic
-ML, with some code snippets inspired by the <span class="func" style = "">ppca</span> function used  below. See also ModelFitting/EM Examples/EM for pca.R
+ML, with some code snippets inspired by the <span class="func" style =
+"">ppca</span> function used  below. See also [standard PCA][PCA].
 
 
 ### Data Setup
 
-`state.x77` is from base R, which includes various state demographics.  We will first standardize the data.
+`state.x77` is from base R, which includes various state demographics.  We will
+first standardize the data.
 
 ```{r em-ppca-setup}
 library(tidyverse)
@@ -17,7 +19,22 @@ X = scale(state.x77)
 
 ### Function
 
+The estimating function.  Note that it uses <span class="func" style =
+"">orth</span> from <span class="pack" style = "">pracma</span>, but I show the
+core of the underlying code if you don't want to install it.
+
 ```{r em-ppca-func}
+orth <- function(M) {
+  svdM = svd(M)
+  U    = svdM$u
+  s    = svdM$d
+  tol  = max(dim(M)) * max(s) * .Machine$double.eps
+  r    = sum(s > tol)
+  
+  U[, 1:r, drop = FALSE]
+}
+
+
 em_ppca <- function(
   X,
   nComp = 2,
@@ -35,8 +52,7 @@ em_ppca <- function(
   
   # require(pracma) 
 
-  tr = function(x) sum(diag(x), na.rm = TRUE)
-  
+  tr <- function(x) sum(diag(x), na.rm = TRUE)  # matrix trace
   
   # starting points and other initializations
   N = nrow(X)
@@ -140,14 +156,14 @@ em_ppca <- function(
 ### Estimation
 
 ```{r em-ppca-est}
-results_ppca = em_ppca(
+fit_em = em_ppca(
   X = X,
   nComp = 2,
-  tol = 1e-12,
+  tol   = 1e-12,
   maxit = 100
 )
 
-str(results_ppca)
+str(fit_em)
 ```
 
 ### Comparison
@@ -155,9 +171,9 @@ str(results_ppca)
 Extract reconstructed values and loadings for comparison.
 
 ```{r em-ppca-extract}
-Xrecon      = results_ppca$Xrecon
-loadings_em = results_ppca$loadings
-scores_em   = results_ppca$scores
+Xrecon      = fit_em$Xrecon
+loadings_em = fit_em$loadings
+scores_em   = fit_em$scores
 ```
 
 
@@ -180,7 +196,7 @@ Compare results to output from <span class="pack" style = "">pcaMethods</span>, 
 ```{r em-ppca-compare}
 library(pcaMethods)
 
-results_pcam  = pca(
+fit_pcam  = pca(
   X,
   nPcs = 2,
   threshold = 1e-8,
@@ -189,8 +205,8 @@ results_pcam  = pca(
   center = FALSE
 )
 
-loadings_pcam = loadings(results_pcam)
-scores_pcam   = scores(results_pcam)
+loadings_pcam = loadings(fit_pcam)
+scores_pcam   = scores(fit_pcam)
 ```
 
 
@@ -198,8 +214,11 @@ Compare loadings and scores.
 
 ```{r em-ppca-compare-loadings}
 round(cbind(loadings_pcam, loadings_em, loadings_standard_pca), 3)
+
 sum((abs(loadings_pcam) - abs(loadings_em)) ^ 2)
-round(cbind(abs(scores_pcam), abs(scores_em)), 2)
+
+cbind(scores_pcam, data.frame(EM = scores_em)) %>% 
+  head()
 ```
 
 
@@ -218,24 +237,29 @@ mean(abs(Xrecon_pcam - Xrecon))
 
 ### Visualize
 
-```{r em-ppca-vis-recon}
+Show the reconstructed vs. observed data.
+
+```{r em-ppca-vis-recon, echo=FALSE}
 GGally::ggpairs(data.frame(
-  data    = X[, 1],
-  custom  = Xrecon[, 1],
+  data = X[, 1],
+  em = Xrecon[, 1],
   pcaMeth = Xrecon_pcam[, 1]
 ))
+  
 
 GGally::ggpairs(data.frame(
-  data    = X[, 2],
-  custom  = Xrecon[, 2],
+  data = X[, 2],
+  em = Xrecon[, 2],
   pcaMeth = Xrecon_pcam[, 2]
 ))
 ```
 
-```{r em-ppca-vis-scores}
-qplot(Xrecon[, 1], Xrecon_pcam[, 1])
+Compare component scores.
 
-GGally::ggpairs(data.frame(scores_em, scores_pcam) )
+```{r em-ppca-vis-scores, echo=FALSE}
+# qplot(Xrecon[, 1], Xrecon_pcam[, 1])
+
+GGally::ggpairs(data.frame(em = scores_em, pcam = scores_pcam))
 ```
 
 
@@ -244,7 +268,7 @@ GGally::ggpairs(data.frame(scores_em, scores_pcam) )
 
 ### Missing Data Example
 
-A slightly revised approach can be taken in the case of missing value.
+A slightly revised approach can be taken in the case of missing values.
 
 
 #### Data Setup
@@ -261,17 +285,26 @@ X_miss[NAindex] = NA
 
 #### Function
 
+This estimating function largely follows the previous
+
 ```{r em-ppca-miss-func}
-em_ppca_miss = function(X, nComp=2, tol=.00001, maxits=100, showits=T){
+em_ppca_miss = function(
+  X,
+  nComp   = 2,
+  tol     = .00001,
+  maxits  = 100,
+  showits = TRUE
+  ) {
+  
   # Arguments 
   # X: numeric data
   # nComp: number of components
-  # tol = tolerance level
+  # tol: tolerance level
   # maxits: maximum iterations
   # showits: show iterations
-  # require(pracma) # for orthonormal basis of W; pcaMethods package has also
+  # require(pracma) # for orthonormal basis of W; pcaMethods package has also, see basic orth function
   
-  tr = function(x) sum(diag(x), na.rm = TRUE)
+  tr <- function(x) sum(diag(x), na.rm = TRUE)   # matrix trace
   
   # starting points and other initializations
   X_orig = X
@@ -358,6 +391,7 @@ em_ppca_miss = function(X, nComp=2, tol=.00001, maxits=100, showits=T){
   
   W = W %*% evecs
   Z = X %*% W
+  
   Xrecon   = Z %*% t(W)
   reconerr = sum((Xrecon-X)^2)
   
@@ -381,14 +415,14 @@ em_ppca_miss = function(X, nComp=2, tol=.00001, maxits=100, showits=T){
 Run the PCA.
 
 ```{r em-ppca-miss-est}
-results_ppca_miss = em_ppca_miss(
+fit_em_miss = em_ppca_miss(
   X = X_miss,
   nComp = 2,
   tol   = 1e-8,
   maxit = 100
 )
 
-str(results_ppca_miss)
+str(fit_em_miss)
 ```
 
 
@@ -398,9 +432,9 @@ str(results_ppca_miss)
 Extract reconstructed values and loadings for comparison.
 
 ```{r em-ppca-miss-extract}
-Xrecon      = results_ppca_miss$Xrecon
-loadings_em = results_ppca_miss$loadings
-scores_em   = results_ppca_miss$scores
+Xrecon      = fit_em_miss$Xrecon
+loadings_em = fit_em_miss$loadings
+scores_em   = fit_em_miss$scores
 ```
 
 
@@ -423,7 +457,7 @@ Compare results to output from <span class="pack" style = "">pcaMethods</span>, 
 ```{r em-ppca-miss--compare}
 library(pcaMethods)
 
-results_pcam  = pca(
+fit_pcam  = pca(
   X_miss,
   nPcs = 2,
   threshold = 1e-8,
@@ -432,8 +466,8 @@ results_pcam  = pca(
   center = FALSE
 )
 
-loadings_pcam = loadings(results_pcam)
-scores_pcam   = scores(results_pcam)
+loadings_pcam = loadings(fit_pcam)
+scores_pcam   = scores(fit_pcam)
 ```
 
 
@@ -441,8 +475,11 @@ Compare loadings and scores.
 
 ```{r em-ppca-miss-compare-loadings}
 round(cbind(loadings_pcam, loadings_em, loadings_standard_pca), 3)
+
 sum((abs(loadings_pcam) - abs(loadings_em)) ^ 2)
-round(cbind(abs(scores_pcam), abs(scores_em)), 2)
+
+cbind(scores_pcam, data.frame(EM = scores_em)) %>% 
+  head()
 ```
 
 
@@ -451,9 +488,7 @@ Compare reconstructed data sets.
 ```{r em-ppca-miss-compare-recon}
 Xrecon_pcam = scores_pcam %*% t(loadings_pcam)
 
-mean((Xrecon_pcam - X_miss)^2)  
-mean(abs(Xrecon_pcam - Xrecon))
-
+mean((Xrecon_pcam[NAindex]-X[NAindex])^2)  
 mean(abs(Xrecon_pcam - Xrecon))
 ```
 
@@ -461,7 +496,9 @@ mean(abs(Xrecon_pcam - Xrecon))
 
 #### Visualize
 
-```{r em-ppca-miss-vis-recon}
+Visualize as before
+
+```{r em-ppca-miss-vis-recon, echo=FALSE}
 GGally::ggpairs(data.frame(
   data    = X_miss[, 1],
   custom  = Xrecon[, 1],
@@ -475,10 +512,10 @@ GGally::ggpairs(data.frame(
 ))
 ```
 
-```{r em-ppca-miss-vis-scores}
-qplot(Xrecon[, 1], Xrecon_pcam[, 1])
+```{r em-ppca-miss-vis-scores, echo=FALSE}
+# qplot(Xrecon[, 1], Xrecon_pcam[, 1])
 
-GGally::ggpairs(data.frame(scores_em, scores_pcam) )
+GGally::ggpairs(data.frame(em = scores_em, pcam = scores_pcam))
 ```
 
 

@@ -79,7 +79,7 @@ C_dt = t(apply(T0, 1, table))
 Note that this function is not self contained in that it uses some of the objects created above, assuming they are in the global environment. It has the capacity for a pseudo-visualization which can be instructive, but isn't shown for this document (and it requries <span class="pack" style = "">corrplot</span>), and I haven't tested it recently.
 
 ```{r tm-function}
-topic_model = function(
+topic_model <- function(
   alpha,
   beta,
   nsim    = 2000,
@@ -367,7 +367,7 @@ docs2compare = c(1, 16)
 Let's create a function to work on theta to produce Kullback-Liebler or Jensen-Shannon divergence.
 
 ```{r tm-kldiv-doc-func}
-divergence = function(input, method = 'KL') {
+divergence <- function(input, method = 'KL') {
   if (method == 'KL') {
     .5 * sum(apply(fit_tm$theta[input, ], 2,
                    function(topicprob)

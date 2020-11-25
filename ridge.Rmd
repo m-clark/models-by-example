@@ -1,7 +1,7 @@
 # L2 (ridge) regularization
 
 
-Compare to [lasso chapter][L1 (lasso) regularization].  A more conceptual depiction of the lasso can be found in the [penalized ML chapter][Penalized Maximum Likelihood].
+Compare to the [lasso chapter][L1 (lasso) regularization].  A more conceptual depiction of the both can be found in the [penalized ML chapter][Penalized Maximum Likelihood].
 
 ## Data Setup
 
@@ -17,10 +17,9 @@ b = c(.5, -.5, .25, -.25, .125, -.125, rep(0, 4))
 y = scale(X %*% b + rnorm(N, sd = .5))
 ```
 
-Note, if `lambda = 0`, result is the same as  `lm.fit`.
 
 
-## Functions
+## Function
 
 ```{r ridge-function}
 ridge <- function(w, X, y, lambda = .1) {
@@ -37,8 +36,10 @@ ridge <- function(w, X, y, lambda = .1) {
 
 ## Estimation
 
+Note, if `lambda = 0`, i.e. no penalty, the result is the same as what you would get from the base R  <span class="func" style = "">lm.fit</span>.
+
 ```{r ridge-est}
-result_ridge = optim(
+fit_ridge = optim(
   rep(0, ncol(X)),
   ridge,
   X = X,
@@ -49,34 +50,36 @@ result_ridge = optim(
 ```
 
 
-
-
 Analytical result.
 
 ```{r ridge-analytical}
-result_ridge2 =  solve(crossprod(X) + diag(length(y)*.1, ncol(X))) %*% crossprod(X, y)
+fit_ridge2 = solve(crossprod(X) + diag(length(y)*.1, ncol(X))) %*% crossprod(X, y)
 ```
 
 
-Alternative with augmented data (note `sigma` is ignored as it equals 1, but otherwise
+An alternative approach using 'augmented' data (note `sigma` is ignored as it equals 1, but otherwise
 X/sigma and y/sigma).
 
 
 ```{r ridge-augmented}
 X2 = rbind(X, diag(sqrt(length(y)*.1), ncol(X)))
 y2 = c(y, rep(0, ncol(X)))
-result_ridge3 = solve(crossprod(X2)) %*% crossprod(X2, y2)
+
+tail(X2)
+tail(y2)
+
+fit_ridge3 = solve(crossprod(X2)) %*% crossprod(X2, y2)
 ```
 
-
-
-`glmnet` is by default a mixture of ridge and lasso penalties, setting alpha
-= 1 reduces to lasso, while alpha=0 would be ridge.
+The <span class="pack" style = "">glmnet</span> approach is by default a mixture
+of ridge and lasso penalties, setting `alpha = 1` reduces to lasso (`alpha = 0`
+would be ridge). We set the lambda to a couple values while only wanting the one
+set to the same lambda value as above (`s`).
 
 ```{r ridge-glmnet}
 library(glmnet)
 
-glmnet_res = coef(
+fit_glmnet = coef(
   glmnet(
     X,
     y,
@@ -93,20 +96,19 @@ glmnet_res = coef(
 
 ## Comparison
 
-```{r ridge-compare}
+We can now compare the coefficients of all our results.
+
+```{r ridge-compare, echo=FALSE}
 data.frame(
   lm     = coef(lm(y ~ . - 1, data.frame(X))),
-  ridge  = result_ridge$par,
-  ridge2 = result_ridge2,
-  ridge3 = result_ridge3,
-  glmnet = glmnet_res[-1, 1],
+  ridge  = fit_ridge$par,
+  ridge2 = fit_ridge2,
+  ridge3 = fit_ridge3,
+  glmnet = fit_glmnet[-1, 1],
   truth  = b
-)
+) %>% 
+  kable_df()
 ```
-
-
-
-
 
 
 

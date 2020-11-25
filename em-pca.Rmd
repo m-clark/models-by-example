@@ -7,7 +7,8 @@ based on output from <span class="func" style = "">pca</span> function used belo
 
 ### Data Setup
 
-`state.x77` is from base R, which includes various state demographics.  We will first standardize the data.
+The `state.x77` is from base R, which includes various state demographics.  We
+will first standardize the data.
 
 ```{r em-pca-setup}
 library(tidyverse)
@@ -18,18 +19,32 @@ X = scale(state.x77)
 
 ###  Function
 
+The estimating function.  Note that it uses <span class="func" style =
+"">orth</span> from <span class="pack" style = "">pracma</span>, but I show the
+core of the underlying code if you don't want to install it.
+
 ```{r em-pca-func}
+# orth <- function(M) {
+#   svdM = svd(M)
+#   U    = svdM$u
+#   s    = svdM$d
+#   tol  = max(dim(M)) * max(s) * .Machine$double.eps
+#   r    = sum(s > tol)
+#   
+#   U[, 1:r, drop = FALSE]
+# }
+
 em_pca <- function(
   X,
-  nComp = 2,
-  tol   = .00001,
+  n_comp   = 2,
+  tol     = .00001,
   maxits  = 100,
   showits = TRUE
   ) {
   
   # Arguments 
   # X: numeric data
-  # nComp: number of components
+  # n_comp: number of components
   # tol = tolerance level
   # maxits: maximum iterations
   # showits: show iterations
@@ -38,10 +53,10 @@ em_pca <- function(
   # starting points and other initializations
   N  = nrow(X)
   D  = ncol(X)
-  L  = nComp
+  L  = n_comp
   Xt = t(X)
-  Z  = t(replicate(L, rnorm(N)))                          # latent variables
-  W  = replicate(L, rnorm(D))                             # loadings
+  Z  = t(replicate(L, rnorm(N)))                 # latent variables
+  W  = replicate(L, rnorm(D))                    # loadings
   it = 0
   converged = FALSE
     
@@ -50,9 +65,9 @@ em_pca <- function(
   
   # while no convergence and we haven't reached our max iterations do this stuff
   while ((!converged) & (it < maxits)) {                           
-    Z_old = Z                                      # create 'old' values for comparison
-    Z = solve(t(W)%*%W) %*% crossprod(W, Xt)       # E
-    W = Xt%*%t(Z) %*% solve(tcrossprod(Z))         # M
+    Z_old = Z                                    # create 'old' values for comparison
+    Z = solve(t(W)%*%W) %*% crossprod(W, Xt)     # E
+    W = Xt%*%t(Z) %*% solve(tcrossprod(Z))       # M
 
     it = it + 1
     
@@ -64,8 +79,8 @@ em_pca <- function(
   }
   
   # calculate reconstruction error
-  Xrecon   = W %*% Z
-  reconerr = sum((Xrecon - t(X))^2)
+  Xrecon_em = W %*% Z
+  reconerr  = sum((Xrecon_em - t(X))^2)
   
   # orthogonalize
   W     = pracma::orth(W)     # for orthonormal basis of W; pcaMethods package has also
@@ -80,10 +95,10 @@ em_pca <- function(
     cat(paste0(format(it), "...", "\n"))
   
   list(
-    scores   = Z,
-    loadings = W,
-    reconerr = reconerr,
-    Xrecon   = t(Xrecon)
+    scores    = Z,
+    loadings  = W,
+    reconerr  = reconerr,
+    Xrecon_em = t(Xrecon_em)
   )
 }
 ```
@@ -96,14 +111,14 @@ em_pca <- function(
 ### Estimation
 
 ```{r em-pca-est}
-results_pca = em_pca(
+fit_em = em_pca(
   X = X,
-  nComp = 2,
-  tol = 1e-12,
-  maxit = 1000
+  n_comp = 2,
+  tol    = 1e-12,
+  maxit  = 1000
 )
 
-results_pca
+str(fit_em)  # examine results
 ```
 
 ### Comparison
@@ -111,17 +126,17 @@ results_pca
 Extract reconstructed values and loadings for comparison.
 
 ```{r em-pca-extract}
-Xrecon      = results_pca$Xrecon
-loadings_em = results_pca$loadings
-scores_em   = results_pca$scores
+Xrecon_em   = fit_em$Xrecon_em
+loadings_em = fit_em$loadings
+scores_em   = fit_em$scores
 ```
 
-Compare results to output from <span class="pack" style = "">pcaMethods</span>, which also has probabilistic PCA (demonstrated next). Note that the signs for loadings/scores may be different
+Compare results to output from <span class="pack" style = "">pcaMethods</span>, which also has probabilistic PCA (demonstrated next). Note that the signs for loadings/scores may be different in sign, but otherwise shoudl be comparable.
 
 ```{r em-pca-compare}
 library(pcaMethods)  # install via BiocManager::install("pcaMethods")
 
-result_pcam = pca(
+fit_pcam = pca(
   X,
   nPcs = 2,
   method = 'svd',
@@ -129,8 +144,8 @@ result_pcam = pca(
   center = FALSE
 )
 
-loadings_pcam = loadings(result_pcam)
-scores_pcam   = scores(result_pcam)
+loadings_pcam = loadings(fit_pcam)
+scores_pcam   = scores(fit_pcam)
 ```
 
 
@@ -138,7 +153,9 @@ Compare loadings and scores.
 
 ```{r em-pca-compare-loadings}
 sum((abs(loadings_pcam) - abs(loadings_em))^2)
-abs(round(cbind(scores_pcam, scores_em), 2))
+
+cbind(scores_pcam, data.frame(EM = scores_em)) %>% 
+  head()
 ```
 
 
@@ -147,10 +164,10 @@ Calculate mean squared reconstruction error and compare.
 ```{r em-pca-compare-recon}
 Xrecon_pcam = scores_pcam %*% t(loadings_pcam)
 
-mean((Xrecon - X)^2)
+mean((Xrecon_em - X)^2)
 mean((Xrecon_pcam - X)^2)
 
-mean(abs(Xrecon_pcam - Xrecon))
+mean(abs(Xrecon_pcam - Xrecon_em))
 ```
 
 
@@ -158,9 +175,9 @@ mean(abs(Xrecon_pcam - Xrecon))
 ### Visualize
 
 ```{r em-pca-vis}
-qplot(Xrecon_pcam[,1], X[,1])
-qplot(Xrecon_pcam[,2], X[,2])
-qplot(Xrecon[,1], Xrecon_pcam[,1])
+# qplot(Xrecon_pcam[,1], X[,1])
+# qplot(Xrecon_pcam[,2], X[,2])
+qplot(Xrecon_em[,1], Xrecon_pcam[,1])
 ```
 
 

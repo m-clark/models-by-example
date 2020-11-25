@@ -6,9 +6,13 @@ The following code is based on algorithms noted in Murphy, 2012 Probabilistic Ma
 
 ### Data Setup
 
-This example uses Old Faithful geyser eruptions.  This is only a univariate mixture for either eruption time or wait time. The [next example][Multivariate Mixture Model] will be doing both variables, i.e. multivariate normal.  'Geyser' is supposedly more accurate, though seems to have 
-arbitrarily assigned some duration values.  See also http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL, but that only has
-intervals. Some July 1995 data is available.
+This example uses Old Faithful geyser eruptions.  This is only a univariate
+mixture for either eruption time or wait time. The [next example][Multivariate
+Mixture Model] will be doing both variables, i.e. multivariate normal.  'Geyser'
+is supposedly more accurate, though seems to have arbitrarily assigned some
+duration values.  See [this
+source](http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL) also, but
+that only has intervals. Some July 1995 data is available.
 
 ```{r old-faithful}
 library(tidyverse)
@@ -23,6 +27,8 @@ wait_times = as.matrix(faithful[, 2, drop = FALSE])
 ```
 
 ### Function
+
+The fitting function.
 
 ```{r em_mixture}
 em_mixture <- function(
@@ -106,24 +112,23 @@ em_mixture <- function(
 
 ### Estimation
 
-Starting parameters, requires mean, variance and class probability. Note that starts for mean must be within the data range or it will break.  
+Starting parameters require mean, variance and class probability. Note that starting values for mean must be within the data range or it will break.  
 
 ```{r gaussEM-starts}
-params1 = list(mu = c(2, 5),
-               var = c(1, 1),
-               probs = c(.5, .5))
+start_values_1 = list(mu = c(2, 5),
+                      var = c(1, 1),
+                      probs = c(.5, .5))
 
-params2 = list(mu = c(50, 90),
-               var = c(1, 15),
-               probs = c(.5, .5))  
-
+start_values_2 = list(mu = c(50, 90),
+                      var = c(1, 15),
+                      probs = c(.5, .5)) 
 
 ```
 
 
 ```{r gaussEM-est}
-mix_erupt   = em_mixture(params1, X = eruptions,  tol = 1e-8)
-mix_waiting = em_mixture(params2, X = wait_times, tol = 1e-8)
+mix_erupt   = em_mixture(start_values_1, X = eruptions,  tol = 1e-8)
+mix_waiting = em_mixture(start_values_2, X = wait_times, tol = 1e-8)
 ```
 
 
@@ -149,6 +154,8 @@ The following provides means, variances and probability of group membership. Not
 
 ##### Eruptions
 
+First we'll compare results on the eruptions variable.
+
 ```{r gaussEM-compare-erupt}
 mean_var = rbind(mix_erupt$mu, sqrt(mix_erupt$var))
 rownames(mean_var) = c('means', 'variances')
@@ -159,7 +166,7 @@ rownames(mean_var_flex) = c('means', 'variances')
 colnames(mean_var_flex) = c('cluster 1 flex', 'cluster 2 flex')
 
 
-prob_membership     = mix_erupt$probs
+prob_membership      = mix_erupt$probs
 prob_membership_flex = flex_erupt@size / sum(flex_erupt@size)
 
 list(
@@ -172,6 +179,7 @@ list(
 
 ##### Waiting
 
+Now we compare the result for waiting times.
 
 ```{r gaussEM-compare-wait} 
 mean_var = rbind(mix_waiting$mu, sqrt(mix_waiting$var))
@@ -183,7 +191,7 @@ mean_var_flex = parameters(flex_wait)
 rownames(mean_var_flex) = c('means', 'variances')
 colnames(mean_var_flex) = c('cluster 1 flex', 'cluster 2 flex')
 
-prob_membership     = mix_waiting$probs
+prob_membership      = mix_waiting$probs
 prob_membership_flex = flex_wait@size / sum(flex_wait@size)
 
 list(
@@ -191,18 +199,32 @@ list(
   clusterpobs = cbind(prob_membership, prob_membership_flex)
 )
 
-qplot(x = eruptions, y = waiting, data = faithful)
 
-ggplot(aes(x = eruptions, y = waiting), data = faithful) +
-  geom_point(aes(color = factor(mix_waiting$cluster))) +
-  geom_density2d()
+```
+
+### Visualization
+
+Points are colored by class membership, followed by the probability of being in cluster 1.
+
+```{r gaussEM-vis, echo=FALSE}
+# qplot(x = eruptions, y = waiting, data = faithful)
+
+faithful %>%
+  mutate(cluster = factor(mix_waiting$cluster)) %>% 
+  ggplot(aes(x = eruptions, y = waiting) ) +
+  geom_density2d(color = 'gray92') +
+  geom_point(aes(color = cluster)) +
+  scico::scale_color_scico_d(begin = .25, end = .75, alpha = .5) +
+  guides(color = guide_legend('Cluster'))
 
 
-faithful %>% 
-  mutate(prob_clus_1 = mix_waiting$resp[, 1]) %>% 
+faithful %>%
+  mutate(prob_clus_1 = mix_waiting$resp[, 1]) %>%
   ggplot(aes(x = eruptions, y = waiting)) +
+  geom_density2d(color = 'gray92') +
   geom_point(aes(color = prob_clus_1)) +
-  geom_density2d()
+  scico::scale_color_scico(palette = 'bilbao', begin = .25) +
+  guides(color = guide_legend('Prob. Cluster 1'))
 ```
 
 
@@ -213,22 +235,23 @@ This uses the <span class="pack" style = "">MASS</span> version (reversed column
 I've cleaned this up a little bit in case someone wants to play with it for additional practice, but it's not evaluated.
 
 ```{r mass-demo, eval=FALSE}
-library(MASS)
+data(geyser, package = 'MASS')
 
 geyser = data.frame(duration = geyser$duration[-299], waiting = geyser$waiting[-1])
 
 # compare to faithful
-layout(1:2)
-plot(faithful)
-plot(geyser)
+library(patchwork)
+
+qplot(data = faithful, x = eruptions, y = waiting, alpha = I(.25)) /
+  qplot(data = geyser, x = duration,  y = waiting, alpha = I(.25))
 
 X3 = matrix(geyser[,1]) 
 X4 = matrix(geyser[,2])
 
 
 # MASS version
-test3 = em_mixture(params1, X = X3, tol = 1e-8)
-test4 = em_mixture(params2, X = X4, tol = 1e-8)
+test3 = em_mixture(start_values_1, X = X3, tol = 1e-8)
+test4 = em_mixture(start_values_2, X = X4, tol = 1e-8)
 
 flexmod3 = flexmix(X3 ~ 1,
                    k = 2,

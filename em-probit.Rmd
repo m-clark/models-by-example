@@ -16,7 +16,7 @@ admission = haven::read_dta("https://stats.idre.ucla.edu/stat/stata/dae/binary.d
 
 #### Function
 
-We'll start with the a basic maximum likelihood function for a standard probit.  See the [logistic regression][Standard Logistic] and [previous chapter on probit models][Probit & Bivariate Probit] for comparison.
+We'll start with the a basic maximum likelihood function for a standard probit.  See the [logistic regression][Logistic Regression] and [previous chapter on probit models][Probit & Bivariate Probit] for comparison.
 
 ```{r probit-mle}
 probit_mle <- function(params, X, y){
@@ -45,7 +45,7 @@ y = as.matrix(admission[, 1])
 init = c(0, 0, 0, 0)
 
 # Can set tolerance really low to duplicate glm result
-result_mle = optim(
+fit_mle = optim(
   par = init,
   fn  = probit_mle,
   X   = X,
@@ -54,14 +54,16 @@ result_mle = optim(
 ) 
 
 # extract coefficients
-coefs_mle = result_mle$par
+coefs_mle = fit_mle$par
 ```
 
 
 #### Comparison
 
+Compare to <span class="func" style = "">glm</span>.
+
 ```{r probit-glm}
-glm_probit = glm(
+fit_glm = glm(
   admit ~ gre + gpa + rank,
   family  = binomial(link = "probit"),
   control = list(maxit = 500, epsilon = 1e-8),
@@ -69,19 +71,23 @@ glm_probit = glm(
 )
 
 
-summary(glm_probit)
-coefs_glm = coef(glm_probit)
+summary(fit_glm)
+
+coefs_glm = coef(fit_glm)
 ```
 
 Compare.
 
-```{r probit-compare-mle-glm}
-rbind(coefs_mle, coefs_glm)
+```{r probit-compare-mle-glm, echo=FALSE}
+rbind(coefs_mle, coefs_glm) %>% 
+  kable_df()
 ```
 
 
 
 ### EM for Latent Variable Approach to Probit
+
+Now for the EM approach, which assumes an continuous latent variable underlying the binary target.
 
 #### Function
 
@@ -95,8 +101,13 @@ em_probit <- function(
   showits = TRUE
 ) {
   
-  # Arguments are starting parameters (coefficients), model matrix, response, 
-  # tolerance, maximum iterations, and whether to show iterations
+  # Arguments 
+  # params: starting parameters (coefficients)
+  # X: model matrix
+  # y: response 
+  # tol: tolerance, 
+  # maxits: maximum iterations
+  # showits: whether to show iterations
 
   #starting points
   b  = params
@@ -121,7 +132,7 @@ em_probit <- function(
     )     
     
     # M step estimate b
-    b = solve(t(X)%*%X) %*% t(X)%*%z                                     
+    b  = solve(t(X)%*%X) %*% t(X)%*%z                                     
     mu = X%*%b
     
     ll = sum(y * pnorm(mu, log.p = TRUE) + (1 - y) * pnorm(-mu, log.p = TRUE))
@@ -149,7 +160,7 @@ Use the same setup and starting values to estimate the parameters.
 
 ```{r probit-em-est}
 # can lower tolerance to duplicate glm result
-result_em = em_probit(
+fit_em = em_probit(
   params = init,
   X      = X,
   y      = y,
@@ -157,9 +168,9 @@ result_em = em_probit(
   maxit  = 100
 )
 
-# result_em  
+# fit_em  
 
-coefs_em = result_em$b
+coefs_em = fit_em$b
 ```
 
 
@@ -167,10 +178,14 @@ coefs_em = result_em$b
 
 Compare all results.
 
-```{r probit-compare-all}
-rbind(coefs_glm, coefs_mle, coefs_em)
-
-rbind(logLik(glm_probit),  result$value, result_em$ll)
+```{r probit-compare-all, echo=FALSE}
+rownames(coefs_em) = 'coefs_em'
+rbind(coef(fit_glm), fit_mle$par, fit_em$b) %>% 
+  cbind(logLik = c(logLik(fit_glm), fit_mle$value, fit_em$ll)) %>% 
+  as_tibble() %>% 
+  mutate(fit = c('glm', 'mle', 'em')) %>% 
+  select(fit, everything()) %>% 
+  kable_df()
 ```
 
 
@@ -186,7 +201,7 @@ X2[, 2:3] = scale(X2[, 2:3])
 
 niter = 20
 
-result_em = map_df(1:niter, function(x)
+fit_em = map_df(1:niter, function(x)
   as_tibble(
     em_probit(
       params  = init,
@@ -198,16 +213,19 @@ result_em = map_df(1:niter, function(x)
     )$b)
 )
 
-gdat = result_em %>% 
+gdat = fit_em %>% 
   rowid_to_column('iter') %>% 
   pivot_longer(-iter, names_to = 'coef') %>% 
   mutate(
     coef = factor(coef, labels = c('Intercept', 'gre', 'gpa', 'rank'))
   ) %>% 
   arrange(iter, coef)
+```
 
+```{r probit-em-vis-show, echo=FALSE}
 ggplot(aes(x = iter, y = value), data = gdat) +
-  geom_line(aes(group = coef, color = coef))
+  geom_line(aes(group = coef, color = coef)) +
+  scico::scale_color_scico_d()
 ```
 
 

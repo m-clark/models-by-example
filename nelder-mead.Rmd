@@ -1,24 +1,32 @@
 # Nelder Mead
 
-This is based on the pure Python implementation by François Chollet found at
-https://github.com/fchollet/nelder-mead (also in the Miscellaneous R code repo at
-nelder_mead.py). This is mostly just an academic exercise on my part.  I'm
-not sure how much one would use the basic NM for many situations. In my
-experience BFGS and other approaches would be faster, more accurate, and less
-sensitive to starting values for the types of problems I've played around
-with. Others who actually spend their time researching such things seem to
-agree.
+This is based on the pure [Python implementation by François
+Chollet](https://github.com/fchollet/nelder-mead) found at (also in the
+[Miscellaneous R code
+repo](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/nelder_mead.py).
+This is mostly just an academic exercise on my part.  I'm not sure how much one
+would use the basic NM for many situations. In my experience BFGS and other
+approaches would be faster, more accurate, and less sensitive to starting values
+for the types of problems I've played around with. Others who actually spend
+their time researching such things seem to agree.
 
-There were two issues on
-(GitHub)[https://github.com/fchollet/nelder-mead/issues/2] regarding the
-original code, and I've implemented the suggested corrections with notes. The
-initial function code is not very R-like, as the goal was to keep more
-similar to the original Python for comparison, which used a list approach. I
-also provide a more R-like/cleaner version that uses matrices instead of
-lists, but which still sticks the same approach for the most part.
+There were two issues  regarding the original code on
+[GitHub](https://github.com/fchollet/nelder-mead/issues/2), and I've implemented
+the suggested corrections with notes. The initial R function code is not very
+R-like, as the goal was to keep more similar to the original Python for
+comparison, which used a list approach. I also provide a more R-like/cleaner
+version that uses matrices instead of lists, but which still sticks the same
+approach for the most part.
+For both functions, comparisons are made using the <span class="pack" style =
+"">optimx</span> package, but feel free to use base R's <span class="func" style
+= "">optim</span> instead.
 
-For both functions, comparisons are made using the `optimx` package, but feel
-free to use base R's `optim` instead.
+
+
+
+## Functions
+
+### First Version
 
  - `f`  function to optimize, must return a scalar score and operate over
   an array of the same dimensions as x_start
@@ -37,11 +45,8 @@ free to use base R's `optim` instead.
 
 This function returns the best parameter array and best score.
 
-
-## First Version
-
 ```{r nelder-mead}
-nelder_mead = function(
+nelder_mead <- function(
   f, 
   x_start,
   step = 0.1,
@@ -144,6 +149,8 @@ nelder_mead = function(
    
    res = nres
   }
+  
+  res
 }
 ```
 
@@ -177,7 +184,7 @@ nelder_mead(
 
 
 
-Compare to `optimx`.  You may see warnings.
+Compare to <span class="pack" style = "">optimx</span>.  You may see warnings.
 
 ```{r nelder-mead-compare-optimx-1}
 optimx::optimx(
@@ -185,10 +192,10 @@ optimx::optimx(
   fn = f,
   method = "Nelder-Mead",
   control = list(
-    alpha = 1,
-    gamma = 2,
-    beta = 0.5,
-    maxit = 1000,
+    alpha  = 1,
+    gamma  = 2,
+    beta   = 0.5,
+    maxit  = 1000,
     reltol = 1e-12
   )
 )
@@ -211,8 +218,8 @@ library(tidyverse)
 set.seed(8675309)
 
 N = 500
-npreds = 5
-X = cbind(1, matrix(rnorm(N * npreds), ncol = npreds))
+n_preds = 5  # number of predictors
+X = cbind(1, matrix(rnorm(N * n_preds), ncol = n_preds))
 beta = runif(ncol(X), -1, 1)
 y = X %*% beta + rnorm(nrow(X))
 ```
@@ -228,14 +235,10 @@ f = function(b) {
 ```
 
 
-`lm` estimates.
 
-```{r nelder-mead-lm-1}
-lm.fit(X, y)$coef
-```
 
 ```{r nelder-mead-est-lm-1}
-nm_result = nelder_mead(
+fit_nm = nelder_mead(
   f, 
   runif(ncol(X)), 
   max_iter = 2000,
@@ -248,10 +251,10 @@ nm_result = nelder_mead(
 
 #### Comparison
 
-Compare to `optimx`.
+Compare to <span class="pack" style = "">optimx</span>.
 
-```{r nelder-mead-compare-1}
-opt_out = optimx::optimx(
+```{r nelder-mead-compare-optimx}
+fit_nm_optimx = optimx::optimx(
   runif(ncol(X)),
   fn = f,  # model function
   method  = 'Nelder-Mead',
@@ -264,14 +267,20 @@ opt_out = optimx::optimx(
     reltol = 1e-12
   )
 )
-
-rbind(
-  nm_func = unlist(nm_result),
-  nm_optimx = opt_out[1:7]
-)
 ```
 
+We'll add base R <span class="func" style = "">lm</span> estimates.
 
+```{r nelder-mead-compare-1, echo=FALSE}
+fit_lm = lm.fit(X, y)
+
+rbind(
+  nm_func   = unlist(fit_nm),
+  nm_optimx = fit_nm_optimx[1:7],
+  lm = c(fit_lm$coef, sum(resid(fit_lm)^2))
+) %>% 
+  kable_df()
+```
 
 
 
@@ -288,11 +297,11 @@ nelder_mead2 = function(
   no_improve_thr  = 1e-12,
   no_improv_break = 10,
   max_iter = 0,
-  alpha = 1,
-  gamma = 2,
-  rho   = 0.5,
-  sigma = 0.5,
-  verbose = FALSE
+  alpha    = 1,
+  gamma    = 2,
+  rho      = 0.5,
+  sigma    = 0.5,
+  verbose  = FALSE
 ) {
   
   # init
@@ -392,7 +401,9 @@ nelder_mead2 = function(
 
 
 
-### Example Function
+### Example
+
+The function to minimize.
 
 ```{r opt-func-2}
 f = function(x) {
@@ -433,8 +444,8 @@ optimx::optimx(
 set.seed(8675309)
 
 N = 500
-npreds = 5
-X = cbind(1, matrix(rnorm(N * npreds), ncol = npreds))
+n_preds = 5
+X = cbind(1, matrix(rnorm(N * n_preds), ncol = n_preds))
 beta = runif(ncol(X), -1, 1)
 y = X %*% beta + rnorm(nrow(X))
 ```
@@ -450,13 +461,10 @@ f = function(b) {
 ```
 
 
-```{r nelder-mead-lm-2}
-lm_par = lm.fit(X, y)$coef
-```
 
 
 ```{r nelder-mead-est-2}
-nm_par = nelder_mead2(
+fit_nm = nelder_mead2(
   f, 
   runif(ncol(X)),
   max_iter = 2000,
@@ -464,16 +472,12 @@ nm_par = nelder_mead2(
 )
 ```
 
+#### Comparison
 
-
-
-
-### Comparison
-
-Compare to `optimx`.
+Compare to <span class="pack" style = "">optimx</span> and <span class="func" style = "">lm</span> as before.
 
 ```{r nelder-mead-compare-2}
-opt_par = optimx::optimx(
+fit_nm_optimx = optimx::optimx(
   runif(ncol(X)),
   fn = f,
   method   = 'Nelder-Mead',
@@ -484,16 +488,21 @@ opt_par = optimx::optimx(
     maxit  = 2000,
     reltol = 1e-12
   )
-)[1:(npreds + 1)]
+)[1:(n_preds + 1)]
 
-rbind(
-  lm = lm_par,
-  nm = nm_par,
-  optimx = opt_par,
-  truth  = beta
-)
+fit_lm = lm.fit(X, y)$coef
 ```
 
+```{r nelder-mead-compare-2-show, echo=FALSE}
+rbind(
+  nm_func   = unlist(fit_nm),
+  nm_optimx = fit_nm_optimx,
+  lm    = fit_lm,
+  truth = beta
+) %>% 
+  t() %>% 
+  kable_df()
+```
 
 
 

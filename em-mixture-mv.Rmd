@@ -6,14 +6,16 @@ Specifically, Chapter 11, section 4.
 
 ### Function
 
+This estimating function will be used for both examples.
+
 ```{r em_mixture-mv}
 em_mixture <- function(
   params,
   X,
   clusters = 2,
   tol = .00001,
-  maxits  = 100,
-  showits = TRUE
+  maxits   = 100,
+  showits  = TRUE
   ) {
   
   # Arguments are 
@@ -78,7 +80,7 @@ em_mixture <- function(
     
     ll = sum(ll)
     
-    ### compare old to current for convergence
+    # compare old to current for convergence
     parmlistold =  c(llOld, probsOld)           # c(muOld, unlist(varOld), probsOld)
     parmlistcurrent = c(ll, probs)              # c(mu, unlist(var), probs)
     it = it + 1
@@ -92,7 +94,9 @@ em_mixture <- function(
   
   clust = which(round(ri) == 1, arr.ind = TRUE)        # create cluster membership
   clust = clust[order(clust[,1]), 2]            # order accoring to row rather than cluster
-  out = list(
+  
+  
+  list(
     probs   = probs,
     mu      = mu,
     var     = var,
@@ -100,21 +104,14 @@ em_mixture <- function(
     cluster = clust,
     ll      = ll
   )
-  
-  out
 } 
 ```
 
 
+### Example 1: Old Faithful
 
 
-
-
-
-### Example 1: Old Faithful eruptions
-
-
-This example uses Old Faithful geyser eruptions.  This is can be compared to the univariate code from the [other chapter][Mixture Model]. See also http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL
+This example uses Old Faithful geyser eruptions as before.  This is can be compared to the univariate code from the [other chapter][Mixture Model]. See also http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL
 
 #### Data Setup
 
@@ -140,8 +137,6 @@ starts = list(mu = mustart, var = covstart, probs = probs)
 
 
 ```{r mixmv-est1}
-
-
 mix_faithful = em_mixture(
   params = starts,
   X = as.matrix(faithful),
@@ -157,22 +152,32 @@ str(mix_faithful)
 
 Visualize.
 
-```{r mixmv-vis1}
+```{r mixmv-vis1, echo=FALSE}
 library(ggplot2)
 
-ggplot(aes(x = eruptions, y = waiting), data = faithful) +
-  geom_point(aes(color = factor(mix_faithful$cluster)))
+faithful %>%
+  mutate(cluster = factor(mix_faithful$cluster)) %>% 
+  ggplot(aes(x = eruptions, y = waiting) ) +
+  geom_density2d(color = 'gray92') +
+  geom_point(aes(color = cluster)) +
+  scico::scale_color_scico_d(begin = .25, end = .75, alpha = .5) +
+  guides(color = guide_legend('Cluster'))
 
-faithful %>% 
-  mutate(prob_clus_1 = mix_faithful$resp[, 1]) %>% 
+
+faithful %>%
+  mutate(prob_clus_1 = mix_faithful$resp[, 1]) %>%
   ggplot(aes(x = eruptions, y = waiting)) +
-  geom_point(aes(color = prob_clus_1))
+  geom_density2d(color = 'gray92') +
+  geom_point(aes(color = prob_clus_1)) +
+  scico::scale_color_scico(palette = 'bilbao', begin = .25) +
+  guides(color = guide_legend('Prob. Cluster 1'))
 
 # relatively speaking, these are extremely well-separated clusters
 worst = apply(mix_faithful$resp, 1, function(x)  max(x) < .99) 
 
 ggplot(aes(x = eruptions, y = waiting), data = faithful) +
-  geom_point(aes(color = worst))
+  geom_point(aes(color = worst)) +
+  scico::scale_color_scico_d(palette = 'bilbao', begin = .25) 
 ```
 
 #### Comparison
@@ -180,6 +185,8 @@ ggplot(aes(x = eruptions, y = waiting), data = faithful) +
 Compare to <span class="pack" style = "">mclust</span> results. Options are set to be more similar to the settings demonstrated.
 
 ```{r mixmv-compare1} 
+library(mclust)
+
 mix_mclust = mclust::Mclust(
   faithful[, 1:2],
   2,
@@ -187,17 +194,29 @@ mix_mclust = mclust::Mclust(
   control = emControl(tol = 1e-12)
 )
 
-str(mix_mclust, 1)
+detach(package:mclust)
 
-# compare means
+# str(mix_mclust, 1)
+```
+
+Compare means.
+
+```{r mixmv-compare1-means} 
 t(mix_faithful$mu)
 mix_mclust$parameters$mean
+```
 
-# compare variances
+Compare variances.
+
+```{r mixmv-compare1-vars} 
 mix_faithful$var
 mix_mclust$parameters$variance$sigma
+```
 
-# compare classifications, reverse in case arbitrary numbering of one of them is opposite
+
+Compare classifications. Reverse in case arbitrary labeling of one of the clusters is opposite.
+
+```{r mixmv-compare1-class} 
 table(mix_faithful$cluster, mix_mclust$classification)
 
 table(ifelse(mix_faithful$cluster == 2, 1, 2),
@@ -209,28 +228,20 @@ table(ifelse(mix_faithful$cluster == 2, 1, 2),
 ```
 
 
-
-
-### Example 2: Iris data set
-
-
+### Example 2: Iris
 
 #### Data Setup
 
-Set up data
+Set up the data.
 
 ```{r mixmv-setup2}
 iris2 = iris %>% select(-Species)
 ```
 
 
-
-
- 
-
 #### Estimation
 
-Run and examine. We add noise to our starting value, and the function is notably sensitive to starts, but don't want to cheat too badly.
+Run and examine. We add noise to our starting value, and the function is notably sensitive to starts, but we don't want to cheat too badly.
 
 
 ```{r mixmv-starts2}
@@ -241,7 +252,7 @@ mustart = iris %>%
   as.matrix()
 
 
-# use purrr::map due to mclust::map
+# use purrr::map due to mclust::map masking
 covstart = iris %>% 
   split(.$Species) %>% 
   purrr::map(select, -Species) %>% 
@@ -272,12 +283,17 @@ table(mix_mclust_iris$cluster, iris$Species)
 
 #### Comparison
 
-Compare to mclust results.
+Compare to <span class="pack" style = "">mclust</span> results.
 
 ```{r mixmv-compare2}
+library(mclust)
+
 mclust_iris = mclust::Mclust(iris[,1:4], 3)
 table(mclust_iris$classification, iris$Species)
+
+detach(package:mclust)
 ```
+
 
 ### Source
 
