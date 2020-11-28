@@ -1,14 +1,13 @@
-# Nelder Mead
+# Nelder-Mead
 
 This is based on the pure [Python implementation by François
-Chollet](https://github.com/fchollet/nelder-mead) found at (also in the
-[Miscellaneous R code
-repo](https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/nelder_mead.py).
-This is mostly just an academic exercise on my part.  I'm not sure how much one
-would use the basic NM for many situations. In my experience BFGS and other
-approaches would be faster, more accurate, and less sensitive to starting values
-for the types of problems I've played around with. Others who actually spend
-their time researching such things seem to agree.
+Chollet](https://github.com/fchollet/nelder-mead), also found in the
+[supplemental section](#python-nelder). This is mostly just an academic exercise
+on my part.  I'm not sure how much one would use the basic NM for many
+situations. In my experience BFGS and other approaches would be faster, more
+accurate, and less sensitive to starting values for the types of problems I've
+played around with. Others who actually spend their time researching such things
+seem to agree.
 
 There were two issues  regarding the original code on
 [GitHub](https://github.com/fchollet/nelder-mead/issues/2), and I've implemented

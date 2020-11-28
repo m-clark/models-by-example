@@ -4,10 +4,10 @@ This document provides 'by-hand' demonstrations of various models and
 algorithms. The goal is to take away some of the mystery of them by providing
 clean code examples that are easy to run and compare with other tools.
 
-The code was collected over several years without respect to any previous code,
-so is not exactly consistent in style.  However, in general, within each demo
-you will find some imported/simulated data, a primary estimating function, a
-comparison of results with some R package, and a link to the old code that was
+The code was collected over several years, so is not exactly consistent in
+style, but now has been cleaned up to make it more so. Within each demo, you
+will generally find some imported/simulated data, a primary estimating function,
+a comparison of results with some R package, and a link to the old code that was
 the initial demonstration.
 
 The document has several sections:
@@ -17,24 +17,24 @@ The document has several sections:
 - **Estimation**: Algorithms used in model estimation (e.g. penalized likelihood, stochastic gradient descent)
 - **Supplemental**: A handful of examples in languages other than R, possibly other miscellany
 
-This code is not meant to be extensive, or used in production, and in fact, some
-of these would probably be considered of historical interest only.  To be clear,
-almost everything here has a package/module that would do the same thing far
-better and efficiently.  Note also, the document itself is also not an
-introduction to any of these methods, and in fact contains very little
-expository text, assuming the reader has some familiarity with the model and
-possibly some reference text. This document is merely a learning tool for those
-wanting to dive a little deeper.
-
-
-The original code for these demonstrations may be found at their first home here: https://github.com/m-clark/Miscellaneous-R-Code.
+Note that this code is not meant to be extensive, or used in production, and in
+fact, some of these demos would probably be considered of historical interest
+only.  To be clear, almost everything here has a package/module that would do
+the same thing far better and efficiently.  Note also, the document itself is
+also not intended to be an introduction to any of these methods, and in fact
+sometimes contains very little expository text, assuming the reader has some
+familiarity with the model/approach and possibly some reference text. This
+document is just a learning tool for those with some background in place, but
+who want to dive a little deeper.
 
 
 Many examples require some initial data processing or visualization via <span class="pack" style = "">ggplot2</span>, so it's assumed the <span class="pack" style = "">tidyverse</span> set of packages is loaded for all demonstrations.
 
-While I'm happy to fix any glaring errors and broken links, this is pretty much a completed document, except on the off chance I add a demo on rare occasion. This code has accumulated over years, and I just wanted it in a nicer format.  Perhaps if others would like to add to it via pull requests, I would do so.
+While I'm happy to fix any glaring errors and broken links, this is pretty much a completed document for the time being, except on the off chance I add a demo on rare occasion, or perhaps non-R code. This code has accumulated over years, and I just wanted it in a nicer format, which has been accomplished.  Perhaps if others would like to add to it via pull requests, I would do so.
 
 
+
+The original code for these demonstrations may be found at their first home here: https://github.com/m-clark/Miscellaneous-R-Code.
 
 
 Last updated: `r Sys.Date()`.

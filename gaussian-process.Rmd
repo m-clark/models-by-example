@@ -2,7 +2,7 @@
 
 ## Noise-Free Demonstration
 
-We'll start with the 'Noise-free' gaussian process.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail. Murphy's original Matlab code can be found [here](https://github.com/probml/pmtk3), though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files).
+We'll start with the 'Noise-free' gaussian process.  The matrix labeling is in keeping with Murphy 2012 and Rasmussen and Williams 2006.  See those sources for more detail. Murphy's original Matlab code can be found [here](https://github.com/probml/pmtk3), though the relevant files are housed alongside this code in [my original repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/gp%20Examples) (`*.m` files) and the [supplemental section](#matlab-gp).
 
 The goal of this code is to plot samples from the prior and posterior predictive of a gaussian process in which `y = sin(x)`. It will reproduce figure 15.2 in Murphy 2012 and 2.2 in Rasmussen and Williams 2006.
 

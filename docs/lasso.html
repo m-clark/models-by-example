@@ -390,26 +390,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html"><i class="fa fa-check"></i>Neural Net</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i>Neural Network</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r"><i class="fa fa-check"></i>R</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-1"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-1"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-1"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-1"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-3"><i class="fa fa-check"></i>Example 3</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-3"><i class="fa fa-check"></i>Example 3</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-2"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-2"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-2"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-2"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#source-20"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
 <ul>
@@ -628,7 +628,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-41"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder-Mead</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#functions-11"><i class="fa fa-check"></i>Functions</a>
 <ul>
@@ -793,115 +793,115 @@ overview (watch for typos in depictions). A more conceptual depiction of the
 lasso can be found in the <a href="penalized-maximum-likelihood.html#penalized-maximum-likelihood">penalized ML chapter</a>.</p>
 <div id="data-setup-36" class="section level2">
 <h2>Data Setup</h2>
-<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="lasso.html#cb645-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb645-2"><a href="lasso.html#cb645-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb645-3"><a href="lasso.html#cb645-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb645-4"><a href="lasso.html#cb645-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb645-5"><a href="lasso.html#cb645-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">500</span></span>
-<span id="cb645-6"><a href="lasso.html#cb645-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb645-7"><a href="lasso.html#cb645-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">scale</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(N<span class="sc">*</span>p), <span class="at">ncol =</span> p))</span>
-<span id="cb645-8"><a href="lasso.html#cb645-8" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="fu">c</span>(.<span class="dv">5</span>, <span class="sc">-</span>.<span class="dv">5</span>, .<span class="dv">25</span>, <span class="sc">-</span>.<span class="dv">25</span>, .<span class="dv">125</span>, <span class="sc">-</span>.<span class="dv">125</span>, <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">-</span> <span class="dv">6</span>))</span>
-<span id="cb645-9"><a href="lasso.html#cb645-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">scale</span>(X <span class="sc">%*%</span> b <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> .<span class="dv">5</span>))</span>
-<span id="cb645-10"><a href="lasso.html#cb645-10" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> .<span class="dv">1</span></span></code></pre></div>
+<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="lasso.html#cb650-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb650-2"><a href="lasso.html#cb650-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb650-3"><a href="lasso.html#cb650-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb650-4"><a href="lasso.html#cb650-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb650-5"><a href="lasso.html#cb650-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb650-6"><a href="lasso.html#cb650-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb650-7"><a href="lasso.html#cb650-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">scale</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(N<span class="sc">*</span>p), <span class="at">ncol =</span> p))</span>
+<span id="cb650-8"><a href="lasso.html#cb650-8" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="fu">c</span>(.<span class="dv">5</span>, <span class="sc">-</span>.<span class="dv">5</span>, .<span class="dv">25</span>, <span class="sc">-</span>.<span class="dv">25</span>, .<span class="dv">125</span>, <span class="sc">-</span>.<span class="dv">125</span>, <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">-</span> <span class="dv">6</span>))</span>
+<span id="cb650-9"><a href="lasso.html#cb650-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">scale</span>(X <span class="sc">%*%</span> b <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> .<span class="dv">5</span>))</span>
+<span id="cb650-10"><a href="lasso.html#cb650-10" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> .<span class="dv">1</span></span></code></pre></div>
 </div>
 <div id="functions-9" class="section level2">
 <h2>Functions</h2>
 <p>Coordinate descent function.</p>
-<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="lasso.html#cb646-1" aria-hidden="true" tabindex="-1"></a>lasso <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb646-2"><a href="lasso.html#cb646-2" aria-hidden="true" tabindex="-1"></a>  X,                   <span class="co"># model matrix</span></span>
-<span id="cb646-3"><a href="lasso.html#cb646-3" aria-hidden="true" tabindex="-1"></a>  y,                   <span class="co"># target</span></span>
-<span id="cb646-4"><a href="lasso.html#cb646-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> .<span class="dv">1</span>,        <span class="co"># penalty parameter</span></span>
-<span id="cb646-5"><a href="lasso.html#cb646-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">soft    =</span> <span class="cn">TRUE</span>,      <span class="co"># soft vs. hard thresholding</span></span>
-<span id="cb646-6"><a href="lasso.html#cb646-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol     =</span> <span class="fl">1e-6</span>,      <span class="co"># tolerance</span></span>
-<span id="cb646-7"><a href="lasso.html#cb646-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter    =</span> <span class="dv">100</span>,       <span class="co"># number of max iterations</span></span>
-<span id="cb646-8"><a href="lasso.html#cb646-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span>       <span class="co"># print out iteration number</span></span>
-<span id="cb646-9"><a href="lasso.html#cb646-9" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb646-10"><a href="lasso.html#cb646-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb646-11"><a href="lasso.html#cb646-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># soft thresholding function</span></span>
-<span id="cb646-12"><a href="lasso.html#cb646-12" aria-hidden="true" tabindex="-1"></a>  soft_thresh <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
-<span id="cb646-13"><a href="lasso.html#cb646-13" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(a))</span>
-<span id="cb646-14"><a href="lasso.html#cb646-14" aria-hidden="true" tabindex="-1"></a>    out[a <span class="sc">&gt;</span>  b] <span class="ot">=</span> a[a <span class="sc">&gt;</span> b] <span class="sc">-</span> b</span>
-<span id="cb646-15"><a href="lasso.html#cb646-15" aria-hidden="true" tabindex="-1"></a>    out[a <span class="sc">&lt;</span> <span class="sc">-</span>b] <span class="ot">=</span> a[a <span class="sc">&lt;</span> <span class="sc">-</span>b] <span class="sc">+</span> b</span>
-<span id="cb646-16"><a href="lasso.html#cb646-16" aria-hidden="true" tabindex="-1"></a>    out</span>
-<span id="cb646-17"><a href="lasso.html#cb646-17" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb646-18"><a href="lasso.html#cb646-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb646-19"><a href="lasso.html#cb646-19" aria-hidden="true" tabindex="-1"></a>  w  <span class="ot">=</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X) <span class="sc">+</span> <span class="fu">diag</span>(lambda, <span class="fu">ncol</span>(X))) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X,y)</span>
-<span id="cb646-20"><a href="lasso.html#cb646-20" aria-hidden="true" tabindex="-1"></a>  tol_curr <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb646-21"><a href="lasso.html#cb646-21" aria-hidden="true" tabindex="-1"></a>  J  <span class="ot">=</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb646-22"><a href="lasso.html#cb646-22" aria-hidden="true" tabindex="-1"></a>  a  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, J)</span>
-<span id="cb646-23"><a href="lasso.html#cb646-23" aria-hidden="true" tabindex="-1"></a>  c_ <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, J)</span>
-<span id="cb646-24"><a href="lasso.html#cb646-24" aria-hidden="true" tabindex="-1"></a>  i  <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb646-25"><a href="lasso.html#cb646-25" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb646-26"><a href="lasso.html#cb646-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (tol <span class="sc">&lt;</span> tol_curr <span class="sc">&amp;&amp;</span> i <span class="sc">&lt;</span> iter) {</span>
-<span id="cb646-27"><a href="lasso.html#cb646-27" aria-hidden="true" tabindex="-1"></a>    w_old <span class="ot">=</span> w </span>
-<span id="cb646-28"><a href="lasso.html#cb646-28" aria-hidden="true" tabindex="-1"></a>    a <span class="ot">=</span> <span class="fu">colSums</span>(X<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb646-29"><a href="lasso.html#cb646-29" aria-hidden="true" tabindex="-1"></a>    l <span class="ot">=</span> <span class="fu">length</span>(y)<span class="sc">*</span>lambda  <span class="co"># for consistency with glmnet approach</span></span>
-<span id="cb646-30"><a href="lasso.html#cb646-30" aria-hidden="true" tabindex="-1"></a>    c_ <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>J, <span class="cf">function</span>(j)  <span class="fu">sum</span>( X[,j] <span class="sc">*</span> (y <span class="sc">-</span> X[,<span class="sc">-</span>j] <span class="sc">%*%</span> w_old[<span class="sc">-</span>j]) ))</span>
-<span id="cb646-31"><a href="lasso.html#cb646-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb646-32"><a href="lasso.html#cb646-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (soft) {</span>
-<span id="cb646-33"><a href="lasso.html#cb646-33" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
-<span id="cb646-34"><a href="lasso.html#cb646-34" aria-hidden="true" tabindex="-1"></a>        w[j] <span class="ot">=</span> <span class="fu">soft_thresh</span>(c_[j]<span class="sc">/</span>a[j], l<span class="sc">/</span>a[j])</span>
-<span id="cb646-35"><a href="lasso.html#cb646-35" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb646-36"><a href="lasso.html#cb646-36" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb646-37"><a href="lasso.html#cb646-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
-<span id="cb646-38"><a href="lasso.html#cb646-38" aria-hidden="true" tabindex="-1"></a>      w <span class="ot">=</span> w_old</span>
-<span id="cb646-39"><a href="lasso.html#cb646-39" aria-hidden="true" tabindex="-1"></a>      w[c_<span class="sc">&lt;</span> l <span class="sc">&amp;</span> c_ <span class="sc">&gt;</span> <span class="sc">-</span>l] <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb646-40"><a href="lasso.html#cb646-40" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb646-41"><a href="lasso.html#cb646-41" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb646-42"><a href="lasso.html#cb646-42" aria-hidden="true" tabindex="-1"></a>    tol_curr <span class="ot">=</span> <span class="fu">crossprod</span>(w <span class="sc">-</span> w_old)  </span>
-<span id="cb646-43"><a href="lasso.html#cb646-43" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb646-44"><a href="lasso.html#cb646-44" aria-hidden="true" tabindex="-1"></a>    i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb646-45"><a href="lasso.html#cb646-45" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb646-46"><a href="lasso.html#cb646-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose <span class="sc">&amp;&amp;</span> i<span class="sc">%%</span><span class="dv">10</span> <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">message</span>(i)</span>
-<span id="cb646-47"><a href="lasso.html#cb646-47" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb646-48"><a href="lasso.html#cb646-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb646-49"><a href="lasso.html#cb646-49" aria-hidden="true" tabindex="-1"></a>  w</span>
-<span id="cb646-50"><a href="lasso.html#cb646-50" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb651-1"><a href="lasso.html#cb651-1" aria-hidden="true" tabindex="-1"></a>lasso <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb651-2"><a href="lasso.html#cb651-2" aria-hidden="true" tabindex="-1"></a>  X,                   <span class="co"># model matrix</span></span>
+<span id="cb651-3"><a href="lasso.html#cb651-3" aria-hidden="true" tabindex="-1"></a>  y,                   <span class="co"># target</span></span>
+<span id="cb651-4"><a href="lasso.html#cb651-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> .<span class="dv">1</span>,        <span class="co"># penalty parameter</span></span>
+<span id="cb651-5"><a href="lasso.html#cb651-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">soft    =</span> <span class="cn">TRUE</span>,      <span class="co"># soft vs. hard thresholding</span></span>
+<span id="cb651-6"><a href="lasso.html#cb651-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol     =</span> <span class="fl">1e-6</span>,      <span class="co"># tolerance</span></span>
+<span id="cb651-7"><a href="lasso.html#cb651-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter    =</span> <span class="dv">100</span>,       <span class="co"># number of max iterations</span></span>
+<span id="cb651-8"><a href="lasso.html#cb651-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span>       <span class="co"># print out iteration number</span></span>
+<span id="cb651-9"><a href="lasso.html#cb651-9" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb651-10"><a href="lasso.html#cb651-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb651-11"><a href="lasso.html#cb651-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># soft thresholding function</span></span>
+<span id="cb651-12"><a href="lasso.html#cb651-12" aria-hidden="true" tabindex="-1"></a>  soft_thresh <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
+<span id="cb651-13"><a href="lasso.html#cb651-13" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(a))</span>
+<span id="cb651-14"><a href="lasso.html#cb651-14" aria-hidden="true" tabindex="-1"></a>    out[a <span class="sc">&gt;</span>  b] <span class="ot">=</span> a[a <span class="sc">&gt;</span> b] <span class="sc">-</span> b</span>
+<span id="cb651-15"><a href="lasso.html#cb651-15" aria-hidden="true" tabindex="-1"></a>    out[a <span class="sc">&lt;</span> <span class="sc">-</span>b] <span class="ot">=</span> a[a <span class="sc">&lt;</span> <span class="sc">-</span>b] <span class="sc">+</span> b</span>
+<span id="cb651-16"><a href="lasso.html#cb651-16" aria-hidden="true" tabindex="-1"></a>    out</span>
+<span id="cb651-17"><a href="lasso.html#cb651-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb651-18"><a href="lasso.html#cb651-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb651-19"><a href="lasso.html#cb651-19" aria-hidden="true" tabindex="-1"></a>  w  <span class="ot">=</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X) <span class="sc">+</span> <span class="fu">diag</span>(lambda, <span class="fu">ncol</span>(X))) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X,y)</span>
+<span id="cb651-20"><a href="lasso.html#cb651-20" aria-hidden="true" tabindex="-1"></a>  tol_curr <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb651-21"><a href="lasso.html#cb651-21" aria-hidden="true" tabindex="-1"></a>  J  <span class="ot">=</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb651-22"><a href="lasso.html#cb651-22" aria-hidden="true" tabindex="-1"></a>  a  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, J)</span>
+<span id="cb651-23"><a href="lasso.html#cb651-23" aria-hidden="true" tabindex="-1"></a>  c_ <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, J)</span>
+<span id="cb651-24"><a href="lasso.html#cb651-24" aria-hidden="true" tabindex="-1"></a>  i  <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb651-25"><a href="lasso.html#cb651-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb651-26"><a href="lasso.html#cb651-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (tol <span class="sc">&lt;</span> tol_curr <span class="sc">&amp;&amp;</span> i <span class="sc">&lt;</span> iter) {</span>
+<span id="cb651-27"><a href="lasso.html#cb651-27" aria-hidden="true" tabindex="-1"></a>    w_old <span class="ot">=</span> w </span>
+<span id="cb651-28"><a href="lasso.html#cb651-28" aria-hidden="true" tabindex="-1"></a>    a <span class="ot">=</span> <span class="fu">colSums</span>(X<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb651-29"><a href="lasso.html#cb651-29" aria-hidden="true" tabindex="-1"></a>    l <span class="ot">=</span> <span class="fu">length</span>(y)<span class="sc">*</span>lambda  <span class="co"># for consistency with glmnet approach</span></span>
+<span id="cb651-30"><a href="lasso.html#cb651-30" aria-hidden="true" tabindex="-1"></a>    c_ <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>J, <span class="cf">function</span>(j)  <span class="fu">sum</span>( X[,j] <span class="sc">*</span> (y <span class="sc">-</span> X[,<span class="sc">-</span>j] <span class="sc">%*%</span> w_old[<span class="sc">-</span>j]) ))</span>
+<span id="cb651-31"><a href="lasso.html#cb651-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb651-32"><a href="lasso.html#cb651-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (soft) {</span>
+<span id="cb651-33"><a href="lasso.html#cb651-33" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
+<span id="cb651-34"><a href="lasso.html#cb651-34" aria-hidden="true" tabindex="-1"></a>        w[j] <span class="ot">=</span> <span class="fu">soft_thresh</span>(c_[j]<span class="sc">/</span>a[j], l<span class="sc">/</span>a[j])</span>
+<span id="cb651-35"><a href="lasso.html#cb651-35" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb651-36"><a href="lasso.html#cb651-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb651-37"><a href="lasso.html#cb651-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
+<span id="cb651-38"><a href="lasso.html#cb651-38" aria-hidden="true" tabindex="-1"></a>      w <span class="ot">=</span> w_old</span>
+<span id="cb651-39"><a href="lasso.html#cb651-39" aria-hidden="true" tabindex="-1"></a>      w[c_<span class="sc">&lt;</span> l <span class="sc">&amp;</span> c_ <span class="sc">&gt;</span> <span class="sc">-</span>l] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb651-40"><a href="lasso.html#cb651-40" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb651-41"><a href="lasso.html#cb651-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb651-42"><a href="lasso.html#cb651-42" aria-hidden="true" tabindex="-1"></a>    tol_curr <span class="ot">=</span> <span class="fu">crossprod</span>(w <span class="sc">-</span> w_old)  </span>
+<span id="cb651-43"><a href="lasso.html#cb651-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb651-44"><a href="lasso.html#cb651-44" aria-hidden="true" tabindex="-1"></a>    i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb651-45"><a href="lasso.html#cb651-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb651-46"><a href="lasso.html#cb651-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose <span class="sc">&amp;&amp;</span> i<span class="sc">%%</span><span class="dv">10</span> <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">message</span>(i)</span>
+<span id="cb651-47"><a href="lasso.html#cb651-47" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb651-48"><a href="lasso.html#cb651-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb651-49"><a href="lasso.html#cb651-49" aria-hidden="true" tabindex="-1"></a>  w</span>
+<span id="cb651-50"><a href="lasso.html#cb651-50" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-35" class="section level2">
 <h2>Estimation</h2>
 <p>Note, if <code>lambda = 0</code>, i.e. no penalty, the result is the same as what you would get from the base R <span class="func" style="">lm.fit</span>.</p>
-<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb647-1"><a href="lasso.html#cb647-1" aria-hidden="true" tabindex="-1"></a>fit_soft <span class="ot">=</span> <span class="fu">lasso</span>(</span>
-<span id="cb647-2"><a href="lasso.html#cb647-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb647-3"><a href="lasso.html#cb647-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb647-4"><a href="lasso.html#cb647-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> lambda,</span>
-<span id="cb647-5"><a href="lasso.html#cb647-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol    =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb647-6"><a href="lasso.html#cb647-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">soft   =</span> <span class="cn">TRUE</span></span>
-<span id="cb647-7"><a href="lasso.html#cb647-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb647-8"><a href="lasso.html#cb647-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb647-9"><a href="lasso.html#cb647-9" aria-hidden="true" tabindex="-1"></a>fit_hard <span class="ot">=</span> <span class="fu">lasso</span>(</span>
-<span id="cb647-10"><a href="lasso.html#cb647-10" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb647-11"><a href="lasso.html#cb647-11" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb647-12"><a href="lasso.html#cb647-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> lambda,</span>
-<span id="cb647-13"><a href="lasso.html#cb647-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol    =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb647-14"><a href="lasso.html#cb647-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">soft   =</span> <span class="cn">FALSE</span></span>
-<span id="cb647-15"><a href="lasso.html#cb647-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="lasso.html#cb652-1" aria-hidden="true" tabindex="-1"></a>fit_soft <span class="ot">=</span> <span class="fu">lasso</span>(</span>
+<span id="cb652-2"><a href="lasso.html#cb652-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb652-3"><a href="lasso.html#cb652-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb652-4"><a href="lasso.html#cb652-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> lambda,</span>
+<span id="cb652-5"><a href="lasso.html#cb652-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol    =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb652-6"><a href="lasso.html#cb652-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">soft   =</span> <span class="cn">TRUE</span></span>
+<span id="cb652-7"><a href="lasso.html#cb652-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb652-8"><a href="lasso.html#cb652-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb652-9"><a href="lasso.html#cb652-9" aria-hidden="true" tabindex="-1"></a>fit_hard <span class="ot">=</span> <span class="fu">lasso</span>(</span>
+<span id="cb652-10"><a href="lasso.html#cb652-10" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb652-11"><a href="lasso.html#cb652-11" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb652-12"><a href="lasso.html#cb652-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> lambda,</span>
+<span id="cb652-13"><a href="lasso.html#cb652-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol    =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb652-14"><a href="lasso.html#cb652-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">soft   =</span> <span class="cn">FALSE</span></span>
+<span id="cb652-15"><a href="lasso.html#cb652-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>The <span class="pack" style="">glmnet</span> approach is by default a mixture
 of ridge and lasso penalties, setting <code>alpha = 1</code> reduces to lasso (<code>alpha = 0</code>
 would be ridge). We set the lambda to a couple values while only wanting the one
 set to the same lambda value as above (<code>s</code>).</p>
-<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb648-1"><a href="lasso.html#cb648-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb648-2"><a href="lasso.html#cb648-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb648-3"><a href="lasso.html#cb648-3" aria-hidden="true" tabindex="-1"></a>fit_glmnet <span class="ot">=</span> <span class="fu">coef</span>(</span>
-<span id="cb648-4"><a href="lasso.html#cb648-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glmnet</span>(</span>
-<span id="cb648-5"><a href="lasso.html#cb648-5" aria-hidden="true" tabindex="-1"></a>    X,</span>
-<span id="cb648-6"><a href="lasso.html#cb648-6" aria-hidden="true" tabindex="-1"></a>    y,</span>
-<span id="cb648-7"><a href="lasso.html#cb648-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
-<span id="cb648-8"><a href="lasso.html#cb648-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">1</span>, lambda),</span>
-<span id="cb648-9"><a href="lasso.html#cb648-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">thresh =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb648-10"><a href="lasso.html#cb648-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">intercept =</span> <span class="cn">FALSE</span></span>
-<span id="cb648-11"><a href="lasso.html#cb648-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb648-12"><a href="lasso.html#cb648-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">s =</span> lambda</span>
-<span id="cb648-13"><a href="lasso.html#cb648-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb648-14"><a href="lasso.html#cb648-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb648-15"><a href="lasso.html#cb648-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lassoshooting)</span>
-<span id="cb648-16"><a href="lasso.html#cb648-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb648-17"><a href="lasso.html#cb648-17" aria-hidden="true" tabindex="-1"></a>fit_ls <span class="ot">=</span> <span class="fu">lassoshooting</span>(</span>
-<span id="cb648-18"><a href="lasso.html#cb648-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
-<span id="cb648-19"><a href="lasso.html#cb648-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
-<span id="cb648-20"><a href="lasso.html#cb648-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fu">length</span>(y) <span class="sc">*</span> lambda,</span>
-<span id="cb648-21"><a href="lasso.html#cb648-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">thr =</span> <span class="fl">1e-12</span></span>
-<span id="cb648-22"><a href="lasso.html#cb648-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb653-1"><a href="lasso.html#cb653-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb653-2"><a href="lasso.html#cb653-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb653-3"><a href="lasso.html#cb653-3" aria-hidden="true" tabindex="-1"></a>fit_glmnet <span class="ot">=</span> <span class="fu">coef</span>(</span>
+<span id="cb653-4"><a href="lasso.html#cb653-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glmnet</span>(</span>
+<span id="cb653-5"><a href="lasso.html#cb653-5" aria-hidden="true" tabindex="-1"></a>    X,</span>
+<span id="cb653-6"><a href="lasso.html#cb653-6" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb653-7"><a href="lasso.html#cb653-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
+<span id="cb653-8"><a href="lasso.html#cb653-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">1</span>, lambda),</span>
+<span id="cb653-9"><a href="lasso.html#cb653-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">thresh =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb653-10"><a href="lasso.html#cb653-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">intercept =</span> <span class="cn">FALSE</span></span>
+<span id="cb653-11"><a href="lasso.html#cb653-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb653-12"><a href="lasso.html#cb653-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">s =</span> lambda</span>
+<span id="cb653-13"><a href="lasso.html#cb653-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb653-14"><a href="lasso.html#cb653-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb653-15"><a href="lasso.html#cb653-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lassoshooting)</span>
+<span id="cb653-16"><a href="lasso.html#cb653-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb653-17"><a href="lasso.html#cb653-17" aria-hidden="true" tabindex="-1"></a>fit_ls <span class="ot">=</span> <span class="fu">lassoshooting</span>(</span>
+<span id="cb653-18"><a href="lasso.html#cb653-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
+<span id="cb653-19"><a href="lasso.html#cb653-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
+<span id="cb653-20"><a href="lasso.html#cb653-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fu">length</span>(y) <span class="sc">*</span> lambda,</span>
+<span id="cb653-21"><a href="lasso.html#cb653-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">thr =</span> <span class="fl">1e-12</span></span>
+<span id="cb653-22"><a href="lasso.html#cb653-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="comparison-39" class="section level2">
 <h2>Comparison</h2>

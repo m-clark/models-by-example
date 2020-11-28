@@ -1,20 +1,24 @@
-# Neural Net
+# Neural Network
 
-The following example follows comes from [Andrew Trask's old blog post](https://iamtrask.github.io/2015/07/12/basic-python-network/), which is nice because it tries to demonstrate a neural net in very few lines of code, much like this document's goal.
+The following example follows [Andrew Trask's old blog post](https://iamtrask.github.io/2015/07/12/basic-python-network/), which is nice because it tries to demonstrate a neural net in very few lines of code, much like this document's goal.
+
+The data setup is very simple (only 4 observations!), and I keep the Python code essentially identical outside of very slight cosmetic (mostly name/space) changes.  For more detail I suggest following the original posts, but I'll add some context here and there.  In addition, see the [logistic regression chapter][Logistic Regression] and [gradient descent chapter][Gradient Descent].
 
 - https://iamtrask.github.io/2015/07/12/basic-python-network/
 - https://iamtrask.github.io/2015/07/27/python-network-part2/
-
-
-The data setup is very simple, and I keep the Python code essentially identical outside of very slight cosmetic (mostly name/space) changes.  For more detail I suggest following the original posts, but I'll add some context here and there.  In addition, see the [logistic regression chapter][Logistic Regression] and [gradient descent chapter][Gradient Descent].
-
 
 
 ## Example 1
 
 ### Python
 
-From the blog:
+
+In this initial example, while it can serve as instructive starting point for backpropagation, we're not really using what most would call a neural net, but rather just an alternative way to estimate a [logistic regression][Logistic Regression]. `layer_1` in this case is just the linear predictor after a nonlinear transformation (sigmoid).
+
+Note that in this particular example however, that the first column is perfectly correlated with the target `y`, which would cause a problem if no regularization were applied (a.k.a. separation).
+
+
+Description of the necessary objects from the blog.  These will be consistent throughout the demo.
 
 > 
 - **X** 	Input dataset matrix where each row is a training example
@@ -26,10 +30,6 @@ From the blog:
 - **-** 	Elementwise subtraction, so two vectors of equal size are subtracting corresponding values 1-to-1 to generate a final vector of identical size.
 - **x.dot(y)** 	If x and y are vectors, this is a dot product. If both are matrices, it's a matrix-matrix multiplication. If only one is a matrix, then it's vector matrix multiplication.
 
-
-In this initial example, while it can serve as instructive starting point for backpropagation, we're not really using what most would call a neural net, but rather just an alternative way to estimate a [logistic regression][Logistic Regression]. `layer_1` in this case is just the linear predictor after transformation.
-
-Note that in this particular example however, that the first column is perfectly correlated with the target `y`, which would cause a problem if no regularization were applied.
 
 ```{python nn-py-1}
 import numpy as np
@@ -141,7 +141,7 @@ message("Output After Training: \n",
         paste0(capture.output(cbind(fit_nn$layer_1, y)), collapse = '\n'))
 ```
 
-The key idea here is the update step. Using the derivative, we are getting the slope of the sigmoid function at the point of interest.  If a probability (`layer 1`) is close to zero or 1, this suggests the prediction 'confidence' is high, and the result is that there is less need for updating.  For the others, e.g. close to `x = 0`, the predictions will be relatively more updated, as the error will be greater.  The last step is to compute the weight updates for each weight for each observation, sum them, and update the weights accordingly.
+A key takeaway from this demonstration regards the update step. Using the derivative, we are getting the slope of the sigmoid function at the point of interest, e.g. the three points below.  If a predicted probability (`layer 1`) is close to zero or 1, this suggests the prediction 'confidence' is high, the slopes are shallow, and the result is that there is less need for updating.  For the others, e.g. close to `x = 0`, there will be relatively more updating, as the error will be greater.  The last step is to compute the weight updates for each weight for each observation, sum them, and update the weights accordingly.  So our update is a function of the error and the slope.  If both are small, then there will be little update, but if there is larger error and/or less confident prediction, the result will ultimately be a larger update. 
 
 ```{r nn-sigmoid-vis, echo=FALSE}
 library(tidyverse)
@@ -190,8 +190,9 @@ d %>%
     data = gdata,
     show.legend = FALSE
   ) +
-  labs(y = 'nonlin(x)') +
-  scico::scale_color_scico_d(begin = .25, end = .75)
+  labs(y = 'nonlin(x)', caption = "This plot reproduces the one in Trask's blog post") +
+  scico::scale_color_scico_d(begin = .25, end = .75) +
+  theme(title = element_text(size = 6))
 ```
 
 
@@ -200,7 +201,7 @@ d %>%
 
 In the following example, we have similarly simple data, but technically a bit harder problem to estimate.  In this case, `y = 1` only if we apply the [XOR](https://en.wikipedia.org/wiki/Exclusive_or) function to columns 1 and 2.  This makes the relationship between inputs and output a nonlinear one.
 
-To account for the nonlinearity we will have two 'hidden' layers, the first of four 'nodes', and the second a single  node, which relates the transformed information to the target variable. In the hidden layer, we can think of each node as a linear combination of the input, with weights represented by paths (Trask in his post collectively calls these weights/connections synapses).  This is followed by a nonlinear transformation for each node (e.g. sigmoid).  The final predictions are a linear combination of the hidden layer, followed by another nonlinear transformation (sigmoid again).  The last transformation needs to put the result between 0 and 1, but you could try other transformations for the first hidden layer.
+To account for the nonlinearity we will have two 'hidden' layers, the first of four 'nodes', and the second a single  node, which relates the transformed information to the target variable. In the hidden layer, we can think of each node as a linear combination of the input, with weights represented by paths (in the original post these weights/connections are collectively called 'synapses').  This is followed by a nonlinear transformation for each node (e.g. sigmoid).  The final predictions are a linear combination of the hidden layer, followed by another nonlinear transformation (sigmoid again).  The last transformation needs to put the result between 0 and 1, but you could try other transformations for the first hidden layer.  In fact sigmoid is rarely used except for the final layer.
 
 ```{r nn-graphical-vis, echo=FALSE}
 model = "
@@ -229,7 +230,7 @@ DiagrammeR::grViz(model)
 
 ### Python
 
-For the following, I remove defining `layer_0`, as it is just the input matrix `X`.
+For the following, I remove defining `layer_0`, as it is just the input matrix `X`.  But otherwise, only minor cleanup and more explicit names as before.
 
 ```{python nn-py-2,  eval = T}
 import numpy as np
@@ -286,7 +287,7 @@ for j in np.arange(30000):
     synapse_0 += X.T.dot(layer_1_delta)
 
 
-np.round(np.mean(np.abs(layer_2_error)), 5)
+print('Final error: ' + str(np.round(np.mean(np.abs(layer_2_error)), 5)))
 np.round(layer_1, 3)
 np.round(np.append(layer_2, y, axis = 1), 3)
 np.round(synapse_0, 3)
@@ -296,7 +297,7 @@ np.round(synapse_1, 3)
 
 ### R
 
-In general, different weights can ultimately produce similar predictions, and combinations for a particular node are arbitrary (e.g. node 1 in one network might become node 3 on a separate run), so things are somewhat more difficult to compare across runs, let alone across different tools.  However, what matters more is the final prediction, and you should see essentially the same result for R and Python.  Again we create a function for repeated use.
+In general, different weights can ultimately produce similar predictions, and combinations for a particular node are arbitrary. For example, node 1 in one network might become more like node 3 on a separate run with different starting points. So things are somewhat more difficult to compare across runs, let alone across different tools.  However, what matters more is the final prediction, and you should see essentially the same result for R and Python.  Again we create a function for repeated use.
 
 
 ```{r nn-r-2}
@@ -383,7 +384,7 @@ fit_nn = nn_2(
   maxiter = 30000
 )
 
-round(mean(abs(fit_nn$layer_2_error)), 5)
+glue::glue('Final error: {round(mean(abs(fit_nn$layer_2_error)), 5)}')
 round(fit_nn$layer_1, 3)
 round(cbind(fit_nn$layer_2, y), 3)
 round(fit_nn$synapse_0, 3)
@@ -395,10 +396,10 @@ round(fit_nn$synapse_1, 3)
 
 ### Comparison
 
-Let's compare our results to the <span class="pack" style = "">nnet</span> package that comes with the base R installation. Note that it will include intercepts (a.k.a. biases) for each node, so it's estimating more parameters in total.
+Let's compare our results to the <span class="pack" style = "">nnet</span> package that comes with the base R installation. Note that it will include intercepts (a.k.a. *biases*) for each node, so it's estimating more parameters in total.
 
 ```{r nn-compare-2}
-fit_nnet = nnet::nnet(X, y, size = 4, maxit = 30000)
+fit_nnet = nnet::nnet(X, y, size = 4)
 data.frame(coef(fit_nnet))
 fitted(fit_nnet)
 ```
@@ -479,7 +480,7 @@ for alpha in alphas:
 
 ```
 
-Since `alpha = 10` seems reasonable, let's inspect the results just for that.  Note that this value likely won't hold on another random run.
+Since `alpha = 10` seems reasonable, let's inspect the results just for that.  Note that this value being the 'best' likely won't hold on another random run, and in general we would assess this *hyperparameter* using cross-validation or other means.
 
 
 ```{python nn-py-3-best, echo=-1}
@@ -523,7 +524,7 @@ np.append(np.round(layer_2, 4), y, axis = 1)
 
 ### R
 
-The following has little to no modification.  
+The following has little to no modification, but again creates a function for easier manipulation of inputs.
 
 
 ```{r nn-r-3, message=TRUE}
@@ -613,7 +614,7 @@ nn_3 <- function(
 }
 ```
 
-With function in place we are now ready to try it out.  You can change whether you show the messages or not to compare with the Python. I don't in this case for the sake of the document, but it won't be overwhelming if you do and is recommended. We will also see that `alpha = 10` is the better option under the default settings.  This demo code will probably not work well beyond a hidden size of 50 (and more iterations).
+With function in place, we are now ready to try it out.  You can change whether you show the messages or not to compare with the Python. I don't in this case for the sake of the document, but it won't be overwhelming if you do interactively, and is recommended. We will also see that `alpha = 10` is the better option under the default settings as it was with the Python code.  Note that this simple demo code will probably not work well beyond a hidden size of 50 (add more iterations even then).
 
 
 ```{r nn-r-3-est}
@@ -632,7 +633,7 @@ fit_nn = nn_3(
 
 Let's rerun at `alpha = 10`.
 
-```{r nn-r-3-best}
+```{r nn-r-3-best, message = TRUE}
 set.seed(1)
 
 fit_nn = nn_3(
@@ -652,7 +653,7 @@ cbind(round(fit_nn$layer_2, 4), y)
 Again we can compare to <span class="pack" style = "">nnet</span>.
 
 ```{r nn-compare-3}
-fit_nnet = nnet::nnet(X, y, size = 32, maxit = 30000)
+fit_nnet = nnet::nnet(X, y, size = 32)
 fitted(fit_nnet)
 ```
 

@@ -365,19 +365,19 @@ img {
 .pack {
   color: #1f65b7; /* #990071 #AC9CFF #e41a1c*/
   font-family: 'Roboto Mono', 'Fira Sans', mono;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .func {
   color: #007020;   /*#007199 #00CBB6; #984ea3; can just use `` instead*/
   font-family: 'Roboto Mono', 'Fira Sans', mono; 
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .objclass {
   color:  #947100;  /*#AAB400 #4daf4a; #FFC5D0*/
   font-family: 'Roboto Mono', 'Fira Sans', mono;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* miscellaneous */
@@ -438,3 +438,8 @@ div.datatables {
   background-position: center; 
 }
 
+
+/* Give button rounded edge similar code block */
+.copy-to-clipboard-button {
+  border-radius: 5px; 
+}

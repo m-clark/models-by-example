@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Neural Network | Model Estimation by Example</title>
+  <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Neural Network | Model Estimation by Example" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
+  <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+  <meta property="og:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="github-repo" content="m-clark/models-by-example/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Neural Network | Model Estimation by Example" />
+  
+  <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
+  <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/nineteeneightyR.png" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="gaussian-process.html"/>
+<link rel="next" href="elm.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<script src="libs/viz-1.8.2/viz.js"></script>
+<link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="libs/grViz-binding-1.0.6.1/grViz.js"></script>
+<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class='before'><a href="./">Model Estimation by Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="part"><span><b>Models</b></span></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i>Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#data-setup"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#estimation"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#comparison"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="linear-regression.html"><a href="linear-regression.html#source"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i>Logistic Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#data-setup-1"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#functions-1"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#estimation-1"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#comparison-1"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#source-1"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html"><i class="fa fa-check"></i>One-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#data-setup-2"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#function"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#estimation-2"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#comparison-2"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-one-factor.html"><a href="mixed-model-one-factor.html#source-2"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html"><i class="fa fa-check"></i>Two-factor Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#data-setup-3"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#function-1"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#estimation-3"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#comparison-3"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-two-factor.html"><a href="mixed-model-two-factor.html#source-3"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html"><i class="fa fa-check"></i>Mixed Model via ML</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#introduction-1"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#data-setup-4"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#function-2"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#estimation-4"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#issues-with-ml-estimation"><i class="fa fa-check"></i>Issues with ML estimation</a></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#link-with-penalized-regression"><i class="fa fa-check"></i>Link with penalized regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mixed-model-ML.html"><a href="mixed-model-ML.html#source-4"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html"><i class="fa fa-check"></i>Probit &amp; Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#standard-probit"><i class="fa fa-check"></i>Standard Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#function-3"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#examples"><i class="fa fa-check"></i>Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#bivariate-probit"><i class="fa fa-check"></i>Bivariate Probit</a>
+<ul>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="probit.html"><a href="probit.html#source-5"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html"><i class="fa fa-check"></i>Heckman Selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#data-setup-5"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#two-step-approach"><i class="fa fa-check"></i>Two step approach</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-1-probit-model"><i class="fa fa-check"></i>Step 1: Probit Model</a></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#step-2-estimate-via-linear-regression"><i class="fa fa-check"></i>Step 2: Estimate via Linear Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#maximum-likelihood"><i class="fa fa-check"></i>Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#comparison-4"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="heckman-selection.html"><a href="heckman-selection.html#source-6"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html"><i class="fa fa-check"></i>Marginal Structural Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#data-setup-6"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#function-4"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#estimation-5"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#source-7"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#censoring-with-an-upper-limit"><i class="fa fa-check"></i>Censoring with an Upper Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#data-setup-7"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#function-5"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#estimation-6"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-6"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#censoring-with-a-lower-limit"><i class="fa fa-check"></i>Censoring with a Lower Limit</a>
+<ul>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#comparison-7"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#source-8"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html"><i class="fa fa-check"></i>Cox Survival</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#standard-proportional-hazards"><i class="fa fa-check"></i>Standard Proportional Hazards</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-8"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-6"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-7"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-8"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#time-varying-coefficients"><i class="fa fa-check"></i>Time-varying coefficients</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-9"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-7"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-8"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-9"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#stratified-cox-model"><i class="fa fa-check"></i>Stratified Cox Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#data-setup-10"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#function-8"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#estimation-9"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#comparison-10"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cox.html"><a href="cox.html#source-9"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html"><i class="fa fa-check"></i>Hurdle Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#poisson"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#data-setup-11"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-9"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-10"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-11"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#negative-binomial"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#function-10"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#estimation-11"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#comparison-12"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hurdle.html"><a href="hurdle.html#source-10"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html"><i class="fa fa-check"></i>Zero-Inflated Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#poisson-1"><i class="fa fa-check"></i>Poisson</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#data-setup-12"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-11"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-12"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-13"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#negative-binomial-1"><i class="fa fa-check"></i>Negative Binomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#function-12"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#estimation-13"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#comparison-14"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#supplemental-example"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="zi.html"><a href="zi.html#source-11"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html"><i class="fa fa-check"></i>Naive Bayes</a>
+<ul>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#initialization"><i class="fa fa-check"></i>Initialization</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#source-12"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#standard-categorical-model"><i class="fa fa-check"></i>Standard (Categorical) Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#data-setup-13"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#function-13"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-16"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#alternative-specific-and-constant-variables"><i class="fa fa-check"></i>Alternative specific and constant variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#comparison-17"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#source-13"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal</a>
+<ul>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#data"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#function-14"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#estimation-14"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#comparison-18"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#source-14"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html"><i class="fa fa-check"></i>Markov Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-setup-14"><i class="fa fa-check"></i>Data Setup</a>
+<ul>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#data-functions"><i class="fa fa-check"></i>Data Functions</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#two-states-demo"><i class="fa fa-check"></i>Two states Demo</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#three-states-demo"><i class="fa fa-check"></i>Three states demo</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#function-15"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#estimation-15"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#comparison-19"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="markov.html"><a href="markov.html#source-15"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html"><i class="fa fa-check"></i>Hidden Markov Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#data-setup-15"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#function-16"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#estimation-16"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#supplemental-demo"><i class="fa fa-check"></i>Supplemental demo</a></li>
+<li class="chapter" data-level="" data-path="hmm.html"><a href="hmm.html#source-16"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html"><i class="fa fa-check"></i>Quantile Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#data-setup-16"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#function-17"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#estimation-17"><i class="fa fa-check"></i>Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#other-quantiles"><i class="fa fa-check"></i>Other quantiles</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#comparison-20"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="quantile-regression.html"><a href="quantile-regression.html#source-17"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html"><i class="fa fa-check"></i>Cubic Spline Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#data-setup-17"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#functions-2"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
+<li class="chapter" data-level="" data-path="cubic-spline.html"><a href="cubic-spline.html#source-18"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html"><i class="fa fa-check"></i>Gausian Processes</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noise-free-demonstration"><i class="fa fa-check"></i>Noise-Free Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-18"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-3"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#noisy-demonstration"><i class="fa fa-check"></i>Noisy Demonstration</a>
+<ul>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#data-setup-19"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#functions-4"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-prior-distribution-1"><i class="fa fa-check"></i>Visualize the prior distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#generate-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Generate the posterior predictive distribution</a></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#visualize-the-posterior-predictive-distribution-1"><i class="fa fa-check"></i>Visualize the Posterior Predictive Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i>Neural Network</a>
+<ul>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
+<ul>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r"><i class="fa fa-check"></i>R</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
+<ul>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-1"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-1"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-3"><i class="fa fa-check"></i>Example 3</a>
+<ul>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-2"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-2"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
+<ul>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#data-setup-20"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#function-18"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#estimation-18"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#comparison-23"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#supplemental-example-1"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="elm.html"><a href="elm.html#source-21"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html"><i class="fa fa-check"></i>Reproducing Kernel Hilbert Space Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-21"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-5"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#function-to-find-the-inverse-of-a-matrix"><i class="fa fa-check"></i>Function to find the inverse of a matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#reproducing-kernel"><i class="fa fa-check"></i>Reproducing Kernel</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#gram-matrix"><i class="fa fa-check"></i>Gram matrix</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#ridge-regression"><i class="fa fa-check"></i>Ridge regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-19"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-24"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#example-cubic-spline"><i class="fa fa-check"></i>Example: Cubic Spline</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#data-setup-22"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#functions-6"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#estimation-20"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#comparison-25"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#source-22"><i class="fa fa-check"></i>Source</a>
+<ul>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#current-supplemental-code"><i class="fa fa-check"></i>Current Supplemental Code</a></li>
+<li class="chapter" data-level="" data-path="rkhs.html"><a href="rkhs.html#original-supplemental-code"><i class="fa fa-check"></i>Original Supplemental Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html"><i class="fa fa-check"></i>Confirmatory Factor Analysis</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#data-setup-23"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#functions-7"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#estimation-21"><i class="fa fa-check"></i>Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#raw"><i class="fa fa-check"></i>Raw</a></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#standardized"><i class="fa fa-check"></i>Standardized</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#comparison-26"><i class="fa fa-check"></i>Comparison</a>
+<ul>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#mplus"><i class="fa fa-check"></i>Mplus</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cfa.html"><a href="cfa.html#source-23"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Bayesian</b></span></li>
+<li class="chapter" data-level="" data-path="bayesian.html"><a href="bayesian.html"><i class="fa fa-check"></i>Introduction to Bayesian Methods</a></li>
+<li class="chapter" data-level="" data-path="bayesian-basics.html"><a href="bayesian-basics.html"><i class="fa fa-check"></i>Basics</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-basics.html"><a href="bayesian-basics.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
+<li class="chapter" data-level="" data-path="bayesian-basics.html"><a href="bayesian-basics.html#prior"><i class="fa fa-check"></i>Prior</a></li>
+<li class="chapter" data-level="" data-path="bayesian-basics.html"><a href="bayesian-basics.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
+<li class="chapter" data-level="" data-path="bayesian-basics.html"><a href="bayesian-basics.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
+<li class="chapter" data-level="" data-path="bayesian-basics.html"><a href="bayesian-basics.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
+<li class="chapter" data-level="" data-path="bayesian-basics.html"><a href="bayesian-basics.html#source-24"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html"><i class="fa fa-check"></i>Bayesian t-test</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#data-setup-24"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#model-code"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#estimation-22"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#comparison-27"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#visualization"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-t-test.html"><a href="bayesian-t-test.html#source-25"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html"><i class="fa fa-check"></i>Bayesian Linear Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#data-setup-25"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#model-code-1"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#estimation-23"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#comparison-28"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#visualize-1"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-linear-regression.html"><a href="bayesian-linear-regression.html#source-26"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html"><i class="fa fa-check"></i>Bayesian Beta Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#data-setup-26"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#model-code-2"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#estimation-24"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#comparison-29"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#visualization-1"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-beta-regression.html"><a href="bayesian-beta-regression.html#source-27"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html"><i class="fa fa-check"></i>Bayesian Mixed Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#data-setup-27"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#model-code-3"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#estimation-25"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#comparison-30"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#visualize-2"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-model.html"><a href="bayesian-mixed-model.html#source-28"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html"><i class="fa fa-check"></i>Bayesian Multilevel Mediation</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#data-setup-28"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#model-code-4"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#estimation-26"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#comparison-31"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#visualization-2"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-mixed-mediation.html"><a href="bayesian-mixed-mediation.html#source-29"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html"><i class="fa fa-check"></i>Bayesian IRT</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#one-parameter-irt"><i class="fa fa-check"></i>One Parameter IRT</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#data-setup-29"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-5"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-27"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-32"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#two-parameter-irt"><i class="fa fa-check"></i>Two Parameter IRT</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#model-code-6"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#estimation-28"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#comparison-33"><i class="fa fa-check"></i>Comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#three-parameter-irt"><i class="fa fa-check"></i>Three Parameter IRT</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#four-parameter-irt"><i class="fa fa-check"></i>Four Parameter IRT</a></li>
+<li class="chapter" data-level="" data-path="bayesian-irt.html"><a href="bayesian-irt.html#source-30"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html"><i class="fa fa-check"></i>Bayesian CFA</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#data-setup-30"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#model-code-7"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#estimation-29"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#comparison-34"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-cfa.html"><a href="bayesian-cfa.html#source-31"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html"><i class="fa fa-check"></i>Bayesian Nonparametric Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#chinese-restaurant-process"><i class="fa fa-check"></i>Chinese Restaurant Process</a></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#indian-buffet-process"><i class="fa fa-check"></i>Indian Buffet Process</a></li>
+<li class="chapter" data-level="" data-path="bayesian-non-parametric.html"><a href="bayesian-non-parametric.html#source-32"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html"><i class="fa fa-check"></i>Bayesian Stochastic Volatility Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#data-setup-31"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#model-code-8"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#estimation-30"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#results"><i class="fa fa-check"></i>Results</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#visualization-3"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-stochastic-volatility.html"><a href="bayesian-stochastic-volatility.html#source-33"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html"><i class="fa fa-check"></i>Bayesian Multinomial Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#data-setup-32"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#model-code-9"><i class="fa fa-check"></i>Model Code</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#estimation-31"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#comparison-35"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#adding-complexity"><i class="fa fa-check"></i>Adding Complexity</a></li>
+<li class="chapter" data-level="" data-path="bayesian-multinomial-model.html"><a href="bayesian-multinomial-model.html#source-34"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html"><i class="fa fa-check"></i>Variational Bayes Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#data-setup-33"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#function-19"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#estimation-32"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#comparison-36"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#visualization-4"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#supplemental-example-2"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="bayesian-variational.html"><a href="bayesian-variational.html#source-35"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html"><i class="fa fa-check"></i>Topic Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#data-setup-34"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#function-20"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#estimation-33"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#comparison-37"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="bayesian-topic-model.html"><a href="bayesian-topic-model.html#source-36"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Estimation</b></span></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i>Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-4"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#source-37"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html"><i class="fa fa-check"></i>Penalized Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#data-setup-35"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#functions-8"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#estimation-34"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#comparison-38"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="penalized-maximum-likelihood.html"><a href="penalized-maximum-likelihood.html#source-38"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html"><i class="fa fa-check"></i>L1 (lasso) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#data-setup-36"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#functions-9"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#estimation-35"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#comparison-39"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="lasso.html"><a href="lasso.html#source-39"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html"><i class="fa fa-check"></i>L2 (ridge) regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#data-setup-37"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#function-21"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#estimation-36"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#comparison-40"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="ridge.html"><a href="ridge.html#source-40"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html"><i class="fa fa-check"></i>Newton and IRLS</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#data-setup-38"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#functions-10"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#newtons-method"><i class="fa fa-check"></i>Newton’s Method</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#irls"><i class="fa fa-check"></i>IRLS</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#estimation-37"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-41"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder-Mead</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#functions-11"><i class="fa fa-check"></i>Functions</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#first-version"><i class="fa fa-check"></i>First Version</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-5"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#second-version"><i class="fa fa-check"></i>Second Version</a>
+<ul>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#example-6"><i class="fa fa-check"></i>Example</a></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#a-regression-model-1"><i class="fa fa-check"></i>A Regression Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#source-42"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html"><i class="fa fa-check"></i>Expectation-Maximization</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#mixture-model"><i class="fa fa-check"></i>Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-40"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-22"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-38"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-44"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization-5"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#supplemental-example-3"><i class="fa fa-check"></i>Supplemental Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-43"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#multivariate-mixture-model"><i class="fa fa-check"></i>Multivariate Mixture Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-23"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-1-old-faithful"><i class="fa fa-check"></i>Example 1: Old Faithful</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#example-2-iris"><i class="fa fa-check"></i>Example 2: Iris</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-44"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-model"><i class="fa fa-check"></i>Probit Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-43"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probit-via-maximum-likelihood"><i class="fa fa-check"></i>Probit via Maximum Likelihood</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#em-for-latent-variable-approach-to-probit"><i class="fa fa-check"></i>EM for Latent Variable Approach to Probit</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-45"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#pca"><i class="fa fa-check"></i>PCA</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-44"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-26"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-43"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-49"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-4"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-46"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#probabilistic-pca"><i class="fa fa-check"></i>Probabilistic PCA</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-45"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-27"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-44"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#comparison-50"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualize-5"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#missing-data-example"><i class="fa fa-check"></i>Missing Data Example</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-47"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#state-space-model"><i class="fa fa-check"></i>State Space Model</a>
+<ul>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#data-setup-47"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#function-29"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#estimation-46"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#visualization-6"><i class="fa fa-check"></i>Visualization</a></li>
+<li class="chapter" data-level="" data-path="em.html"><a href="em.html#source-48"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html"><i class="fa fa-check"></i>Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#data-setup-48"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#function-30"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#estimation-47"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#comparison-52"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="gradient-descent.html"><a href="gradient-descent.html#source-49"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html"><i class="fa fa-check"></i>Stochastic Gradient Descent</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-setup-49"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#function-31"><i class="fa fa-check"></i>Function</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-48"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-53"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#data-set-shift"><i class="fa fa-check"></i>Data Set Shift</a>
+<ul>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#estimation-49"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#comparison-54"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#visualize-estimates-1"><i class="fa fa-check"></i>Visualize Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stochastic-gradient-descent.html"><a href="stochastic-gradient-descent.html#source-50"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html"><i class="fa fa-check"></i>Metropolis Hastings</a>
+<ul>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#data-setup-50"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#functions-12"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#estimation-50"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#comparison-55"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="metropolis-hastings.html"><a href="metropolis-hastings.html#source-51"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html"><i class="fa fa-check"></i>Hamiltonian Monte Carlo</a>
+<ul>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#data-setup-51"><i class="fa fa-check"></i>Data Setup</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#functions-13"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#estimation-51"><i class="fa fa-check"></i>Estimation</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#comparison-56"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="hamiltonian-monte-carlo.html"><a href="hamiltonian-monte-carlo.html#source-52"><i class="fa fa-check"></i>Source</a></li>
+</ul></li>
+<li class="part"><span><b>Other</b></span></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i>Supplemental</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#other-languages"><i class="fa fa-check"></i>Other Languages</a>
+<ul>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#python-demos"><i class="fa fa-check"></i>Python Demos</a></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#julia-demos"><i class="fa fa-check"></i>Julia Demos</a></li>
+<li class="chapter" data-level="" data-path="supplemental.html"><a href="supplemental.html#matlab-demos"><i class="fa fa-check"></i>Matlab Demos</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Model Estimation by Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="neural-network" class="section level1">
+<h1>Neural Network</h1>
+<p>The following example follows <a href="https://iamtrask.github.io/2015/07/12/basic-python-network/">Andrew Trask’s old blog post</a>, which is nice because it tries to demonstrate a neural net in very few lines of code, much like this document’s goal.</p>
+<p>The data setup is very simple (only 4 observations!), and I keep the Python code essentially identical outside of very slight cosmetic (mostly name/space) changes. For more detail I suggest following the original posts, but I’ll add some context here and there. In addition, see the <a href="logistic-regression.html#logistic-regression">logistic regression chapter</a> and <a href="gradient-descent.html#gradient-descent">gradient descent chapter</a>.</p>
+<ul>
+<li><a href="https://iamtrask.github.io/2015/07/12/basic-python-network/" class="uri">https://iamtrask.github.io/2015/07/12/basic-python-network/</a></li>
+<li><a href="https://iamtrask.github.io/2015/07/27/python-network-part2/" class="uri">https://iamtrask.github.io/2015/07/27/python-network-part2/</a></li>
+</ul>
+<div id="example-1-1" class="section level2">
+<h2>Example 1</h2>
+<div id="python" class="section level3">
+<h3>Python</h3>
+<p>In this initial example, while it can serve as instructive starting point for backpropagation, we’re not really using what most would call a neural net, but rather just an alternative way to estimate a <a href="logistic-regression.html#logistic-regression">logistic regression</a>. <code>layer_1</code> in this case is just the linear predictor after a nonlinear transformation (sigmoid).</p>
+<p>Note that in this particular example however, that the first column is perfectly correlated with the target <code>y</code>, which would cause a problem if no regularization were applied (a.k.a. separation).</p>
+<p>Description of the necessary objects from the blog. These will be consistent throughout the demo.</p>
+<blockquote>
+<ul>
+<li><strong>X</strong> Input dataset matrix where each row is a training example</li>
+<li><strong>y</strong> Output dataset matrix where each row is a training example</li>
+<li><strong>layer_0</strong> First Layer of the Network, specified by the input data</li>
+<li><strong>layer_1</strong> Second Layer of the Network, otherwise known as the hidden layer</li>
+<li><strong>synapse_0</strong> First layer of weights, Synapse 0, connecting layer_0 to layer_1.</li>
+<li><strong>*</strong> Elementwise multiplication, so two vectors of equal size are multiplying corresponding values 1-to-1 to generate a final vector of identical size.</li>
+<li><strong>-</strong> Elementwise subtraction, so two vectors of equal size are subtracting corresponding values 1-to-1 to generate a final vector of identical size.</li>
+<li><strong>x.dot(y)</strong> If x and y are vectors, this is a dot product. If both are matrices, it’s a matrix-matrix multiplication. If only one is a matrix, then it’s vector matrix multiplication.</li>
+</ul>
+</blockquote>
+<div class="sourceCode" id="cb303"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb303-1"><a href="neural-network.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb303-2"><a href="neural-network.html#cb303-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-3"><a href="neural-network.html#cb303-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sigmoid function</span></span>
+<span id="cb303-4"><a href="neural-network.html#cb303-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nonlin(x, deriv <span class="op">=</span> <span class="va">False</span>):</span>
+<span id="cb303-5"><a href="neural-network.html#cb303-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(deriv <span class="op">==</span> <span class="va">True</span>):</span>
+<span id="cb303-6"><a href="neural-network.html#cb303-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> x)</span>
+<span id="cb303-7"><a href="neural-network.html#cb303-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
+<span id="cb303-8"><a href="neural-network.html#cb303-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb303-9"><a href="neural-network.html#cb303-9" aria-hidden="true" tabindex="-1"></a><span class="co"># input dataset</span></span>
+<span id="cb303-10"><a href="neural-network.html#cb303-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([ </span>
+<span id="cb303-11"><a href="neural-network.html#cb303-11" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb303-12"><a href="neural-network.html#cb303-12" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb303-13"><a href="neural-network.html#cb303-13" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb303-14"><a href="neural-network.html#cb303-14" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>] </span>
+<span id="cb303-15"><a href="neural-network.html#cb303-15" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb303-16"><a href="neural-network.html#cb303-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb303-17"><a href="neural-network.html#cb303-17" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
+<span id="cb303-18"><a href="neural-network.html#cb303-18" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>]]).T</span>
+<span id="cb303-19"><a href="neural-network.html#cb303-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-20"><a href="neural-network.html#cb303-20" aria-hidden="true" tabindex="-1"></a><span class="co"># seed random numbers to make calculation</span></span>
+<span id="cb303-21"><a href="neural-network.html#cb303-21" aria-hidden="true" tabindex="-1"></a><span class="co"># deterministic (just a good practice)</span></span>
+<span id="cb303-22"><a href="neural-network.html#cb303-22" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb303-23"><a href="neural-network.html#cb303-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-24"><a href="neural-network.html#cb303-24" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize weights randomly with mean 0 (or just use np.random.uniform)</span></span>
+<span id="cb303-25"><a href="neural-network.html#cb303-25" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb303-26"><a href="neural-network.html#cb303-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-27"><a href="neural-network.html#cb303-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">iter</span> <span class="kw">in</span> np.arange(<span class="dv">10000</span>):</span>
+<span id="cb303-28"><a href="neural-network.html#cb303-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-29"><a href="neural-network.html#cb303-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># forward propagation</span></span>
+<span id="cb303-30"><a href="neural-network.html#cb303-30" aria-hidden="true" tabindex="-1"></a>    layer_0 <span class="op">=</span> X</span>
+<span id="cb303-31"><a href="neural-network.html#cb303-31" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> nonlin(np.dot(layer_0, synapse_0))</span>
+<span id="cb303-32"><a href="neural-network.html#cb303-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-33"><a href="neural-network.html#cb303-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss?</span></span>
+<span id="cb303-34"><a href="neural-network.html#cb303-34" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> y <span class="op">-</span> layer_1</span>
+<span id="cb303-35"><a href="neural-network.html#cb303-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-36"><a href="neural-network.html#cb303-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># multiply how much we missed by the </span></span>
+<span id="cb303-37"><a href="neural-network.html#cb303-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># slope of the sigmoid at the values in layer_1</span></span>
+<span id="cb303-38"><a href="neural-network.html#cb303-38" aria-hidden="true" tabindex="-1"></a>    l1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> nonlin(layer_1, <span class="va">True</span>)</span>
+<span id="cb303-39"><a href="neural-network.html#cb303-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-40"><a href="neural-network.html#cb303-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update weights</span></span>
+<span id="cb303-41"><a href="neural-network.html#cb303-41" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">+=</span> np.dot(layer_0.T, l1_delta)</span>
+<span id="cb303-42"><a href="neural-network.html#cb303-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-43"><a href="neural-network.html#cb303-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Output After Training:&quot;</span>)</span></code></pre></div>
+<pre><code>Output After Training:</code></pre>
+<div class="sourceCode" id="cb305"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb305-1"><a href="neural-network.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.append(layer_1, y, axis <span class="op">=</span> <span class="dv">1</span>))</span></code></pre></div>
+<pre><code>[[0.00966449 0.        ]
+ [0.00786506 0.        ]
+ [0.99358898 1.        ]
+ [0.99211957 1.        ]]</code></pre>
+</div>
+<div id="r" class="section level3">
+<h3>R</h3>
+<p>For R I make a couple changes, but it should be easy to follow from the original Python, and I keep the original comments. I convert the code into a function so that settings can be altered more easily.</p>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="neural-network.html#cb307-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>( </span>
+<span id="cb307-2"><a href="neural-network.html#cb307-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, </span>
+<span id="cb307-3"><a href="neural-network.html#cb307-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, </span>
+<span id="cb307-4"><a href="neural-network.html#cb307-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, </span>
+<span id="cb307-5"><a href="neural-network.html#cb307-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb307-6"><a href="neural-network.html#cb307-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow  =</span> <span class="dv">4</span>,</span>
+<span id="cb307-7"><a href="neural-network.html#cb307-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol  =</span> <span class="dv">3</span>,</span>
+<span id="cb307-8"><a href="neural-network.html#cb307-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb307-9"><a href="neural-network.html#cb307-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb307-10"><a href="neural-network.html#cb307-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-11"><a href="neural-network.html#cb307-11" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
+<span id="cb307-12"><a href="neural-network.html#cb307-12" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb307-13"><a href="neural-network.html#cb307-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-14"><a href="neural-network.html#cb307-14" aria-hidden="true" tabindex="-1"></a><span class="co"># seed random numbers to make calculation</span></span>
+<span id="cb307-15"><a href="neural-network.html#cb307-15" aria-hidden="true" tabindex="-1"></a><span class="co"># deterministic (just a good practice)</span></span>
+<span id="cb307-16"><a href="neural-network.html#cb307-16" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb307-17"><a href="neural-network.html#cb307-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-18"><a href="neural-network.html#cb307-18" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize weights randomly with mean 0</span></span>
+<span id="cb307-19"><a href="neural-network.html#cb307-19" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">3</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>), <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb307-20"><a href="neural-network.html#cb307-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-21"><a href="neural-network.html#cb307-21" aria-hidden="true" tabindex="-1"></a><span class="co"># sigmoid function</span></span>
+<span id="cb307-22"><a href="neural-network.html#cb307-22" aria-hidden="true" tabindex="-1"></a>nonlin <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">deriv =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb307-23"><a href="neural-network.html#cb307-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (deriv)</span>
+<span id="cb307-24"><a href="neural-network.html#cb307-24" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> x)</span>
+<span id="cb307-25"><a href="neural-network.html#cb307-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb307-26"><a href="neural-network.html#cb307-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plogis</span>(x)</span>
+<span id="cb307-27"><a href="neural-network.html#cb307-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb307-28"><a href="neural-network.html#cb307-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-29"><a href="neural-network.html#cb307-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-30"><a href="neural-network.html#cb307-30" aria-hidden="true" tabindex="-1"></a>nn_1 <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, synapse_0, <span class="at">maxiter =</span> <span class="dv">10000</span>) {</span>
+<span id="cb307-31"><a href="neural-network.html#cb307-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb307-32"><a href="neural-network.html#cb307-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
+<span id="cb307-33"><a href="neural-network.html#cb307-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb307-34"><a href="neural-network.html#cb307-34" aria-hidden="true" tabindex="-1"></a>      <span class="co"># forward propagation</span></span>
+<span id="cb307-35"><a href="neural-network.html#cb307-35" aria-hidden="true" tabindex="-1"></a>      layer_0 <span class="ot">=</span> X</span>
+<span id="cb307-36"><a href="neural-network.html#cb307-36" aria-hidden="true" tabindex="-1"></a>      layer_1 <span class="ot">=</span> <span class="fu">nonlin</span>(layer_0 <span class="sc">%*%</span> synapse_0)</span>
+<span id="cb307-37"><a href="neural-network.html#cb307-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb307-38"><a href="neural-network.html#cb307-38" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did we miss?</span></span>
+<span id="cb307-39"><a href="neural-network.html#cb307-39" aria-hidden="true" tabindex="-1"></a>      layer_1_error <span class="ot">=</span> y <span class="sc">-</span> layer_1</span>
+<span id="cb307-40"><a href="neural-network.html#cb307-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb307-41"><a href="neural-network.html#cb307-41" aria-hidden="true" tabindex="-1"></a>      <span class="co"># multiply how much we missed by the </span></span>
+<span id="cb307-42"><a href="neural-network.html#cb307-42" aria-hidden="true" tabindex="-1"></a>      <span class="co"># slope of the sigmoid at the values in layer_1</span></span>
+<span id="cb307-43"><a href="neural-network.html#cb307-43" aria-hidden="true" tabindex="-1"></a>      l1_delta <span class="ot">=</span> layer_1_error <span class="sc">*</span> <span class="fu">nonlin</span>(layer_1, <span class="at">deriv =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb307-44"><a href="neural-network.html#cb307-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb307-45"><a href="neural-network.html#cb307-45" aria-hidden="true" tabindex="-1"></a>      <span class="co"># update weights</span></span>
+<span id="cb307-46"><a href="neural-network.html#cb307-46" aria-hidden="true" tabindex="-1"></a>      synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">+</span> <span class="fu">crossprod</span>(layer_0, l1_delta)</span>
+<span id="cb307-47"><a href="neural-network.html#cb307-47" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb307-48"><a href="neural-network.html#cb307-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb307-49"><a href="neural-network.html#cb307-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">layer_1 =</span> layer_1, <span class="at">layer_1_error =</span> layer_1_error, <span class="at">synapse_0 =</span> synapse_0)</span>
+<span id="cb307-50"><a href="neural-network.html#cb307-50" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb307-51"><a href="neural-network.html#cb307-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-52"><a href="neural-network.html#cb307-52" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_1</span>(X, y, synapse_0)</span>
+<span id="cb307-53"><a href="neural-network.html#cb307-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-54"><a href="neural-network.html#cb307-54" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Output After Training: </span><span class="sc">\n</span><span class="st">&quot;</span>, </span>
+<span id="cb307-55"><a href="neural-network.html#cb307-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="fu">capture.output</span>(<span class="fu">cbind</span>(fit_nn<span class="sc">$</span>layer_1, y)), <span class="at">collapse =</span> <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>))</span></code></pre></div>
+<pre><code>Output After Training: 
+                 y
+[1,] 0.009670417 0
+[2,] 0.007864211 0
+[3,] 0.993590571 1
+[4,] 0.992115835 1</code></pre>
+<p>A key takeaway from this demonstration regards the update step. Using the derivative, we are getting the slope of the sigmoid function at the point of interest, e.g. the three points below. If a predicted probability (<code>layer 1</code>) is close to zero or 1, this suggests the prediction ‘confidence’ is high, the slopes are shallow, and the result is that there is less need for updating. For the others, e.g. close to <code>x = 0</code>, there will be relatively more updating, as the error will be greater. The last step is to compute the weight updates for each weight for each observation, sum them, and update the weights accordingly. So our update is a function of the error and the slope. If both are small, then there will be little update, but if there is larger error and/or less confident prediction, the result will ultimately be a larger update.</p>
+<p><img src="model-demos_files/figure-html/nn-sigmoid-vis-1.svg" width="75%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="example-2-1" class="section level2">
+<h2>Example 2</h2>
+<p>In the following example, we have similarly simple data, but technically a bit harder problem to estimate. In this case, <code>y = 1</code> only if we apply the <a href="https://en.wikipedia.org/wiki/Exclusive_or">XOR</a> function to columns 1 and 2. This makes the relationship between inputs and output a nonlinear one.</p>
+<p>To account for the nonlinearity we will have two ‘hidden’ layers, the first of four ‘nodes’, and the second a single node, which relates the transformed information to the target variable. In the hidden layer, we can think of each node as a linear combination of the input, with weights represented by paths (in the original post these weights/connections are collectively called ‘synapses’). This is followed by a nonlinear transformation for each node (e.g. sigmoid). The final predictions are a linear combination of the hidden layer, followed by another nonlinear transformation (sigmoid again). The last transformation needs to put the result between 0 and 1, but you could try other transformations for the first hidden layer. In fact sigmoid is rarely used except for the final layer.</p>
+<div id="htmlwidget-7a4c022717dc89ccfbbd" style="width:75%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7a4c022717dc89ccfbbd">{"x":{"diagram":"\ndigraph Factor  {\n  graph [rankdir=LR  bgcolor=transparent splines=\"line\"]\n  \n  node [fontname=\"Roboto\" fontsize=10 fontcolor=gray50 shape=box width=.5 color=\"#ff5500\"];\n  node [shape=square]\n  X_1, X_2, X_3, y\n  \n  node [shape=circle color=gray75]\n  l1_3, l1_4, l1_1, l1_2, l2  # because Diagrammer won\"t respect ordering\n  \n  edge [fontname=\"Roboto\" fontsize=10 fontcolor=gray50 color=\"#00aaff80\" arrowsize=.5];\n  X_1, X_2, X_3 ->  l1_1, l1_2, l1_3, l1_4\n  \n  l1_1, l1_2, l1_3, l1_4 -> l2\n  \n  l2 -> y\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="python-1" class="section level3">
+<h3>Python</h3>
+<p>For the following, I remove defining <code>layer_0</code>, as it is just the input matrix <code>X</code>. But otherwise, only minor cleanup and more explicit names as before.</p>
+<div class="sourceCode" id="cb309"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb309-1"><a href="neural-network.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb309-2"><a href="neural-network.html#cb309-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-3"><a href="neural-network.html#cb309-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nonlin(x, deriv <span class="op">=</span> <span class="va">False</span>):</span>
+<span id="cb309-4"><a href="neural-network.html#cb309-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(deriv <span class="op">==</span> <span class="va">True</span>):</span>
+<span id="cb309-5"><a href="neural-network.html#cb309-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> x)</span>
+<span id="cb309-6"><a href="neural-network.html#cb309-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
+<span id="cb309-7"><a href="neural-network.html#cb309-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-8"><a href="neural-network.html#cb309-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
+<span id="cb309-9"><a href="neural-network.html#cb309-9" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb309-10"><a href="neural-network.html#cb309-10" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb309-11"><a href="neural-network.html#cb309-11" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb309-12"><a href="neural-network.html#cb309-12" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
+<span id="cb309-13"><a href="neural-network.html#cb309-13" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb309-14"><a href="neural-network.html#cb309-14" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb309-15"><a href="neural-network.html#cb309-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([</span>
+<span id="cb309-16"><a href="neural-network.html#cb309-16" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>],</span>
+<span id="cb309-17"><a href="neural-network.html#cb309-17" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb309-18"><a href="neural-network.html#cb309-18" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb309-19"><a href="neural-network.html#cb309-19" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>]</span>
+<span id="cb309-20"><a href="neural-network.html#cb309-20" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb309-21"><a href="neural-network.html#cb309-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-22"><a href="neural-network.html#cb309-22" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb309-23"><a href="neural-network.html#cb309-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-24"><a href="neural-network.html#cb309-24" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb309-25"><a href="neural-network.html#cb309-25" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, <span class="dv">4</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb309-26"><a href="neural-network.html#cb309-26" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">4</span>, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb309-27"><a href="neural-network.html#cb309-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-28"><a href="neural-network.html#cb309-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
+<span id="cb309-29"><a href="neural-network.html#cb309-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-30"><a href="neural-network.html#cb309-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Feed forward through layers 0, 1, and 2</span></span>
+<span id="cb309-31"><a href="neural-network.html#cb309-31" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> nonlin(np.dot(X, synapse_0))</span>
+<span id="cb309-32"><a href="neural-network.html#cb309-32" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="op">=</span> nonlin(np.dot(layer_1, synapse_1))</span>
+<span id="cb309-33"><a href="neural-network.html#cb309-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-34"><a href="neural-network.html#cb309-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb309-35"><a href="neural-network.html#cb309-35" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="op">=</span> y <span class="op">-</span> layer_2</span>
+<span id="cb309-36"><a href="neural-network.html#cb309-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb309-37"><a href="neural-network.html#cb309-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (j<span class="op">%</span> <span class="dv">10000</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb309-38"><a href="neural-network.html#cb309-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error:&quot;</span> <span class="op">+</span> <span class="bu">str</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error))))</span>
+<span id="cb309-39"><a href="neural-network.html#cb309-39" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb309-40"><a href="neural-network.html#cb309-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
+<span id="cb309-41"><a href="neural-network.html#cb309-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb309-42"><a href="neural-network.html#cb309-42" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>nonlin(layer_2, deriv<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb309-43"><a href="neural-network.html#cb309-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-44"><a href="neural-network.html#cb309-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each layer_1 value contribute to the layer_2 error (according to the weights)?</span></span>
+<span id="cb309-45"><a href="neural-network.html#cb309-45" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
+<span id="cb309-46"><a href="neural-network.html#cb309-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb309-47"><a href="neural-network.html#cb309-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target layer_1?</span></span>
+<span id="cb309-48"><a href="neural-network.html#cb309-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb309-49"><a href="neural-network.html#cb309-49" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> nonlin(layer_1, deriv<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb309-50"><a href="neural-network.html#cb309-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-51"><a href="neural-network.html#cb309-51" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="op">+=</span> layer_1.T.dot(layer_2_delta)</span>
+<span id="cb309-52"><a href="neural-network.html#cb309-52" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">+=</span> X.T.dot(layer_1_delta)</span></code></pre></div>
+<pre><code>Error:0.4964100319027255
+Error:0.008584525653247153
+Error:0.005789459862507812</code></pre>
+<div class="sourceCode" id="cb311"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb311-1"><a href="neural-network.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39;Final error: &#39;</span> <span class="op">+</span> <span class="bu">str</span>(np.<span class="bu">round</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error)), <span class="dv">5</span>)))</span></code></pre></div>
+<pre><code>Final error: 0.00463</code></pre>
+<div class="sourceCode" id="cb313"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb313-1"><a href="neural-network.html#cb313-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(layer_1, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>array([[0.696, 0.124, 0.923, 0.996],
+       [0.18 , 0.   , 0.017, 0.893],
+       [0.995, 0.888, 0.023, 0.822],
+       [0.947, 0.026, 0.   , 0.122]])</code></pre>
+<div class="sourceCode" id="cb315"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb315-1"><a href="neural-network.html#cb315-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(np.append(layer_2, y, axis <span class="op">=</span> <span class="dv">1</span>), <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>array([[0.004, 0.   ],
+       [0.995, 1.   ],
+       [0.996, 1.   ],
+       [0.006, 0.   ]])</code></pre>
+<div class="sourceCode" id="cb317"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb317-1"><a href="neural-network.html#cb317-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(synapse_0, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>array([[ 4.407,  4.028, -6.225, -4.092],
+       [-2.342, -5.706, -6.53 , -3.506],
+       [ 0.826, -1.959,  2.488,  5.623]])</code></pre>
+<div class="sourceCode" id="cb319"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb319-1"><a href="neural-network.html#cb319-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(synapse_1, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>array([[ -6.611],
+       [  6.857],
+       [-10.069],
+       [  7.501]])</code></pre>
+</div>
+<div id="r-1" class="section level3">
+<h3>R</h3>
+<p>In general, different weights can ultimately produce similar predictions, and combinations for a particular node are arbitrary. For example, node 1 in one network might become more like node 3 on a separate run with different starting points. So things are somewhat more difficult to compare across runs, let alone across different tools. However, what matters more is the final prediction, and you should see essentially the same result for R and Python. Again we create a function for repeated use.</p>
+<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb321-1"><a href="neural-network.html#cb321-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(</span>
+<span id="cb321-2"><a href="neural-network.html#cb321-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb321-3"><a href="neural-network.html#cb321-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb321-4"><a href="neural-network.html#cb321-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb321-5"><a href="neural-network.html#cb321-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb321-6"><a href="neural-network.html#cb321-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">4</span>,</span>
+<span id="cb321-7"><a href="neural-network.html#cb321-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>,</span>
+<span id="cb321-8"><a href="neural-network.html#cb321-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb321-9"><a href="neural-network.html#cb321-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb321-10"><a href="neural-network.html#cb321-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb321-11"><a href="neural-network.html#cb321-11" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">as.integer</span>(<span class="fu">xor</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>])), <span class="at">ncol =</span> <span class="dv">1</span>)  <span class="co"># make the relationship explicit</span></span>
+<span id="cb321-12"><a href="neural-network.html#cb321-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb321-13"><a href="neural-network.html#cb321-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb321-14"><a href="neural-network.html#cb321-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb321-15"><a href="neural-network.html#cb321-15" aria-hidden="true" tabindex="-1"></a><span class="co"># or do randomly in same fashion</span></span>
+<span id="cb321-16"><a href="neural-network.html#cb321-16" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb321-17"><a href="neural-network.html#cb321-17" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">4</span>, <span class="dv">1</span>)</span>
+<span id="cb321-18"><a href="neural-network.html#cb321-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb321-19"><a href="neural-network.html#cb321-19" aria-hidden="true" tabindex="-1"></a><span class="co"># synapse_0</span></span>
+<span id="cb321-20"><a href="neural-network.html#cb321-20" aria-hidden="true" tabindex="-1"></a><span class="co"># synapse_1</span></span>
+<span id="cb321-21"><a href="neural-network.html#cb321-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb321-22"><a href="neural-network.html#cb321-22" aria-hidden="true" tabindex="-1"></a>nn_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb321-23"><a href="neural-network.html#cb321-23" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb321-24"><a href="neural-network.html#cb321-24" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb321-25"><a href="neural-network.html#cb321-25" aria-hidden="true" tabindex="-1"></a>  synapse_0_start,</span>
+<span id="cb321-26"><a href="neural-network.html#cb321-26" aria-hidden="true" tabindex="-1"></a>  synapse_1_start,</span>
+<span id="cb321-27"><a href="neural-network.html#cb321-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
+<span id="cb321-28"><a href="neural-network.html#cb321-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb321-29"><a href="neural-network.html#cb321-29" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb321-30"><a href="neural-network.html#cb321-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb321-31"><a href="neural-network.html#cb321-31" aria-hidden="true" tabindex="-1"></a>  synapse_0 <span class="ot">=</span> synapse_0_start</span>
+<span id="cb321-32"><a href="neural-network.html#cb321-32" aria-hidden="true" tabindex="-1"></a>  synapse_1 <span class="ot">=</span> synapse_1_start</span>
+<span id="cb321-33"><a href="neural-network.html#cb321-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb321-34"><a href="neural-network.html#cb321-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
+<span id="cb321-35"><a href="neural-network.html#cb321-35" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="ot">=</span> <span class="fu">plogis</span>(X  <span class="sc">%*%</span> synapse_0)              <span class="co"># 4 x 4</span></span>
+<span id="cb321-36"><a href="neural-network.html#cb321-36" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="ot">=</span> <span class="fu">plogis</span>(layer_1 <span class="sc">%*%</span> synapse_1)         <span class="co"># 4 x 1</span></span>
+<span id="cb321-37"><a href="neural-network.html#cb321-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb321-38"><a href="neural-network.html#cb321-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb321-39"><a href="neural-network.html#cb321-39" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="ot">=</span> y <span class="sc">-</span> layer_2</span>
+<span id="cb321-40"><a href="neural-network.html#cb321-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb321-41"><a href="neural-network.html#cb321-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose <span class="sc">&amp;&amp;</span> (j <span class="sc">%%</span> <span class="dv">10000</span>) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb321-42"><a href="neural-network.html#cb321-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Error: {mean(abs(layer_2_error))}&quot;</span>))</span>
+<span id="cb321-43"><a href="neural-network.html#cb321-43" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb321-44"><a href="neural-network.html#cb321-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb321-45"><a href="neural-network.html#cb321-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
+<span id="cb321-46"><a href="neural-network.html#cb321-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb321-47"><a href="neural-network.html#cb321-47" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="ot">=</span> (y <span class="sc">-</span> layer_2) <span class="sc">*</span> (layer_2 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> layer_2))</span>
+<span id="cb321-48"><a href="neural-network.html#cb321-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb321-49"><a href="neural-network.html#cb321-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb321-50"><a href="neural-network.html#cb321-50" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="ot">=</span> layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(synapse_1)</span>
+<span id="cb321-51"><a href="neural-network.html#cb321-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb321-52"><a href="neural-network.html#cb321-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb321-53"><a href="neural-network.html#cb321-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.  </span></span>
+<span id="cb321-54"><a href="neural-network.html#cb321-54" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="ot">=</span> <span class="fu">tcrossprod</span>(layer_2_delta, synapse_1) <span class="sc">*</span> (layer_1 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> layer_1))</span>
+<span id="cb321-55"><a href="neural-network.html#cb321-55" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb321-56"><a href="neural-network.html#cb321-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update</span></span>
+<span id="cb321-57"><a href="neural-network.html#cb321-57" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="ot">=</span> synapse_1 <span class="sc">+</span> <span class="fu">crossprod</span>(layer_1, layer_2_delta)</span>
+<span id="cb321-58"><a href="neural-network.html#cb321-58" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">+</span> <span class="fu">crossprod</span>(X, layer_1_delta)</span>
+<span id="cb321-59"><a href="neural-network.html#cb321-59" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb321-60"><a href="neural-network.html#cb321-60" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb321-61"><a href="neural-network.html#cb321-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb321-62"><a href="neural-network.html#cb321-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1_error =</span> layer_1_error,</span>
+<span id="cb321-63"><a href="neural-network.html#cb321-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2_error =</span> layer_2_error,</span>
+<span id="cb321-64"><a href="neural-network.html#cb321-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_0 =</span> synapse_0,</span>
+<span id="cb321-65"><a href="neural-network.html#cb321-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_1 =</span> synapse_1,</span>
+<span id="cb321-66"><a href="neural-network.html#cb321-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1 =</span> layer_1,</span>
+<span id="cb321-67"><a href="neural-network.html#cb321-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2 =</span> layer_2</span>
+<span id="cb321-68"><a href="neural-network.html#cb321-68" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb321-69"><a href="neural-network.html#cb321-69" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>With function in place, we’re ready to try it out.</p>
+<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="neural-network.html#cb322-1" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_2</span>(</span>
+<span id="cb322-2"><a href="neural-network.html#cb322-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb322-3"><a href="neural-network.html#cb322-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb322-4"><a href="neural-network.html#cb322-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">synapse_0_start =</span> synapse_0,</span>
+<span id="cb322-5"><a href="neural-network.html#cb322-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">synapse_1_start =</span> synapse_1,</span>
+<span id="cb322-6"><a href="neural-network.html#cb322-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span></span>
+<span id="cb322-7"><a href="neural-network.html#cb322-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>Error: 0.0105538166393651</code></pre>
+<pre><code>Error: 0.00729252475321203</code></pre>
+<pre><code>Error: 0.0058973637409426</code></pre>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="neural-network.html#cb326-1" aria-hidden="true" tabindex="-1"></a>glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&#39;Final error: {round(mean(abs(fit_nn$layer_2_error)), 5)}&#39;</span>)</span></code></pre></div>
+<pre><code>Final error: 0.0059</code></pre>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="neural-network.html#cb328-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>layer_1, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>      [,1]  [,2]  [,3]  [,4]
+[1,] 0.259 0.889 0.364 0.445
+[2,] 0.000 0.037 0.978 0.030
+[3,] 0.946 1.000 0.984 0.020
+[4,] 0.016 0.984 1.000 0.001</code></pre>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="neural-network.html#cb330-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(fit_nn<span class="sc">$</span>layer_2, y), <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>      [,1] [,2]
+[1,] 0.002    0
+[2,] 0.993    1
+[3,] 0.994    1
+[4,] 0.008    0</code></pre>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="neural-network.html#cb332-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>synapse_0, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>       [,1]   [,2]   [,3]   [,4]
+[1,]  3.915  7.364  4.705 -3.669
+[2,] -6.970 -5.351  4.337 -3.242
+[3,] -1.050  2.079 -0.559 -0.221</code></pre>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="neural-network.html#cb334-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>synapse_1, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>        [,1]
+[1,]  10.988
+[2,] -10.733
+[3,]   5.576
+[4,]  -2.987</code></pre>
+</div>
+<div id="comparison-21" class="section level3">
+<h3>Comparison</h3>
+<p>Let’s compare our results to the <span class="pack" style="">nnet</span> package that comes with the base R installation. Note that it will include intercepts (a.k.a. <em>biases</em>) for each node, so it’s estimating more parameters in total.</p>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="neural-network.html#cb336-1" aria-hidden="true" tabindex="-1"></a>fit_nnet <span class="ot">=</span> nnet<span class="sc">::</span><span class="fu">nnet</span>(X, y, <span class="at">size =</span> <span class="dv">4</span>)</span></code></pre></div>
+<pre><code># weights:  21
+initial  value 1.152323 
+iter  10 value 0.998588
+iter  20 value 0.558917
+final  value 0.000000 
+converged</code></pre>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="neural-network.html#cb338-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">coef</span>(fit_nnet))</span></code></pre></div>
+<pre><code>       coef.fit_nnet.
+b-&gt;h1        5320.330
+i1-&gt;h1     -49025.055
+i2-&gt;h1     -15547.859
+i3-&gt;h1       5320.491
+b-&gt;h2       12329.141
+i1-&gt;h2     -13914.491
+i2-&gt;h2     -13782.790
+i3-&gt;h2      12328.763
+b-&gt;h3       22292.322
+i1-&gt;h3     -18601.227
+i2-&gt;h3      34270.828
+i3-&gt;h3      22292.567
+b-&gt;h4       22269.956
+i1-&gt;h4      -3504.603
+i2-&gt;h4      30916.959
+i3-&gt;h4      22269.420
+b-&gt;o        34687.508
+h1-&gt;o      -37130.643
+h2-&gt;o       32075.031
+h3-&gt;o      -36018.926
+h4-&gt;o      -18446.081</code></pre>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="neural-network.html#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitted</span>(fit_nnet)</span></code></pre></div>
+<pre><code>     [,1]
+[1,]    0
+[2,]    1
+[3,]    1
+[4,]    0</code></pre>
+</div>
+</div>
+<div id="example-3" class="section level2">
+<h2>Example 3</h2>
+<p>The next example follows the code from the second post listed in the introduction. A couple of changes are seen here. We have a notably larger hidden layer (size 32). We also split the previous <span class="func" style="">nonlin</span> function into two parts. And finally, we add an <code>alpha</code> parameter, which is akin to the <em>learning rate</em> in <a href="gradient-descent.html#gradient-descent">gradient descent</a> (stepsize in our previous implementation). It basically puts a control on the gradient so that we hopefully don’t make too large a jump in our estimated weights on each update. However, we can show what will happen as a result of setting the parameter to small and large values.</p>
+<div id="python-2" class="section level3">
+<h3>Python</h3>
+<p>As before, I make names more explicit, and other very minor updates to the original code.</p>
+<div class="sourceCode" id="cb342"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb342-1"><a href="neural-network.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb342-2"><a href="neural-network.html#cb342-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-3"><a href="neural-network.html#cb342-3" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>]</span>
+<span id="cb342-4"><a href="neural-network.html#cb342-4" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb342-5"><a href="neural-network.html#cb342-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-6"><a href="neural-network.html#cb342-6" aria-hidden="true" tabindex="-1"></a><span class="co"># compute sigmoid nonlinearity</span></span>
+<span id="cb342-7"><a href="neural-network.html#cb342-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid(x):</span>
+<span id="cb342-8"><a href="neural-network.html#cb342-8" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
+<span id="cb342-9"><a href="neural-network.html#cb342-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output</span>
+<span id="cb342-10"><a href="neural-network.html#cb342-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-11"><a href="neural-network.html#cb342-11" aria-hidden="true" tabindex="-1"></a><span class="co"># convert output of sigmoid function to its derivative</span></span>
+<span id="cb342-12"><a href="neural-network.html#cb342-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid_output_to_derivative(output):</span>
+<span id="cb342-13"><a href="neural-network.html#cb342-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> output)</span>
+<span id="cb342-14"><a href="neural-network.html#cb342-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb342-15"><a href="neural-network.html#cb342-15" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
+<span id="cb342-16"><a href="neural-network.html#cb342-16" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb342-17"><a href="neural-network.html#cb342-17" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb342-18"><a href="neural-network.html#cb342-18" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb342-19"><a href="neural-network.html#cb342-19" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
+<span id="cb342-20"><a href="neural-network.html#cb342-20" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb342-21"><a href="neural-network.html#cb342-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb342-22"><a href="neural-network.html#cb342-22" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([</span>
+<span id="cb342-23"><a href="neural-network.html#cb342-23" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>],</span>
+<span id="cb342-24"><a href="neural-network.html#cb342-24" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb342-25"><a href="neural-network.html#cb342-25" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb342-26"><a href="neural-network.html#cb342-26" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>]</span>
+<span id="cb342-27"><a href="neural-network.html#cb342-27" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb342-28"><a href="neural-network.html#cb342-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-29"><a href="neural-network.html#cb342-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
+<span id="cb342-30"><a href="neural-network.html#cb342-30" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Training With Alpha:&quot;</span> <span class="op">+</span> <span class="bu">str</span>(alpha))</span>
+<span id="cb342-31"><a href="neural-network.html#cb342-31" aria-hidden="true" tabindex="-1"></a>  np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb342-32"><a href="neural-network.html#cb342-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-33"><a href="neural-network.html#cb342-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb342-34"><a href="neural-network.html#cb342-34" aria-hidden="true" tabindex="-1"></a>  synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, hidden_size)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb342-35"><a href="neural-network.html#cb342-35" aria-hidden="true" tabindex="-1"></a>  synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((hidden_size, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb342-36"><a href="neural-network.html#cb342-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-37"><a href="neural-network.html#cb342-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
+<span id="cb342-38"><a href="neural-network.html#cb342-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-39"><a href="neural-network.html#cb342-39" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Feed forward through layers input, 1, and 2</span></span>
+<span id="cb342-40"><a href="neural-network.html#cb342-40" aria-hidden="true" tabindex="-1"></a>      layer_1 <span class="op">=</span> sigmoid(np.dot(X, synapse_0))</span>
+<span id="cb342-41"><a href="neural-network.html#cb342-41" aria-hidden="true" tabindex="-1"></a>      layer_2 <span class="op">=</span> sigmoid(np.dot(layer_1, synapse_1))</span>
+<span id="cb342-42"><a href="neural-network.html#cb342-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-43"><a href="neural-network.html#cb342-43" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb342-44"><a href="neural-network.html#cb342-44" aria-hidden="true" tabindex="-1"></a>      layer_2_error <span class="op">=</span> layer_2 <span class="op">-</span> y</span>
+<span id="cb342-45"><a href="neural-network.html#cb342-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-46"><a href="neural-network.html#cb342-46" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (j<span class="op">%</span> <span class="dv">10000</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb342-47"><a href="neural-network.html#cb342-47" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error after &quot;</span><span class="op">+</span> <span class="bu">str</span>(j) <span class="op">+</span><span class="st">&quot; iterations:&quot;</span> <span class="op">+</span> </span>
+<span id="cb342-48"><a href="neural-network.html#cb342-48" aria-hidden="true" tabindex="-1"></a>        <span class="bu">str</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error))))</span>
+<span id="cb342-49"><a href="neural-network.html#cb342-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-50"><a href="neural-network.html#cb342-50" aria-hidden="true" tabindex="-1"></a>      <span class="co"># in what direction is the target value?</span></span>
+<span id="cb342-51"><a href="neural-network.html#cb342-51" aria-hidden="true" tabindex="-1"></a>      <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb342-52"><a href="neural-network.html#cb342-52" aria-hidden="true" tabindex="-1"></a>      layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>sigmoid_output_to_derivative(layer_2)</span>
+<span id="cb342-53"><a href="neural-network.html#cb342-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-54"><a href="neural-network.html#cb342-54" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb342-55"><a href="neural-network.html#cb342-55" aria-hidden="true" tabindex="-1"></a>      layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
+<span id="cb342-56"><a href="neural-network.html#cb342-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-57"><a href="neural-network.html#cb342-57" aria-hidden="true" tabindex="-1"></a>      <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb342-58"><a href="neural-network.html#cb342-58" aria-hidden="true" tabindex="-1"></a>      <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb342-59"><a href="neural-network.html#cb342-59" aria-hidden="true" tabindex="-1"></a>      layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> sigmoid_output_to_derivative(layer_1)</span>
+<span id="cb342-60"><a href="neural-network.html#cb342-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-61"><a href="neural-network.html#cb342-61" aria-hidden="true" tabindex="-1"></a>      synapse_1 <span class="op">-=</span> alpha <span class="op">*</span> (layer_1.T.dot(layer_2_delta))</span>
+<span id="cb342-62"><a href="neural-network.html#cb342-62" aria-hidden="true" tabindex="-1"></a>      synapse_0 <span class="op">-=</span> alpha <span class="op">*</span> (X.T.dot(layer_1_delta))</span></code></pre></div>
+<pre><code>
+Training With Alpha:0.001
+Error after 0 iterations:0.49643992250078794
+Error after 10000 iterations:0.49104946812904954
+Error after 20000 iterations:0.4849763070274596
+
+Training With Alpha:0.01
+Error after 0 iterations:0.49643992250078794
+Error after 10000 iterations:0.35637906164802124
+Error after 20000 iterations:0.14693984546475994
+
+Training With Alpha:0.1
+Error after 0 iterations:0.49643992250078794
+Error after 10000 iterations:0.030540490838554993
+Error after 20000 iterations:0.019063872533418427
+
+Training With Alpha:1
+Error after 0 iterations:0.49643992250078794
+Error after 10000 iterations:0.007360522342493724
+Error after 20000 iterations:0.004972517050388164
+
+Training With Alpha:10
+Error after 0 iterations:0.49643992250078794
+Error after 10000 iterations:0.0022489756615412743
+Error after 20000 iterations:0.0015326357139237015
+
+Training With Alpha:100
+Error after 0 iterations:0.49643992250078794
+Error after 10000 iterations:0.5
+Error after 20000 iterations:0.5
+
+Training With Alpha:1000
+Error after 0 iterations:0.49643992250078794
+Error after 10000 iterations:0.5
+Error after 20000 iterations:0.5</code></pre>
+<p>Since <code>alpha = 10</code> seems reasonable, let’s inspect the results just for that. Note that this value being the ‘best’ likely won’t hold on another random run, and in general we would assess this <em>hyperparameter</em> using cross-validation or other means.</p>
+<div class="sourceCode" id="cb344"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb344-1"><a href="neural-network.html#cb344-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb344-2"><a href="neural-network.html#cb344-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb344-3"><a href="neural-network.html#cb344-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-4"><a href="neural-network.html#cb344-4" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb344-5"><a href="neural-network.html#cb344-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb344-6"><a href="neural-network.html#cb344-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-7"><a href="neural-network.html#cb344-7" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, hidden_size)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb344-8"><a href="neural-network.html#cb344-8" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((hidden_size, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb344-9"><a href="neural-network.html#cb344-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-10"><a href="neural-network.html#cb344-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-11"><a href="neural-network.html#cb344-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
+<span id="cb344-12"><a href="neural-network.html#cb344-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-13"><a href="neural-network.html#cb344-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Feed forward through layers input, 1, and 2</span></span>
+<span id="cb344-14"><a href="neural-network.html#cb344-14" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> sigmoid(np.dot(X, synapse_0))</span>
+<span id="cb344-15"><a href="neural-network.html#cb344-15" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="op">=</span> sigmoid(np.dot(layer_1, synapse_1))</span>
+<span id="cb344-16"><a href="neural-network.html#cb344-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-17"><a href="neural-network.html#cb344-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb344-18"><a href="neural-network.html#cb344-18" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="op">=</span> layer_2 <span class="op">-</span> y</span>
+<span id="cb344-19"><a href="neural-network.html#cb344-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb344-20"><a href="neural-network.html#cb344-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
+<span id="cb344-21"><a href="neural-network.html#cb344-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb344-22"><a href="neural-network.html#cb344-22" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>sigmoid_output_to_derivative(layer_2)</span>
+<span id="cb344-23"><a href="neural-network.html#cb344-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-24"><a href="neural-network.html#cb344-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb344-25"><a href="neural-network.html#cb344-25" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
+<span id="cb344-26"><a href="neural-network.html#cb344-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-27"><a href="neural-network.html#cb344-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb344-28"><a href="neural-network.html#cb344-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb344-29"><a href="neural-network.html#cb344-29" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> sigmoid_output_to_derivative(layer_1)</span>
+<span id="cb344-30"><a href="neural-network.html#cb344-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-31"><a href="neural-network.html#cb344-31" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="op">-=</span> alpha <span class="op">*</span> (layer_1.T.dot(layer_2_delta))</span>
+<span id="cb344-32"><a href="neural-network.html#cb344-32" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">-=</span> alpha <span class="op">*</span> (X.T.dot(layer_1_delta))</span>
+<span id="cb344-33"><a href="neural-network.html#cb344-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-34"><a href="neural-network.html#cb344-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb344-35"><a href="neural-network.html#cb344-35" aria-hidden="true" tabindex="-1"></a>np.append(np.<span class="bu">round</span>(layer_2, <span class="dv">4</span>), y, axis <span class="op">=</span> <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>array([[0.0011, 0.    ],
+       [0.9989, 1.    ],
+       [0.9989, 1.    ],
+       [0.0015, 0.    ]])</code></pre>
+</div>
+<div id="r-2" class="section level3">
+<h3>R</h3>
+<p>The following has little to no modification, but again creates a function for easier manipulation of inputs.</p>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="neural-network.html#cb346-1" aria-hidden="true" tabindex="-1"></a><span class="co"># input dataset</span></span>
+<span id="cb346-2"><a href="neural-network.html#cb346-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(</span>
+<span id="cb346-3"><a href="neural-network.html#cb346-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb346-4"><a href="neural-network.html#cb346-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb346-5"><a href="neural-network.html#cb346-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb346-6"><a href="neural-network.html#cb346-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb346-7"><a href="neural-network.html#cb346-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">4</span>,</span>
+<span id="cb346-8"><a href="neural-network.html#cb346-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>,</span>
+<span id="cb346-9"><a href="neural-network.html#cb346-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb346-10"><a href="neural-network.html#cb346-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb346-11"><a href="neural-network.html#cb346-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb346-12"><a href="neural-network.html#cb346-12" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
+<span id="cb346-13"><a href="neural-network.html#cb346-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb346-14"><a href="neural-network.html#cb346-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-15"><a href="neural-network.html#cb346-15" aria-hidden="true" tabindex="-1"></a>alphas <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>)</span>
+<span id="cb346-16"><a href="neural-network.html#cb346-16" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="ot">=</span> <span class="dv">32</span></span>
+<span id="cb346-17"><a href="neural-network.html#cb346-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-18"><a href="neural-network.html#cb346-18" aria-hidden="true" tabindex="-1"></a><span class="co"># compute sigmoid nonlinearity</span></span>
+<span id="cb346-19"><a href="neural-network.html#cb346-19" aria-hidden="true" tabindex="-1"></a>sigmoid <span class="ot">=</span> plogis <span class="co"># already part of base R, no function needed</span></span>
+<span id="cb346-20"><a href="neural-network.html#cb346-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-21"><a href="neural-network.html#cb346-21" aria-hidden="true" tabindex="-1"></a><span class="co"># convert output of sigmoid function to its derivative</span></span>
+<span id="cb346-22"><a href="neural-network.html#cb346-22" aria-hidden="true" tabindex="-1"></a>sigmoid_output_to_derivative <span class="ot">&lt;-</span> <span class="cf">function</span>(output) {</span>
+<span id="cb346-23"><a href="neural-network.html#cb346-23" aria-hidden="true" tabindex="-1"></a>  output <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> output)</span>
+<span id="cb346-24"><a href="neural-network.html#cb346-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb346-25"><a href="neural-network.html#cb346-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-26"><a href="neural-network.html#cb346-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb346-27"><a href="neural-network.html#cb346-27" aria-hidden="true" tabindex="-1"></a>nn_3 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb346-28"><a href="neural-network.html#cb346-28" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb346-29"><a href="neural-network.html#cb346-29" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb346-30"><a href="neural-network.html#cb346-30" aria-hidden="true" tabindex="-1"></a>  hidden_size,</span>
+<span id="cb346-31"><a href="neural-network.html#cb346-31" aria-hidden="true" tabindex="-1"></a>  alpha,</span>
+<span id="cb346-32"><a href="neural-network.html#cb346-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
+<span id="cb346-33"><a href="neural-network.html#cb346-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">FALSE</span></span>
+<span id="cb346-34"><a href="neural-network.html#cb346-34" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb346-35"><a href="neural-network.html#cb346-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb346-36"><a href="neural-network.html#cb346-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (val <span class="cf">in</span> alpha) {</span>
+<span id="cb346-37"><a href="neural-network.html#cb346-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb346-38"><a href="neural-network.html#cb346-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(show_messages)</span>
+<span id="cb346-39"><a href="neural-network.html#cb346-39" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Training With Alpha: {val}&quot;</span>))</span>
+<span id="cb346-40"><a href="neural-network.html#cb346-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb346-41"><a href="neural-network.html#cb346-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb346-42"><a href="neural-network.html#cb346-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb346-43"><a href="neural-network.html#cb346-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb346-44"><a href="neural-network.html#cb346-44" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">3</span> <span class="sc">*</span> hidden_size, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">3</span>, hidden_size)</span>
+<span id="cb346-45"><a href="neural-network.html#cb346-45" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(hidden_size), hidden_size, <span class="dv">1</span>)</span>
+<span id="cb346-46"><a href="neural-network.html#cb346-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-47"><a href="neural-network.html#cb346-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
+<span id="cb346-48"><a href="neural-network.html#cb346-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-49"><a href="neural-network.html#cb346-49" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Feed forward through layers input, 1, and 2</span></span>
+<span id="cb346-50"><a href="neural-network.html#cb346-50" aria-hidden="true" tabindex="-1"></a>        layer_1 <span class="ot">=</span> <span class="fu">sigmoid</span>(X <span class="sc">%*%</span> synapse_0)</span>
+<span id="cb346-51"><a href="neural-network.html#cb346-51" aria-hidden="true" tabindex="-1"></a>        layer_2 <span class="ot">=</span> <span class="fu">sigmoid</span>(layer_1 <span class="sc">%*%</span> synapse_1)</span>
+<span id="cb346-52"><a href="neural-network.html#cb346-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-53"><a href="neural-network.html#cb346-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb346-54"><a href="neural-network.html#cb346-54" aria-hidden="true" tabindex="-1"></a>        layer_2_error <span class="ot">=</span> layer_2 <span class="sc">-</span> y</span>
+<span id="cb346-55"><a href="neural-network.html#cb346-55" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb346-56"><a href="neural-network.html#cb346-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ((j <span class="sc">%%</span> <span class="dv">10000</span>) <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> show_messages) {</span>
+<span id="cb346-57"><a href="neural-network.html#cb346-57" aria-hidden="true" tabindex="-1"></a>          <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Error after {j} iterations: {mean(abs(layer_2_error))}&quot;</span>))</span>
+<span id="cb346-58"><a href="neural-network.html#cb346-58" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb346-59"><a href="neural-network.html#cb346-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-60"><a href="neural-network.html#cb346-60" aria-hidden="true" tabindex="-1"></a>        <span class="co"># in what direction is the target value?</span></span>
+<span id="cb346-61"><a href="neural-network.html#cb346-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb346-62"><a href="neural-network.html#cb346-62" aria-hidden="true" tabindex="-1"></a>        layer_2_delta <span class="ot">=</span> layer_2_error <span class="sc">*</span> <span class="fu">sigmoid_output_to_derivative</span>(layer_2)</span>
+<span id="cb346-63"><a href="neural-network.html#cb346-63" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-64"><a href="neural-network.html#cb346-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb346-65"><a href="neural-network.html#cb346-65" aria-hidden="true" tabindex="-1"></a>        layer_1_error <span class="ot">=</span> layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(synapse_1)</span>
+<span id="cb346-66"><a href="neural-network.html#cb346-66" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-67"><a href="neural-network.html#cb346-67" aria-hidden="true" tabindex="-1"></a>        <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb346-68"><a href="neural-network.html#cb346-68" aria-hidden="true" tabindex="-1"></a>        <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb346-69"><a href="neural-network.html#cb346-69" aria-hidden="true" tabindex="-1"></a>        layer_1_delta <span class="ot">=</span> layer_1_error <span class="sc">*</span> <span class="fu">sigmoid_output_to_derivative</span>(layer_1)</span>
+<span id="cb346-70"><a href="neural-network.html#cb346-70" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-71"><a href="neural-network.html#cb346-71" aria-hidden="true" tabindex="-1"></a>        synapse_1 <span class="ot">=</span> synapse_1 <span class="sc">-</span> val <span class="sc">*</span> <span class="fu">crossprod</span>(layer_1, layer_2_delta)</span>
+<span id="cb346-72"><a href="neural-network.html#cb346-72" aria-hidden="true" tabindex="-1"></a>        synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">-</span> val <span class="sc">*</span> <span class="fu">crossprod</span>(X, layer_1_delta)</span>
+<span id="cb346-73"><a href="neural-network.html#cb346-73" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb346-74"><a href="neural-network.html#cb346-74" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb346-75"><a href="neural-network.html#cb346-75" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb346-76"><a href="neural-network.html#cb346-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb346-77"><a href="neural-network.html#cb346-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1_error =</span> layer_1_error,</span>
+<span id="cb346-78"><a href="neural-network.html#cb346-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2_error =</span> layer_2_error,</span>
+<span id="cb346-79"><a href="neural-network.html#cb346-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_0 =</span> synapse_0,</span>
+<span id="cb346-80"><a href="neural-network.html#cb346-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_1 =</span> synapse_1,</span>
+<span id="cb346-81"><a href="neural-network.html#cb346-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1 =</span> layer_1,</span>
+<span id="cb346-82"><a href="neural-network.html#cb346-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2 =</span> layer_2</span>
+<span id="cb346-83"><a href="neural-network.html#cb346-83" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb346-84"><a href="neural-network.html#cb346-84" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>With function in place, we are now ready to try it out. You can change whether you show the messages or not to compare with the Python. I don’t in this case for the sake of the document, but it won’t be overwhelming if you do interactively, and is recommended. We will also see that <code>alpha = 10</code> is the better option under the default settings as it was with the Python code. Note that this simple demo code will probably not work well beyond a hidden size of 50 (add more iterations even then).</p>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="neural-network.html#cb347-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb347-2"><a href="neural-network.html#cb347-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb347-3"><a href="neural-network.html#cb347-3" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_3</span>(</span>
+<span id="cb347-4"><a href="neural-network.html#cb347-4" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb347-5"><a href="neural-network.html#cb347-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb347-6"><a href="neural-network.html#cb347-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">hidden_size =</span> <span class="dv">32</span>,</span>
+<span id="cb347-7"><a href="neural-network.html#cb347-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
+<span id="cb347-8"><a href="neural-network.html#cb347-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha   =</span> alphas,</span>
+<span id="cb347-9"><a href="neural-network.html#cb347-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">FALSE</span></span>
+<span id="cb347-10"><a href="neural-network.html#cb347-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Let’s rerun at <code>alpha = 10</code>.</p>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="neural-network.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb348-2"><a href="neural-network.html#cb348-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb348-3"><a href="neural-network.html#cb348-3" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_3</span>(</span>
+<span id="cb348-4"><a href="neural-network.html#cb348-4" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb348-5"><a href="neural-network.html#cb348-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb348-6"><a href="neural-network.html#cb348-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">hidden_size =</span> <span class="dv">32</span>,</span>
+<span id="cb348-7"><a href="neural-network.html#cb348-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="dv">10</span>,</span>
+<span id="cb348-8"><a href="neural-network.html#cb348-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">TRUE</span></span>
+<span id="cb348-9"><a href="neural-network.html#cb348-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>Training With Alpha: 10</code></pre>
+<pre><code>Error after 10000 iterations: 0.00483502508464005</code></pre>
+<pre><code>Error after 20000 iterations: 0.00207985328313795</code></pre>
+<pre><code>Error after 30000 iterations: 0.00152092933542719</code></pre>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="neural-network.html#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">round</span>(fit_nn<span class="sc">$</span>layer_2, <span class="dv">4</span>), y)</span></code></pre></div>
+<pre><code>       [,1] [,2]
+[1,] 0.0013    0
+[2,] 0.9985    1
+[3,] 0.9986    1
+[4,] 0.0018    0</code></pre>
+</div>
+<div id="comparison-22" class="section level3">
+<h3>Comparison</h3>
+<p>Again we can compare to <span class="pack" style="">nnet</span>.</p>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="neural-network.html#cb355-1" aria-hidden="true" tabindex="-1"></a>fit_nnet <span class="ot">=</span> nnet<span class="sc">::</span><span class="fu">nnet</span>(X, y, <span class="at">size =</span> <span class="dv">32</span>)</span></code></pre></div>
+<pre><code># weights:  161
+initial  value 1.851187 
+iter  10 value 0.936564
+iter  20 value 0.008594
+final  value 0.000065 
+converged</code></pre>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="neural-network.html#cb357-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitted</span>(fit_nnet)</span></code></pre></div>
+<pre><code>             [,1]
+[1,] 0.0001274475
+[2,] 0.9933000550
+[3,] 0.9959851931
+[4,] 0.0019116939</code></pre>
+</div>
+</div>
+<div id="source-20" class="section level2">
+<h2>Source</h2>
+<p>This was never on the original repo but I may put it there eventually.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="gaussian-process.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="elm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["twitter", "facebook", "linkedin", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/m-clark/models-by-example/blob/master/neural-network.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"depth": 2,
+"scroll_highlight": true
+},
+"df_print": "kable",
+"highlight": "pygments",
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -2,15 +2,13 @@
 
 # Supplemental
 
-**IN PROGRESS**
-
 ## Other Languages
 
 When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. There is not a whole lot here, but it still may be useful to some.  Refer to the corresponding chapter of R code for context.
 
 ### Python Demos
 
-#### Linear Regression
+#### Linear Regression {#python-linreg}
 
 ##### Data Setup
 
@@ -147,7 +145,7 @@ SM   0.241055 -0.494647  0.213036  0.0815
 
 
 
-#### Nelder-Mead
+#### Nelder-Mead {#python-nelder}
 
 ```{python py-nelder-mead, eval = FALSE}
 import copy
@@ -281,7 +279,7 @@ nelder_mead(f, np.array([0., 0., 0.]))
 
 
 
-#### HMM
+#### HMM {#python-hmm}
 
 ```{python py-hmm, eval = FALSE}
 #!/usr/bin/env python3
@@ -376,7 +374,7 @@ viterbi(obs,states,start_p,trans_p,emit_p)
 
 ### Julia Demos
 
-I haven't played with Julia in a very long time, but briefly hacked the old code to get something that worked.  As Julia has gone though notable changes, it's doubtful these are very good as far as Julia code goes, though conceptually they may still provide some utility.  Perhaps at some point I'll reteach myself the basics and come back to these. In any case the code did run on a [Jupyter notebook](https://jupyter.org/). 
+I haven't played with Julia in a very long time, but briefly hacked the old code to get something that worked.  As Julia has gone though notable changes, it's doubtful these are very good as far as Julia programming standards go, though conceptually they may still provide some utility.  Perhaps at some point I'll reteach myself the basics and come back to these. In any case the code did run on a [Jupyter notebook](https://jupyter.org/). 
 
 ####  Mixed Models
 
@@ -695,7 +693,7 @@ thetahat = fminsearch(f, theta0)
 ```
 
 
-#### Gaussian Processes
+#### Gaussian Processes {#matlab-gp}
 
 Any updates on the following can be found at the [repo](https://github.com/probml/pmtk3).
 

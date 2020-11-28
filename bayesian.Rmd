@@ -2,9 +2,9 @@
 
 # Introduction to Bayesian Methods
 
-The following demonstrations will likely assume more background knowledge, but otherwise take a similar approach. For example, the model fitting functions in the previous demonstrations are now replaced with Stan code.  I start with a demo followed by the simplest of models such as a t-test and linear regression to get one comfortable. For more introduction, see [my document](https://m-clark.github.io/bayesian-basics/).
+The following demonstrations will likely assume more background knowledge, but otherwise take a similar approach. For example, the model fitting functions in the previous demonstrations are now replaced with Stan code.  I start with a demo followed by the simplest of models such as a t-test and linear regression to get one comfortable. For more introduction, see [my introduction to bayesian method](https://m-clark.github.io/bayesian-basics/), and in particular, the[ maximum likelihood section of this document][Maximum Likelihood], which is an update of the appendix in that introduction.
 
 
-Note that some of the old code is now easily accomplished with tools like <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span> (e.g. for standard linear and mixed models), or Stan even has built in functions (e.g. gaussian process covariance functions). As such, I didn't copy all of my old efforts to this document. So you can take a look at the [old repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian) for a few more demos I probably won't include here.
+Note that some of the old code is now easily accomplished with tools like <span class="pack" style = "">rstanarm</span> or <span class="pack" style = "">brms</span> (e.g. for standard linear and mixed models), or Stan even has built in functions (e.g. gaussian process covariance functions). As such, I didn't copy all of my old efforts to this document. So you can take a look at the [old repo](https://github.com/m-clark/Miscellaneous-R-Code/tree/master/ModelFitting/Bayesian) for a few more demos I probably won't include here, including in other languages like Bugs/Jags.
 
 

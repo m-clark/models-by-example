@@ -927,7 +927,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 [2,] 0.007864211 0
 [3,] 0.993590571 1
 [4,] 0.992115835 1</code></pre>
-<p>The key idea here is the update step. Using the derivative, we are getting the slope of the sigmoid function at the point of interest. If a probability (<code>layer 1</code>) is close to zero or 1, this suggests the prediction ‘confidence’ is high, and the result is that there is less need for updating. For the others, e.g. close to <code>x = 0</code>, the predictions will be relatively more updated, as the error will be greater. The last step is to compute the weight updates for each weight for each observation, sum them, and update the weights accordingly.</p>
+<p>The key idea here is the update step. Using the derivative, we are getting the slope of the sigmoid function at the point of interest. If a predicted probability (<code>layer 1</code>) is close to zero or 1, this suggests the prediction ‘confidence’ is high, the slopes are shallow, and the result is that there is less need for updating. For the others, e.g. close to <code>x = 0</code>, there will be relatively more updating, as the error will be greater. The last step is to compute the weight updates for each weight for each observation, sum them, and update the weights accordingly. So our update is a function of the error and the slope. If both are small, then there will be little update, but if there is larger error and/or less confident prediction, the result will ultimately be a larger update.</p>
 <p><img src="model-demos_files/figure-html/nn-sigmoid-vis-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 </div>

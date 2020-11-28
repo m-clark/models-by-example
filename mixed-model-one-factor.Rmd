@@ -7,32 +7,37 @@ likelihood in R (and Matlab and Julia in the [Supplemental
 Section][One-factor]). It's based on Statistical Modeling and Computation (2014)
 Chapter 10, example 10.10. Unfortunately I did this before knowing they had both
 Matlab and R code on their website, though the R code here is a little cleaner
-and has comments. The data regards crop yield from 10 randomly selected
-locations and three collections at each.  
+and has comments. 
 
 
 
 
 ## Data Setup
 
+The data regards crop yield from 10 randomly selected
+locations and three collections at each location.
+
 ```{r one-factor-re-setup}
 library(tidyverse)
 
-y = matrix(c(22.6,20.5,20.8,
-             22.6,21.2,20.5,
-             17.3,16.2,16.6,
-             21.4,23.7,23.2,
-             20.9,22.2,22.6,
-             14.5,10.5,12.3,
-             20.8,19.1,21.3,
-             17.4,18.6,18.6,
-             25.1,24.8,24.9,
-             14.9,16.3,16.6), 10, 3, byrow = TRUE)
+y = matrix(c(22.6, 20.5, 20.8,
+             22.6, 21.2, 20.5,
+             17.3, 16.2, 16.6,
+             21.4, 23.7, 23.2,
+             20.9, 22.2, 22.6,
+             14.5, 10.5, 12.3,
+             20.8, 19.1, 21.3,
+             17.4, 18.6, 18.6,
+             25.1, 24.8, 24.9,
+             14.9, 16.3, 16.6), 
+           10, 3, byrow = TRUE)
 ```
 
 
 ## Function 
- 
+
+The estimating function.
+
 ```{r one-factor-re}
 one_factor_re <- function(mu, sigma2_mu, sigma2){
   # Args
@@ -63,7 +68,7 @@ one_factor_re <- function(mu, sigma2_mu, sigma2){
 
 ## Estimation 
 
-Starting values
+Starting values.
 
 ```{r one-factor-re-starts}
 starts = list(
@@ -74,7 +79,7 @@ starts = list(
 ```
 
 
-Estimate at starting values.
+Estimate at the starting values.
 
 ```{r one-factor-re-est}
 one_factor_re(mu = starts[[1]],
@@ -83,7 +88,7 @@ one_factor_re(mu = starts[[1]],
 ```
 
 
-Package <span class="pack" style = "">bbmle</span> has an <span class="func" style = "">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style = "">optim</span>, and produces a nice summary table. LBFGS-B is used to place lower bounds on the variance estimates.
+Package <span class="pack" style = "">bbmle</span> has an <span class="func" style = "">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style = "">optim</span>, and produces a nice summary table. *LBFGS-B* is used to place lower bounds on the variance estimates.
 
 ```{r one-factor-re-bbmle}
 library(bbmle)

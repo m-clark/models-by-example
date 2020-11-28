@@ -390,26 +390,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html"><i class="fa fa-check"></i>Neural Net</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i>Neural Network</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r"><i class="fa fa-check"></i>R</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-1"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-1"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-1"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-1"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-3"><i class="fa fa-check"></i>Example 3</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-3"><i class="fa fa-check"></i>Example 3</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-2"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-2"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-2"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-2"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#source-20"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
 <ul>
@@ -628,7 +628,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-41"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder-Mead</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#functions-11"><i class="fa fa-check"></i>Functions</a>
 <ul>
@@ -800,87 +800,87 @@ the code in the appendix of Gelman.</p>
 <div id="data-setup-51" class="section level2">
 <h2>Data Setup</h2>
 <p>As with the <a href="metropolis-hastings.html#metropolis-hastings">Metropolis Hastings chapter</a>, we use some data for a standard linear regression.</p>
-<div class="sourceCode" id="cb847"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb847-1"><a href="hamiltonian-monte-carlo.html#cb847-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb847-2"><a href="hamiltonian-monte-carlo.html#cb847-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb847-3"><a href="hamiltonian-monte-carlo.html#cb847-3" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for replicability</span></span>
-<span id="cb847-4"><a href="hamiltonian-monte-carlo.html#cb847-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb847-5"><a href="hamiltonian-monte-carlo.html#cb847-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb847-6"><a href="hamiltonian-monte-carlo.html#cb847-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create a N x k matrix of covariates</span></span>
-<span id="cb847-7"><a href="hamiltonian-monte-carlo.html#cb847-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">250</span></span>
-<span id="cb847-8"><a href="hamiltonian-monte-carlo.html#cb847-8" aria-hidden="true" tabindex="-1"></a>K <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb847-9"><a href="hamiltonian-monte-carlo.html#cb847-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb847-10"><a href="hamiltonian-monte-carlo.html#cb847-10" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">=</span> <span class="fu">replicate</span>(K, <span class="fu">rnorm</span>(<span class="at">n =</span> N))</span>
-<span id="cb847-11"><a href="hamiltonian-monte-carlo.html#cb847-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(covariates) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>)</span>
-<span id="cb847-12"><a href="hamiltonian-monte-carlo.html#cb847-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb847-13"><a href="hamiltonian-monte-carlo.html#cb847-13" aria-hidden="true" tabindex="-1"></a><span class="co"># create the model matrix with intercept</span></span>
-<span id="cb847-14"><a href="hamiltonian-monte-carlo.html#cb847-14" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">Intercept =</span> <span class="dv">1</span>, covariates)</span>
-<span id="cb847-15"><a href="hamiltonian-monte-carlo.html#cb847-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb847-16"><a href="hamiltonian-monte-carlo.html#cb847-16" aria-hidden="true" tabindex="-1"></a><span class="co"># create a normally distributed variable that is a function of the covariates</span></span>
-<span id="cb847-17"><a href="hamiltonian-monte-carlo.html#cb847-17" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">5</span>, .<span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.5</span>, .<span class="dv">9</span>)</span>
-<span id="cb847-18"><a href="hamiltonian-monte-carlo.html#cb847-18" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb847-19"><a href="hamiltonian-monte-carlo.html#cb847-19" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> X <span class="sc">%*%</span> coefs</span>
-<span id="cb847-20"><a href="hamiltonian-monte-carlo.html#cb847-20" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="fu">rnorm</span>(N, mu, sigma)</span>
-<span id="cb847-21"><a href="hamiltonian-monte-carlo.html#cb847-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb847-22"><a href="hamiltonian-monte-carlo.html#cb847-22" aria-hidden="true" tabindex="-1"></a><span class="co"># same as</span></span>
-<span id="cb847-23"><a href="hamiltonian-monte-carlo.html#cb847-23" aria-hidden="true" tabindex="-1"></a><span class="co"># y = 5 + .2*X1 - 1.5*X2 + .9*X3 + rnorm(N, mean = 0, sd = 2)</span></span>
-<span id="cb847-24"><a href="hamiltonian-monte-carlo.html#cb847-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb847-25"><a href="hamiltonian-monte-carlo.html#cb847-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Run lm for later comparison; but go ahead and examine now if desired</span></span>
-<span id="cb847-26"><a href="hamiltonian-monte-carlo.html#cb847-26" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">data.frame</span>(X[, <span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb847-27"><a href="hamiltonian-monte-carlo.html#cb847-27" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_lm)</span></span></code></pre></div>
+<div class="sourceCode" id="cb852"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb852-1"><a href="hamiltonian-monte-carlo.html#cb852-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb852-2"><a href="hamiltonian-monte-carlo.html#cb852-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb852-3"><a href="hamiltonian-monte-carlo.html#cb852-3" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for replicability</span></span>
+<span id="cb852-4"><a href="hamiltonian-monte-carlo.html#cb852-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb852-5"><a href="hamiltonian-monte-carlo.html#cb852-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb852-6"><a href="hamiltonian-monte-carlo.html#cb852-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create a N x k matrix of covariates</span></span>
+<span id="cb852-7"><a href="hamiltonian-monte-carlo.html#cb852-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">250</span></span>
+<span id="cb852-8"><a href="hamiltonian-monte-carlo.html#cb852-8" aria-hidden="true" tabindex="-1"></a>K <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb852-9"><a href="hamiltonian-monte-carlo.html#cb852-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb852-10"><a href="hamiltonian-monte-carlo.html#cb852-10" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">=</span> <span class="fu">replicate</span>(K, <span class="fu">rnorm</span>(<span class="at">n =</span> N))</span>
+<span id="cb852-11"><a href="hamiltonian-monte-carlo.html#cb852-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(covariates) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>)</span>
+<span id="cb852-12"><a href="hamiltonian-monte-carlo.html#cb852-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb852-13"><a href="hamiltonian-monte-carlo.html#cb852-13" aria-hidden="true" tabindex="-1"></a><span class="co"># create the model matrix with intercept</span></span>
+<span id="cb852-14"><a href="hamiltonian-monte-carlo.html#cb852-14" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">Intercept =</span> <span class="dv">1</span>, covariates)</span>
+<span id="cb852-15"><a href="hamiltonian-monte-carlo.html#cb852-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb852-16"><a href="hamiltonian-monte-carlo.html#cb852-16" aria-hidden="true" tabindex="-1"></a><span class="co"># create a normally distributed variable that is a function of the covariates</span></span>
+<span id="cb852-17"><a href="hamiltonian-monte-carlo.html#cb852-17" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">5</span>, .<span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.5</span>, .<span class="dv">9</span>)</span>
+<span id="cb852-18"><a href="hamiltonian-monte-carlo.html#cb852-18" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb852-19"><a href="hamiltonian-monte-carlo.html#cb852-19" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> X <span class="sc">%*%</span> coefs</span>
+<span id="cb852-20"><a href="hamiltonian-monte-carlo.html#cb852-20" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="fu">rnorm</span>(N, mu, sigma)</span>
+<span id="cb852-21"><a href="hamiltonian-monte-carlo.html#cb852-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb852-22"><a href="hamiltonian-monte-carlo.html#cb852-22" aria-hidden="true" tabindex="-1"></a><span class="co"># same as</span></span>
+<span id="cb852-23"><a href="hamiltonian-monte-carlo.html#cb852-23" aria-hidden="true" tabindex="-1"></a><span class="co"># y = 5 + .2*X1 - 1.5*X2 + .9*X3 + rnorm(N, mean = 0, sd = 2)</span></span>
+<span id="cb852-24"><a href="hamiltonian-monte-carlo.html#cb852-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb852-25"><a href="hamiltonian-monte-carlo.html#cb852-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Run lm for later comparison; but go ahead and examine now if desired</span></span>
+<span id="cb852-26"><a href="hamiltonian-monte-carlo.html#cb852-26" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">data.frame</span>(X[, <span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb852-27"><a href="hamiltonian-monte-carlo.html#cb852-27" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_lm)</span></span></code></pre></div>
 </div>
 <div id="functions-13" class="section level2">
 <h2>Functions</h2>
 <p>First we start with the log posterior function.</p>
-<div class="sourceCode" id="cb848"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb848-1"><a href="hamiltonian-monte-carlo.html#cb848-1" aria-hidden="true" tabindex="-1"></a>log_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, th) {</span>
-<span id="cb848-2"><a href="hamiltonian-monte-carlo.html#cb848-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args</span></span>
-<span id="cb848-3"><a href="hamiltonian-monte-carlo.html#cb848-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: the model matrix</span></span>
-<span id="cb848-4"><a href="hamiltonian-monte-carlo.html#cb848-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: the target vector</span></span>
-<span id="cb848-5"><a href="hamiltonian-monte-carlo.html#cb848-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># th: theta, the current parameter estimates</span></span>
-<span id="cb848-6"><a href="hamiltonian-monte-carlo.html#cb848-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb848-7"><a href="hamiltonian-monte-carlo.html#cb848-7" aria-hidden="true" tabindex="-1"></a>  beta   <span class="ot">=</span> th[<span class="sc">-</span><span class="fu">length</span>(th)]            <span class="co"># reg coefs to be estimated</span></span>
-<span id="cb848-8"><a href="hamiltonian-monte-carlo.html#cb848-8" aria-hidden="true" tabindex="-1"></a>  sigma  <span class="ot">=</span> th[<span class="fu">length</span>(th)]             <span class="co"># sigma to be estimated</span></span>
-<span id="cb848-9"><a href="hamiltonian-monte-carlo.html#cb848-9" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> sigma<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb848-10"><a href="hamiltonian-monte-carlo.html#cb848-10" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb848-11"><a href="hamiltonian-monte-carlo.html#cb848-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb848-12"><a href="hamiltonian-monte-carlo.html#cb848-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)</span></span>
-<span id="cb848-13"><a href="hamiltonian-monte-carlo.html#cb848-13" aria-hidden="true" tabindex="-1"></a>  priorbvarinv <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">100</span>, <span class="dv">4</span>) </span>
-<span id="cb848-14"><a href="hamiltonian-monte-carlo.html#cb848-14" aria-hidden="true" tabindex="-1"></a>  prioralpha   <span class="ot">=</span> priorbeta <span class="ot">=</span> .<span class="dv">001</span></span>
-<span id="cb848-15"><a href="hamiltonian-monte-carlo.html#cb848-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb848-16"><a href="hamiltonian-monte-carlo.html#cb848-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.nan</span>(sigma) <span class="sc">|</span> sigma<span class="sc">&lt;=</span><span class="dv">0</span>) {     <span class="co"># scale parameter must be positive, so post</span></span>
-<span id="cb848-17"><a href="hamiltonian-monte-carlo.html#cb848-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)                      <span class="co"># density is zero if it jumps below zero</span></span>
-<span id="cb848-18"><a href="hamiltonian-monte-carlo.html#cb848-18" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb848-19"><a href="hamiltonian-monte-carlo.html#cb848-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log posterior in this conjugate setting. conceptually it&#39;s (log) prior +</span></span>
-<span id="cb848-20"><a href="hamiltonian-monte-carlo.html#cb848-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (log) likelihood. (See commented &#39;else&#39; for alternative)</span></span>
-<span id="cb848-21"><a href="hamiltonian-monte-carlo.html#cb848-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
-<span id="cb848-22"><a href="hamiltonian-monte-carlo.html#cb848-22" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">nrow</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">crossprod</span>(y<span class="sc">-</span>mu))) <span class="sc">+</span></span>
-<span id="cb848-23"><a href="hamiltonian-monte-carlo.html#cb848-23" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">ncol</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">t</span>(beta) <span class="sc">%*%</span> priorbvarinv <span class="sc">%*%</span> beta)) <span class="sc">+</span></span>
-<span id="cb848-24"><a href="hamiltonian-monte-carlo.html#cb848-24" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>(prioralpha <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">+</span> <span class="fu">log</span>(sigma2) <span class="sc">-</span> priorbeta<span class="sc">/</span>sigma2</span>
-<span id="cb848-25"><a href="hamiltonian-monte-carlo.html#cb848-25" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb848-26"><a href="hamiltonian-monte-carlo.html#cb848-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># else {</span></span>
-<span id="cb848-27"><a href="hamiltonian-monte-carlo.html#cb848-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)</span></span>
-<span id="cb848-28"><a href="hamiltonian-monte-carlo.html#cb848-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)</span></span>
-<span id="cb848-29"><a href="hamiltonian-monte-carlo.html#cb848-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)</span></span>
-<span id="cb848-30"><a href="hamiltonian-monte-carlo.html#cb848-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior = ll + priorb + priors2</span></span>
-<span id="cb848-31"><a href="hamiltonian-monte-carlo.html#cb848-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior</span></span>
-<span id="cb848-32"><a href="hamiltonian-monte-carlo.html#cb848-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># }</span></span>
-<span id="cb848-33"><a href="hamiltonian-monte-carlo.html#cb848-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb853"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb853-1"><a href="hamiltonian-monte-carlo.html#cb853-1" aria-hidden="true" tabindex="-1"></a>log_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, th) {</span>
+<span id="cb853-2"><a href="hamiltonian-monte-carlo.html#cb853-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args</span></span>
+<span id="cb853-3"><a href="hamiltonian-monte-carlo.html#cb853-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: the model matrix</span></span>
+<span id="cb853-4"><a href="hamiltonian-monte-carlo.html#cb853-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: the target vector</span></span>
+<span id="cb853-5"><a href="hamiltonian-monte-carlo.html#cb853-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># th: theta, the current parameter estimates</span></span>
+<span id="cb853-6"><a href="hamiltonian-monte-carlo.html#cb853-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb853-7"><a href="hamiltonian-monte-carlo.html#cb853-7" aria-hidden="true" tabindex="-1"></a>  beta   <span class="ot">=</span> th[<span class="sc">-</span><span class="fu">length</span>(th)]            <span class="co"># reg coefs to be estimated</span></span>
+<span id="cb853-8"><a href="hamiltonian-monte-carlo.html#cb853-8" aria-hidden="true" tabindex="-1"></a>  sigma  <span class="ot">=</span> th[<span class="fu">length</span>(th)]             <span class="co"># sigma to be estimated</span></span>
+<span id="cb853-9"><a href="hamiltonian-monte-carlo.html#cb853-9" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb853-10"><a href="hamiltonian-monte-carlo.html#cb853-10" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb853-11"><a href="hamiltonian-monte-carlo.html#cb853-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb853-12"><a href="hamiltonian-monte-carlo.html#cb853-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)</span></span>
+<span id="cb853-13"><a href="hamiltonian-monte-carlo.html#cb853-13" aria-hidden="true" tabindex="-1"></a>  priorbvarinv <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">100</span>, <span class="dv">4</span>) </span>
+<span id="cb853-14"><a href="hamiltonian-monte-carlo.html#cb853-14" aria-hidden="true" tabindex="-1"></a>  prioralpha   <span class="ot">=</span> priorbeta <span class="ot">=</span> .<span class="dv">001</span></span>
+<span id="cb853-15"><a href="hamiltonian-monte-carlo.html#cb853-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb853-16"><a href="hamiltonian-monte-carlo.html#cb853-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.nan</span>(sigma) <span class="sc">|</span> sigma<span class="sc">&lt;=</span><span class="dv">0</span>) {     <span class="co"># scale parameter must be positive, so post</span></span>
+<span id="cb853-17"><a href="hamiltonian-monte-carlo.html#cb853-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)                      <span class="co"># density is zero if it jumps below zero</span></span>
+<span id="cb853-18"><a href="hamiltonian-monte-carlo.html#cb853-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb853-19"><a href="hamiltonian-monte-carlo.html#cb853-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log posterior in this conjugate setting. conceptually it&#39;s (log) prior +</span></span>
+<span id="cb853-20"><a href="hamiltonian-monte-carlo.html#cb853-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (log) likelihood. (See commented &#39;else&#39; for alternative)</span></span>
+<span id="cb853-21"><a href="hamiltonian-monte-carlo.html#cb853-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb853-22"><a href="hamiltonian-monte-carlo.html#cb853-22" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">nrow</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">crossprod</span>(y<span class="sc">-</span>mu))) <span class="sc">+</span></span>
+<span id="cb853-23"><a href="hamiltonian-monte-carlo.html#cb853-23" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>.<span class="dv">5</span><span class="sc">*</span><span class="fu">ncol</span>(X)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">-</span> (.<span class="dv">5</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>sigma2) <span class="sc">*</span> (<span class="fu">t</span>(beta) <span class="sc">%*%</span> priorbvarinv <span class="sc">%*%</span> beta)) <span class="sc">+</span></span>
+<span id="cb853-24"><a href="hamiltonian-monte-carlo.html#cb853-24" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>(prioralpha <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">log</span>(sigma2) <span class="sc">+</span> <span class="fu">log</span>(sigma2) <span class="sc">-</span> priorbeta<span class="sc">/</span>sigma2</span>
+<span id="cb853-25"><a href="hamiltonian-monte-carlo.html#cb853-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb853-26"><a href="hamiltonian-monte-carlo.html#cb853-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># else {</span></span>
+<span id="cb853-27"><a href="hamiltonian-monte-carlo.html#cb853-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)</span></span>
+<span id="cb853-28"><a href="hamiltonian-monte-carlo.html#cb853-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)</span></span>
+<span id="cb853-29"><a href="hamiltonian-monte-carlo.html#cb853-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)</span></span>
+<span id="cb853-30"><a href="hamiltonian-monte-carlo.html#cb853-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior = ll + priorb + priors2</span></span>
+<span id="cb853-31"><a href="hamiltonian-monte-carlo.html#cb853-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   logposterior</span></span>
+<span id="cb853-32"><a href="hamiltonian-monte-carlo.html#cb853-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># }</span></span>
+<span id="cb853-33"><a href="hamiltonian-monte-carlo.html#cb853-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The following is the numerical gradient function as given in BDA3 p. 602. It has
 the same arguments as the log posterior function.</p>
-<div class="sourceCode" id="cb849"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb849-1"><a href="hamiltonian-monte-carlo.html#cb849-1" aria-hidden="true" tabindex="-1"></a>gradient_theta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, th) {</span>
-<span id="cb849-2"><a href="hamiltonian-monte-carlo.html#cb849-2" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">=</span> <span class="fu">length</span>(th)</span>
-<span id="cb849-3"><a href="hamiltonian-monte-carlo.html#cb849-3" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">=</span> .<span class="dv">0001</span></span>
-<span id="cb849-4"><a href="hamiltonian-monte-carlo.html#cb849-4" aria-hidden="true" tabindex="-1"></a>  diffs <span class="ot">=</span> <span class="fu">numeric</span>(d)</span>
-<span id="cb849-5"><a href="hamiltonian-monte-carlo.html#cb849-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb849-6"><a href="hamiltonian-monte-carlo.html#cb849-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>d) {</span>
-<span id="cb849-7"><a href="hamiltonian-monte-carlo.html#cb849-7" aria-hidden="true" tabindex="-1"></a>    th_hi <span class="ot">=</span> th</span>
-<span id="cb849-8"><a href="hamiltonian-monte-carlo.html#cb849-8" aria-hidden="true" tabindex="-1"></a>    th_lo <span class="ot">=</span> th</span>
-<span id="cb849-9"><a href="hamiltonian-monte-carlo.html#cb849-9" aria-hidden="true" tabindex="-1"></a>    th_hi[k] <span class="ot">=</span> th[k] <span class="sc">+</span> e</span>
-<span id="cb849-10"><a href="hamiltonian-monte-carlo.html#cb849-10" aria-hidden="true" tabindex="-1"></a>    th_lo[k] <span class="ot">=</span> th[k] <span class="sc">-</span> e</span>
-<span id="cb849-11"><a href="hamiltonian-monte-carlo.html#cb849-11" aria-hidden="true" tabindex="-1"></a>    diffs[k] <span class="ot">=</span> (<span class="fu">log_posterior</span>(X, y, th_hi) <span class="sc">-</span> <span class="fu">log_posterior</span>(X, y, th_lo)) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> e)</span>
-<span id="cb849-12"><a href="hamiltonian-monte-carlo.html#cb849-12" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb849-13"><a href="hamiltonian-monte-carlo.html#cb849-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb849-14"><a href="hamiltonian-monte-carlo.html#cb849-14" aria-hidden="true" tabindex="-1"></a>  diffs</span>
-<span id="cb849-15"><a href="hamiltonian-monte-carlo.html#cb849-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb854"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb854-1"><a href="hamiltonian-monte-carlo.html#cb854-1" aria-hidden="true" tabindex="-1"></a>gradient_theta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, th) {</span>
+<span id="cb854-2"><a href="hamiltonian-monte-carlo.html#cb854-2" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">=</span> <span class="fu">length</span>(th)</span>
+<span id="cb854-3"><a href="hamiltonian-monte-carlo.html#cb854-3" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">=</span> .<span class="dv">0001</span></span>
+<span id="cb854-4"><a href="hamiltonian-monte-carlo.html#cb854-4" aria-hidden="true" tabindex="-1"></a>  diffs <span class="ot">=</span> <span class="fu">numeric</span>(d)</span>
+<span id="cb854-5"><a href="hamiltonian-monte-carlo.html#cb854-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb854-6"><a href="hamiltonian-monte-carlo.html#cb854-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>d) {</span>
+<span id="cb854-7"><a href="hamiltonian-monte-carlo.html#cb854-7" aria-hidden="true" tabindex="-1"></a>    th_hi <span class="ot">=</span> th</span>
+<span id="cb854-8"><a href="hamiltonian-monte-carlo.html#cb854-8" aria-hidden="true" tabindex="-1"></a>    th_lo <span class="ot">=</span> th</span>
+<span id="cb854-9"><a href="hamiltonian-monte-carlo.html#cb854-9" aria-hidden="true" tabindex="-1"></a>    th_hi[k] <span class="ot">=</span> th[k] <span class="sc">+</span> e</span>
+<span id="cb854-10"><a href="hamiltonian-monte-carlo.html#cb854-10" aria-hidden="true" tabindex="-1"></a>    th_lo[k] <span class="ot">=</span> th[k] <span class="sc">-</span> e</span>
+<span id="cb854-11"><a href="hamiltonian-monte-carlo.html#cb854-11" aria-hidden="true" tabindex="-1"></a>    diffs[k] <span class="ot">=</span> (<span class="fu">log_posterior</span>(X, y, th_hi) <span class="sc">-</span> <span class="fu">log_posterior</span>(X, y, th_lo)) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> e)</span>
+<span id="cb854-12"><a href="hamiltonian-monte-carlo.html#cb854-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb854-13"><a href="hamiltonian-monte-carlo.html#cb854-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb854-14"><a href="hamiltonian-monte-carlo.html#cb854-14" aria-hidden="true" tabindex="-1"></a>  diffs</span>
+<span id="cb854-15"><a href="hamiltonian-monte-carlo.html#cb854-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The following is a function for a single HMC iteration. ϵ and L are drawn randomly at each
 iteration to explore other areas of the posterior (starting with <code>epsilon0</code> and
 <code>L0</code>); The mass matrix <code>M</code>, expressed as a vector, is a bit of a magic number in
@@ -888,133 +888,133 @@ this setting. It regards the mass of a particle whose position is represented by
 <span class="math inline">\(\theta\)</span>, and momentum by <span class="math inline">\(\phi\)</span>. See the <a href="https://mc-stan.org/docs/2_18/reference-manual/hamiltonian-monte-carlo.html">sampling section of the Stan
 manual</a>
 for more detail.</p>
-<div class="sourceCode" id="cb850"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb850-1"><a href="hamiltonian-monte-carlo.html#cb850-1" aria-hidden="true" tabindex="-1"></a>hmc_iteration <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, th, epsilon, L, M) {</span>
-<span id="cb850-2"><a href="hamiltonian-monte-carlo.html#cb850-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args</span></span>
-<span id="cb850-3"><a href="hamiltonian-monte-carlo.html#cb850-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># epsilon: the stepsize</span></span>
-<span id="cb850-4"><a href="hamiltonian-monte-carlo.html#cb850-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># L: the number of leapfrog steps</span></span>
-<span id="cb850-5"><a href="hamiltonian-monte-carlo.html#cb850-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># M: a diagonal mass matrix</span></span>
-<span id="cb850-6"><a href="hamiltonian-monte-carlo.html#cb850-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb850-7"><a href="hamiltonian-monte-carlo.html#cb850-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialization</span></span>
-<span id="cb850-8"><a href="hamiltonian-monte-carlo.html#cb850-8" aria-hidden="true" tabindex="-1"></a>  M_inv <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>M</span>
-<span id="cb850-9"><a href="hamiltonian-monte-carlo.html#cb850-9" aria-hidden="true" tabindex="-1"></a>  d   <span class="ot">=</span> <span class="fu">length</span>(th)</span>
-<span id="cb850-10"><a href="hamiltonian-monte-carlo.html#cb850-10" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> <span class="fu">rnorm</span>(d, <span class="dv">0</span>, <span class="fu">sqrt</span>(M))</span>
-<span id="cb850-11"><a href="hamiltonian-monte-carlo.html#cb850-11" aria-hidden="true" tabindex="-1"></a>  th_old <span class="ot">=</span> th</span>
-<span id="cb850-12"><a href="hamiltonian-monte-carlo.html#cb850-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-13"><a href="hamiltonian-monte-carlo.html#cb850-13" aria-hidden="true" tabindex="-1"></a>  log_p_old <span class="ot">=</span> <span class="fu">log_posterior</span>(X, y, th) <span class="sc">-</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">sum</span>(M_inv <span class="sc">*</span> phi<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb850-14"><a href="hamiltonian-monte-carlo.html#cb850-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-15"><a href="hamiltonian-monte-carlo.html#cb850-15" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> phi <span class="sc">+</span> .<span class="dv">5</span> <span class="sc">*</span> epsilon <span class="sc">*</span> <span class="fu">gradient_theta</span>(X, y, th)</span>
-<span id="cb850-16"><a href="hamiltonian-monte-carlo.html#cb850-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-17"><a href="hamiltonian-monte-carlo.html#cb850-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (l <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>L) {</span>
-<span id="cb850-18"><a href="hamiltonian-monte-carlo.html#cb850-18" aria-hidden="true" tabindex="-1"></a>    th  <span class="ot">=</span> th <span class="sc">+</span> epsilon<span class="sc">*</span>M_inv<span class="sc">*</span>phi</span>
-<span id="cb850-19"><a href="hamiltonian-monte-carlo.html#cb850-19" aria-hidden="true" tabindex="-1"></a>    phi <span class="ot">=</span> phi <span class="sc">+</span> <span class="fu">ifelse</span>(l <span class="sc">==</span> L, .<span class="dv">5</span>, <span class="dv">1</span>) <span class="sc">*</span> epsilon <span class="sc">*</span> <span class="fu">gradient_theta</span>(X, y, th)</span>
-<span id="cb850-20"><a href="hamiltonian-monte-carlo.html#cb850-20" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb850-21"><a href="hamiltonian-monte-carlo.html#cb850-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-22"><a href="hamiltonian-monte-carlo.html#cb850-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># here we get into standard MCMC stuff, jump or not based on a draw from a</span></span>
-<span id="cb850-23"><a href="hamiltonian-monte-carlo.html#cb850-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># proposal distribution</span></span>
-<span id="cb850-24"><a href="hamiltonian-monte-carlo.html#cb850-24" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> <span class="sc">-</span>phi</span>
-<span id="cb850-25"><a href="hamiltonian-monte-carlo.html#cb850-25" aria-hidden="true" tabindex="-1"></a>  log_p_star <span class="ot">=</span> <span class="fu">log_posterior</span>(X, y, th) <span class="sc">-</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">sum</span>(M_inv <span class="sc">*</span> phi<span class="sc">^</span><span class="dv">2</span>)    </span>
-<span id="cb850-26"><a href="hamiltonian-monte-carlo.html#cb850-26" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">exp</span>(log_p_star <span class="sc">-</span> log_p_old)</span>
-<span id="cb850-27"><a href="hamiltonian-monte-carlo.html#cb850-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-28"><a href="hamiltonian-monte-carlo.html#cb850-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.nan</span>(r)) r <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb850-29"><a href="hamiltonian-monte-carlo.html#cb850-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-30"><a href="hamiltonian-monte-carlo.html#cb850-30" aria-hidden="true" tabindex="-1"></a>  p_jump <span class="ot">=</span> <span class="fu">min</span>(r, <span class="dv">1</span>)</span>
-<span id="cb850-31"><a href="hamiltonian-monte-carlo.html#cb850-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-32"><a href="hamiltonian-monte-carlo.html#cb850-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> p_jump) {</span>
-<span id="cb850-33"><a href="hamiltonian-monte-carlo.html#cb850-33" aria-hidden="true" tabindex="-1"></a>    th_new <span class="ot">=</span> th</span>
-<span id="cb850-34"><a href="hamiltonian-monte-carlo.html#cb850-34" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb850-35"><a href="hamiltonian-monte-carlo.html#cb850-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
-<span id="cb850-36"><a href="hamiltonian-monte-carlo.html#cb850-36" aria-hidden="true" tabindex="-1"></a>    th_new <span class="ot">=</span> th_old</span>
-<span id="cb850-37"><a href="hamiltonian-monte-carlo.html#cb850-37" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb850-38"><a href="hamiltonian-monte-carlo.html#cb850-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb850-39"><a href="hamiltonian-monte-carlo.html#cb850-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># returns estimates and acceptance rate</span></span>
-<span id="cb850-40"><a href="hamiltonian-monte-carlo.html#cb850-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">th =</span> th_new, <span class="at">p_jump =</span> p_jump)  </span>
-<span id="cb850-41"><a href="hamiltonian-monte-carlo.html#cb850-41" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb855"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb855-1"><a href="hamiltonian-monte-carlo.html#cb855-1" aria-hidden="true" tabindex="-1"></a>hmc_iteration <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, th, epsilon, L, M) {</span>
+<span id="cb855-2"><a href="hamiltonian-monte-carlo.html#cb855-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args</span></span>
+<span id="cb855-3"><a href="hamiltonian-monte-carlo.html#cb855-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># epsilon: the stepsize</span></span>
+<span id="cb855-4"><a href="hamiltonian-monte-carlo.html#cb855-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># L: the number of leapfrog steps</span></span>
+<span id="cb855-5"><a href="hamiltonian-monte-carlo.html#cb855-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># M: a diagonal mass matrix</span></span>
+<span id="cb855-6"><a href="hamiltonian-monte-carlo.html#cb855-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb855-7"><a href="hamiltonian-monte-carlo.html#cb855-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialization</span></span>
+<span id="cb855-8"><a href="hamiltonian-monte-carlo.html#cb855-8" aria-hidden="true" tabindex="-1"></a>  M_inv <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>M</span>
+<span id="cb855-9"><a href="hamiltonian-monte-carlo.html#cb855-9" aria-hidden="true" tabindex="-1"></a>  d   <span class="ot">=</span> <span class="fu">length</span>(th)</span>
+<span id="cb855-10"><a href="hamiltonian-monte-carlo.html#cb855-10" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> <span class="fu">rnorm</span>(d, <span class="dv">0</span>, <span class="fu">sqrt</span>(M))</span>
+<span id="cb855-11"><a href="hamiltonian-monte-carlo.html#cb855-11" aria-hidden="true" tabindex="-1"></a>  th_old <span class="ot">=</span> th</span>
+<span id="cb855-12"><a href="hamiltonian-monte-carlo.html#cb855-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-13"><a href="hamiltonian-monte-carlo.html#cb855-13" aria-hidden="true" tabindex="-1"></a>  log_p_old <span class="ot">=</span> <span class="fu">log_posterior</span>(X, y, th) <span class="sc">-</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">sum</span>(M_inv <span class="sc">*</span> phi<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb855-14"><a href="hamiltonian-monte-carlo.html#cb855-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-15"><a href="hamiltonian-monte-carlo.html#cb855-15" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> phi <span class="sc">+</span> .<span class="dv">5</span> <span class="sc">*</span> epsilon <span class="sc">*</span> <span class="fu">gradient_theta</span>(X, y, th)</span>
+<span id="cb855-16"><a href="hamiltonian-monte-carlo.html#cb855-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-17"><a href="hamiltonian-monte-carlo.html#cb855-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (l <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>L) {</span>
+<span id="cb855-18"><a href="hamiltonian-monte-carlo.html#cb855-18" aria-hidden="true" tabindex="-1"></a>    th  <span class="ot">=</span> th <span class="sc">+</span> epsilon<span class="sc">*</span>M_inv<span class="sc">*</span>phi</span>
+<span id="cb855-19"><a href="hamiltonian-monte-carlo.html#cb855-19" aria-hidden="true" tabindex="-1"></a>    phi <span class="ot">=</span> phi <span class="sc">+</span> <span class="fu">ifelse</span>(l <span class="sc">==</span> L, .<span class="dv">5</span>, <span class="dv">1</span>) <span class="sc">*</span> epsilon <span class="sc">*</span> <span class="fu">gradient_theta</span>(X, y, th)</span>
+<span id="cb855-20"><a href="hamiltonian-monte-carlo.html#cb855-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb855-21"><a href="hamiltonian-monte-carlo.html#cb855-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-22"><a href="hamiltonian-monte-carlo.html#cb855-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># here we get into standard MCMC stuff, jump or not based on a draw from a</span></span>
+<span id="cb855-23"><a href="hamiltonian-monte-carlo.html#cb855-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># proposal distribution</span></span>
+<span id="cb855-24"><a href="hamiltonian-monte-carlo.html#cb855-24" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> <span class="sc">-</span>phi</span>
+<span id="cb855-25"><a href="hamiltonian-monte-carlo.html#cb855-25" aria-hidden="true" tabindex="-1"></a>  log_p_star <span class="ot">=</span> <span class="fu">log_posterior</span>(X, y, th) <span class="sc">-</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">sum</span>(M_inv <span class="sc">*</span> phi<span class="sc">^</span><span class="dv">2</span>)    </span>
+<span id="cb855-26"><a href="hamiltonian-monte-carlo.html#cb855-26" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">exp</span>(log_p_star <span class="sc">-</span> log_p_old)</span>
+<span id="cb855-27"><a href="hamiltonian-monte-carlo.html#cb855-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-28"><a href="hamiltonian-monte-carlo.html#cb855-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.nan</span>(r)) r <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb855-29"><a href="hamiltonian-monte-carlo.html#cb855-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-30"><a href="hamiltonian-monte-carlo.html#cb855-30" aria-hidden="true" tabindex="-1"></a>  p_jump <span class="ot">=</span> <span class="fu">min</span>(r, <span class="dv">1</span>)</span>
+<span id="cb855-31"><a href="hamiltonian-monte-carlo.html#cb855-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-32"><a href="hamiltonian-monte-carlo.html#cb855-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> p_jump) {</span>
+<span id="cb855-33"><a href="hamiltonian-monte-carlo.html#cb855-33" aria-hidden="true" tabindex="-1"></a>    th_new <span class="ot">=</span> th</span>
+<span id="cb855-34"><a href="hamiltonian-monte-carlo.html#cb855-34" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb855-35"><a href="hamiltonian-monte-carlo.html#cb855-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb855-36"><a href="hamiltonian-monte-carlo.html#cb855-36" aria-hidden="true" tabindex="-1"></a>    th_new <span class="ot">=</span> th_old</span>
+<span id="cb855-37"><a href="hamiltonian-monte-carlo.html#cb855-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb855-38"><a href="hamiltonian-monte-carlo.html#cb855-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb855-39"><a href="hamiltonian-monte-carlo.html#cb855-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># returns estimates and acceptance rate</span></span>
+<span id="cb855-40"><a href="hamiltonian-monte-carlo.html#cb855-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">th =</span> th_new, <span class="at">p_jump =</span> p_jump)  </span>
+<span id="cb855-41"><a href="hamiltonian-monte-carlo.html#cb855-41" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Main HMC function.</p>
-<div class="sourceCode" id="cb851"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb851-1"><a href="hamiltonian-monte-carlo.html#cb851-1" aria-hidden="true" tabindex="-1"></a>hmc_run <span class="ot">&lt;-</span> <span class="cf">function</span>(starts, iter, warmup, epsilon_0, L_0, M, X, y) {</span>
-<span id="cb851-2"><a href="hamiltonian-monte-carlo.html#cb851-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># # Args: </span></span>
-<span id="cb851-3"><a href="hamiltonian-monte-carlo.html#cb851-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># starts:  starting values</span></span>
-<span id="cb851-4"><a href="hamiltonian-monte-carlo.html#cb851-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># iter: total number of simulations for each chain (note chain is based on the dimension of starts)</span></span>
-<span id="cb851-5"><a href="hamiltonian-monte-carlo.html#cb851-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># warmup: determines which of the initial iterations will be ignored for inference purposes</span></span>
-<span id="cb851-6"><a href="hamiltonian-monte-carlo.html#cb851-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># epsilon0: the baseline stepsize</span></span>
-<span id="cb851-7"><a href="hamiltonian-monte-carlo.html#cb851-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># L0: the baseline number of leapfrog steps</span></span>
-<span id="cb851-8"><a href="hamiltonian-monte-carlo.html#cb851-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># M: is the mass vector</span></span>
-<span id="cb851-9"><a href="hamiltonian-monte-carlo.html#cb851-9" aria-hidden="true" tabindex="-1"></a>  chains <span class="ot">=</span> <span class="fu">nrow</span>(starts)</span>
-<span id="cb851-10"><a href="hamiltonian-monte-carlo.html#cb851-10" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">=</span> <span class="fu">ncol</span>(starts)</span>
-<span id="cb851-11"><a href="hamiltonian-monte-carlo.html#cb851-11" aria-hidden="true" tabindex="-1"></a>  sims <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, </span>
-<span id="cb851-12"><a href="hamiltonian-monte-carlo.html#cb851-12" aria-hidden="true" tabindex="-1"></a>               <span class="fu">c</span>(iter, chains, d), </span>
-<span id="cb851-13"><a href="hamiltonian-monte-carlo.html#cb851-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="cn">NULL</span>, <span class="cn">NULL</span>, <span class="fu">colnames</span>(starts)))</span>
-<span id="cb851-14"><a href="hamiltonian-monte-carlo.html#cb851-14" aria-hidden="true" tabindex="-1"></a>  p_jump <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, iter, chains)</span>
-<span id="cb851-15"><a href="hamiltonian-monte-carlo.html#cb851-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb851-16"><a href="hamiltonian-monte-carlo.html#cb851-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>chains) {</span>
-<span id="cb851-17"><a href="hamiltonian-monte-carlo.html#cb851-17" aria-hidden="true" tabindex="-1"></a>    th <span class="ot">=</span> starts[j,]</span>
-<span id="cb851-18"><a href="hamiltonian-monte-carlo.html#cb851-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb851-19"><a href="hamiltonian-monte-carlo.html#cb851-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iter) {</span>
-<span id="cb851-20"><a href="hamiltonian-monte-carlo.html#cb851-20" aria-hidden="true" tabindex="-1"></a>      epsilon <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>epsilon_0)</span>
-<span id="cb851-21"><a href="hamiltonian-monte-carlo.html#cb851-21" aria-hidden="true" tabindex="-1"></a>      L    <span class="ot">=</span> <span class="fu">ceiling</span>(<span class="dv">2</span><span class="sc">*</span>L_0<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">1</span>))</span>
-<span id="cb851-22"><a href="hamiltonian-monte-carlo.html#cb851-22" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb851-23"><a href="hamiltonian-monte-carlo.html#cb851-23" aria-hidden="true" tabindex="-1"></a>      temp <span class="ot">=</span> <span class="fu">hmc_iteration</span>(X, y, th, epsilon, L, M)</span>
-<span id="cb851-24"><a href="hamiltonian-monte-carlo.html#cb851-24" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb851-25"><a href="hamiltonian-monte-carlo.html#cb851-25" aria-hidden="true" tabindex="-1"></a>      p_jump[t,j] <span class="ot">=</span> temp<span class="sc">$</span>p_jump</span>
-<span id="cb851-26"><a href="hamiltonian-monte-carlo.html#cb851-26" aria-hidden="true" tabindex="-1"></a>      sims[t,j,]  <span class="ot">=</span> temp<span class="sc">$</span>th</span>
-<span id="cb851-27"><a href="hamiltonian-monte-carlo.html#cb851-27" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb851-28"><a href="hamiltonian-monte-carlo.html#cb851-28" aria-hidden="true" tabindex="-1"></a>      th <span class="ot">=</span> temp<span class="sc">$</span>th</span>
-<span id="cb851-29"><a href="hamiltonian-monte-carlo.html#cb851-29" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb851-30"><a href="hamiltonian-monte-carlo.html#cb851-30" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb851-31"><a href="hamiltonian-monte-carlo.html#cb851-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb851-32"><a href="hamiltonian-monte-carlo.html#cb851-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># acceptance rate</span></span>
-<span id="cb851-33"><a href="hamiltonian-monte-carlo.html#cb851-33" aria-hidden="true" tabindex="-1"></a>  acc <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">colMeans</span>(p_jump[(warmup <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>iter,]), <span class="dv">3</span>)  </span>
-<span id="cb851-34"><a href="hamiltonian-monte-carlo.html#cb851-34" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb851-35"><a href="hamiltonian-monte-carlo.html#cb851-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&#39;Avg acceptance probability for each chain: &#39;</span>, </span>
-<span id="cb851-36"><a href="hamiltonian-monte-carlo.html#cb851-36" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(acc[<span class="dv">1</span>],<span class="st">&#39;, &#39;</span>,acc[<span class="dv">2</span>]), <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>) </span>
-<span id="cb851-37"><a href="hamiltonian-monte-carlo.html#cb851-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb851-38"><a href="hamiltonian-monte-carlo.html#cb851-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">sims =</span> sims, <span class="at">p_jump =</span> p_jump)</span>
-<span id="cb851-39"><a href="hamiltonian-monte-carlo.html#cb851-39" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb856"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb856-1"><a href="hamiltonian-monte-carlo.html#cb856-1" aria-hidden="true" tabindex="-1"></a>hmc_run <span class="ot">&lt;-</span> <span class="cf">function</span>(starts, iter, warmup, epsilon_0, L_0, M, X, y) {</span>
+<span id="cb856-2"><a href="hamiltonian-monte-carlo.html#cb856-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># # Args: </span></span>
+<span id="cb856-3"><a href="hamiltonian-monte-carlo.html#cb856-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># starts:  starting values</span></span>
+<span id="cb856-4"><a href="hamiltonian-monte-carlo.html#cb856-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># iter: total number of simulations for each chain (note chain is based on the dimension of starts)</span></span>
+<span id="cb856-5"><a href="hamiltonian-monte-carlo.html#cb856-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># warmup: determines which of the initial iterations will be ignored for inference purposes</span></span>
+<span id="cb856-6"><a href="hamiltonian-monte-carlo.html#cb856-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># epsilon0: the baseline stepsize</span></span>
+<span id="cb856-7"><a href="hamiltonian-monte-carlo.html#cb856-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># L0: the baseline number of leapfrog steps</span></span>
+<span id="cb856-8"><a href="hamiltonian-monte-carlo.html#cb856-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># M: is the mass vector</span></span>
+<span id="cb856-9"><a href="hamiltonian-monte-carlo.html#cb856-9" aria-hidden="true" tabindex="-1"></a>  chains <span class="ot">=</span> <span class="fu">nrow</span>(starts)</span>
+<span id="cb856-10"><a href="hamiltonian-monte-carlo.html#cb856-10" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">=</span> <span class="fu">ncol</span>(starts)</span>
+<span id="cb856-11"><a href="hamiltonian-monte-carlo.html#cb856-11" aria-hidden="true" tabindex="-1"></a>  sims <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, </span>
+<span id="cb856-12"><a href="hamiltonian-monte-carlo.html#cb856-12" aria-hidden="true" tabindex="-1"></a>               <span class="fu">c</span>(iter, chains, d), </span>
+<span id="cb856-13"><a href="hamiltonian-monte-carlo.html#cb856-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="cn">NULL</span>, <span class="cn">NULL</span>, <span class="fu">colnames</span>(starts)))</span>
+<span id="cb856-14"><a href="hamiltonian-monte-carlo.html#cb856-14" aria-hidden="true" tabindex="-1"></a>  p_jump <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, iter, chains)</span>
+<span id="cb856-15"><a href="hamiltonian-monte-carlo.html#cb856-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb856-16"><a href="hamiltonian-monte-carlo.html#cb856-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>chains) {</span>
+<span id="cb856-17"><a href="hamiltonian-monte-carlo.html#cb856-17" aria-hidden="true" tabindex="-1"></a>    th <span class="ot">=</span> starts[j,]</span>
+<span id="cb856-18"><a href="hamiltonian-monte-carlo.html#cb856-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb856-19"><a href="hamiltonian-monte-carlo.html#cb856-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iter) {</span>
+<span id="cb856-20"><a href="hamiltonian-monte-carlo.html#cb856-20" aria-hidden="true" tabindex="-1"></a>      epsilon <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>epsilon_0)</span>
+<span id="cb856-21"><a href="hamiltonian-monte-carlo.html#cb856-21" aria-hidden="true" tabindex="-1"></a>      L    <span class="ot">=</span> <span class="fu">ceiling</span>(<span class="dv">2</span><span class="sc">*</span>L_0<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb856-22"><a href="hamiltonian-monte-carlo.html#cb856-22" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb856-23"><a href="hamiltonian-monte-carlo.html#cb856-23" aria-hidden="true" tabindex="-1"></a>      temp <span class="ot">=</span> <span class="fu">hmc_iteration</span>(X, y, th, epsilon, L, M)</span>
+<span id="cb856-24"><a href="hamiltonian-monte-carlo.html#cb856-24" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb856-25"><a href="hamiltonian-monte-carlo.html#cb856-25" aria-hidden="true" tabindex="-1"></a>      p_jump[t,j] <span class="ot">=</span> temp<span class="sc">$</span>p_jump</span>
+<span id="cb856-26"><a href="hamiltonian-monte-carlo.html#cb856-26" aria-hidden="true" tabindex="-1"></a>      sims[t,j,]  <span class="ot">=</span> temp<span class="sc">$</span>th</span>
+<span id="cb856-27"><a href="hamiltonian-monte-carlo.html#cb856-27" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb856-28"><a href="hamiltonian-monte-carlo.html#cb856-28" aria-hidden="true" tabindex="-1"></a>      th <span class="ot">=</span> temp<span class="sc">$</span>th</span>
+<span id="cb856-29"><a href="hamiltonian-monte-carlo.html#cb856-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb856-30"><a href="hamiltonian-monte-carlo.html#cb856-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb856-31"><a href="hamiltonian-monte-carlo.html#cb856-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb856-32"><a href="hamiltonian-monte-carlo.html#cb856-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># acceptance rate</span></span>
+<span id="cb856-33"><a href="hamiltonian-monte-carlo.html#cb856-33" aria-hidden="true" tabindex="-1"></a>  acc <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">colMeans</span>(p_jump[(warmup <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>iter,]), <span class="dv">3</span>)  </span>
+<span id="cb856-34"><a href="hamiltonian-monte-carlo.html#cb856-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb856-35"><a href="hamiltonian-monte-carlo.html#cb856-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&#39;Avg acceptance probability for each chain: &#39;</span>, </span>
+<span id="cb856-36"><a href="hamiltonian-monte-carlo.html#cb856-36" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(acc[<span class="dv">1</span>],<span class="st">&#39;, &#39;</span>,acc[<span class="dv">2</span>]), <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>) </span>
+<span id="cb856-37"><a href="hamiltonian-monte-carlo.html#cb856-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb856-38"><a href="hamiltonian-monte-carlo.html#cb856-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">sims =</span> sims, <span class="at">p_jump =</span> p_jump)</span>
+<span id="cb856-39"><a href="hamiltonian-monte-carlo.html#cb856-39" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-51" class="section level2">
 <h2>Estimation</h2>
 <p>With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while <span class="math inline">\(\sigma\)</span> is set to a value of one in each case. As in the other examples we’ll have 5000 total draws with warm-up set to 2500. I don’t have any thinning option here, but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.</p>
-<div class="sourceCode" id="cb852"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb852-1"><a href="hamiltonian-monte-carlo.html#cb852-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Starting values and mcmc settings</span></span>
-<span id="cb852-2"><a href="hamiltonian-monte-carlo.html#cb852-2" aria-hidden="true" tabindex="-1"></a>parnames <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">&#39;beta[&#39;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="st">&#39;]&#39;</span>), <span class="st">&#39;sigma&#39;</span>)</span>
-<span id="cb852-3"><a href="hamiltonian-monte-carlo.html#cb852-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">length</span>(parnames)</span>
-<span id="cb852-4"><a href="hamiltonian-monte-carlo.html#cb852-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb852-5"><a href="hamiltonian-monte-carlo.html#cb852-5" aria-hidden="true" tabindex="-1"></a>chains <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb852-6"><a href="hamiltonian-monte-carlo.html#cb852-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb852-7"><a href="hamiltonian-monte-carlo.html#cb852-7" aria-hidden="true" tabindex="-1"></a>theta_start <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">replicate</span>(chains, <span class="fu">c</span>(<span class="fu">runif</span>(d<span class="dv">-1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">1</span>)))</span>
-<span id="cb852-8"><a href="hamiltonian-monte-carlo.html#cb852-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(theta_start) <span class="ot">=</span> parnames</span>
-<span id="cb852-9"><a href="hamiltonian-monte-carlo.html#cb852-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb852-10"><a href="hamiltonian-monte-carlo.html#cb852-10" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb852-11"><a href="hamiltonian-monte-carlo.html#cb852-11" aria-hidden="true" tabindex="-1"></a>wu   <span class="ot">=</span> <span class="dv">500</span></span></code></pre></div>
+<div class="sourceCode" id="cb857"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb857-1"><a href="hamiltonian-monte-carlo.html#cb857-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Starting values and mcmc settings</span></span>
+<span id="cb857-2"><a href="hamiltonian-monte-carlo.html#cb857-2" aria-hidden="true" tabindex="-1"></a>parnames <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">&#39;beta[&#39;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="st">&#39;]&#39;</span>), <span class="st">&#39;sigma&#39;</span>)</span>
+<span id="cb857-3"><a href="hamiltonian-monte-carlo.html#cb857-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">length</span>(parnames)</span>
+<span id="cb857-4"><a href="hamiltonian-monte-carlo.html#cb857-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb857-5"><a href="hamiltonian-monte-carlo.html#cb857-5" aria-hidden="true" tabindex="-1"></a>chains <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb857-6"><a href="hamiltonian-monte-carlo.html#cb857-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb857-7"><a href="hamiltonian-monte-carlo.html#cb857-7" aria-hidden="true" tabindex="-1"></a>theta_start <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">replicate</span>(chains, <span class="fu">c</span>(<span class="fu">runif</span>(d<span class="dv">-1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">1</span>)))</span>
+<span id="cb857-8"><a href="hamiltonian-monte-carlo.html#cb857-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(theta_start) <span class="ot">=</span> parnames</span>
+<span id="cb857-9"><a href="hamiltonian-monte-carlo.html#cb857-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb857-10"><a href="hamiltonian-monte-carlo.html#cb857-10" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb857-11"><a href="hamiltonian-monte-carlo.html#cb857-11" aria-hidden="true" tabindex="-1"></a>wu   <span class="ot">=</span> <span class="dv">500</span></span></code></pre></div>
 <p>We can fiddle with these sampling parameters to get a desirable acceptance rate of around .80. The following work well with the data we have.</p>
-<div class="sourceCode" id="cb853"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb853-1"><a href="hamiltonian-monte-carlo.html#cb853-1" aria-hidden="true" tabindex="-1"></a>stepsize <span class="ot">=</span> .<span class="dv">08</span></span>
-<span id="cb853-2"><a href="hamiltonian-monte-carlo.html#cb853-2" aria-hidden="true" tabindex="-1"></a>nLeap <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb853-3"><a href="hamiltonian-monte-carlo.html#cb853-3" aria-hidden="true" tabindex="-1"></a>vars  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">5</span>)</span>
-<span id="cb853-4"><a href="hamiltonian-monte-carlo.html#cb853-4" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> vars</span></code></pre></div>
+<div class="sourceCode" id="cb858"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb858-1"><a href="hamiltonian-monte-carlo.html#cb858-1" aria-hidden="true" tabindex="-1"></a>stepsize <span class="ot">=</span> .<span class="dv">08</span></span>
+<span id="cb858-2"><a href="hamiltonian-monte-carlo.html#cb858-2" aria-hidden="true" tabindex="-1"></a>nLeap <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb858-3"><a href="hamiltonian-monte-carlo.html#cb858-3" aria-hidden="true" tabindex="-1"></a>vars  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">5</span>)</span>
+<span id="cb858-4"><a href="hamiltonian-monte-carlo.html#cb858-4" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> vars</span></code></pre></div>
 <p>We are now ready to run the model. On my machine and with the above settings, it took a couple seconds. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.</p>
-<div class="sourceCode" id="cb854"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb854-1"><a href="hamiltonian-monte-carlo.html#cb854-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the model</span></span>
-<span id="cb854-2"><a href="hamiltonian-monte-carlo.html#cb854-2" aria-hidden="true" tabindex="-1"></a>fit_hmc <span class="ot">=</span> <span class="fu">hmc_run</span>(</span>
-<span id="cb854-3"><a href="hamiltonian-monte-carlo.html#cb854-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">starts    =</span> theta_start,</span>
-<span id="cb854-4"><a href="hamiltonian-monte-carlo.html#cb854-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter      =</span> nsim,</span>
-<span id="cb854-5"><a href="hamiltonian-monte-carlo.html#cb854-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup    =</span> wu,</span>
-<span id="cb854-6"><a href="hamiltonian-monte-carlo.html#cb854-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">epsilon_0 =</span> stepsize,</span>
-<span id="cb854-7"><a href="hamiltonian-monte-carlo.html#cb854-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_0 =</span> nLeap,</span>
-<span id="cb854-8"><a href="hamiltonian-monte-carlo.html#cb854-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">M   =</span> mass_vector,</span>
-<span id="cb854-9"><a href="hamiltonian-monte-carlo.html#cb854-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb854-10"><a href="hamiltonian-monte-carlo.html#cb854-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y</span>
-<span id="cb854-11"><a href="hamiltonian-monte-carlo.html#cb854-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb854-12"><a href="hamiltonian-monte-carlo.html#cb854-12" aria-hidden="true" tabindex="-1"></a><span class="co"># str(fit_hmc, 1)</span></span></code></pre></div>
+<div class="sourceCode" id="cb859"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb859-1"><a href="hamiltonian-monte-carlo.html#cb859-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the model</span></span>
+<span id="cb859-2"><a href="hamiltonian-monte-carlo.html#cb859-2" aria-hidden="true" tabindex="-1"></a>fit_hmc <span class="ot">=</span> <span class="fu">hmc_run</span>(</span>
+<span id="cb859-3"><a href="hamiltonian-monte-carlo.html#cb859-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">starts    =</span> theta_start,</span>
+<span id="cb859-4"><a href="hamiltonian-monte-carlo.html#cb859-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter      =</span> nsim,</span>
+<span id="cb859-5"><a href="hamiltonian-monte-carlo.html#cb859-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup    =</span> wu,</span>
+<span id="cb859-6"><a href="hamiltonian-monte-carlo.html#cb859-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">epsilon_0 =</span> stepsize,</span>
+<span id="cb859-7"><a href="hamiltonian-monte-carlo.html#cb859-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_0 =</span> nLeap,</span>
+<span id="cb859-8"><a href="hamiltonian-monte-carlo.html#cb859-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">M   =</span> mass_vector,</span>
+<span id="cb859-9"><a href="hamiltonian-monte-carlo.html#cb859-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb859-10"><a href="hamiltonian-monte-carlo.html#cb859-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y</span>
+<span id="cb859-11"><a href="hamiltonian-monte-carlo.html#cb859-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb859-12"><a href="hamiltonian-monte-carlo.html#cb859-12" aria-hidden="true" tabindex="-1"></a><span class="co"># str(fit_hmc, 1)</span></span></code></pre></div>
 <p>Using <span class="pack" style="">coda</span>, we can get some nice summary information. Results not shown.</p>
-<div class="sourceCode" id="cb855"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb855-1"><a href="hamiltonian-monte-carlo.html#cb855-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)</span>
-<span id="cb855-2"><a href="hamiltonian-monte-carlo.html#cb855-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb855-3"><a href="hamiltonian-monte-carlo.html#cb855-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">as.mcmc.list</span>(<span class="fu">list</span>(<span class="fu">as.mcmc</span>(fit_hmc<span class="sc">$</span>sims[(wu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim, <span class="dv">1</span>,]), </span>
-<span id="cb855-4"><a href="hamiltonian-monte-carlo.html#cb855-4" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">as.mcmc</span>(fit_hmc<span class="sc">$</span>sims[(wu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim, <span class="dv">2</span>,])))</span>
-<span id="cb855-5"><a href="hamiltonian-monte-carlo.html#cb855-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb855-6"><a href="hamiltonian-monte-carlo.html#cb855-6" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(theta)</span></span>
-<span id="cb855-7"><a href="hamiltonian-monte-carlo.html#cb855-7" aria-hidden="true" tabindex="-1"></a>fit_summary <span class="ot">=</span>  <span class="fu">summary</span>(theta)<span class="sc">$</span>statistics[,<span class="st">&#39;Mean&#39;</span>]</span>
-<span id="cb855-8"><a href="hamiltonian-monte-carlo.html#cb855-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb855-9"><a href="hamiltonian-monte-carlo.html#cb855-9" aria-hidden="true" tabindex="-1"></a>beta_est  <span class="ot">=</span> fit_summary[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
-<span id="cb855-10"><a href="hamiltonian-monte-carlo.html#cb855-10" aria-hidden="true" tabindex="-1"></a>sigma_est <span class="ot">=</span> fit_summary[<span class="dv">5</span>]</span>
-<span id="cb855-11"><a href="hamiltonian-monte-carlo.html#cb855-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb855-12"><a href="hamiltonian-monte-carlo.html#cb855-12" aria-hidden="true" tabindex="-1"></a><span class="co"># log_posterior(X, y, fit_summary)</span></span></code></pre></div>
+<div class="sourceCode" id="cb860"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb860-1"><a href="hamiltonian-monte-carlo.html#cb860-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)</span>
+<span id="cb860-2"><a href="hamiltonian-monte-carlo.html#cb860-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb860-3"><a href="hamiltonian-monte-carlo.html#cb860-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">as.mcmc.list</span>(<span class="fu">list</span>(<span class="fu">as.mcmc</span>(fit_hmc<span class="sc">$</span>sims[(wu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim, <span class="dv">1</span>,]), </span>
+<span id="cb860-4"><a href="hamiltonian-monte-carlo.html#cb860-4" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">as.mcmc</span>(fit_hmc<span class="sc">$</span>sims[(wu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>nsim, <span class="dv">2</span>,])))</span>
+<span id="cb860-5"><a href="hamiltonian-monte-carlo.html#cb860-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb860-6"><a href="hamiltonian-monte-carlo.html#cb860-6" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(theta)</span></span>
+<span id="cb860-7"><a href="hamiltonian-monte-carlo.html#cb860-7" aria-hidden="true" tabindex="-1"></a>fit_summary <span class="ot">=</span>  <span class="fu">summary</span>(theta)<span class="sc">$</span>statistics[,<span class="st">&#39;Mean&#39;</span>]</span>
+<span id="cb860-8"><a href="hamiltonian-monte-carlo.html#cb860-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb860-9"><a href="hamiltonian-monte-carlo.html#cb860-9" aria-hidden="true" tabindex="-1"></a>beta_est  <span class="ot">=</span> fit_summary[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb860-10"><a href="hamiltonian-monte-carlo.html#cb860-10" aria-hidden="true" tabindex="-1"></a>sigma_est <span class="ot">=</span> fit_summary[<span class="dv">5</span>]</span>
+<span id="cb860-11"><a href="hamiltonian-monte-carlo.html#cb860-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb860-12"><a href="hamiltonian-monte-carlo.html#cb860-12" aria-hidden="true" tabindex="-1"></a><span class="co"># log_posterior(X, y, fit_summary)</span></span></code></pre></div>
 <p>Instead we can use <span class="pack" style="">rstan’s</span> <span class="func" style="">monitor</span> function on <code>fit_hmc$sims</code> to produce typical Stan output.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>

@@ -390,26 +390,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html"><i class="fa fa-check"></i>Neural Net</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i>Neural Network</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r"><i class="fa fa-check"></i>R</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-1"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-1"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-1"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-1"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-3"><i class="fa fa-check"></i>Example 3</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-3"><i class="fa fa-check"></i>Example 3</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-2"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-2"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-2"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-2"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#source-20"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
 <ul>
@@ -628,7 +628,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-41"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder-Mead</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#functions-11"><i class="fa fa-check"></i>Functions</a>
 <ul>
@@ -801,81 +801,81 @@ Machine Learning text.</p>
 <div id="data-setup-49" class="section level2">
 <h2>Data Setup</h2>
 <p>Create some data for a standard linear regression.</p>
-<div class="sourceCode" id="cb828"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb828-1"><a href="stochastic-gradient-descent.html#cb828-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb828-2"><a href="stochastic-gradient-descent.html#cb828-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb828-3"><a href="stochastic-gradient-descent.html#cb828-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb828-4"><a href="stochastic-gradient-descent.html#cb828-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb828-5"><a href="stochastic-gradient-descent.html#cb828-5" aria-hidden="true" tabindex="-1"></a>n  <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb828-6"><a href="stochastic-gradient-descent.html#cb828-6" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb828-7"><a href="stochastic-gradient-descent.html#cb828-7" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb828-8"><a href="stochastic-gradient-descent.html#cb828-8" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="dv">1</span> <span class="sc">+</span> .<span class="dv">5</span><span class="sc">*</span>x1 <span class="sc">+</span> .<span class="dv">2</span><span class="sc">*</span>x2 <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb828-9"><a href="stochastic-gradient-descent.html#cb828-9" aria-hidden="true" tabindex="-1"></a>X  <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">Intercept =</span> <span class="dv">1</span>, x1, x2)</span></code></pre></div>
+<div class="sourceCode" id="cb833"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb833-1"><a href="stochastic-gradient-descent.html#cb833-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb833-2"><a href="stochastic-gradient-descent.html#cb833-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb833-3"><a href="stochastic-gradient-descent.html#cb833-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb833-4"><a href="stochastic-gradient-descent.html#cb833-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb833-5"><a href="stochastic-gradient-descent.html#cb833-5" aria-hidden="true" tabindex="-1"></a>n  <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb833-6"><a href="stochastic-gradient-descent.html#cb833-6" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb833-7"><a href="stochastic-gradient-descent.html#cb833-7" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb833-8"><a href="stochastic-gradient-descent.html#cb833-8" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="dv">1</span> <span class="sc">+</span> .<span class="dv">5</span><span class="sc">*</span>x1 <span class="sc">+</span> .<span class="dv">2</span><span class="sc">*</span>x2 <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb833-9"><a href="stochastic-gradient-descent.html#cb833-9" aria-hidden="true" tabindex="-1"></a>X  <span class="ot">=</span> <span class="fu">cbind</span>(<span class="at">Intercept =</span> <span class="dv">1</span>, x1, x2)</span></code></pre></div>
 </div>
 <div id="function-31" class="section level2">
 <h2>Function</h2>
 <p>The estimating function.</p>
-<div class="sourceCode" id="cb829"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb829-1"><a href="stochastic-gradient-descent.html#cb829-1" aria-hidden="true" tabindex="-1"></a>sgd <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb829-2"><a href="stochastic-gradient-descent.html#cb829-2" aria-hidden="true" tabindex="-1"></a>  par,                                      <span class="co"># parameter estimates</span></span>
-<span id="cb829-3"><a href="stochastic-gradient-descent.html#cb829-3" aria-hidden="true" tabindex="-1"></a>  X,                                        <span class="co"># model matrix</span></span>
-<span id="cb829-4"><a href="stochastic-gradient-descent.html#cb829-4" aria-hidden="true" tabindex="-1"></a>  y,                                        <span class="co"># target variable</span></span>
-<span id="cb829-5"><a href="stochastic-gradient-descent.html#cb829-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize =</span> <span class="dv">1</span>,                             <span class="co"># the learning rate</span></span>
-<span id="cb829-6"><a href="stochastic-gradient-descent.html#cb829-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsizeTau =</span> <span class="dv">0</span>,                          <span class="co"># if &gt; 0, a check on the LR at early iterations</span></span>
-<span id="cb829-7"><a href="stochastic-gradient-descent.html#cb829-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">average =</span> <span class="cn">FALSE</span></span>
-<span id="cb829-8"><a href="stochastic-gradient-descent.html#cb829-8" aria-hidden="true" tabindex="-1"></a>){</span>
-<span id="cb829-9"><a href="stochastic-gradient-descent.html#cb829-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb829-10"><a href="stochastic-gradient-descent.html#cb829-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialize</span></span>
-<span id="cb829-11"><a href="stochastic-gradient-descent.html#cb829-11" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par</span>
-<span id="cb829-12"><a href="stochastic-gradient-descent.html#cb829-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(beta) <span class="ot">=</span> <span class="fu">colnames</span>(X)</span>
-<span id="cb829-13"><a href="stochastic-gradient-descent.html#cb829-13" aria-hidden="true" tabindex="-1"></a>  betamat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(X), <span class="at">ncol =</span> <span class="fu">length</span>(beta))      <span class="co"># Collect all estimates</span></span>
-<span id="cb829-14"><a href="stochastic-gradient-descent.html#cb829-14" aria-hidden="true" tabindex="-1"></a>  fits <span class="ot">=</span> <span class="cn">NA</span>                                              <span class="co"># fitted values</span></span>
-<span id="cb829-15"><a href="stochastic-gradient-descent.html#cb829-15" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">=</span> <span class="dv">0</span>                                                  <span class="co"># adagrad per parameter learning rate adjustment</span></span>
-<span id="cb829-16"><a href="stochastic-gradient-descent.html#cb829-16" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">=</span> <span class="cn">NA</span>                                              <span class="co"># Collect loss at each point</span></span>
-<span id="cb829-17"><a href="stochastic-gradient-descent.html#cb829-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb829-18"><a href="stochastic-gradient-descent.html#cb829-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(X)) {</span>
-<span id="cb829-19"><a href="stochastic-gradient-descent.html#cb829-19" aria-hidden="true" tabindex="-1"></a>    Xi   <span class="ot">=</span> X[i, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb829-20"><a href="stochastic-gradient-descent.html#cb829-20" aria-hidden="true" tabindex="-1"></a>    yi   <span class="ot">=</span> y[i]</span>
-<span id="cb829-21"><a href="stochastic-gradient-descent.html#cb829-21" aria-hidden="true" tabindex="-1"></a>    LP   <span class="ot">=</span> Xi <span class="sc">%*%</span> beta                                   <span class="co"># matrix operations not necessary, </span></span>
-<span id="cb829-22"><a href="stochastic-gradient-descent.html#cb829-22" aria-hidden="true" tabindex="-1"></a>    grad <span class="ot">=</span> <span class="fu">t</span>(Xi) <span class="sc">%*%</span> (LP <span class="sc">-</span> yi)                           <span class="co"># but makes consistent with the  standard gd</span></span>
-<span id="cb829-23"><a href="stochastic-gradient-descent.html#cb829-23" aria-hidden="true" tabindex="-1"></a>    s    <span class="ot">=</span> s <span class="sc">+</span> grad<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb829-24"><a href="stochastic-gradient-descent.html#cb829-24" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">=</span> beta <span class="sc">-</span> stepsize <span class="sc">*</span> grad<span class="sc">/</span>(stepsizeTau <span class="sc">+</span> <span class="fu">sqrt</span>(s))     <span class="co"># adagrad approach</span></span>
-<span id="cb829-25"><a href="stochastic-gradient-descent.html#cb829-25" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb829-26"><a href="stochastic-gradient-descent.html#cb829-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (average <span class="sc">&amp;</span> i <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
-<span id="cb829-27"><a href="stochastic-gradient-descent.html#cb829-27" aria-hidden="true" tabindex="-1"></a>      beta <span class="ot">=</span>  beta <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>i <span class="sc">*</span> (betamat[i <span class="sc">-</span> <span class="dv">1</span>, ] <span class="sc">-</span> beta)          <span class="co"># a variation</span></span>
-<span id="cb829-28"><a href="stochastic-gradient-descent.html#cb829-28" aria-hidden="true" tabindex="-1"></a>    } </span>
-<span id="cb829-29"><a href="stochastic-gradient-descent.html#cb829-29" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb829-30"><a href="stochastic-gradient-descent.html#cb829-30" aria-hidden="true" tabindex="-1"></a>    betamat[i,] <span class="ot">=</span> beta</span>
-<span id="cb829-31"><a href="stochastic-gradient-descent.html#cb829-31" aria-hidden="true" tabindex="-1"></a>    fits[i]     <span class="ot">=</span> LP</span>
-<span id="cb829-32"><a href="stochastic-gradient-descent.html#cb829-32" aria-hidden="true" tabindex="-1"></a>    loss[i]     <span class="ot">=</span> (LP <span class="sc">-</span> yi)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb829-33"><a href="stochastic-gradient-descent.html#cb829-33" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb829-34"><a href="stochastic-gradient-descent.html#cb829-34" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb829-35"><a href="stochastic-gradient-descent.html#cb829-35" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb829-36"><a href="stochastic-gradient-descent.html#cb829-36" aria-hidden="true" tabindex="-1"></a>  lastloss <span class="ot">=</span> <span class="fu">crossprod</span>(LP <span class="sc">-</span> y)</span>
-<span id="cb829-37"><a href="stochastic-gradient-descent.html#cb829-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb829-38"><a href="stochastic-gradient-descent.html#cb829-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb829-39"><a href="stochastic-gradient-descent.html#cb829-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">par    =</span> beta,                                       <span class="co"># final estimates</span></span>
-<span id="cb829-40"><a href="stochastic-gradient-descent.html#cb829-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">parvec =</span> betamat,                                    <span class="co"># all estimates</span></span>
-<span id="cb829-41"><a href="stochastic-gradient-descent.html#cb829-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss   =</span> loss,                                       <span class="co"># observation level loss</span></span>
-<span id="cb829-42"><a href="stochastic-gradient-descent.html#cb829-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">RMSE   =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(lastloss)<span class="sc">/</span><span class="fu">nrow</span>(X)),</span>
-<span id="cb829-43"><a href="stochastic-gradient-descent.html#cb829-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">fitted =</span> fits</span>
-<span id="cb829-44"><a href="stochastic-gradient-descent.html#cb829-44" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb829-45"><a href="stochastic-gradient-descent.html#cb829-45" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb834"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb834-1"><a href="stochastic-gradient-descent.html#cb834-1" aria-hidden="true" tabindex="-1"></a>sgd <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb834-2"><a href="stochastic-gradient-descent.html#cb834-2" aria-hidden="true" tabindex="-1"></a>  par,                                      <span class="co"># parameter estimates</span></span>
+<span id="cb834-3"><a href="stochastic-gradient-descent.html#cb834-3" aria-hidden="true" tabindex="-1"></a>  X,                                        <span class="co"># model matrix</span></span>
+<span id="cb834-4"><a href="stochastic-gradient-descent.html#cb834-4" aria-hidden="true" tabindex="-1"></a>  y,                                        <span class="co"># target variable</span></span>
+<span id="cb834-5"><a href="stochastic-gradient-descent.html#cb834-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize =</span> <span class="dv">1</span>,                             <span class="co"># the learning rate</span></span>
+<span id="cb834-6"><a href="stochastic-gradient-descent.html#cb834-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsizeTau =</span> <span class="dv">0</span>,                          <span class="co"># if &gt; 0, a check on the LR at early iterations</span></span>
+<span id="cb834-7"><a href="stochastic-gradient-descent.html#cb834-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">average =</span> <span class="cn">FALSE</span></span>
+<span id="cb834-8"><a href="stochastic-gradient-descent.html#cb834-8" aria-hidden="true" tabindex="-1"></a>){</span>
+<span id="cb834-9"><a href="stochastic-gradient-descent.html#cb834-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb834-10"><a href="stochastic-gradient-descent.html#cb834-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialize</span></span>
+<span id="cb834-11"><a href="stochastic-gradient-descent.html#cb834-11" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par</span>
+<span id="cb834-12"><a href="stochastic-gradient-descent.html#cb834-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(beta) <span class="ot">=</span> <span class="fu">colnames</span>(X)</span>
+<span id="cb834-13"><a href="stochastic-gradient-descent.html#cb834-13" aria-hidden="true" tabindex="-1"></a>  betamat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(X), <span class="at">ncol =</span> <span class="fu">length</span>(beta))      <span class="co"># Collect all estimates</span></span>
+<span id="cb834-14"><a href="stochastic-gradient-descent.html#cb834-14" aria-hidden="true" tabindex="-1"></a>  fits <span class="ot">=</span> <span class="cn">NA</span>                                              <span class="co"># fitted values</span></span>
+<span id="cb834-15"><a href="stochastic-gradient-descent.html#cb834-15" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">=</span> <span class="dv">0</span>                                                  <span class="co"># adagrad per parameter learning rate adjustment</span></span>
+<span id="cb834-16"><a href="stochastic-gradient-descent.html#cb834-16" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">=</span> <span class="cn">NA</span>                                              <span class="co"># Collect loss at each point</span></span>
+<span id="cb834-17"><a href="stochastic-gradient-descent.html#cb834-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb834-18"><a href="stochastic-gradient-descent.html#cb834-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(X)) {</span>
+<span id="cb834-19"><a href="stochastic-gradient-descent.html#cb834-19" aria-hidden="true" tabindex="-1"></a>    Xi   <span class="ot">=</span> X[i, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb834-20"><a href="stochastic-gradient-descent.html#cb834-20" aria-hidden="true" tabindex="-1"></a>    yi   <span class="ot">=</span> y[i]</span>
+<span id="cb834-21"><a href="stochastic-gradient-descent.html#cb834-21" aria-hidden="true" tabindex="-1"></a>    LP   <span class="ot">=</span> Xi <span class="sc">%*%</span> beta                                   <span class="co"># matrix operations not necessary, </span></span>
+<span id="cb834-22"><a href="stochastic-gradient-descent.html#cb834-22" aria-hidden="true" tabindex="-1"></a>    grad <span class="ot">=</span> <span class="fu">t</span>(Xi) <span class="sc">%*%</span> (LP <span class="sc">-</span> yi)                           <span class="co"># but makes consistent with the  standard gd</span></span>
+<span id="cb834-23"><a href="stochastic-gradient-descent.html#cb834-23" aria-hidden="true" tabindex="-1"></a>    s    <span class="ot">=</span> s <span class="sc">+</span> grad<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb834-24"><a href="stochastic-gradient-descent.html#cb834-24" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">=</span> beta <span class="sc">-</span> stepsize <span class="sc">*</span> grad<span class="sc">/</span>(stepsizeTau <span class="sc">+</span> <span class="fu">sqrt</span>(s))     <span class="co"># adagrad approach</span></span>
+<span id="cb834-25"><a href="stochastic-gradient-descent.html#cb834-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb834-26"><a href="stochastic-gradient-descent.html#cb834-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (average <span class="sc">&amp;</span> i <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb834-27"><a href="stochastic-gradient-descent.html#cb834-27" aria-hidden="true" tabindex="-1"></a>      beta <span class="ot">=</span>  beta <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>i <span class="sc">*</span> (betamat[i <span class="sc">-</span> <span class="dv">1</span>, ] <span class="sc">-</span> beta)          <span class="co"># a variation</span></span>
+<span id="cb834-28"><a href="stochastic-gradient-descent.html#cb834-28" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb834-29"><a href="stochastic-gradient-descent.html#cb834-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb834-30"><a href="stochastic-gradient-descent.html#cb834-30" aria-hidden="true" tabindex="-1"></a>    betamat[i,] <span class="ot">=</span> beta</span>
+<span id="cb834-31"><a href="stochastic-gradient-descent.html#cb834-31" aria-hidden="true" tabindex="-1"></a>    fits[i]     <span class="ot">=</span> LP</span>
+<span id="cb834-32"><a href="stochastic-gradient-descent.html#cb834-32" aria-hidden="true" tabindex="-1"></a>    loss[i]     <span class="ot">=</span> (LP <span class="sc">-</span> yi)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb834-33"><a href="stochastic-gradient-descent.html#cb834-33" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb834-34"><a href="stochastic-gradient-descent.html#cb834-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb834-35"><a href="stochastic-gradient-descent.html#cb834-35" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb834-36"><a href="stochastic-gradient-descent.html#cb834-36" aria-hidden="true" tabindex="-1"></a>  lastloss <span class="ot">=</span> <span class="fu">crossprod</span>(LP <span class="sc">-</span> y)</span>
+<span id="cb834-37"><a href="stochastic-gradient-descent.html#cb834-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb834-38"><a href="stochastic-gradient-descent.html#cb834-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb834-39"><a href="stochastic-gradient-descent.html#cb834-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">par    =</span> beta,                                       <span class="co"># final estimates</span></span>
+<span id="cb834-40"><a href="stochastic-gradient-descent.html#cb834-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">parvec =</span> betamat,                                    <span class="co"># all estimates</span></span>
+<span id="cb834-41"><a href="stochastic-gradient-descent.html#cb834-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss   =</span> loss,                                       <span class="co"># observation level loss</span></span>
+<span id="cb834-42"><a href="stochastic-gradient-descent.html#cb834-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">RMSE   =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(lastloss)<span class="sc">/</span><span class="fu">nrow</span>(X)),</span>
+<span id="cb834-43"><a href="stochastic-gradient-descent.html#cb834-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">fitted =</span> fits</span>
+<span id="cb834-44"><a href="stochastic-gradient-descent.html#cb834-44" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb834-45"><a href="stochastic-gradient-descent.html#cb834-45" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-48" class="section level2">
 <h2>Estimation</h2>
 <p>Set starting values.</p>
-<div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb830-1"><a href="stochastic-gradient-descent.html#cb830-1" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb835"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb835-1"><a href="stochastic-gradient-descent.html#cb835-1" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span></code></pre></div>
 <p>For any particular data you might have to fiddle with the <code>stepsize</code>, perhaps
 choosing one based on cross-validation with old data.</p>
-<div class="sourceCode" id="cb831"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb831-1"><a href="stochastic-gradient-descent.html#cb831-1" aria-hidden="true" tabindex="-1"></a>fit_sgd <span class="ot">=</span> <span class="fu">sgd</span>(</span>
-<span id="cb831-2"><a href="stochastic-gradient-descent.html#cb831-2" aria-hidden="true" tabindex="-1"></a>  init,</span>
-<span id="cb831-3"><a href="stochastic-gradient-descent.html#cb831-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
-<span id="cb831-4"><a href="stochastic-gradient-descent.html#cb831-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
-<span id="cb831-5"><a href="stochastic-gradient-descent.html#cb831-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize    =</span> .<span class="dv">1</span>,</span>
-<span id="cb831-6"><a href="stochastic-gradient-descent.html#cb831-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsizeTau =</span> .<span class="dv">5</span>,</span>
-<span id="cb831-7"><a href="stochastic-gradient-descent.html#cb831-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">average =</span> <span class="cn">FALSE</span></span>
-<span id="cb831-8"><a href="stochastic-gradient-descent.html#cb831-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb831-9"><a href="stochastic-gradient-descent.html#cb831-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb831-10"><a href="stochastic-gradient-descent.html#cb831-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit_sgd)</span></code></pre></div>
+<div class="sourceCode" id="cb836"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb836-1"><a href="stochastic-gradient-descent.html#cb836-1" aria-hidden="true" tabindex="-1"></a>fit_sgd <span class="ot">=</span> <span class="fu">sgd</span>(</span>
+<span id="cb836-2"><a href="stochastic-gradient-descent.html#cb836-2" aria-hidden="true" tabindex="-1"></a>  init,</span>
+<span id="cb836-3"><a href="stochastic-gradient-descent.html#cb836-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
+<span id="cb836-4"><a href="stochastic-gradient-descent.html#cb836-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
+<span id="cb836-5"><a href="stochastic-gradient-descent.html#cb836-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize    =</span> .<span class="dv">1</span>,</span>
+<span id="cb836-6"><a href="stochastic-gradient-descent.html#cb836-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsizeTau =</span> .<span class="dv">5</span>,</span>
+<span id="cb836-7"><a href="stochastic-gradient-descent.html#cb836-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">average =</span> <span class="cn">FALSE</span></span>
+<span id="cb836-8"><a href="stochastic-gradient-descent.html#cb836-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb836-9"><a href="stochastic-gradient-descent.html#cb836-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb836-10"><a href="stochastic-gradient-descent.html#cb836-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit_sgd)</span></code></pre></div>
 <pre><code>List of 5
  $ par   : num [1:3, 1] 1.024 0.537 0.148
   ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -885,7 +885,7 @@ choosing one based on cross-validation with old data.</p>
  $ loss  : num [1:1000] 0.67 1.261 1.365 2.043 0.215 ...
  $ RMSE  : num 1.01
  $ fitted: num [1:1000] 0 -0.0236 -0.0446 -0.2828 0.1634 ...</code></pre>
-<div class="sourceCode" id="cb833"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb833-1"><a href="stochastic-gradient-descent.html#cb833-1" aria-hidden="true" tabindex="-1"></a>fit_sgd<span class="sc">$</span>par</span></code></pre></div>
+<div class="sourceCode" id="cb838"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb838-1"><a href="stochastic-gradient-descent.html#cb838-1" aria-hidden="true" tabindex="-1"></a>fit_sgd<span class="sc">$</span>par</span></code></pre></div>
 <pre><code>               [,1]
 Intercept 1.0241049
 x1        0.5368198
@@ -894,8 +894,8 @@ x2        0.1478470</code></pre>
 <div id="comparison-53" class="section level2">
 <h2>Comparison</h2>
 <p>We can compare to standard linear regression.</p>
-<div class="sourceCode" id="cb835"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb835-1"><a href="stochastic-gradient-descent.html#cb835-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(lm(y ~ x1 + x2))</span></span>
-<span id="cb835-2"><a href="stochastic-gradient-descent.html#cb835-2" aria-hidden="true" tabindex="-1"></a>coef1 <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2))</span></code></pre></div>
+<div class="sourceCode" id="cb840"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb840-1"><a href="stochastic-gradient-descent.html#cb840-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(lm(y ~ x1 + x2))</span></span>
+<span id="cb840-2"><a href="stochastic-gradient-descent.html#cb840-2" aria-hidden="true" tabindex="-1"></a>coef1 <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2))</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -951,37 +951,37 @@ lm
 <div id="data-set-shift" class="section level2">
 <h2>Data Set Shift</h2>
 <p>This data includes a shift of the previous data, where the data fundamentally changes at certain times.</p>
-<div class="sourceCode" id="cb836"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb836-1"><a href="stochastic-gradient-descent.html#cb836-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb836-2"><a href="stochastic-gradient-descent.html#cb836-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb836-3"><a href="stochastic-gradient-descent.html#cb836-3" aria-hidden="true" tabindex="-1"></a>n2   <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb836-4"><a href="stochastic-gradient-descent.html#cb836-4" aria-hidden="true" tabindex="-1"></a>x1<span class="fl">.2</span> <span class="ot">=</span> <span class="fu">rnorm</span>(n2)</span>
-<span id="cb836-5"><a href="stochastic-gradient-descent.html#cb836-5" aria-hidden="true" tabindex="-1"></a>x2<span class="fl">.2</span> <span class="ot">=</span> <span class="fu">rnorm</span>(n2)</span>
-<span id="cb836-6"><a href="stochastic-gradient-descent.html#cb836-6" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> .<span class="dv">25</span><span class="sc">*</span>x1<span class="fl">.2</span> <span class="sc">-</span> .<span class="dv">25</span><span class="sc">*</span>x2<span class="fl">.2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n2)</span>
-<span id="cb836-7"><a href="stochastic-gradient-descent.html#cb836-7" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">=</span> <span class="fu">rbind</span>(X, <span class="fu">cbind</span>(<span class="dv">1</span>, x1<span class="fl">.2</span>, x2<span class="fl">.2</span>))</span>
-<span id="cb836-8"><a href="stochastic-gradient-descent.html#cb836-8" aria-hidden="true" tabindex="-1"></a>coef2 <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y2 <span class="sc">~</span> x1<span class="fl">.2</span> <span class="sc">+</span> x2<span class="fl">.2</span>))</span>
-<span id="cb836-9"><a href="stochastic-gradient-descent.html#cb836-9" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">c</span>(y, y2)</span>
-<span id="cb836-10"><a href="stochastic-gradient-descent.html#cb836-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb836-11"><a href="stochastic-gradient-descent.html#cb836-11" aria-hidden="true" tabindex="-1"></a>n3    <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb836-12"><a href="stochastic-gradient-descent.html#cb836-12" aria-hidden="true" tabindex="-1"></a>x1<span class="fl">.3</span>  <span class="ot">=</span> <span class="fu">rnorm</span>(n3)</span>
-<span id="cb836-13"><a href="stochastic-gradient-descent.html#cb836-13" aria-hidden="true" tabindex="-1"></a>x2<span class="fl">.3</span>  <span class="ot">=</span> <span class="fu">rnorm</span>(n3)</span>
-<span id="cb836-14"><a href="stochastic-gradient-descent.html#cb836-14" aria-hidden="true" tabindex="-1"></a>y3    <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> .<span class="dv">25</span><span class="sc">*</span>x1<span class="fl">.3</span> <span class="sc">+</span> .<span class="dv">25</span><span class="sc">*</span>x2<span class="fl">.3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n3)</span>
-<span id="cb836-15"><a href="stochastic-gradient-descent.html#cb836-15" aria-hidden="true" tabindex="-1"></a>coef3 <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y3 <span class="sc">~</span> x1<span class="fl">.3</span> <span class="sc">+</span> x2<span class="fl">.3</span>))</span>
-<span id="cb836-16"><a href="stochastic-gradient-descent.html#cb836-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb836-17"><a href="stochastic-gradient-descent.html#cb836-17" aria-hidden="true" tabindex="-1"></a>X3 <span class="ot">=</span> <span class="fu">rbind</span>(X2, <span class="fu">cbind</span>(<span class="dv">1</span>, x1<span class="fl">.3</span>, x2<span class="fl">.3</span>))</span>
-<span id="cb836-18"><a href="stochastic-gradient-descent.html#cb836-18" aria-hidden="true" tabindex="-1"></a>y3 <span class="ot">=</span> <span class="fu">c</span>(y2, y3)</span></code></pre></div>
+<div class="sourceCode" id="cb841"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb841-1"><a href="stochastic-gradient-descent.html#cb841-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb841-2"><a href="stochastic-gradient-descent.html#cb841-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb841-3"><a href="stochastic-gradient-descent.html#cb841-3" aria-hidden="true" tabindex="-1"></a>n2   <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb841-4"><a href="stochastic-gradient-descent.html#cb841-4" aria-hidden="true" tabindex="-1"></a>x1<span class="fl">.2</span> <span class="ot">=</span> <span class="fu">rnorm</span>(n2)</span>
+<span id="cb841-5"><a href="stochastic-gradient-descent.html#cb841-5" aria-hidden="true" tabindex="-1"></a>x2<span class="fl">.2</span> <span class="ot">=</span> <span class="fu">rnorm</span>(n2)</span>
+<span id="cb841-6"><a href="stochastic-gradient-descent.html#cb841-6" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> .<span class="dv">25</span><span class="sc">*</span>x1<span class="fl">.2</span> <span class="sc">-</span> .<span class="dv">25</span><span class="sc">*</span>x2<span class="fl">.2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n2)</span>
+<span id="cb841-7"><a href="stochastic-gradient-descent.html#cb841-7" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">=</span> <span class="fu">rbind</span>(X, <span class="fu">cbind</span>(<span class="dv">1</span>, x1<span class="fl">.2</span>, x2<span class="fl">.2</span>))</span>
+<span id="cb841-8"><a href="stochastic-gradient-descent.html#cb841-8" aria-hidden="true" tabindex="-1"></a>coef2 <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y2 <span class="sc">~</span> x1<span class="fl">.2</span> <span class="sc">+</span> x2<span class="fl">.2</span>))</span>
+<span id="cb841-9"><a href="stochastic-gradient-descent.html#cb841-9" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">=</span> <span class="fu">c</span>(y, y2)</span>
+<span id="cb841-10"><a href="stochastic-gradient-descent.html#cb841-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb841-11"><a href="stochastic-gradient-descent.html#cb841-11" aria-hidden="true" tabindex="-1"></a>n3    <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb841-12"><a href="stochastic-gradient-descent.html#cb841-12" aria-hidden="true" tabindex="-1"></a>x1<span class="fl">.3</span>  <span class="ot">=</span> <span class="fu">rnorm</span>(n3)</span>
+<span id="cb841-13"><a href="stochastic-gradient-descent.html#cb841-13" aria-hidden="true" tabindex="-1"></a>x2<span class="fl">.3</span>  <span class="ot">=</span> <span class="fu">rnorm</span>(n3)</span>
+<span id="cb841-14"><a href="stochastic-gradient-descent.html#cb841-14" aria-hidden="true" tabindex="-1"></a>y3    <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> .<span class="dv">25</span><span class="sc">*</span>x1<span class="fl">.3</span> <span class="sc">+</span> .<span class="dv">25</span><span class="sc">*</span>x2<span class="fl">.3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n3)</span>
+<span id="cb841-15"><a href="stochastic-gradient-descent.html#cb841-15" aria-hidden="true" tabindex="-1"></a>coef3 <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y3 <span class="sc">~</span> x1<span class="fl">.3</span> <span class="sc">+</span> x2<span class="fl">.3</span>))</span>
+<span id="cb841-16"><a href="stochastic-gradient-descent.html#cb841-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb841-17"><a href="stochastic-gradient-descent.html#cb841-17" aria-hidden="true" tabindex="-1"></a>X3 <span class="ot">=</span> <span class="fu">rbind</span>(X2, <span class="fu">cbind</span>(<span class="dv">1</span>, x1<span class="fl">.3</span>, x2<span class="fl">.3</span>))</span>
+<span id="cb841-18"><a href="stochastic-gradient-descent.html#cb841-18" aria-hidden="true" tabindex="-1"></a>y3 <span class="ot">=</span> <span class="fu">c</span>(y2, y3)</span></code></pre></div>
 <div id="estimation-49" class="section level3">
 <h3>Estimation</h3>
 <p>We’ll use the same function as before.</p>
-<div class="sourceCode" id="cb837"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb837-1"><a href="stochastic-gradient-descent.html#cb837-1" aria-hidden="true" tabindex="-1"></a>fit_sgd2 <span class="ot">=</span> <span class="fu">sgd</span>(</span>
-<span id="cb837-2"><a href="stochastic-gradient-descent.html#cb837-2" aria-hidden="true" tabindex="-1"></a>  init,</span>
-<span id="cb837-3"><a href="stochastic-gradient-descent.html#cb837-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X3,</span>
-<span id="cb837-4"><a href="stochastic-gradient-descent.html#cb837-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y3,</span>
-<span id="cb837-5"><a href="stochastic-gradient-descent.html#cb837-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize    =</span> <span class="dv">1</span>,</span>
-<span id="cb837-6"><a href="stochastic-gradient-descent.html#cb837-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsizeTau =</span> <span class="dv">0</span>,</span>
-<span id="cb837-7"><a href="stochastic-gradient-descent.html#cb837-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">average =</span> <span class="cn">FALSE</span></span>
-<span id="cb837-8"><a href="stochastic-gradient-descent.html#cb837-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb837-9"><a href="stochastic-gradient-descent.html#cb837-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb837-10"><a href="stochastic-gradient-descent.html#cb837-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit_sgd2)</span></code></pre></div>
+<div class="sourceCode" id="cb842"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb842-1"><a href="stochastic-gradient-descent.html#cb842-1" aria-hidden="true" tabindex="-1"></a>fit_sgd2 <span class="ot">=</span> <span class="fu">sgd</span>(</span>
+<span id="cb842-2"><a href="stochastic-gradient-descent.html#cb842-2" aria-hidden="true" tabindex="-1"></a>  init,</span>
+<span id="cb842-3"><a href="stochastic-gradient-descent.html#cb842-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X3,</span>
+<span id="cb842-4"><a href="stochastic-gradient-descent.html#cb842-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y3,</span>
+<span id="cb842-5"><a href="stochastic-gradient-descent.html#cb842-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize    =</span> <span class="dv">1</span>,</span>
+<span id="cb842-6"><a href="stochastic-gradient-descent.html#cb842-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsizeTau =</span> <span class="dv">0</span>,</span>
+<span id="cb842-7"><a href="stochastic-gradient-descent.html#cb842-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">average =</span> <span class="cn">FALSE</span></span>
+<span id="cb842-8"><a href="stochastic-gradient-descent.html#cb842-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb842-9"><a href="stochastic-gradient-descent.html#cb842-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb842-10"><a href="stochastic-gradient-descent.html#cb842-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit_sgd2)</span></code></pre></div>
 <pre><code>List of 5
  $ par   : num [1:3, 1] 0.821 -0.223 0.211
   ..- attr(*, &quot;dimnames&quot;)=List of 2

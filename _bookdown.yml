@@ -30,7 +30,7 @@ rmd_files: [
   quantile-regression.Rmd,
   cubic-spline.Rmd,
   gaussian-process.Rmd,
-  neural-net.Rmd,
+  neural-network.Rmd,
   elm.Rmd,
   rkhs.Rmd,
   cfa.Rmd,

@@ -390,26 +390,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="gaussian-process.html"><a href="gaussian-process.html#source-19"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html"><i class="fa fa-check"></i>Neural Net</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i>Neural Network</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-1-1"><i class="fa fa-check"></i>Example 1</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r"><i class="fa fa-check"></i>R</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-2-1"><i class="fa fa-check"></i>Example 2</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-1"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-1"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-1"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-1"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-21"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#example-3"><i class="fa fa-check"></i>Example 3</a>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#example-3"><i class="fa fa-check"></i>Example 3</a>
 <ul>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#python-2"><i class="fa fa-check"></i>Python</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#r-2"><i class="fa fa-check"></i>R</a></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#python-2"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#r-2"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#comparison-22"><i class="fa fa-check"></i>Comparison</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="neural-net.html"><a href="neural-net.html#source-20"><i class="fa fa-check"></i>Source</a></li>
+<li class="chapter" data-level="" data-path="neural-network.html"><a href="neural-network.html#source-20"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="elm.html"><a href="elm.html"><i class="fa fa-check"></i>Extreme Learning Machine</a>
 <ul>
@@ -628,7 +628,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#comparison-41"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="newton-irls.html"><a href="newton-irls.html#source-41"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder Mead</a>
+<li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html"><i class="fa fa-check"></i>Nelder-Mead</a>
 <ul>
 <li class="chapter" data-level="" data-path="nelder-mead.html"><a href="nelder-mead.html#functions-11"><i class="fa fa-check"></i>Functions</a>
 <ul>
@@ -799,136 +799,136 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="data-setup-33" class="section level2">
 <h2>Data Setup</h2>
 <p>We can simulate some data as a starting point, in this case, basic tabular data used in the standard regression problem. Here, I explicitly note the intercept, as it is added to the model matrix within the <span class="func" style="">vb_reg</span> function.</p>
-<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb591-1"><a href="bayesian-variational.html#cb591-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb591-2"><a href="bayesian-variational.html#cb591-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-3"><a href="bayesian-variational.html#cb591-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb591-4"><a href="bayesian-variational.html#cb591-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-5"><a href="bayesian-variational.html#cb591-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">100</span></span>
-<span id="cb591-6"><a href="bayesian-variational.html#cb591-6" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb591-7"><a href="bayesian-variational.html#cb591-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>)</span>
-<span id="cb591-8"><a href="bayesian-variational.html#cb591-8" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb591-9"><a href="bayesian-variational.html#cb591-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-10"><a href="bayesian-variational.html#cb591-10" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(n))                         <span class="co"># predictors</span></span>
-<span id="cb591-11"><a href="bayesian-variational.html#cb591-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&#39;X&#39;</span>, <span class="dv">1</span><span class="sc">:</span>d)</span>
-<span id="cb591-12"><a href="bayesian-variational.html#cb591-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-13"><a href="bayesian-variational.html#cb591-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X) <span class="sc">%*%</span> coefs <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> sigma)   <span class="co"># target</span></span>
-<span id="cb591-14"><a href="bayesian-variational.html#cb591-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-15"><a href="bayesian-variational.html#cb591-15" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(X, y)</span></code></pre></div>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb596-1"><a href="bayesian-variational.html#cb596-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb596-2"><a href="bayesian-variational.html#cb596-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb596-3"><a href="bayesian-variational.html#cb596-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb596-4"><a href="bayesian-variational.html#cb596-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb596-5"><a href="bayesian-variational.html#cb596-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb596-6"><a href="bayesian-variational.html#cb596-6" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb596-7"><a href="bayesian-variational.html#cb596-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>)</span>
+<span id="cb596-8"><a href="bayesian-variational.html#cb596-8" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb596-9"><a href="bayesian-variational.html#cb596-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb596-10"><a href="bayesian-variational.html#cb596-10" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(n))                         <span class="co"># predictors</span></span>
+<span id="cb596-11"><a href="bayesian-variational.html#cb596-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&#39;X&#39;</span>, <span class="dv">1</span><span class="sc">:</span>d)</span>
+<span id="cb596-12"><a href="bayesian-variational.html#cb596-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb596-13"><a href="bayesian-variational.html#cb596-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X) <span class="sc">%*%</span> coefs <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> sigma)   <span class="co"># target</span></span>
+<span id="cb596-14"><a href="bayesian-variational.html#cb596-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb596-15"><a href="bayesian-variational.html#cb596-15" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(X, y)</span></code></pre></div>
 <p>We can also look at the higher dimension case as done in Drugowitsch section 2.6.2.</p>
-<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="bayesian-variational.html#cb592-1" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">=</span> <span class="dv">150</span></span>
-<span id="cb592-2"><a href="bayesian-variational.html#cb592-2" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">=</span> <span class="dv">50</span></span>
-<span id="cb592-3"><a href="bayesian-variational.html#cb592-3" aria-hidden="true" tabindex="-1"></a>d     <span class="ot">=</span> <span class="dv">100</span></span>
-<span id="cb592-4"><a href="bayesian-variational.html#cb592-4" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">rnorm</span>(d <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb592-5"><a href="bayesian-variational.html#cb592-5" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb592-6"><a href="bayesian-variational.html#cb592-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb592-7"><a href="bayesian-variational.html#cb592-7" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(n)))</span>
-<span id="cb592-8"><a href="bayesian-variational.html#cb592-8" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> X_train <span class="sc">%*%</span> coefs <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> sigma)</span>
-<span id="cb592-9"><a href="bayesian-variational.html#cb592-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb592-10"><a href="bayesian-variational.html#cb592-10" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(ntest)))</span>
-<span id="cb592-11"><a href="bayesian-variational.html#cb592-11" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">=</span> X_test <span class="sc">%*%</span> coefs <span class="sc">+</span> <span class="fu">rnorm</span>(ntest, <span class="at">sd =</span> sigma)</span></code></pre></div>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="bayesian-variational.html#cb597-1" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">=</span> <span class="dv">150</span></span>
+<span id="cb597-2"><a href="bayesian-variational.html#cb597-2" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">=</span> <span class="dv">50</span></span>
+<span id="cb597-3"><a href="bayesian-variational.html#cb597-3" aria-hidden="true" tabindex="-1"></a>d     <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb597-4"><a href="bayesian-variational.html#cb597-4" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">rnorm</span>(d <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb597-5"><a href="bayesian-variational.html#cb597-5" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb597-6"><a href="bayesian-variational.html#cb597-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb597-7"><a href="bayesian-variational.html#cb597-7" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(n)))</span>
+<span id="cb597-8"><a href="bayesian-variational.html#cb597-8" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> X_train <span class="sc">%*%</span> coefs <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> sigma)</span>
+<span id="cb597-9"><a href="bayesian-variational.html#cb597-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb597-10"><a href="bayesian-variational.html#cb597-10" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(ntest)))</span>
+<span id="cb597-11"><a href="bayesian-variational.html#cb597-11" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">=</span> X_test <span class="sc">%*%</span> coefs <span class="sc">+</span> <span class="fu">rnorm</span>(ntest, <span class="at">sd =</span> sigma)</span></code></pre></div>
 </div>
 <div id="function-19" class="section level2">
 <h2>Function</h2>
 <p>First, the main function. For this demo, automatic relevance determination is an argument rather than a separate function.</p>
-<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb593-1"><a href="bayesian-variational.html#cb593-1" aria-hidden="true" tabindex="-1"></a>vb_reg <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb593-2"><a href="bayesian-variational.html#cb593-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb593-3"><a href="bayesian-variational.html#cb593-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb593-4"><a href="bayesian-variational.html#cb593-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">a0 =</span> <span class="fl">10e-2</span>,</span>
-<span id="cb593-5"><a href="bayesian-variational.html#cb593-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">b0 =</span> <span class="fl">10e-4</span>,</span>
-<span id="cb593-6"><a href="bayesian-variational.html#cb593-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">c0 =</span> <span class="fl">10e-2</span>,</span>
-<span id="cb593-7"><a href="bayesian-variational.html#cb593-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">d0 =</span> <span class="fl">10e-4</span>,</span>
-<span id="cb593-8"><a href="bayesian-variational.html#cb593-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
-<span id="cb593-9"><a href="bayesian-variational.html#cb593-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">1000</span>,</span>
-<span id="cb593-10"><a href="bayesian-variational.html#cb593-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ard =</span> F</span>
-<span id="cb593-11"><a href="bayesian-variational.html#cb593-11" aria-hidden="true" tabindex="-1"></a>  ) {</span>
-<span id="cb593-12"><a href="bayesian-variational.html#cb593-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: model matrix</span></span>
-<span id="cb593-13"><a href="bayesian-variational.html#cb593-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: the response</span></span>
-<span id="cb593-14"><a href="bayesian-variational.html#cb593-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># a0, b0 prior parameters for tau</span></span>
-<span id="cb593-15"><a href="bayesian-variational.html#cb593-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># c0, d0 hyperprior parameters for alpha</span></span>
-<span id="cb593-16"><a href="bayesian-variational.html#cb593-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tol: tolerance value to end iterations</span></span>
-<span id="cb593-17"><a href="bayesian-variational.html#cb593-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># maxiter: alternative way to end iterations</span></span>
-<span id="cb593-18"><a href="bayesian-variational.html#cb593-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb593-19"><a href="bayesian-variational.html#cb593-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb593-20"><a href="bayesian-variational.html#cb593-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initializations</span></span>
-<span id="cb593-21"><a href="bayesian-variational.html#cb593-21" aria-hidden="true" tabindex="-1"></a>  X  <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)</span>
-<span id="cb593-22"><a href="bayesian-variational.html#cb593-22" aria-hidden="true" tabindex="-1"></a>  D  <span class="ot">=</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb593-23"><a href="bayesian-variational.html#cb593-23" aria-hidden="true" tabindex="-1"></a>  N  <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb593-24"><a href="bayesian-variational.html#cb593-24" aria-hidden="true" tabindex="-1"></a>  w  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, D) </span>
-<span id="cb593-25"><a href="bayesian-variational.html#cb593-25" aria-hidden="true" tabindex="-1"></a>  XX <span class="ot">=</span> <span class="fu">crossprod</span>(X)</span>
-<span id="cb593-26"><a href="bayesian-variational.html#cb593-26" aria-hidden="true" tabindex="-1"></a>  Xy <span class="ot">=</span> <span class="fu">crossprod</span>(X,y)</span>
-<span id="cb593-27"><a href="bayesian-variational.html#cb593-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb593-28"><a href="bayesian-variational.html#cb593-28" aria-hidden="true" tabindex="-1"></a>  a_N <span class="ot">=</span> a0 <span class="sc">+</span> N<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb593-29"><a href="bayesian-variational.html#cb593-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb593-30"><a href="bayesian-variational.html#cb593-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>ard) {</span>
-<span id="cb593-31"><a href="bayesian-variational.html#cb593-31" aria-hidden="true" tabindex="-1"></a>    c_N <span class="ot">=</span> c0 <span class="sc">+</span> D<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb593-32"><a href="bayesian-variational.html#cb593-32" aria-hidden="true" tabindex="-1"></a>    E_alpha <span class="ot">=</span> c0<span class="sc">/</span>d0  </span>
-<span id="cb593-33"><a href="bayesian-variational.html#cb593-33" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb593-34"><a href="bayesian-variational.html#cb593-34" aria-hidden="true" tabindex="-1"></a>    c_N <span class="ot">=</span> c0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb593-35"><a href="bayesian-variational.html#cb593-35" aria-hidden="true" tabindex="-1"></a>    E_alpha <span class="ot">=</span> <span class="fu">rep</span>(c0<span class="sc">/</span>d0, D)</span>
-<span id="cb593-36"><a href="bayesian-variational.html#cb593-36" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb593-37"><a href="bayesian-variational.html#cb593-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb593-38"><a href="bayesian-variational.html#cb593-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb593-39"><a href="bayesian-variational.html#cb593-39" aria-hidden="true" tabindex="-1"></a>  tolCurrent <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb593-40"><a href="bayesian-variational.html#cb593-40" aria-hidden="true" tabindex="-1"></a>  iter <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb593-41"><a href="bayesian-variational.html#cb593-41" aria-hidden="true" tabindex="-1"></a>  LQ   <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb593-42"><a href="bayesian-variational.html#cb593-42" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb593-43"><a href="bayesian-variational.html#cb593-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(iter <span class="sc">&lt;</span> maxiter <span class="sc">&amp;&amp;</span> tolCurrent <span class="sc">&gt;</span> tol ){</span>
-<span id="cb593-44"><a href="bayesian-variational.html#cb593-44" aria-hidden="true" tabindex="-1"></a>    iter <span class="ot">=</span> iter <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb593-45"><a href="bayesian-variational.html#cb593-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># wold = w</span></span>
-<span id="cb593-46"><a href="bayesian-variational.html#cb593-46" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb593-47"><a href="bayesian-variational.html#cb593-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>ard){</span>
-<span id="cb593-48"><a href="bayesian-variational.html#cb593-48" aria-hidden="true" tabindex="-1"></a>      b_N  <span class="ot">=</span> b0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">crossprod</span>(y <span class="sc">-</span> X<span class="sc">%*%</span>w) <span class="sc">+</span> E_alpha <span class="sc">*</span> <span class="fu">crossprod</span>(w))</span>
-<span id="cb593-49"><a href="bayesian-variational.html#cb593-49" aria-hidden="true" tabindex="-1"></a>      VInv <span class="ot">=</span> <span class="fu">diag</span>(E_alpha, D) <span class="sc">+</span> XX</span>
-<span id="cb593-50"><a href="bayesian-variational.html#cb593-50" aria-hidden="true" tabindex="-1"></a>      V <span class="ot">=</span> <span class="fu">solve</span>(VInv)</span>
-<span id="cb593-51"><a href="bayesian-variational.html#cb593-51" aria-hidden="true" tabindex="-1"></a>      w <span class="ot">=</span> V <span class="sc">%*%</span> Xy</span>
-<span id="cb593-52"><a href="bayesian-variational.html#cb593-52" aria-hidden="true" tabindex="-1"></a>      E_wtau  <span class="ot">=</span> a_N<span class="sc">/</span>b_N <span class="sc">*</span> <span class="fu">crossprod</span>(w) <span class="sc">+</span> <span class="fu">sum</span>(<span class="fu">diag</span>(V))</span>
-<span id="cb593-53"><a href="bayesian-variational.html#cb593-53" aria-hidden="true" tabindex="-1"></a>      d_N     <span class="ot">=</span> d0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span><span class="sc">*</span>E_wtau</span>
-<span id="cb593-54"><a href="bayesian-variational.html#cb593-54" aria-hidden="true" tabindex="-1"></a>      E_alpha <span class="ot">=</span> <span class="fu">c</span>(c_N<span class="sc">/</span>d_N)</span>
-<span id="cb593-55"><a href="bayesian-variational.html#cb593-55" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb593-56"><a href="bayesian-variational.html#cb593-56" aria-hidden="true" tabindex="-1"></a>      b_N  <span class="ot">=</span> b0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">crossprod</span>(y <span class="sc">-</span> X<span class="sc">%*%</span>w) <span class="sc">+</span> <span class="fu">t</span>(w) <span class="sc">%*%</span> <span class="fu">diag</span>(E_alpha) <span class="sc">%*%</span> w)</span>
-<span id="cb593-57"><a href="bayesian-variational.html#cb593-57" aria-hidden="true" tabindex="-1"></a>      VInv <span class="ot">=</span> <span class="fu">diag</span>(E_alpha) <span class="sc">+</span> XX</span>
-<span id="cb593-58"><a href="bayesian-variational.html#cb593-58" aria-hidden="true" tabindex="-1"></a>      V <span class="ot">=</span> <span class="fu">solve</span>(VInv)</span>
-<span id="cb593-59"><a href="bayesian-variational.html#cb593-59" aria-hidden="true" tabindex="-1"></a>      w <span class="ot">=</span> V <span class="sc">%*%</span> Xy</span>
-<span id="cb593-60"><a href="bayesian-variational.html#cb593-60" aria-hidden="true" tabindex="-1"></a>      E_wtau  <span class="ot">=</span> a_N<span class="sc">/</span>b_N<span class="sc">*</span><span class="fu">crossprod</span>(w) <span class="sc">+</span> <span class="fu">sum</span>(<span class="fu">diag</span>(V))</span>
-<span id="cb593-61"><a href="bayesian-variational.html#cb593-61" aria-hidden="true" tabindex="-1"></a>      d_N     <span class="ot">=</span> d0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">c</span>(w)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">c</span>(a_N<span class="sc">/</span>b_N) <span class="sc">+</span> <span class="fu">diag</span>(V))</span>
-<span id="cb593-62"><a href="bayesian-variational.html#cb593-62" aria-hidden="true" tabindex="-1"></a>      E_alpha <span class="ot">=</span> <span class="fu">c</span>(c_N<span class="sc">/</span>d_N)</span>
-<span id="cb593-63"><a href="bayesian-variational.html#cb593-63" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb593-64"><a href="bayesian-variational.html#cb593-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb593-65"><a href="bayesian-variational.html#cb593-65" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb593-66"><a href="bayesian-variational.html#cb593-66" aria-hidden="true" tabindex="-1"></a>    LQ_old <span class="ot">=</span> LQ</span>
-<span id="cb593-67"><a href="bayesian-variational.html#cb593-67" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb593-68"><a href="bayesian-variational.html#cb593-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressWarnings</span>({</span>
-<span id="cb593-69"><a href="bayesian-variational.html#cb593-69" aria-hidden="true" tabindex="-1"></a>    LQ <span class="ot">=</span> <span class="sc">-</span>N<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> (a_N<span class="sc">/</span>b_N <span class="sc">*</span> <span class="fu">crossprod</span>(y<span class="sc">-</span> <span class="fu">crossprod</span>(<span class="fu">t</span>(X), w)) <span class="sc">+</span> <span class="fu">sum</span>(XX <span class="sc">*</span> V)) <span class="sc">+</span> </span>
-<span id="cb593-70"><a href="bayesian-variational.html#cb593-70" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">determinant</span>(V, <span class="at">log =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>modulus <span class="sc">+</span> D<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> <span class="fu">lgamma</span>(a0) <span class="sc">+</span> a0 <span class="sc">*</span> <span class="fu">log</span>(b0) <span class="sc">-</span> b0 <span class="sc">*</span> a_N <span class="sc">/</span> b_N <span class="sc">+</span> </span>
-<span id="cb593-71"><a href="bayesian-variational.html#cb593-71" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lgamma</span>(a_N) <span class="sc">-</span> a_N <span class="sc">*</span> <span class="fu">log</span>(b_N) <span class="sc">+</span> a_N <span class="sc">-</span> <span class="fu">lgamma</span>(c0) <span class="sc">+</span> c0<span class="sc">*</span><span class="fu">log</span>(d0) <span class="sc">+</span> </span>
-<span id="cb593-72"><a href="bayesian-variational.html#cb593-72" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lgamma</span>(c_N) <span class="sc">-</span> <span class="fu">sum</span>(c_N<span class="sc">*</span><span class="fu">log</span>(d_N))</span>
-<span id="cb593-73"><a href="bayesian-variational.html#cb593-73" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb593-74"><a href="bayesian-variational.html#cb593-74" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb593-75"><a href="bayesian-variational.html#cb593-75" aria-hidden="true" tabindex="-1"></a>    tolCurrent <span class="ot">=</span> <span class="fu">abs</span>(LQ <span class="sc">-</span> LQ_old)</span>
-<span id="cb593-76"><a href="bayesian-variational.html#cb593-76" aria-hidden="true" tabindex="-1"></a>    <span class="co"># alternate tolerance, comment out LQ_old up to this line if using</span></span>
-<span id="cb593-77"><a href="bayesian-variational.html#cb593-77" aria-hidden="true" tabindex="-1"></a>    <span class="co"># tolCurrent = sum(abs(w - wold))  </span></span>
-<span id="cb593-78"><a href="bayesian-variational.html#cb593-78" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb593-79"><a href="bayesian-variational.html#cb593-79" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb593-80"><a href="bayesian-variational.html#cb593-80" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb593-81"><a href="bayesian-variational.html#cb593-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef  =</span> w,</span>
-<span id="cb593-82"><a href="bayesian-variational.html#cb593-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">/</span> (E_wtau <span class="sc">/</span> <span class="fu">crossprod</span>(w))),</span>
-<span id="cb593-83"><a href="bayesian-variational.html#cb593-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">LQ    =</span> LQ,</span>
-<span id="cb593-84"><a href="bayesian-variational.html#cb593-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">iterations =</span> iter,</span>
-<span id="cb593-85"><a href="bayesian-variational.html#cb593-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">tol   =</span> tolCurrent</span>
-<span id="cb593-86"><a href="bayesian-variational.html#cb593-86" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb593-87"><a href="bayesian-variational.html#cb593-87" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb593-88"><a href="bayesian-variational.html#cb593-88" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (iter <span class="sc">&gt;=</span> maxiter)</span>
-<span id="cb593-89"><a href="bayesian-variational.html#cb593-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">append</span>(res, <span class="fu">warning</span>(<span class="st">&#39;Maximum iterations reached.&#39;</span>))</span>
-<span id="cb593-90"><a href="bayesian-variational.html#cb593-90" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
-<span id="cb593-91"><a href="bayesian-variational.html#cb593-91" aria-hidden="true" tabindex="-1"></a>    res</span>
-<span id="cb593-92"><a href="bayesian-variational.html#cb593-92" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb598-1"><a href="bayesian-variational.html#cb598-1" aria-hidden="true" tabindex="-1"></a>vb_reg <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb598-2"><a href="bayesian-variational.html#cb598-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb598-3"><a href="bayesian-variational.html#cb598-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb598-4"><a href="bayesian-variational.html#cb598-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">a0 =</span> <span class="fl">10e-2</span>,</span>
+<span id="cb598-5"><a href="bayesian-variational.html#cb598-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">b0 =</span> <span class="fl">10e-4</span>,</span>
+<span id="cb598-6"><a href="bayesian-variational.html#cb598-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">c0 =</span> <span class="fl">10e-2</span>,</span>
+<span id="cb598-7"><a href="bayesian-variational.html#cb598-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">d0 =</span> <span class="fl">10e-4</span>,</span>
+<span id="cb598-8"><a href="bayesian-variational.html#cb598-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
+<span id="cb598-9"><a href="bayesian-variational.html#cb598-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">1000</span>,</span>
+<span id="cb598-10"><a href="bayesian-variational.html#cb598-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ard =</span> F</span>
+<span id="cb598-11"><a href="bayesian-variational.html#cb598-11" aria-hidden="true" tabindex="-1"></a>  ) {</span>
+<span id="cb598-12"><a href="bayesian-variational.html#cb598-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: model matrix</span></span>
+<span id="cb598-13"><a href="bayesian-variational.html#cb598-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: the response</span></span>
+<span id="cb598-14"><a href="bayesian-variational.html#cb598-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># a0, b0 prior parameters for tau</span></span>
+<span id="cb598-15"><a href="bayesian-variational.html#cb598-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># c0, d0 hyperprior parameters for alpha</span></span>
+<span id="cb598-16"><a href="bayesian-variational.html#cb598-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tol: tolerance value to end iterations</span></span>
+<span id="cb598-17"><a href="bayesian-variational.html#cb598-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># maxiter: alternative way to end iterations</span></span>
+<span id="cb598-18"><a href="bayesian-variational.html#cb598-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb598-19"><a href="bayesian-variational.html#cb598-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb598-20"><a href="bayesian-variational.html#cb598-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initializations</span></span>
+<span id="cb598-21"><a href="bayesian-variational.html#cb598-21" aria-hidden="true" tabindex="-1"></a>  X  <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)</span>
+<span id="cb598-22"><a href="bayesian-variational.html#cb598-22" aria-hidden="true" tabindex="-1"></a>  D  <span class="ot">=</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb598-23"><a href="bayesian-variational.html#cb598-23" aria-hidden="true" tabindex="-1"></a>  N  <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb598-24"><a href="bayesian-variational.html#cb598-24" aria-hidden="true" tabindex="-1"></a>  w  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, D) </span>
+<span id="cb598-25"><a href="bayesian-variational.html#cb598-25" aria-hidden="true" tabindex="-1"></a>  XX <span class="ot">=</span> <span class="fu">crossprod</span>(X)</span>
+<span id="cb598-26"><a href="bayesian-variational.html#cb598-26" aria-hidden="true" tabindex="-1"></a>  Xy <span class="ot">=</span> <span class="fu">crossprod</span>(X,y)</span>
+<span id="cb598-27"><a href="bayesian-variational.html#cb598-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb598-28"><a href="bayesian-variational.html#cb598-28" aria-hidden="true" tabindex="-1"></a>  a_N <span class="ot">=</span> a0 <span class="sc">+</span> N<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb598-29"><a href="bayesian-variational.html#cb598-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb598-30"><a href="bayesian-variational.html#cb598-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>ard) {</span>
+<span id="cb598-31"><a href="bayesian-variational.html#cb598-31" aria-hidden="true" tabindex="-1"></a>    c_N <span class="ot">=</span> c0 <span class="sc">+</span> D<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb598-32"><a href="bayesian-variational.html#cb598-32" aria-hidden="true" tabindex="-1"></a>    E_alpha <span class="ot">=</span> c0<span class="sc">/</span>d0  </span>
+<span id="cb598-33"><a href="bayesian-variational.html#cb598-33" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb598-34"><a href="bayesian-variational.html#cb598-34" aria-hidden="true" tabindex="-1"></a>    c_N <span class="ot">=</span> c0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb598-35"><a href="bayesian-variational.html#cb598-35" aria-hidden="true" tabindex="-1"></a>    E_alpha <span class="ot">=</span> <span class="fu">rep</span>(c0<span class="sc">/</span>d0, D)</span>
+<span id="cb598-36"><a href="bayesian-variational.html#cb598-36" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb598-37"><a href="bayesian-variational.html#cb598-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb598-38"><a href="bayesian-variational.html#cb598-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb598-39"><a href="bayesian-variational.html#cb598-39" aria-hidden="true" tabindex="-1"></a>  tolCurrent <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb598-40"><a href="bayesian-variational.html#cb598-40" aria-hidden="true" tabindex="-1"></a>  iter <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb598-41"><a href="bayesian-variational.html#cb598-41" aria-hidden="true" tabindex="-1"></a>  LQ   <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb598-42"><a href="bayesian-variational.html#cb598-42" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb598-43"><a href="bayesian-variational.html#cb598-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(iter <span class="sc">&lt;</span> maxiter <span class="sc">&amp;&amp;</span> tolCurrent <span class="sc">&gt;</span> tol ){</span>
+<span id="cb598-44"><a href="bayesian-variational.html#cb598-44" aria-hidden="true" tabindex="-1"></a>    iter <span class="ot">=</span> iter <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb598-45"><a href="bayesian-variational.html#cb598-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># wold = w</span></span>
+<span id="cb598-46"><a href="bayesian-variational.html#cb598-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb598-47"><a href="bayesian-variational.html#cb598-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>ard){</span>
+<span id="cb598-48"><a href="bayesian-variational.html#cb598-48" aria-hidden="true" tabindex="-1"></a>      b_N  <span class="ot">=</span> b0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">crossprod</span>(y <span class="sc">-</span> X<span class="sc">%*%</span>w) <span class="sc">+</span> E_alpha <span class="sc">*</span> <span class="fu">crossprod</span>(w))</span>
+<span id="cb598-49"><a href="bayesian-variational.html#cb598-49" aria-hidden="true" tabindex="-1"></a>      VInv <span class="ot">=</span> <span class="fu">diag</span>(E_alpha, D) <span class="sc">+</span> XX</span>
+<span id="cb598-50"><a href="bayesian-variational.html#cb598-50" aria-hidden="true" tabindex="-1"></a>      V <span class="ot">=</span> <span class="fu">solve</span>(VInv)</span>
+<span id="cb598-51"><a href="bayesian-variational.html#cb598-51" aria-hidden="true" tabindex="-1"></a>      w <span class="ot">=</span> V <span class="sc">%*%</span> Xy</span>
+<span id="cb598-52"><a href="bayesian-variational.html#cb598-52" aria-hidden="true" tabindex="-1"></a>      E_wtau  <span class="ot">=</span> a_N<span class="sc">/</span>b_N <span class="sc">*</span> <span class="fu">crossprod</span>(w) <span class="sc">+</span> <span class="fu">sum</span>(<span class="fu">diag</span>(V))</span>
+<span id="cb598-53"><a href="bayesian-variational.html#cb598-53" aria-hidden="true" tabindex="-1"></a>      d_N     <span class="ot">=</span> d0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span><span class="sc">*</span>E_wtau</span>
+<span id="cb598-54"><a href="bayesian-variational.html#cb598-54" aria-hidden="true" tabindex="-1"></a>      E_alpha <span class="ot">=</span> <span class="fu">c</span>(c_N<span class="sc">/</span>d_N)</span>
+<span id="cb598-55"><a href="bayesian-variational.html#cb598-55" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb598-56"><a href="bayesian-variational.html#cb598-56" aria-hidden="true" tabindex="-1"></a>      b_N  <span class="ot">=</span> b0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">crossprod</span>(y <span class="sc">-</span> X<span class="sc">%*%</span>w) <span class="sc">+</span> <span class="fu">t</span>(w) <span class="sc">%*%</span> <span class="fu">diag</span>(E_alpha) <span class="sc">%*%</span> w)</span>
+<span id="cb598-57"><a href="bayesian-variational.html#cb598-57" aria-hidden="true" tabindex="-1"></a>      VInv <span class="ot">=</span> <span class="fu">diag</span>(E_alpha) <span class="sc">+</span> XX</span>
+<span id="cb598-58"><a href="bayesian-variational.html#cb598-58" aria-hidden="true" tabindex="-1"></a>      V <span class="ot">=</span> <span class="fu">solve</span>(VInv)</span>
+<span id="cb598-59"><a href="bayesian-variational.html#cb598-59" aria-hidden="true" tabindex="-1"></a>      w <span class="ot">=</span> V <span class="sc">%*%</span> Xy</span>
+<span id="cb598-60"><a href="bayesian-variational.html#cb598-60" aria-hidden="true" tabindex="-1"></a>      E_wtau  <span class="ot">=</span> a_N<span class="sc">/</span>b_N<span class="sc">*</span><span class="fu">crossprod</span>(w) <span class="sc">+</span> <span class="fu">sum</span>(<span class="fu">diag</span>(V))</span>
+<span id="cb598-61"><a href="bayesian-variational.html#cb598-61" aria-hidden="true" tabindex="-1"></a>      d_N     <span class="ot">=</span> d0 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">c</span>(w)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">c</span>(a_N<span class="sc">/</span>b_N) <span class="sc">+</span> <span class="fu">diag</span>(V))</span>
+<span id="cb598-62"><a href="bayesian-variational.html#cb598-62" aria-hidden="true" tabindex="-1"></a>      E_alpha <span class="ot">=</span> <span class="fu">c</span>(c_N<span class="sc">/</span>d_N)</span>
+<span id="cb598-63"><a href="bayesian-variational.html#cb598-63" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb598-64"><a href="bayesian-variational.html#cb598-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb598-65"><a href="bayesian-variational.html#cb598-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb598-66"><a href="bayesian-variational.html#cb598-66" aria-hidden="true" tabindex="-1"></a>    LQ_old <span class="ot">=</span> LQ</span>
+<span id="cb598-67"><a href="bayesian-variational.html#cb598-67" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb598-68"><a href="bayesian-variational.html#cb598-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressWarnings</span>({</span>
+<span id="cb598-69"><a href="bayesian-variational.html#cb598-69" aria-hidden="true" tabindex="-1"></a>    LQ <span class="ot">=</span> <span class="sc">-</span>N<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> (a_N<span class="sc">/</span>b_N <span class="sc">*</span> <span class="fu">crossprod</span>(y<span class="sc">-</span> <span class="fu">crossprod</span>(<span class="fu">t</span>(X), w)) <span class="sc">+</span> <span class="fu">sum</span>(XX <span class="sc">*</span> V)) <span class="sc">+</span> </span>
+<span id="cb598-70"><a href="bayesian-variational.html#cb598-70" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">determinant</span>(V, <span class="at">log =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>modulus <span class="sc">+</span> D<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> <span class="fu">lgamma</span>(a0) <span class="sc">+</span> a0 <span class="sc">*</span> <span class="fu">log</span>(b0) <span class="sc">-</span> b0 <span class="sc">*</span> a_N <span class="sc">/</span> b_N <span class="sc">+</span> </span>
+<span id="cb598-71"><a href="bayesian-variational.html#cb598-71" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lgamma</span>(a_N) <span class="sc">-</span> a_N <span class="sc">*</span> <span class="fu">log</span>(b_N) <span class="sc">+</span> a_N <span class="sc">-</span> <span class="fu">lgamma</span>(c0) <span class="sc">+</span> c0<span class="sc">*</span><span class="fu">log</span>(d0) <span class="sc">+</span> </span>
+<span id="cb598-72"><a href="bayesian-variational.html#cb598-72" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lgamma</span>(c_N) <span class="sc">-</span> <span class="fu">sum</span>(c_N<span class="sc">*</span><span class="fu">log</span>(d_N))</span>
+<span id="cb598-73"><a href="bayesian-variational.html#cb598-73" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb598-74"><a href="bayesian-variational.html#cb598-74" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb598-75"><a href="bayesian-variational.html#cb598-75" aria-hidden="true" tabindex="-1"></a>    tolCurrent <span class="ot">=</span> <span class="fu">abs</span>(LQ <span class="sc">-</span> LQ_old)</span>
+<span id="cb598-76"><a href="bayesian-variational.html#cb598-76" aria-hidden="true" tabindex="-1"></a>    <span class="co"># alternate tolerance, comment out LQ_old up to this line if using</span></span>
+<span id="cb598-77"><a href="bayesian-variational.html#cb598-77" aria-hidden="true" tabindex="-1"></a>    <span class="co"># tolCurrent = sum(abs(w - wold))  </span></span>
+<span id="cb598-78"><a href="bayesian-variational.html#cb598-78" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb598-79"><a href="bayesian-variational.html#cb598-79" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb598-80"><a href="bayesian-variational.html#cb598-80" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb598-81"><a href="bayesian-variational.html#cb598-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef  =</span> w,</span>
+<span id="cb598-82"><a href="bayesian-variational.html#cb598-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">/</span> (E_wtau <span class="sc">/</span> <span class="fu">crossprod</span>(w))),</span>
+<span id="cb598-83"><a href="bayesian-variational.html#cb598-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">LQ    =</span> LQ,</span>
+<span id="cb598-84"><a href="bayesian-variational.html#cb598-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">iterations =</span> iter,</span>
+<span id="cb598-85"><a href="bayesian-variational.html#cb598-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">tol   =</span> tolCurrent</span>
+<span id="cb598-86"><a href="bayesian-variational.html#cb598-86" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb598-87"><a href="bayesian-variational.html#cb598-87" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb598-88"><a href="bayesian-variational.html#cb598-88" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (iter <span class="sc">&gt;=</span> maxiter)</span>
+<span id="cb598-89"><a href="bayesian-variational.html#cb598-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">append</span>(res, <span class="fu">warning</span>(<span class="st">&#39;Maximum iterations reached.&#39;</span>))</span>
+<span id="cb598-90"><a href="bayesian-variational.html#cb598-90" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb598-91"><a href="bayesian-variational.html#cb598-91" aria-hidden="true" tabindex="-1"></a>    res</span>
+<span id="cb598-92"><a href="bayesian-variational.html#cb598-92" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-32" class="section level2">
 <h2>Estimation</h2>
 <p>First we can estimate the model using the smaller data.</p>
-<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="bayesian-variational.html#cb594-1" aria-hidden="true" tabindex="-1"></a>fit_small <span class="ot">=</span> <span class="fu">vb_reg</span>(X, y, <span class="at">tol =</span> <span class="fl">1e-8</span>, <span class="at">ard =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb594-2"><a href="bayesian-variational.html#cb594-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb594-3"><a href="bayesian-variational.html#cb594-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(fit_small)</span></code></pre></div>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="bayesian-variational.html#cb599-1" aria-hidden="true" tabindex="-1"></a>fit_small <span class="ot">=</span> <span class="fu">vb_reg</span>(X, y, <span class="at">tol =</span> <span class="fl">1e-8</span>, <span class="at">ard =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb599-2"><a href="bayesian-variational.html#cb599-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb599-3"><a href="bayesian-variational.html#cb599-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(fit_small)</span></code></pre></div>
 <pre><code>List of 5
  $ coef      : num [1:4, 1] 1.01 2.29 3.29 5.02
   ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -940,10 +940,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  $ iterations: num 8
  $ tol       : num [1, 1] 1.11e-10
   ..- attr(*, &quot;logarithm&quot;)= logi TRUE</code></pre>
-<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb596-1"><a href="bayesian-variational.html#cb596-1" aria-hidden="true" tabindex="-1"></a><span class="co"># With automatic relevance determination</span></span>
-<span id="cb596-2"><a href="bayesian-variational.html#cb596-2" aria-hidden="true" tabindex="-1"></a>fit_small_ard <span class="ot">=</span> <span class="fu">vb_reg</span>(X, y, <span class="at">tol =</span> <span class="fl">1e-8</span>, <span class="at">ard =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb596-3"><a href="bayesian-variational.html#cb596-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb596-4"><a href="bayesian-variational.html#cb596-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(fit_small_ard)</span></code></pre></div>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="bayesian-variational.html#cb601-1" aria-hidden="true" tabindex="-1"></a><span class="co"># With automatic relevance determination</span></span>
+<span id="cb601-2"><a href="bayesian-variational.html#cb601-2" aria-hidden="true" tabindex="-1"></a>fit_small_ard <span class="ot">=</span> <span class="fu">vb_reg</span>(X, y, <span class="at">tol =</span> <span class="fl">1e-8</span>, <span class="at">ard =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb601-3"><a href="bayesian-variational.html#cb601-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb601-4"><a href="bayesian-variational.html#cb601-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(fit_small_ard)</span></code></pre></div>
 <pre><code>List of 5
  $ coef      : num [1:4, 1] 0.955 2.269 3.283 5.047
   ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -955,24 +955,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  $ iterations: num 9
  $ tol       : num [1, 1] 7.46e-09
   ..- attr(*, &quot;logarithm&quot;)= logi TRUE</code></pre>
-<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb598-1"><a href="bayesian-variational.html#cb598-1" aria-hidden="true" tabindex="-1"></a>lm_mod <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> df)</span></code></pre></div>
+<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb603-1"><a href="bayesian-variational.html#cb603-1" aria-hidden="true" tabindex="-1"></a>lm_mod <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> df)</span></code></pre></div>
 <p>Now with the higher dimensional data. We fit using the training data and will estimate the error on training and test using the <span class="pack" style="">yardstick</span> package.</p>
-<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="bayesian-variational.html#cb599-1" aria-hidden="true" tabindex="-1"></a>fit_vb  <span class="ot">=</span> <span class="fu">vb_reg</span>(X_train[,<span class="sc">-</span><span class="dv">1</span>], y_train)</span>
-<span id="cb599-2"><a href="bayesian-variational.html#cb599-2" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">=</span> <span class="fu">glm.fit</span>(X_train, y_train)</span>
-<span id="cb599-3"><a href="bayesian-variational.html#cb599-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-4"><a href="bayesian-variational.html#cb599-4" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span>
-<span id="cb599-5"><a href="bayesian-variational.html#cb599-5" aria-hidden="true" tabindex="-1"></a>vb_pred_train <span class="ot">=</span> X_train <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
-<span id="cb599-6"><a href="bayesian-variational.html#cb599-6" aria-hidden="true" tabindex="-1"></a>vb_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
-<span id="cb599-7"><a href="bayesian-variational.html#cb599-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-8"><a href="bayesian-variational.html#cb599-8" aria-hidden="true" tabindex="-1"></a>glm_pred_train <span class="ot">=</span> <span class="fu">fitted</span>(fit_glm)</span>
-<span id="cb599-9"><a href="bayesian-variational.html#cb599-9" aria-hidden="true" tabindex="-1"></a>glm_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> <span class="fu">coef</span>(fit_glm)</span>
-<span id="cb599-10"><a href="bayesian-variational.html#cb599-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-11"><a href="bayesian-variational.html#cb599-11" aria-hidden="true" tabindex="-1"></a><span class="co"># error</span></span>
-<span id="cb599-12"><a href="bayesian-variational.html#cb599-12" aria-hidden="true" tabindex="-1"></a>vb_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], vb_pred_train[,<span class="dv">1</span>])</span>
-<span id="cb599-13"><a href="bayesian-variational.html#cb599-13" aria-hidden="true" tabindex="-1"></a>vb_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], vb_pred_test[,<span class="dv">1</span>])</span>
-<span id="cb599-14"><a href="bayesian-variational.html#cb599-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb599-15"><a href="bayesian-variational.html#cb599-15" aria-hidden="true" tabindex="-1"></a>glm_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], glm_pred_train)</span>
-<span id="cb599-16"><a href="bayesian-variational.html#cb599-16" aria-hidden="true" tabindex="-1"></a>glm_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], glm_pred_test[,<span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb604-1"><a href="bayesian-variational.html#cb604-1" aria-hidden="true" tabindex="-1"></a>fit_vb  <span class="ot">=</span> <span class="fu">vb_reg</span>(X_train[,<span class="sc">-</span><span class="dv">1</span>], y_train)</span>
+<span id="cb604-2"><a href="bayesian-variational.html#cb604-2" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">=</span> <span class="fu">glm.fit</span>(X_train, y_train)</span>
+<span id="cb604-3"><a href="bayesian-variational.html#cb604-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb604-4"><a href="bayesian-variational.html#cb604-4" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span>
+<span id="cb604-5"><a href="bayesian-variational.html#cb604-5" aria-hidden="true" tabindex="-1"></a>vb_pred_train <span class="ot">=</span> X_train <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
+<span id="cb604-6"><a href="bayesian-variational.html#cb604-6" aria-hidden="true" tabindex="-1"></a>vb_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
+<span id="cb604-7"><a href="bayesian-variational.html#cb604-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb604-8"><a href="bayesian-variational.html#cb604-8" aria-hidden="true" tabindex="-1"></a>glm_pred_train <span class="ot">=</span> <span class="fu">fitted</span>(fit_glm)</span>
+<span id="cb604-9"><a href="bayesian-variational.html#cb604-9" aria-hidden="true" tabindex="-1"></a>glm_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> <span class="fu">coef</span>(fit_glm)</span>
+<span id="cb604-10"><a href="bayesian-variational.html#cb604-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb604-11"><a href="bayesian-variational.html#cb604-11" aria-hidden="true" tabindex="-1"></a><span class="co"># error</span></span>
+<span id="cb604-12"><a href="bayesian-variational.html#cb604-12" aria-hidden="true" tabindex="-1"></a>vb_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], vb_pred_train[,<span class="dv">1</span>])</span>
+<span id="cb604-13"><a href="bayesian-variational.html#cb604-13" aria-hidden="true" tabindex="-1"></a>vb_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], vb_pred_test[,<span class="dv">1</span>])</span>
+<span id="cb604-14"><a href="bayesian-variational.html#cb604-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb604-15"><a href="bayesian-variational.html#cb604-15" aria-hidden="true" tabindex="-1"></a>glm_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], glm_pred_train)</span>
+<span id="cb604-16"><a href="bayesian-variational.html#cb604-16" aria-hidden="true" tabindex="-1"></a>glm_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], glm_pred_test[,<span class="dv">1</span>])</span></code></pre></div>
 </div>
 <div id="comparison-36" class="section level2">
 <h2>Comparison</h2>
@@ -1087,54 +1087,54 @@ test
 <h2>Supplemental Example</h2>
 <p>And now for a notably higher dimension case with irrelevant predictors as in Drugowitsch section 2.6.3. This is problematic for the GLM with having more covariates than data points (rank deficient), and as such it will throw a warning, as will the predict function. It’s really not even worth looking at but I have the code for consistency.</p>
 <p>This will take a while to estimate, and without ARD, even bumping up the iterations to 2000 it will still likely hit the max before reaching the default tolerance level. However, the results appear very similar to that of Drugowitsch Figure 2.</p>
-<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb600-1"><a href="bayesian-variational.html#cb600-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb600-2"><a href="bayesian-variational.html#cb600-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb600-3"><a href="bayesian-variational.html#cb600-3" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">=</span> <span class="dv">500</span></span>
-<span id="cb600-4"><a href="bayesian-variational.html#cb600-4" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">=</span> <span class="dv">50</span></span>
-<span id="cb600-5"><a href="bayesian-variational.html#cb600-5" aria-hidden="true" tabindex="-1"></a>d     <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb600-6"><a href="bayesian-variational.html#cb600-6" aria-hidden="true" tabindex="-1"></a>deff  <span class="ot">=</span> <span class="dv">100</span></span>
-<span id="cb600-7"><a href="bayesian-variational.html#cb600-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">rnorm</span>(deff <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb600-8"><a href="bayesian-variational.html#cb600-8" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb600-9"><a href="bayesian-variational.html#cb600-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb600-10"><a href="bayesian-variational.html#cb600-10" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(n)))</span>
-<span id="cb600-11"><a href="bayesian-variational.html#cb600-11" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> X_train <span class="sc">%*%</span> <span class="fu">c</span>(coefs, <span class="fu">rep</span>(<span class="dv">0</span>, d <span class="sc">-</span> deff)) <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> sigma)</span>
-<span id="cb600-12"><a href="bayesian-variational.html#cb600-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb600-13"><a href="bayesian-variational.html#cb600-13" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(ntest)))</span>
-<span id="cb600-14"><a href="bayesian-variational.html#cb600-14" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">=</span> X_test <span class="sc">%*%</span> <span class="fu">c</span>(coefs, <span class="fu">rep</span>(<span class="dv">0</span>, d <span class="sc">-</span> deff)) <span class="sc">+</span> <span class="fu">rnorm</span>(ntest, <span class="at">sd =</span> sigma)</span></code></pre></div>
-<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="bayesian-variational.html#cb601-1" aria-hidden="true" tabindex="-1"></a>fit_vb     <span class="ot">=</span> <span class="fu">vb_reg</span>(X_train[,<span class="sc">-</span><span class="dv">1</span>], y_train)</span>
-<span id="cb601-2"><a href="bayesian-variational.html#cb601-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb601-3"><a href="bayesian-variational.html#cb601-3" aria-hidden="true" tabindex="-1"></a>fit_vb_ard <span class="ot">=</span> <span class="fu">vb_reg</span>(X_train[,<span class="sc">-</span><span class="dv">1</span>], y_train, <span class="at">ard =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb601-4"><a href="bayesian-variational.html#cb601-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb601-5"><a href="bayesian-variational.html#cb601-5" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_glm = glm(y_train ~ ., data = data.frame(X_train[,-1]))</span></span></code></pre></div>
-<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb602-1"><a href="bayesian-variational.html#cb602-1" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span>
-<span id="cb602-2"><a href="bayesian-variational.html#cb602-2" aria-hidden="true" tabindex="-1"></a>vb_pred_train <span class="ot">=</span> X_train <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
-<span id="cb602-3"><a href="bayesian-variational.html#cb602-3" aria-hidden="true" tabindex="-1"></a>vb_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
-<span id="cb602-4"><a href="bayesian-variational.html#cb602-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb602-5"><a href="bayesian-variational.html#cb602-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb602-6"><a href="bayesian-variational.html#cb602-6" aria-hidden="true" tabindex="-1"></a>vb_ard_pred_train <span class="ot">=</span> X_train <span class="sc">%*%</span> fit_vb_ard[[<span class="st">&#39;coef&#39;</span>]]</span>
-<span id="cb602-7"><a href="bayesian-variational.html#cb602-7" aria-hidden="true" tabindex="-1"></a>vb_ard_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> fit_vb_ard[[<span class="st">&#39;coef&#39;</span>]]</span>
-<span id="cb602-8"><a href="bayesian-variational.html#cb602-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb602-9"><a href="bayesian-variational.html#cb602-9" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_pred_train = fitted(fit_glm)</span></span>
-<span id="cb602-10"><a href="bayesian-variational.html#cb602-10" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_pred_test  = X_test %*% coef(fit_glm)</span></span>
-<span id="cb602-11"><a href="bayesian-variational.html#cb602-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb602-12"><a href="bayesian-variational.html#cb602-12" aria-hidden="true" tabindex="-1"></a><span class="co"># error</span></span>
-<span id="cb602-13"><a href="bayesian-variational.html#cb602-13" aria-hidden="true" tabindex="-1"></a>vb_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], vb_pred_train[,<span class="dv">1</span>])</span>
-<span id="cb602-14"><a href="bayesian-variational.html#cb602-14" aria-hidden="true" tabindex="-1"></a>vb_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], vb_pred_test[,<span class="dv">1</span>])</span>
-<span id="cb602-15"><a href="bayesian-variational.html#cb602-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb602-16"><a href="bayesian-variational.html#cb602-16" aria-hidden="true" tabindex="-1"></a><span class="co"># error</span></span>
-<span id="cb602-17"><a href="bayesian-variational.html#cb602-17" aria-hidden="true" tabindex="-1"></a>vb_ard_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], vb_ard_pred_train[,<span class="dv">1</span>])</span>
-<span id="cb602-18"><a href="bayesian-variational.html#cb602-18" aria-hidden="true" tabindex="-1"></a>vb_ard_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], vb_ard_pred_test[,<span class="dv">1</span>])</span>
-<span id="cb602-19"><a href="bayesian-variational.html#cb602-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb602-20"><a href="bayesian-variational.html#cb602-20" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_train_error = yardstick::rmse_vec(y_train[,1], glm_pred_train)</span></span>
-<span id="cb602-21"><a href="bayesian-variational.html#cb602-21" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_test_error  = yardstick::rmse_vec(y_test[,1], glm_pred_test[,1])</span></span></code></pre></div>
-<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb603-1"><a href="bayesian-variational.html#cb603-1" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb603-2"><a href="bayesian-variational.html#cb603-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">vb =</span> <span class="fu">c</span>(vb_train_error, vb_test_error),</span>
-<span id="cb603-3"><a href="bayesian-variational.html#cb603-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">vbARD =</span> <span class="fu">c</span>(vb_ard_train_error, vb_ard_test_error)<span class="co">#,</span></span>
-<span id="cb603-4"><a href="bayesian-variational.html#cb603-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># glm = c(glm_train_error, glm_test_error)</span></span>
-<span id="cb603-5"><a href="bayesian-variational.html#cb603-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb603-6"><a href="bayesian-variational.html#cb603-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(mse_results) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;train&#39;</span>, <span class="st">&#39;test&#39;</span>)</span>
-<span id="cb603-7"><a href="bayesian-variational.html#cb603-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb603-8"><a href="bayesian-variational.html#cb603-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_df</span>(mse_results)</span></code></pre></div>
+<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb605-1"><a href="bayesian-variational.html#cb605-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb605-2"><a href="bayesian-variational.html#cb605-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb605-3"><a href="bayesian-variational.html#cb605-3" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb605-4"><a href="bayesian-variational.html#cb605-4" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">=</span> <span class="dv">50</span></span>
+<span id="cb605-5"><a href="bayesian-variational.html#cb605-5" aria-hidden="true" tabindex="-1"></a>d     <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb605-6"><a href="bayesian-variational.html#cb605-6" aria-hidden="true" tabindex="-1"></a>deff  <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb605-7"><a href="bayesian-variational.html#cb605-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">rnorm</span>(deff <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb605-8"><a href="bayesian-variational.html#cb605-8" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb605-9"><a href="bayesian-variational.html#cb605-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb605-10"><a href="bayesian-variational.html#cb605-10" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(n)))</span>
+<span id="cb605-11"><a href="bayesian-variational.html#cb605-11" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> X_train <span class="sc">%*%</span> <span class="fu">c</span>(coefs, <span class="fu">rep</span>(<span class="dv">0</span>, d <span class="sc">-</span> deff)) <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> sigma)</span>
+<span id="cb605-12"><a href="bayesian-variational.html#cb605-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb605-13"><a href="bayesian-variational.html#cb605-13" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">replicate</span>(d, <span class="fu">rnorm</span>(ntest)))</span>
+<span id="cb605-14"><a href="bayesian-variational.html#cb605-14" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">=</span> X_test <span class="sc">%*%</span> <span class="fu">c</span>(coefs, <span class="fu">rep</span>(<span class="dv">0</span>, d <span class="sc">-</span> deff)) <span class="sc">+</span> <span class="fu">rnorm</span>(ntest, <span class="at">sd =</span> sigma)</span></code></pre></div>
+<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb606-1"><a href="bayesian-variational.html#cb606-1" aria-hidden="true" tabindex="-1"></a>fit_vb     <span class="ot">=</span> <span class="fu">vb_reg</span>(X_train[,<span class="sc">-</span><span class="dv">1</span>], y_train)</span>
+<span id="cb606-2"><a href="bayesian-variational.html#cb606-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb606-3"><a href="bayesian-variational.html#cb606-3" aria-hidden="true" tabindex="-1"></a>fit_vb_ard <span class="ot">=</span> <span class="fu">vb_reg</span>(X_train[,<span class="sc">-</span><span class="dv">1</span>], y_train, <span class="at">ard =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb606-4"><a href="bayesian-variational.html#cb606-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb606-5"><a href="bayesian-variational.html#cb606-5" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_glm = glm(y_train ~ ., data = data.frame(X_train[,-1]))</span></span></code></pre></div>
+<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb607-1"><a href="bayesian-variational.html#cb607-1" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span>
+<span id="cb607-2"><a href="bayesian-variational.html#cb607-2" aria-hidden="true" tabindex="-1"></a>vb_pred_train <span class="ot">=</span> X_train <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
+<span id="cb607-3"><a href="bayesian-variational.html#cb607-3" aria-hidden="true" tabindex="-1"></a>vb_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> fit_vb[[<span class="st">&#39;coef&#39;</span>]]</span>
+<span id="cb607-4"><a href="bayesian-variational.html#cb607-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb607-5"><a href="bayesian-variational.html#cb607-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb607-6"><a href="bayesian-variational.html#cb607-6" aria-hidden="true" tabindex="-1"></a>vb_ard_pred_train <span class="ot">=</span> X_train <span class="sc">%*%</span> fit_vb_ard[[<span class="st">&#39;coef&#39;</span>]]</span>
+<span id="cb607-7"><a href="bayesian-variational.html#cb607-7" aria-hidden="true" tabindex="-1"></a>vb_ard_pred_test  <span class="ot">=</span> X_test <span class="sc">%*%</span> fit_vb_ard[[<span class="st">&#39;coef&#39;</span>]]</span>
+<span id="cb607-8"><a href="bayesian-variational.html#cb607-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb607-9"><a href="bayesian-variational.html#cb607-9" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_pred_train = fitted(fit_glm)</span></span>
+<span id="cb607-10"><a href="bayesian-variational.html#cb607-10" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_pred_test  = X_test %*% coef(fit_glm)</span></span>
+<span id="cb607-11"><a href="bayesian-variational.html#cb607-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb607-12"><a href="bayesian-variational.html#cb607-12" aria-hidden="true" tabindex="-1"></a><span class="co"># error</span></span>
+<span id="cb607-13"><a href="bayesian-variational.html#cb607-13" aria-hidden="true" tabindex="-1"></a>vb_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], vb_pred_train[,<span class="dv">1</span>])</span>
+<span id="cb607-14"><a href="bayesian-variational.html#cb607-14" aria-hidden="true" tabindex="-1"></a>vb_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], vb_pred_test[,<span class="dv">1</span>])</span>
+<span id="cb607-15"><a href="bayesian-variational.html#cb607-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb607-16"><a href="bayesian-variational.html#cb607-16" aria-hidden="true" tabindex="-1"></a><span class="co"># error</span></span>
+<span id="cb607-17"><a href="bayesian-variational.html#cb607-17" aria-hidden="true" tabindex="-1"></a>vb_ard_train_error <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_train[,<span class="dv">1</span>], vb_ard_pred_train[,<span class="dv">1</span>])</span>
+<span id="cb607-18"><a href="bayesian-variational.html#cb607-18" aria-hidden="true" tabindex="-1"></a>vb_ard_test_error  <span class="ot">=</span> yardstick<span class="sc">::</span><span class="fu">rmse_vec</span>(y_test[,<span class="dv">1</span>], vb_ard_pred_test[,<span class="dv">1</span>])</span>
+<span id="cb607-19"><a href="bayesian-variational.html#cb607-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb607-20"><a href="bayesian-variational.html#cb607-20" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_train_error = yardstick::rmse_vec(y_train[,1], glm_pred_train)</span></span>
+<span id="cb607-21"><a href="bayesian-variational.html#cb607-21" aria-hidden="true" tabindex="-1"></a><span class="co"># glm_test_error  = yardstick::rmse_vec(y_test[,1], glm_pred_test[,1])</span></span></code></pre></div>
+<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb608-1"><a href="bayesian-variational.html#cb608-1" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb608-2"><a href="bayesian-variational.html#cb608-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">vb =</span> <span class="fu">c</span>(vb_train_error, vb_test_error),</span>
+<span id="cb608-3"><a href="bayesian-variational.html#cb608-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">vbARD =</span> <span class="fu">c</span>(vb_ard_train_error, vb_ard_test_error)<span class="co">#,</span></span>
+<span id="cb608-4"><a href="bayesian-variational.html#cb608-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># glm = c(glm_train_error, glm_test_error)</span></span>
+<span id="cb608-5"><a href="bayesian-variational.html#cb608-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb608-6"><a href="bayesian-variational.html#cb608-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(mse_results) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;train&#39;</span>, <span class="st">&#39;test&#39;</span>)</span>
+<span id="cb608-7"><a href="bayesian-variational.html#cb608-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb608-8"><a href="bayesian-variational.html#cb608-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_df</span>(mse_results)</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
