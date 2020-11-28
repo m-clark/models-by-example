@@ -1,27 +1,5 @@
 # (PART\*)  Other {-}
 
-```{r chunk_setup_supplemental, include=FALSE, eval=TRUE}
-knitr::opts_chunk$set(
-  # code
-  echo      = TRUE,
-  eval      = FALSE,
-  message   = FALSE,
-  warning   = FALSE,
-  error     = FALSE,
-  comment   = NA,
-  R.options = list(width = 220),
-  # viz
-  dev.args  = list(bg = 'transparent'),
-  dev       = 'svglite',
-  fig.align = 'center',
-  out.width = '75%',
-  fig.asp   = .75,
-  # cache
-  cache.rebuild = FALSE,
-  cache         = TRUE
-)
-```
-
 # Supplemental
 
 **IN PROGRESS**
@@ -36,7 +14,7 @@ When doing some of these models and algorithms, I had some other code to work wi
 
 ##### Data Setup
 
-```{python py-linreg-setup, eval=FALSE}
+```{python py-linreg-setup, eval=F}
 import numpy as np
 import pandas as pd
 from scipy.stats import norm

@@ -1,0 +1,606 @@
+# Neural Net
+
+The following example follows comes from [Andrew Trask's old blog post](https://iamtrask.github.io/2015/07/12/basic-python-network/), which is nice because it tries to demonstrate a neural net in very few lines of code, much like this document does elsewhere.
+
+- https://iamtrask.github.io/2015/07/12/basic-python-network/
+- https://iamtrask.github.io/2015/07/27/python-network-part2/
+
+
+The data setup is very simple, and I keep the Python code almost identical outside of very slight cosmetic (mostly name/space) changes.  For more detail I suggest following the posts, but I'll add some here and there.  In addition, see the [logistic regression chapter][Logistic Regression] and [gradient descent chapter][Gradient Descent].
+
+
+
+## Example 1
+
+### Python
+
+From the blog:
+
+> 
+- **X** 	Input dataset matrix where each row is a training example
+- **y** 	Output dataset matrix where each row is a training example
+- **layer_0** 	First Layer of the Network, specified by the input data
+- **layer_1** 	Second Layer of the Network, otherwise known as the hidden layer
+- **synapse_0** 	First layer of weights, Synapse 0, connecting layer_0 to layer_1.
+- **\*** 	Elementwise multiplication, so two vectors of equal size are multiplying corresponding values 1-to-1 to generate a final vector of identical size.
+- **-** 	Elementwise subtraction, so two vectors of equal size are subtracting corresponding values 1-to-1 to generate a final vector of identical size.
+- **x.dot(y)** 	If x and y are vectors, this is a dot product. If both are matrices, it's a matrix-matrix multiplication. If only one is a matrix, then it's vector matrix multiplication.
+
+
+In this initial example, while it can serve as instructive starting point for backpropagation, we're not really using what most would call a neural net, but rather just an alternative way to estimate a [logistic regression][Logistic Regression]. `layer_1` in this case is just the linear predictor after transformation.
+
+Note that in this particular example however, that the first column is perfectly correlated with the target `y`, which would cause a problem if no regularization were applied.
+
+```{python nn-py-1}
+import numpy as np
+
+# sigmoid function
+def nonlin(x, deriv = False):
+    if(deriv == True):
+        return x*(1 - x)
+    return 1/(1 + np.exp(-x))
+    
+# input dataset
+X = np.array([ 
+  [0, 0, 1],
+  [0, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1] 
+])
+    
+# output dataset            
+y = np.array([[0, 0, 1, 1]]).T
+
+# seed random numbers to make calculation
+# deterministic (just a good practice)
+np.random.seed(1)
+
+# initialize weights randomly with mean 0 (or just use np.random.uniform)
+synapse_0 = 2*np.random.random((3, 1)) - 1
+
+for iter in np.arange(10000):
+
+    # forward propagation
+    layer_0 = X
+    layer_1 = nonlin(np.dot(layer_0, synapse_0))
+
+    # how much did we miss?
+    l1_error = y - layer_1
+
+    # multiply how much we missed by the 
+    # slope of the sigmoid at the values in layer_1
+    l1_delta = l1_error * nonlin(layer_1, True)
+
+    # update weights
+    synapse_0 += np.dot(layer_0.T, l1_delta)
+
+print("Output After Training:")
+print(np.append(layer_1, y, axis = 1))
+```
+
+
+### R
+
+For R I make a couple changes, but it should be easy to follow from the original Python, and I keep the original comments. 
+
+```{r nn-r-1, message =TRUE}
+X = matrix( 
+  c(0, 0, 1, 
+    0, 1, 1, 
+    1, 0, 1, 
+    1, 1, 1),
+  nrow  = 4,
+  ncol  = 3,
+  byrow = TRUE
+)
+
+# output dataset            
+y = c(0, 0, 1, 1)
+
+# seed random numbers to make calculation
+# deterministic (just a good practice)
+set.seed(1)
+
+# initialize weights randomly with mean 0
+synapse_0 = matrix(runif(3, min = -1, max = 1), 3, 1)
+
+# sigmoid function
+nonlin <- function(x, deriv = FALSE) {
+  if (deriv)
+    x * (1 - x)
+  else
+    plogis(x)
+}
+
+for (iter in 1:10000) {
+
+    # forward propagation
+    layer_0 = X
+    layer_1 = nonlin(layer_0 %*% synapse_0)
+
+    # how much did we miss?
+    l1_error = y - layer_1
+
+    # multiply how much we missed by the 
+    # slope of the sigmoid at the values in layer_1
+    l1_delta = l1_error * nonlin(layer_1, deriv = TRUE)
+
+    # update weights
+    synapse_0 = synapse_0 + crossprod(layer_0, l1_delta)
+}
+
+message("Output After Training: \n", 
+        paste0(capture.output(cbind(layer_1, y)), collapse = '\n'))
+```
+
+The key idea here is the update step. Using the derivative, we are getting the slope of the sigmoid function at the point of interest.  If a probability (`layer 1`) is close to zero or 1, this suggests the prediction 'confidence' is high, and the result is that there is less need for updating.  For the others, e.g. close to `x = 0`, the predictions will be relatively more updated, as the error will be greater.  The last step is to compute the weight updates for each weight for each observation, sum them, and update the weights accordingly.
+
+```{r nn-sigmoid-vis, echo=FALSE}
+library(tidyverse)
+
+d = tibble(x = runif(1000, -4, 4), y = plogis(x))
+pts = c(-1, 0, 2)
+pts_prob  = plogis(pts)
+pts_deriv = pts_prob * (1 - pts_prob)
+
+pts_prob
+pts
+
+tangent_ints = pts_prob - pts_deriv*pts
+
+x_minus = pts - .25
+x_plus  = pts + .25
+
+gdata = pmap_df(
+  list(x_minus, x_plus, tangent_ints, pts_deriv),
+  .f = function(x1, x2, s, t)
+    data.frame(
+      x1 = x1,
+      x2 = x2,
+      y1 = c(1, x1) %*% c(s, t),
+      y2 = c(1, x2) %*% c(s, t)
+    )
+)
+
+gdata = gdata %>%
+  mutate(point = factor(pts))
+
+d %>%
+  ggplot(aes(x, y)) +
+  geom_line(alpha = .25) +
+  geom_point(
+    aes(color = factor(x)),
+    data = data.frame(x = pts, y = pts_prob),
+    show.legend = FALSE
+  ) +
+  geom_segment(
+    aes(
+      x     = x1,
+      xend  = x2,
+      y     = y1,
+      yend  = y2,
+      color = point
+    ),
+    size = 1,
+    data = gdata,
+    show.legend = FALSE
+  ) +
+  labs(y = 'nonlin(x)') +
+  scico::scale_color_scico_d(begin = .25, end = .75)
+```
+
+
+
+## Example 2
+
+In the following example, we have similarly simple data, but technically a bit harder problem to estimate.  In this case, `y = 1` only if we apply the [XOR](https://en.wikipedia.org/wiki/Exclusive_or) function to columns 1 and 2.  This makes the relationship between inputs and output a nonlinear one.
+
+To account for the nonlinearity we will have two 'hidden' layers, the first of four 'nodes', and the second a single  node, which relates the transformed information to the target variable. In the hidden layer, we can think of each node as a linear combination of the input, followed by a nonlinear transformation (e.g. sigmoid).  The final predictions are a linear combination of the hidden layer, followed by another nonlinear transformation (sigmoid again).  The last transformation needs to put the result between 0 and 1, but you could try other transformations for the first hidden layer.
+
+```{r nn-graphical-vis, echo=FALSE}
+model = "
+digraph Factor  {
+  graph [rankdir=LR  bgcolor=transparent splines='line']
+  
+  node [fontname='Roboto' fontsize=10 fontcolor=gray50 shape=box width=.5 color='#ff5500'];
+  node [shape=square]
+  X_1, X_2, X_3, y
+  
+  node [shape=circle color=gray75]
+  l1_3, l1_4, l1_1, l1_2, l2  # because Diagrammer won't respect ordering
+  
+  edge [fontname='Roboto' fontsize=10 fontcolor=gray50 color='#00aaff80' arrowsize=.5];
+  X_1, X_2, X_3 ->  l1_1, l1_2, l1_3, l1_4
+  
+  l1_1, l1_2, l1_3, l1_4 -> l2
+  
+  l2 -> y
+}
+"
+
+DiagrammeR::grViz(model)
+```
+
+
+### Python
+
+For the following, I remove defining `layer_0`, as it is just the input matrix `X`.
+
+```{python nn-py-2,  eval = T}
+import numpy as np
+
+def nonlin(x, deriv = False):
+	if(deriv == True):
+	    return x*(1 - x)
+	return 1/(1 + np.exp(-x))
+
+X = np.array([
+  [0, 0, 1],
+  [0, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+])
+                
+y = np.array([
+  [0],
+  [1],
+  [1],
+  [0]
+])
+
+np.random.seed(1)
+
+# randomly initialize our weights with mean 0
+synapse_0 = 2*np.random.random((3, 4)) - 1
+synapse_1 = 2*np.random.random((4, 1)) - 1
+
+for j in np.arange(30000):
+
+	# Feed forward through layers 0, 1, and 2
+    layer_1 = nonlin(np.dot(X, synapse_0))
+    layer_2 = nonlin(np.dot(layer_1, synapse_1))
+
+    # how much did we miss the target value?
+    layer_2_error = y - layer_2
+    
+    if (j% 10000) == 0:
+        print("Error:" + str(np.mean(np.abs(layer_2_error))))
+        
+    # in what direction is the target value?
+    # were we really sure? if so, don't change too much.
+    layer_2_delta = layer_2_error*nonlin(layer_2,deriv=True)
+
+    # how much did each layer_1 value contribute to the layer_2 error (according to the weights)?
+    layer_1_error = layer_2_delta.dot(synapse_1.T)
+    
+    # in what direction is the target layer_1?
+    # were we really sure? if so, don't change too much.
+    layer_1_delta = layer_1_error * nonlin(layer_1,deriv=True)
+
+    synapse_1 += layer_1.T.dot(layer_2_delta)
+    synapse_0 += X.T.dot(layer_1_delta)
+
+
+np.round(layer_1, 3)
+np.round(np.append(layer_2, y, axis = 1), 3)
+np.round(synapse_0, 3)
+np.round(synapse_1, 3)
+```
+
+
+### R
+
+In general different weights can ultimately produce similar predictions, and combinations for a particular node are arbitrary (e.g. node 1 in one network might become node 3 on a separate run), so things are somewhat more difficult to compare.  However, what matters is the final prediction, and you should see basically the same result for R and Python.
+
+
+```{r nn-r-2, message=TRUE}
+X = matrix(
+  c(0, 0, 1,
+    0, 1, 1,
+    1, 0, 1,
+    1, 1, 1),
+  nrow = 4,
+  ncol = 3,
+  byrow = TRUE
+)
+
+y = matrix(as.integer(xor(X[,1], X[,2])), ncol = 1)  # make the relationship explicit
+
+set.seed(1)
+
+# or do randomly in same fashion
+synapse_0 = matrix(runif(12, -1, 1), 3, 4)
+synapse_1 = matrix(runif(12, -1, 1), 4, 1)
+
+synapse_0
+synapse_1
+
+for (j in 1:30000) {
+  layer_1 = plogis(X  %*% synapse_0)              # 4 x 4
+  layer_2 = plogis(layer_1 %*% synapse_1)         # 4 x 1
+  
+  # how much did we miss the target value?
+  layer_2_error = y - layer_2
+  
+  if ((j %% 10000) == 0) {
+    message(glue::glue("Error: {mean(abs(layer_2_error))}"))
+  }
+
+  # in what direction is the target value?
+  # were we really sure? if so, don't change too much.
+  layer_2_delta = (y - layer_2) * (layer_2 * (1 - layer_2))
+  
+  # how much did each l1 value contribute to the l2 error (according to the weights)?
+  l1_error = layer_2_delta %*% t(synapse_1)
+  
+  # in what direction is the target l1?
+  # were we really sure? if so, don't change too much.  
+  layer_1_delta = tcrossprod(layer_2_delta, synapse_1) * (layer_1 * (1 - layer_1))
+  
+  # update
+  synapse_1 = synapse_1 + crossprod(layer_1, layer_2_delta)
+  synapse_0 = synapse_0 + crossprod(X, layer_1_delta)
+}
+
+round(layer_1, 3)
+round(cbind(layer_2, y), 3)
+round(synapse_0, 3)
+round(synapse_1, 3)
+```
+
+
+### Comparison
+
+Let's compare our results to the <span class="pack" style = "">nnet</span> package in base R. Note that it will include intercepts (a.k.a. biases) for each node.
+
+```{r nn-compare-2}
+fit_nnet = nnet::nnet(X, y, size = 4, maxit = 30000)
+coef(fit_nnet)
+fitted(fit_nnet)
+```
+
+
+## Example 3
+
+The next example follows the code from the second post listed in the introduction. A couple of changes are seen here.  We have a notably larger hidden layer (size 32).  We also split the previous <span class="func" style = "">nonlin</span> function into two parts.  And finally, we add an `alpha` parameter, which is akin to the *learning rate* in [gradient descent][Gradient Descent].  It basically puts a control on the gradient so that we hopefully don't make too large a jump in our estimated weights on each update. However, we can show what will happen as a result of setting the parameter to small and large values.
+
+
+### Python
+
+As before, I make names more explicit, and other very minor updates to the original code.
+
+```{python nn-py-3}
+import numpy as np
+
+alphas = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+hidden_size = 32
+
+# compute sigmoid nonlinearity
+def sigmoid(x):
+    output = 1/(1 + np.exp(-x))
+    return output
+
+# convert output of sigmoid function to its derivative
+def sigmoid_output_to_derivative(output):
+    return output*(1 - output)
+    
+X = np.array([
+  [0, 0, 1],
+  [0, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+])
+  
+y = np.array([
+  [0],
+  [1],
+  [1],
+  [0]
+])
+
+for alpha in alphas:
+  print("\nTraining With Alpha:" + str(alpha))
+  np.random.seed(1)
+
+  # randomly initialize our weights with mean 0
+  synapse_0 = 2*np.random.random((3, hidden_size)) - 1
+  synapse_1 = 2*np.random.random((hidden_size, 1)) - 1
+
+  for j in np.arange(30000):
+
+      # Feed forward through layers input, 1, and 2
+      layer_1 = sigmoid(np.dot(X, synapse_0))
+      layer_2 = sigmoid(np.dot(layer_1, synapse_1))
+
+      # how much did we miss the target value?
+      layer_2_error = layer_2 - y
+
+      if (j% 10000) == 0:
+        print("Error after "+ str(j) +" iterations:" + 
+        str(np.mean(np.abs(layer_2_error))))
+
+      # in what direction is the target value?
+      # were we really sure? if so, don't change too much.
+      layer_2_delta = layer_2_error*sigmoid_output_to_derivative(layer_2)
+
+      # how much did each l1 value contribute to the l2 error (according to the weights)?
+      layer_1_error = layer_2_delta.dot(synapse_1.T)
+
+      # in what direction is the target l1?
+      # were we really sure? if so, don't change too much.
+      layer_1_delta = layer_1_error * sigmoid_output_to_derivative(layer_1)
+
+      synapse_1 -= alpha * (layer_1.T.dot(layer_2_delta))
+      synapse_0 -= alpha * (X.T.dot(layer_1_delta))
+
+```
+
+Since `alpha = 10` seems reasonable, let's inspect the results just for that.  Note that this value likely won't hold on another random run.
+
+
+```{python nn-py-3-best, echo=-1}
+import numpy as np
+alpha = 10
+
+# randomly initialize our weights with mean 0
+np.random.seed(1)
+
+synapse_0 = 2*np.random.random((3, hidden_size)) - 1
+synapse_1 = 2*np.random.random((hidden_size, 1)) - 1
+
+
+for j in np.arange(30000):
+
+    # Feed forward through layers input, 1, and 2
+    layer_1 = sigmoid(np.dot(X, synapse_0))
+    layer_2 = sigmoid(np.dot(layer_1, synapse_1))
+
+    # how much did we miss the target value?
+    layer_2_error = layer_2 - y
+    
+    # in what direction is the target value?
+    # were we really sure? if so, don't change too much.
+    layer_2_delta = layer_2_error*sigmoid_output_to_derivative(layer_2)
+
+    # how much did each l1 value contribute to the l2 error (according to the weights)?
+    layer_1_error = layer_2_delta.dot(synapse_1.T)
+
+    # in what direction is the target l1?
+    # were we really sure? if so, don't change too much.
+    layer_1_delta = layer_1_error * sigmoid_output_to_derivative(layer_1)
+
+    synapse_1 -= alpha * (layer_1.T.dot(layer_2_delta))
+    synapse_0 -= alpha * (X.T.dot(layer_1_delta))
+
+
+np.append(np.round(layer_2, 4), y, axis = 1)
+```
+
+
+### R
+
+The following has little to no modification.  You can change whether you show the messages or not to compare with the Python. I don't in this case.
+
+```{r nn-r-3, message=TRUE}
+# input dataset
+X = matrix(
+  c(0, 0, 1,
+    0, 1, 1,
+    1, 0, 1,
+    1, 1, 1),
+  nrow = 4,
+  ncol = 3,
+  byrow = TRUE
+)
+    
+# output dataset            
+y = matrix(c(0, 1, 1, 0), ncol = 1)
+
+alphas = c(0.001, 0.01, 0.1, 1, 10, 100, 1000)
+hidden_size = 32
+
+# compute sigmoid nonlinearity
+sigmoid = plogis # already part of base R, no function needed
+
+# convert output of sigmoid function to its derivative
+sigmoid_output_to_derivative <- function(output) {
+  output*(1 - output)
+}
+
+show_messages = FALSE
+
+for (alpha in alphas) {
+  
+  if(show_messages)
+    message(glue::glue("Training With Alpha: {alpha}"))
+  
+  set.seed(1)
+  
+  # randomly initialize our weights with mean 0
+  synapse_0 = matrix(runif(3 * hidden_size,-1, 1), 3, hidden_size)
+  synapse_1 = matrix(runif(hidden_size), hidden_size, 1)
+
+  for (j in 1:30000) {
+
+      # Feed forward through layers input, 1, and 2
+      layer_1 = sigmoid(X %*% synapse_0)
+      layer_2 = sigmoid(layer_1 %*% synapse_1)
+
+      # how much did we miss the target value?
+      layer_2_error = layer_2 - y
+      
+      if ((j %% 10000) == 0 & show_messages) {
+        message(glue::glue("Error after {j} iterations: {mean(abs(layer_2_error))}"))
+      }
+
+      # in what direction is the target value?
+      # were we really sure? if so, don't change too much.
+      layer_2_delta = layer_2_error * sigmoid_output_to_derivative(layer_2)
+
+      # how much did each l1 value contribute to the l2 error (according to the weights)?
+      layer_1_error = layer_2_delta %*% t(synapse_1)
+
+      # in what direction is the target l1?
+      # were we really sure? if so, don't change too much.
+      layer_1_delta = layer_1_error * sigmoid_output_to_derivative(layer_1)
+
+      synapse_1 = synapse_1 - alpha * crossprod(layer_1, layer_2_delta)
+      synapse_0 = synapse_0 - alpha * crossprod(X, layer_1_delta)
+  }
+}
+
+```
+
+
+Let's rerun at `alpha = 10`.
+
+```{r nn-r-3-best}
+alpha = 10
+
+set.seed(1)
+
+# randomly initialize our weights with mean 0
+synapse_0 = matrix(runif(3 * hidden_size, -1, 1), 3, hidden_size)
+synapse_1 = matrix(runif(hidden_size), hidden_size, 1)
+
+for (j in 1:30000) {
+
+    # Feed forward through layers input, 1, and 2
+    layer_1 = sigmoid(X %*% synapse_0)
+    layer_2 = sigmoid(layer_1 %*% synapse_1)
+
+    # how much did we miss the target value?
+    layer_2_error = layer_2 - y
+
+    # in what direction is the target value?
+    # were we really sure? if so, don't change too much.
+    layer_2_delta = layer_2_error * sigmoid_output_to_derivative(layer_2)
+
+    # how much did each l1 value contribute to the l2 error (according to the weights)?
+    layer_1_error = layer_2_delta %*% t(synapse_1)
+
+    # in what direction is the target l1?
+    # were we really sure? if so, don't change too much.
+    layer_1_delta = layer_1_error * sigmoid_output_to_derivative(layer_1)
+
+    synapse_1 = synapse_1 - alpha * crossprod(layer_1, layer_2_delta)
+    synapse_0 = synapse_0 - alpha * crossprod(X, layer_1_delta)
+}
+
+cbind(round(layer_2, 4), y)
+```
+
+
+### Comparison
+
+Again we can compare to <span class="pack" style = "">nnet</span>.
+
+```{r nn-compare-3}
+fit_nnet = nnet::nnet(X, y, size = 32, maxit = 30000)
+fitted(fit_nnet)
+```
+
+
+## Source
+
+This was never on the original repo but I may put it there eventually.

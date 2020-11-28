@@ -1,6 +1,6 @@
 # Extreme Learning Machine
 
-A very simple implementation of an extreme learning machine for regression. See <span class="pack" style = "">elmNN</span> and <span class="pack" style = "">ELMR</span> for some R package implementations. I add comparison to generalized additive models (elm/neural networks and GAMs are adaptive basis function models). 
+A very simple implementation of an extreme learning machine for regression, which can be seen as a quick way to estimate a 'good enough' neural net, one that can be nearly as performant but with a lot less computational overhead. See <span class="pack" style = "">elmNN</span> and <span class="pack" style = "">ELMR</span> for some R package implementations. I add comparison to generalized additive models (elm/neural networks and GAMs are adaptive basis function models). 
 
 
 - http://www.extreme-learning-machines.org
