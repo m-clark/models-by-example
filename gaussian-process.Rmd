@@ -1,4 +1,4 @@
-# Gausian Processes
+# Gaussian Processes
 
 ## Noise-Free Demonstration
 
