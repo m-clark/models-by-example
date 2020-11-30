@@ -1,4 +1,4 @@
-# Multinomial 
+# Multinomial Regression
 
 For more detail on these types of models, see [my document](https://m-clark.github.io/docs/logregmodels.html).  In general we can use
 multinomial models for multi-category target variables, or more generally,

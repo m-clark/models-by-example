@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Ordinal | Model Estimation by Example</title>
+  <title>Ordinal Regression | Model Estimation by Example</title>
   <meta name="description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Ordinal | Model Estimation by Example" />
+  <meta property="og:title" content="Ordinal Regression | Model Estimation by Example" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/models-by-example/" />
   <meta property="og:image" content="https://m-clark.github.io/models-by-example/img/title_plot.svg" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="m-clark/models-by-example/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Ordinal | Model Estimation by Example" />
+  <meta name="twitter:title" content="Ordinal Regression | Model Estimation by Example" />
   
   <meta name="twitter:description" content="This document provides ‘by-hand’ demonstrations of various models and algorithms. The goal is to take away some of the mystery by providing clean code examples that are easy to run and compare with other tools." />
   <meta name="twitter:image" content="https://m-clark.github.io/models-by-example/img/title_plot.svg" />
@@ -226,7 +226,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#source-7"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#censoring-with-an-upper-limit"><i class="fa fa-check"></i>Censoring with an Upper Limit</a>
 <ul>
@@ -307,7 +307,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#source-12"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial</a>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#standard-categorical-model"><i class="fa fa-check"></i>Standard (Categorical) Model</a>
 <ul>
@@ -321,7 +321,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#source-13"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal</a>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#data"><i class="fa fa-check"></i>Data</a></li>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#function-14"><i class="fa fa-check"></i>Function</a></li>
@@ -786,8 +786,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ordinal" class="section level1">
-<h1>Ordinal</h1>
+<div id="ordinal-regression" class="section level1">
+<h1>Ordinal Regression</h1>
 <p>The following demonstrates a standard cumulative link ordinal regression model
 via maximum likelihood. Default is with probit link function. Alternatively you
 can compare it with a logit link, which will result in values roughly

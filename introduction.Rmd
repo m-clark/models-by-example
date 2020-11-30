@@ -28,6 +28,15 @@ document is just a learning tool for those with some background in place, but
 who want to dive a little deeper.
 
 
+Note the following color coding used in this document:
+
+- <span class="emph">emphasis</span>
+- <span class="pack">package</span>
+- <span class="func">function</span>
+- <span class="objclass">object/class</span>
+- [link]() (with hover underline)
+
+
 Many examples require some initial data processing or visualization via <span class="pack" style = "">ggplot2</span>, so it's assumed the <span class="pack" style = "">tidyverse</span> set of packages is loaded for all demonstrations.
 
 While I'm happy to fix any glaring errors and broken links, this is pretty much a completed document for the time being, except on the off chance I add a demo on rare occasion, or perhaps non-R code. This code has accumulated over years, and I just wanted it in a nicer format, which has been accomplished.  Perhaps if others would like to add to it via pull requests, I would do so.

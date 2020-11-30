@@ -226,7 +226,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#comparison-5"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="marginal-structural.html"><a href="marginal-structural.html#source-7"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit</a>
+<li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html"><i class="fa fa-check"></i>Tobit Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="tobit.html"><a href="tobit.html#censoring-with-an-upper-limit"><i class="fa fa-check"></i>Censoring with an Upper Limit</a>
 <ul>
@@ -307,7 +307,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#comparison-15"><i class="fa fa-check"></i>Comparison</a></li>
 <li class="chapter" data-level="" data-path="naive-bayes.html"><a href="naive-bayes.html#source-12"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial</a>
+<li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html"><i class="fa fa-check"></i>Multinomial Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#standard-categorical-model"><i class="fa fa-check"></i>Standard (Categorical) Model</a>
 <ul>
@@ -321,7 +321,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="multinomial.html"><a href="multinomial.html#source-13"><i class="fa fa-check"></i>Source</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal</a>
+<li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html"><i class="fa fa-check"></i>Ordinal Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#data"><i class="fa fa-check"></i>Data</a></li>
 <li class="chapter" data-level="" data-path="ordinal.html"><a href="ordinal.html#function-14"><i class="fa fa-check"></i>Function</a></li>
@@ -789,7 +789,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="bayesian-multinomial-models" class="section level1">
 <h1>Bayesian Multinomial Models</h1>
 <p>I spent some time on these models to better understand them in the traditional and Bayesian context, as well as profile potential speed gains in the Stan code. If you were doing what many would call ‘multinomial regression’ without qualification, I can recommend <span class="pack" style="">brms</span> with the ‘categorical’ distribution. However, I’m not aware of it being able to accommodate choice-specific variables easily, i.e. ones that vary across choices (though it does accommodate choice specific effects). I show the standard model here with the usual demonstration, and show some code for the most complex setting of choice-specific, individual-specific, and choice-constant variables.</p>
-<p>See the <a href="multinomial.html#multinomial">multinomial chapter</a> for the non-Bayesian approach.</p>
+<p>See the [multinomial chapter][Multinomial] for the non-Bayesian approach.</p>
 <div id="data-setup-32" class="section level2">
 <h2>Data Setup</h2>
 <p>Depending on the complexity of the data, you may need to create a data set specific to the problem.</p>

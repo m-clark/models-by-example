@@ -1,4 +1,4 @@
-# Ordinal
+# Ordinal Regression
 
 The following demonstrates a standard cumulative link ordinal regression model
 via maximum likelihood. Default is with probit link function. Alternatively you

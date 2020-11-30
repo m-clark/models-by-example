@@ -1,4 +1,4 @@
-# Tobit
+# Tobit Regression
 
 
 The following is a simple demonstration of tobit regression via maximum
