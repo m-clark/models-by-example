@@ -43,7 +43,8 @@ hurdle_poisson_ll <- function(y, X, par) {
   
   # Calculate the likelihood
   loglik0    = -mupois
-  loglikpois = -sum(dpois(ypois, lambda = mupois, log = TRUE)) + sum(log(1 - exp(loglik0)))
+  loglikpois = -sum(dpois(ypois, lambda = mupois, log = TRUE)) + 
+    sum(log(1 - exp(loglik0)))
   
   # combine likelihoods
   loglik = loglikpois + logliklogit
@@ -184,7 +185,7 @@ starts =  c(
   theta  = 1
 )
 
-optNB1 = optim(
+fit_nb = optim(
   par = starts,
   fn  = hurdle_nb_ll,
   X   = init_mod$x,
@@ -193,16 +194,16 @@ optNB1 = optim(
   method  = "BFGS",
   hessian = TRUE
 )
-# optNB1 
+# fit_nb 
 
-B  = optNB1$par
-se = sqrt(diag(solve(optNB1$hessian)))
+B  = fit_nb$par
+se = sqrt(diag(solve(fit_nb$hessian)))
 Z  = B/se
 p  = ifelse(Z >= 0, pnorm(Z, lower = FALSE)*2, pnorm(Z)*2)
 
 summary_table = round(data.frame(B, se, Z, p), 3)
 
-list(summary = summary_table, ll = optNB1$value)
+list(summary = summary_table, ll = fit_nb$value)
 ```
 
 

@@ -32,7 +32,7 @@ y = sleepstudy$Reaction
 The following is based on the code in Wood (6.2.2), with a couple modifications for consistent nomenclature and presentation. We use <span class='func'>optim</span> and a minimizing function, in this case the negative log likelihood, to estimate the parameters of interest, collectively $\theta$, in the code below. The (square root of the) variances will be estimated on the log scale. In Wood, he simply extracts the 'fixed effects' for the intercept and days effects using `lm` (6.2.3), and we'll do the same.
 
 ```{r mixed-ml-func}
-ll_mixed <- function(y, X, Z, theta) {
+mixed_ll <- function(y, X, Z, theta) {
   tau   = exp(theta[1])
   sigma = exp(theta[2])
   n = length(y)
@@ -56,7 +56,7 @@ ll_mixed <- function(y, X, Z, theta) {
 Here is an alternative function using a multivariate normal approach that doesn't use the transformation to independent, and might provide additional perspective.
 
 ```{r mixed-ml-func-mv}
-ll_mixed_mv <- function(y, X, Z, theta) {
+mixed_ll_mv <- function(y, X, Z, theta) {
   tau   = exp(theta[1])
   sigma = exp(theta[2])
   n = length(y)
@@ -77,24 +77,24 @@ ll_mixed_mv <- function(y, X, Z, theta) {
 Now we're ready to use the <span class='func'>optim</span> function for estimation.  A slight change to tolerance is included to get closer estimates to <span class='pack'>lme4</span>, which we will compare shortly.
 
 ```{r mixed-ml-est}
-paramInit = c(0, 0)
-names(paramInit) = c('tau', 'sigma')
+param_init = c(0, 0)
+names(param_init) = c('tau', 'sigma')
 
 fit = optim(
-  fn  = ll_mixed,
+  fn  = mixed_ll,
   X   = X,
   y   = y,
   Z   = Z,
-  par = paramInit,
+  par = param_init,
   control = list(reltol = 1e-10)
 )
 
 fit_mv = optim(
-  fn  = ll_mixed_mv,
+  fn  = mixed_ll_mv,
   X   = X,
   y   = y,
   Z   = Z,
-  par = paramInit,
+  par = param_init,
   control = list(reltol = 1e-10)
 )
 ```
@@ -104,7 +104,7 @@ bind_rows(
   c(exp(fit$par), negLogLik = fit$value, coef(lm(y ~ X - 1))),
   c(exp(fit_mv$par), negLogLik = fit_mv$value, coef(lm(y ~ X - 1)))
 ) %>%
-  mutate(func = c('ll_mixed', 'll_mixed_mv')) %>% 
+  mutate(func = c('mixed_ll', 'mixed_ll_mv')) %>% 
   select(func, everything()) %>% 
   kable_df()
 ```
@@ -115,7 +115,7 @@ As we can see, both formulations produce identical results. We can now compare t
 ```{r lme4}
 library(lme4)
 
-fit_mer = lmer(Reaction ~ Days + (1|Subject), sleepstudy, REML = FALSE)
+fit_mer = lmer(Reaction ~ Days + (1 | Subject), sleepstudy, REML = FALSE)
 
 fit_mer
 ```
@@ -129,13 +129,18 @@ sigma   = exp(fit$par)[2]
 sigmasq = sigma^2
 Sigma   = tcrossprod(Z)*tausq/sigmasq + diag(length(y))
 ranef_est = tausq * t(Z) %*% solve(Sigma) %*% resid(lm(y ~ X - 1))/sigmasq
+```
 
+
+```{r mixed-ml-ranef-est-show, echo=FALSE}
 data.frame(
   ranef_est, 
   lme4 = ranef(fit_mer)$Subject[[1]]
 ) %>% 
   kable_df(2)
 ```
+
+
 
 ### Issues with ML estimation
 

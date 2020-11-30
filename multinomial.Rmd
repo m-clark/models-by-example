@@ -27,7 +27,7 @@ head(program[, 1:5])
 
 
 # convert to long form for mlogit
-programLong = program %>%
+program_long = program %>%
   select(id, prog, ses, write) %>%
   mlogit.data(
     data = ,
@@ -36,13 +36,13 @@ programLong = program %>%
     id.var = 'id'
   )
 
-head(programLong)
+head(program_long)
 ```
 
 We go ahead and run a model via <span class="func" style = "">mlogit</span> for later comparison.
 
 ```{r mlogit}
-fit_mlogit   = mlogit(prog ~ 1| write + ses, data = programLong)
+fit_mlogit   = mlogit(prog ~ 1| write + ses, data = program_long)
 mlogit_coefs = coef(fit_mlogit)[c(1,5,7,3,2,6,8,4)]  # reorder
 ```
 
@@ -130,10 +130,7 @@ yind = model.matrix( ~ -1 + prog, data = program)
 ll = 0
 
 for (i in 1:200){
-  ll = ll + dmultinom(yind[i, ],
-                      size = 1,
-                      prob = fits[i, ],
-                      log  = TRUE)
+  ll = ll + dmultinom(yind[i, ], size = 1, prob = fits[i, ], log  = TRUE)
 }
 
 ll
@@ -160,7 +157,7 @@ We can use the `fish` data from the <span class="pack" style = "">mnlogit</span>
 package.
 
 ```{r mlogit-fish-data}
-library(mnlogit)
+library(mnlogit)  # note we are now using mnlogit
 
 data(Fish)
 head(Fish)

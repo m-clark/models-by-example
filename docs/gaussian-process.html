@@ -794,106 +794,106 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The goal of this code is to plot samples from the prior and posterior predictive of a gaussian process in which <code>y = sin(x)</code>. It will reproduce figure 15.2 in Murphy 2012 and 2.2 in Rasmussen and Williams 2006.</p>
 <div id="data-setup-18" class="section level3">
 <h3>Data Setup</h3>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="gaussian-process.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb282-2"><a href="gaussian-process.html#cb282-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb282-3"><a href="gaussian-process.html#cb282-3" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span>            <span class="co"># for l, sigma_f, see note at covariance function</span></span>
-<span id="cb282-4"><a href="gaussian-process.html#cb282-4" aria-hidden="true" tabindex="-1"></a>sigma_f <span class="ot">=</span> <span class="dv">1</span>      </span>
-<span id="cb282-5"><a href="gaussian-process.html#cb282-5" aria-hidden="true" tabindex="-1"></a>k_eps   <span class="ot">=</span> <span class="fl">1e-8</span>   <span class="co"># see note at K_starstar</span></span>
-<span id="cb282-6"><a href="gaussian-process.html#cb282-6" aria-hidden="true" tabindex="-1"></a>n_prior <span class="ot">=</span> <span class="dv">5</span>      <span class="co"># number of prior draws</span></span>
-<span id="cb282-7"><a href="gaussian-process.html#cb282-7" aria-hidden="true" tabindex="-1"></a>n_post_pred <span class="ot">=</span> <span class="dv">5</span>  <span class="co"># number of posterior predictive draws</span></span></code></pre></div>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="gaussian-process.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb272-2"><a href="gaussian-process.html#cb272-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-3"><a href="gaussian-process.html#cb272-3" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span>            <span class="co"># for l, sigma_f, see note at covariance function</span></span>
+<span id="cb272-4"><a href="gaussian-process.html#cb272-4" aria-hidden="true" tabindex="-1"></a>sigma_f <span class="ot">=</span> <span class="dv">1</span>      </span>
+<span id="cb272-5"><a href="gaussian-process.html#cb272-5" aria-hidden="true" tabindex="-1"></a>k_eps   <span class="ot">=</span> <span class="fl">1e-8</span>   <span class="co"># see note at K_starstar</span></span>
+<span id="cb272-6"><a href="gaussian-process.html#cb272-6" aria-hidden="true" tabindex="-1"></a>n_prior <span class="ot">=</span> <span class="dv">5</span>      <span class="co"># number of prior draws</span></span>
+<span id="cb272-7"><a href="gaussian-process.html#cb272-7" aria-hidden="true" tabindex="-1"></a>n_post_pred <span class="ot">=</span> <span class="dv">5</span>  <span class="co"># number of posterior predictive draws</span></span></code></pre></div>
 <p>Generate noise-less training data.</p>
-<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="gaussian-process.html#cb283-1" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb283-2"><a href="gaussian-process.html#cb283-2" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> <span class="fu">sin</span>(X_train)</span>
-<span id="cb283-3"><a href="gaussian-process.html#cb283-3" aria-hidden="true" tabindex="-1"></a>n_train <span class="ot">=</span> <span class="fu">length</span>(X_train)</span>
-<span id="cb283-4"><a href="gaussian-process.html#cb283-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb283-5"><a href="gaussian-process.html#cb283-5" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, .<span class="dv">2</span>)</span>
-<span id="cb283-6"><a href="gaussian-process.html#cb283-6" aria-hidden="true" tabindex="-1"></a>n_test <span class="ot">=</span> <span class="fu">length</span>(X_test)</span></code></pre></div>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="gaussian-process.html#cb273-1" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb273-2"><a href="gaussian-process.html#cb273-2" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> <span class="fu">sin</span>(X_train)</span>
+<span id="cb273-3"><a href="gaussian-process.html#cb273-3" aria-hidden="true" tabindex="-1"></a>n_train <span class="ot">=</span> <span class="fu">length</span>(X_train)</span>
+<span id="cb273-4"><a href="gaussian-process.html#cb273-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb273-5"><a href="gaussian-process.html#cb273-5" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, .<span class="dv">2</span>)</span>
+<span id="cb273-6"><a href="gaussian-process.html#cb273-6" aria-hidden="true" tabindex="-1"></a>n_test <span class="ot">=</span> <span class="fu">length</span>(X_test)</span></code></pre></div>
 </div>
 <div id="functions-3" class="section level3">
 <h3>Functions</h3>
 <p>The mean function. In this case the mean equals 0.</p>
-<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="gaussian-process.html#cb284-1" aria-hidden="true" tabindex="-1"></a>gp_mu <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb284-2"><a href="gaussian-process.html#cb284-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(x, <span class="cf">function</span>(x) <span class="at">x =</span> <span class="dv">0</span>)</span>
-<span id="cb284-3"><a href="gaussian-process.html#cb284-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="gaussian-process.html#cb274-1" aria-hidden="true" tabindex="-1"></a>gp_mu <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb274-2"><a href="gaussian-process.html#cb274-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(x, <span class="cf">function</span>(x) <span class="at">x =</span> <span class="dv">0</span>)</span>
+<span id="cb274-3"><a href="gaussian-process.html#cb274-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The covariance function. Here it is the squared exponential kernel. <code>l</code> is the horizontal scale, <code>sigma_f</code> is the vertical scale.</p>
-<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="gaussian-process.html#cb285-1" aria-hidden="true" tabindex="-1"></a>gp_K <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">sigma_f =</span> <span class="dv">1</span>){</span>
-<span id="cb285-2"><a href="gaussian-process.html#cb285-2" aria-hidden="true" tabindex="-1"></a>  sigma_f <span class="sc">*</span> <span class="fu">exp</span>( <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> l<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">*</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(x, <span class="at">upper =</span> <span class="cn">TRUE</span>, <span class="at">diag =</span> <span class="cn">TRUE</span>) <span class="sc">^</span> <span class="dv">2</span>) )</span>
-<span id="cb285-3"><a href="gaussian-process.html#cb285-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="gaussian-process.html#cb275-1" aria-hidden="true" tabindex="-1"></a>gp_K <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">sigma_f =</span> <span class="dv">1</span>){</span>
+<span id="cb275-2"><a href="gaussian-process.html#cb275-2" aria-hidden="true" tabindex="-1"></a>  sigma_f <span class="sc">*</span> <span class="fu">exp</span>( <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> l<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">*</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(x, <span class="at">upper =</span> <span class="cn">TRUE</span>, <span class="at">diag =</span> <span class="cn">TRUE</span>) <span class="sc">^</span> <span class="dv">2</span>) )</span>
+<span id="cb275-3"><a href="gaussian-process.html#cb275-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="visualize-the-prior-distribution" class="section level3">
 <h3>Visualize the prior distribution</h3>
 <p>Data setup for the prior and plot.</p>
-<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="gaussian-process.html#cb286-1" aria-hidden="true" tabindex="-1"></a>x_prior <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, .<span class="dv">2</span>)</span>
-<span id="cb286-2"><a href="gaussian-process.html#cb286-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb286-3"><a href="gaussian-process.html#cb286-3" aria-hidden="true" tabindex="-1"></a>y_prior <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(</span>
-<span id="cb286-4"><a href="gaussian-process.html#cb286-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n  =</span> n_prior,</span>
-<span id="cb286-5"><a href="gaussian-process.html#cb286-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="fu">gp_mu</span>(x_prior),</span>
-<span id="cb286-6"><a href="gaussian-process.html#cb286-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Sigma =</span> <span class="fu">gp_K</span>(x_prior, <span class="at">l =</span> l, <span class="at">sigma_f =</span> sigma_f)</span>
-<span id="cb286-7"><a href="gaussian-process.html#cb286-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="gaussian-process.html#cb287-1" aria-hidden="true" tabindex="-1"></a>prior_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb287-2"><a href="gaussian-process.html#cb287-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">x  =</span> x_prior,</span>
-<span id="cb287-3"><a href="gaussian-process.html#cb287-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y  =</span> <span class="fu">t</span>(y_prior),</span>
-<span id="cb287-4"><a href="gaussian-process.html#cb287-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">apply</span>(y_prior, <span class="dv">2</span>, sd)) <span class="sc">%&gt;%</span> </span>
-<span id="cb287-5"><a href="gaussian-process.html#cb287-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(x, sd), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
-<span id="cb287-6"><a href="gaussian-process.html#cb287-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb287-7"><a href="gaussian-process.html#cb287-7" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> prior_data) <span class="sc">+</span></span>
-<span id="cb287-8"><a href="gaussian-process.html#cb287-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb287-9"><a href="gaussian-process.html#cb287-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Prior&#39;</span>)</span>
-<span id="cb287-10"><a href="gaussian-process.html#cb287-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb287-11"><a href="gaussian-process.html#cb287-11" aria-hidden="true" tabindex="-1"></a>g1</span></code></pre></div>
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="gaussian-process.html#cb276-1" aria-hidden="true" tabindex="-1"></a>x_prior <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, .<span class="dv">2</span>)</span>
+<span id="cb276-2"><a href="gaussian-process.html#cb276-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb276-3"><a href="gaussian-process.html#cb276-3" aria-hidden="true" tabindex="-1"></a>y_prior <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(</span>
+<span id="cb276-4"><a href="gaussian-process.html#cb276-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n  =</span> n_prior,</span>
+<span id="cb276-5"><a href="gaussian-process.html#cb276-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="fu">gp_mu</span>(x_prior),</span>
+<span id="cb276-6"><a href="gaussian-process.html#cb276-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Sigma =</span> <span class="fu">gp_K</span>(x_prior, <span class="at">l =</span> l, <span class="at">sigma_f =</span> sigma_f)</span>
+<span id="cb276-7"><a href="gaussian-process.html#cb276-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="gaussian-process.html#cb277-1" aria-hidden="true" tabindex="-1"></a>prior_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb277-2"><a href="gaussian-process.html#cb277-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">x  =</span> x_prior,</span>
+<span id="cb277-3"><a href="gaussian-process.html#cb277-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y  =</span> <span class="fu">t</span>(y_prior),</span>
+<span id="cb277-4"><a href="gaussian-process.html#cb277-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">apply</span>(y_prior, <span class="dv">2</span>, sd)) <span class="sc">%&gt;%</span> </span>
+<span id="cb277-5"><a href="gaussian-process.html#cb277-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(x, sd), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
+<span id="cb277-6"><a href="gaussian-process.html#cb277-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb277-7"><a href="gaussian-process.html#cb277-7" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> prior_data) <span class="sc">+</span></span>
+<span id="cb277-8"><a href="gaussian-process.html#cb277-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb277-9"><a href="gaussian-process.html#cb277-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Prior&#39;</span>)</span>
+<span id="cb277-10"><a href="gaussian-process.html#cb277-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb277-11"><a href="gaussian-process.html#cb277-11" aria-hidden="true" tabindex="-1"></a>g1</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-prior-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="generate-the-posterior-predictive-distribution" class="section level3">
 <h3>Generate the posterior predictive distribution</h3>
 <p>Create <code>K</code>, <code>K*</code>, and <code>K**</code> matrices as defined in the texts.</p>
-<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="gaussian-process.html#cb288-1" aria-hidden="true" tabindex="-1"></a>K  <span class="ot">=</span> <span class="fu">gp_K</span>(X_train, <span class="at">l =</span> l, <span class="at">sigma_f =</span> sigma_f)</span>
-<span id="cb288-2"><a href="gaussian-process.html#cb288-2" aria-hidden="true" tabindex="-1"></a>K_ <span class="ot">=</span> <span class="fu">gp_K</span>(<span class="fu">c</span>(X_train, X_test), <span class="at">l =</span> l, <span class="at">sigma_f =</span> sigma_f)        <span class="co"># initial matrix</span></span>
-<span id="cb288-3"><a href="gaussian-process.html#cb288-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb288-4"><a href="gaussian-process.html#cb288-4" aria-hidden="true" tabindex="-1"></a>K_star  <span class="ot">=</span> K_[<span class="dv">1</span><span class="sc">:</span>n_train, (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)]                  <span class="co"># dim = N x N*</span></span>
-<span id="cb288-5"><a href="gaussian-process.html#cb288-5" aria-hidden="true" tabindex="-1"></a>tK_star <span class="ot">=</span> <span class="fu">t</span>(K_star)                                            <span class="co"># dim = N* x N</span></span>
-<span id="cb288-6"><a href="gaussian-process.html#cb288-6" aria-hidden="true" tabindex="-1"></a>K_starstar <span class="ot">=</span> K_[(n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">nrow</span>(K_), (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)] <span class="sc">+</span>  <span class="co"># dim = N* x N*</span></span>
-<span id="cb288-7"><a href="gaussian-process.html#cb288-7" aria-hidden="true" tabindex="-1"></a>  k_eps <span class="sc">*</span> <span class="fu">diag</span>(n_test)    <span class="co"># the k_eps part is for positive definiteness</span></span>
-<span id="cb288-8"><a href="gaussian-process.html#cb288-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb288-9"><a href="gaussian-process.html#cb288-9" aria-hidden="true" tabindex="-1"></a>Kinv <span class="ot">=</span> <span class="fu">solve</span>(K)</span></code></pre></div>
+<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="gaussian-process.html#cb278-1" aria-hidden="true" tabindex="-1"></a>K  <span class="ot">=</span> <span class="fu">gp_K</span>(X_train, <span class="at">l =</span> l, <span class="at">sigma_f =</span> sigma_f)</span>
+<span id="cb278-2"><a href="gaussian-process.html#cb278-2" aria-hidden="true" tabindex="-1"></a>K_ <span class="ot">=</span> <span class="fu">gp_K</span>(<span class="fu">c</span>(X_train, X_test), <span class="at">l =</span> l, <span class="at">sigma_f =</span> sigma_f)        <span class="co"># initial matrix</span></span>
+<span id="cb278-3"><a href="gaussian-process.html#cb278-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb278-4"><a href="gaussian-process.html#cb278-4" aria-hidden="true" tabindex="-1"></a>K_star  <span class="ot">=</span> K_[<span class="dv">1</span><span class="sc">:</span>n_train, (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)]                  <span class="co"># dim = N x N*</span></span>
+<span id="cb278-5"><a href="gaussian-process.html#cb278-5" aria-hidden="true" tabindex="-1"></a>tK_star <span class="ot">=</span> <span class="fu">t</span>(K_star)                                            <span class="co"># dim = N* x N</span></span>
+<span id="cb278-6"><a href="gaussian-process.html#cb278-6" aria-hidden="true" tabindex="-1"></a>K_starstar <span class="ot">=</span> K_[(n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">nrow</span>(K_), (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)] <span class="sc">+</span>  <span class="co"># dim = N* x N*</span></span>
+<span id="cb278-7"><a href="gaussian-process.html#cb278-7" aria-hidden="true" tabindex="-1"></a>  k_eps <span class="sc">*</span> <span class="fu">diag</span>(n_test)    <span class="co"># the k_eps part is for positive definiteness</span></span>
+<span id="cb278-8"><a href="gaussian-process.html#cb278-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb278-9"><a href="gaussian-process.html#cb278-9" aria-hidden="true" tabindex="-1"></a>Kinv <span class="ot">=</span> <span class="fu">solve</span>(K)</span></code></pre></div>
 <p>Calculate posterior mean and covariance.</p>
-<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="gaussian-process.html#cb289-1" aria-hidden="true" tabindex="-1"></a>post_mu <span class="ot">=</span> <span class="fu">gp_mu</span>(X_test) <span class="sc">+</span> <span class="fu">t</span>(K_star) <span class="sc">%*%</span> Kinv <span class="sc">%*%</span> (y_train <span class="sc">-</span> <span class="fu">gp_mu</span>(X_train))</span>
-<span id="cb289-2"><a href="gaussian-process.html#cb289-2" aria-hidden="true" tabindex="-1"></a>post_K  <span class="ot">=</span> K_starstar <span class="sc">-</span> <span class="fu">t</span>(K_star) <span class="sc">%*%</span> Kinv <span class="sc">%*%</span> K_star</span>
-<span id="cb289-3"><a href="gaussian-process.html#cb289-3" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">=</span> <span class="fu">diag</span>(post_K)</span>
-<span id="cb289-4"><a href="gaussian-process.html#cb289-4" aria-hidden="true" tabindex="-1"></a><span class="co"># R = chol(post_K)  </span></span>
-<span id="cb289-5"><a href="gaussian-process.html#cb289-5" aria-hidden="true" tabindex="-1"></a><span class="co"># L = t(R)      # L is used in alternative formulation below based on gaussSample.m</span></span></code></pre></div>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="gaussian-process.html#cb279-1" aria-hidden="true" tabindex="-1"></a>post_mu <span class="ot">=</span> <span class="fu">gp_mu</span>(X_test) <span class="sc">+</span> <span class="fu">t</span>(K_star) <span class="sc">%*%</span> Kinv <span class="sc">%*%</span> (y_train <span class="sc">-</span> <span class="fu">gp_mu</span>(X_train))</span>
+<span id="cb279-2"><a href="gaussian-process.html#cb279-2" aria-hidden="true" tabindex="-1"></a>post_K  <span class="ot">=</span> K_starstar <span class="sc">-</span> <span class="fu">t</span>(K_star) <span class="sc">%*%</span> Kinv <span class="sc">%*%</span> K_star</span>
+<span id="cb279-3"><a href="gaussian-process.html#cb279-3" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">=</span> <span class="fu">diag</span>(post_K)</span>
+<span id="cb279-4"><a href="gaussian-process.html#cb279-4" aria-hidden="true" tabindex="-1"></a><span class="co"># R = chol(post_K)  </span></span>
+<span id="cb279-5"><a href="gaussian-process.html#cb279-5" aria-hidden="true" tabindex="-1"></a><span class="co"># L = t(R)      # L is used in alternative formulation below based on gaussSample.m</span></span></code></pre></div>
 <p>Generate draws from posterior predictive.</p>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="gaussian-process.html#cb290-1" aria-hidden="true" tabindex="-1"></a>y_pp <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb290-2"><a href="gaussian-process.html#cb290-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>(MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_post_pred, <span class="at">mu =</span> post_mu, <span class="at">Sigma =</span> post_K))</span>
-<span id="cb290-3"><a href="gaussian-process.html#cb290-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb290-4"><a href="gaussian-process.html#cb290-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb290-5"><a href="gaussian-process.html#cb290-5" aria-hidden="true" tabindex="-1"></a><span class="co"># alternative if using R and L above</span></span>
-<span id="cb290-6"><a href="gaussian-process.html#cb290-6" aria-hidden="true" tabindex="-1"></a><span class="co"># y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) </span></span></code></pre></div>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="gaussian-process.html#cb280-1" aria-hidden="true" tabindex="-1"></a>y_pp <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb280-2"><a href="gaussian-process.html#cb280-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>(MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_post_pred, <span class="at">mu =</span> post_mu, <span class="at">Sigma =</span> post_K))</span>
+<span id="cb280-3"><a href="gaussian-process.html#cb280-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb280-4"><a href="gaussian-process.html#cb280-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb280-5"><a href="gaussian-process.html#cb280-5" aria-hidden="true" tabindex="-1"></a><span class="co"># alternative if using R and L above</span></span>
+<span id="cb280-6"><a href="gaussian-process.html#cb280-6" aria-hidden="true" tabindex="-1"></a><span class="co"># y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu))) </span></span></code></pre></div>
 </div>
 <div id="visualize-the-posterior-predictive-distribution" class="section level3">
 <h3>Visualize the Posterior Predictive Distribution</h3>
 <p>Reshape data for plotting and create the plot.</p>
-<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="gaussian-process.html#cb291-1" aria-hidden="true" tabindex="-1"></a>pp_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb291-2"><a href="gaussian-process.html#cb291-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> X_test,</span>
-<span id="cb291-3"><a href="gaussian-process.html#cb291-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y_pp,</span>
-<span id="cb291-4"><a href="gaussian-process.html#cb291-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_lower =</span> post_mu <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2),</span>
-<span id="cb291-5"><a href="gaussian-process.html#cb291-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_upper =</span> post_mu <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2)</span>
-<span id="cb291-6"><a href="gaussian-process.html#cb291-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb291-7"><a href="gaussian-process.html#cb291-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">&#39;y&#39;</span>), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
-<span id="cb291-8"><a href="gaussian-process.html#cb291-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb291-9"><a href="gaussian-process.html#cb291-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb291-10"><a href="gaussian-process.html#cb291-10" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> pp_data) <span class="sc">+</span></span>
-<span id="cb291-11"><a href="gaussian-process.html#cb291-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> se_lower, <span class="at">ymax =</span> se_upper, <span class="at">group =</span> variable), </span>
-<span id="cb291-12"><a href="gaussian-process.html#cb291-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">&#39;gray92&#39;</span>) <span class="sc">+</span></span>
-<span id="cb291-13"><a href="gaussian-process.html#cb291-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>) <span class="sc">+</span></span>
-<span id="cb291-14"><a href="gaussian-process.html#cb291-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> X_train, <span class="at">y =</span> y_train), <span class="at">data =</span> <span class="fu">data.frame</span>(X_train, y_train)) <span class="sc">+</span></span>
-<span id="cb291-15"><a href="gaussian-process.html#cb291-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Posterior Predictive&#39;</span>)</span>
-<span id="cb291-16"><a href="gaussian-process.html#cb291-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb291-17"><a href="gaussian-process.html#cb291-17" aria-hidden="true" tabindex="-1"></a>g2</span></code></pre></div>
+<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="gaussian-process.html#cb281-1" aria-hidden="true" tabindex="-1"></a>pp_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb281-2"><a href="gaussian-process.html#cb281-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> X_test,</span>
+<span id="cb281-3"><a href="gaussian-process.html#cb281-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y_pp,</span>
+<span id="cb281-4"><a href="gaussian-process.html#cb281-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_lower =</span> post_mu <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2),</span>
+<span id="cb281-5"><a href="gaussian-process.html#cb281-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_upper =</span> post_mu <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2)</span>
+<span id="cb281-6"><a href="gaussian-process.html#cb281-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb281-7"><a href="gaussian-process.html#cb281-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">&#39;y&#39;</span>), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
+<span id="cb281-8"><a href="gaussian-process.html#cb281-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb281-9"><a href="gaussian-process.html#cb281-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb281-10"><a href="gaussian-process.html#cb281-10" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> pp_data) <span class="sc">+</span></span>
+<span id="cb281-11"><a href="gaussian-process.html#cb281-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> se_lower, <span class="at">ymax =</span> se_upper, <span class="at">group =</span> variable), </span>
+<span id="cb281-12"><a href="gaussian-process.html#cb281-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">&#39;gray92&#39;</span>) <span class="sc">+</span></span>
+<span id="cb281-13"><a href="gaussian-process.html#cb281-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>) <span class="sc">+</span></span>
+<span id="cb281-14"><a href="gaussian-process.html#cb281-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> X_train, <span class="at">y =</span> y_train), <span class="at">data =</span> <span class="fu">data.frame</span>(X_train, y_train)) <span class="sc">+</span></span>
+<span id="cb281-15"><a href="gaussian-process.html#cb281-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Posterior Predictive&#39;</span>)</span>
+<span id="cb281-16"><a href="gaussian-process.html#cb281-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb281-17"><a href="gaussian-process.html#cb281-17" aria-hidden="true" tabindex="-1"></a>g2</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-pp-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 <p>Plot prior and posterior predictive together.</p>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="gaussian-process.html#cb292-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb292-2"><a href="gaussian-process.html#cb292-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb292-3"><a href="gaussian-process.html#cb292-3" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">+</span> g2</span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="gaussian-process.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb282-2"><a href="gaussian-process.html#cb282-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb282-3"><a href="gaussian-process.html#cb282-3" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">+</span> g2</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-prior-pp-plot-1.svg" width="1200px" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -905,141 +905,141 @@ of a gaussian process in which <code>y = sin(x) + noise</code>. It will reproduc
 akin to figure 15.3 in Murphy 2012.</p>
 <div id="data-setup-19" class="section level3">
 <h3>Data Setup</h3>
-<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb293-1"><a href="gaussian-process.html#cb293-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span>            <span class="co"># for l, sigma_f, sigma_n, see note at covariance function</span></span>
-<span id="cb293-2"><a href="gaussian-process.html#cb293-2" aria-hidden="true" tabindex="-1"></a>sigma_f <span class="ot">=</span> <span class="dv">1</span>      </span>
-<span id="cb293-3"><a href="gaussian-process.html#cb293-3" aria-hidden="true" tabindex="-1"></a>sigma_n <span class="ot">=</span> .<span class="dv">25</span> </span>
-<span id="cb293-4"><a href="gaussian-process.html#cb293-4" aria-hidden="true" tabindex="-1"></a>k_eps   <span class="ot">=</span> <span class="fl">1e-8</span>   <span class="co"># see note at Kstarstar</span></span>
-<span id="cb293-5"><a href="gaussian-process.html#cb293-5" aria-hidden="true" tabindex="-1"></a>n_prior <span class="ot">=</span> <span class="dv">5</span>      <span class="co"># number of prior draws</span></span>
-<span id="cb293-6"><a href="gaussian-process.html#cb293-6" aria-hidden="true" tabindex="-1"></a>n_post_pred <span class="ot">=</span> <span class="dv">5</span>  <span class="co"># number of posterior predictive draws</span></span>
-<span id="cb293-7"><a href="gaussian-process.html#cb293-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb293-8"><a href="gaussian-process.html#cb293-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb293-9"><a href="gaussian-process.html#cb293-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb293-10"><a href="gaussian-process.html#cb293-10" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="dv">15</span> <span class="sc">*</span> (<span class="fu">runif</span>(<span class="dv">20</span>) <span class="sc">-</span> .<span class="dv">5</span>)  </span>
-<span id="cb293-11"><a href="gaussian-process.html#cb293-11" aria-hidden="true" tabindex="-1"></a>n_train <span class="ot">=</span> <span class="fu">length</span>(X_train)</span>
-<span id="cb293-12"><a href="gaussian-process.html#cb293-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb293-13"><a href="gaussian-process.html#cb293-13" aria-hidden="true" tabindex="-1"></a><span class="co"># kept sine function for comparison to noise free result</span></span>
-<span id="cb293-14"><a href="gaussian-process.html#cb293-14" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> <span class="fu">sin</span>(X_train) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_train, <span class="at">sd =</span> .<span class="dv">1</span>)  </span>
-<span id="cb293-15"><a href="gaussian-process.html#cb293-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb293-16"><a href="gaussian-process.html#cb293-16" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">7.5</span>, <span class="fl">7.5</span>, <span class="at">length =</span> <span class="dv">200</span>)</span>
-<span id="cb293-17"><a href="gaussian-process.html#cb293-17" aria-hidden="true" tabindex="-1"></a>n_test <span class="ot">=</span> <span class="fu">length</span>(X_test)</span></code></pre></div>
+<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="gaussian-process.html#cb283-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span>            <span class="co"># for l, sigma_f, sigma_n, see note at covariance function</span></span>
+<span id="cb283-2"><a href="gaussian-process.html#cb283-2" aria-hidden="true" tabindex="-1"></a>sigma_f <span class="ot">=</span> <span class="dv">1</span>      </span>
+<span id="cb283-3"><a href="gaussian-process.html#cb283-3" aria-hidden="true" tabindex="-1"></a>sigma_n <span class="ot">=</span> .<span class="dv">25</span> </span>
+<span id="cb283-4"><a href="gaussian-process.html#cb283-4" aria-hidden="true" tabindex="-1"></a>k_eps   <span class="ot">=</span> <span class="fl">1e-8</span>   <span class="co"># see note at Kstarstar</span></span>
+<span id="cb283-5"><a href="gaussian-process.html#cb283-5" aria-hidden="true" tabindex="-1"></a>n_prior <span class="ot">=</span> <span class="dv">5</span>      <span class="co"># number of prior draws</span></span>
+<span id="cb283-6"><a href="gaussian-process.html#cb283-6" aria-hidden="true" tabindex="-1"></a>n_post_pred <span class="ot">=</span> <span class="dv">5</span>  <span class="co"># number of posterior predictive draws</span></span>
+<span id="cb283-7"><a href="gaussian-process.html#cb283-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb283-8"><a href="gaussian-process.html#cb283-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb283-9"><a href="gaussian-process.html#cb283-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb283-10"><a href="gaussian-process.html#cb283-10" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">=</span> <span class="dv">15</span> <span class="sc">*</span> (<span class="fu">runif</span>(<span class="dv">20</span>) <span class="sc">-</span> .<span class="dv">5</span>)  </span>
+<span id="cb283-11"><a href="gaussian-process.html#cb283-11" aria-hidden="true" tabindex="-1"></a>n_train <span class="ot">=</span> <span class="fu">length</span>(X_train)</span>
+<span id="cb283-12"><a href="gaussian-process.html#cb283-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb283-13"><a href="gaussian-process.html#cb283-13" aria-hidden="true" tabindex="-1"></a><span class="co"># kept sine function for comparison to noise free result</span></span>
+<span id="cb283-14"><a href="gaussian-process.html#cb283-14" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> <span class="fu">sin</span>(X_train) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_train, <span class="at">sd =</span> .<span class="dv">1</span>)  </span>
+<span id="cb283-15"><a href="gaussian-process.html#cb283-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb283-16"><a href="gaussian-process.html#cb283-16" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">7.5</span>, <span class="fl">7.5</span>, <span class="at">length =</span> <span class="dv">200</span>)</span>
+<span id="cb283-17"><a href="gaussian-process.html#cb283-17" aria-hidden="true" tabindex="-1"></a>n_test <span class="ot">=</span> <span class="fu">length</span>(X_test)</span></code></pre></div>
 </div>
 <div id="functions-4" class="section level3">
 <h3>Functions</h3>
 <p>The mean function. In this case the mean equals 0.</p>
-<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="gaussian-process.html#cb294-1" aria-hidden="true" tabindex="-1"></a>gp_mu <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb294-2"><a href="gaussian-process.html#cb294-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(x, <span class="cf">function</span>(x) <span class="at">x =</span> <span class="dv">0</span>)</span>
-<span id="cb294-3"><a href="gaussian-process.html#cb294-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="gaussian-process.html#cb284-1" aria-hidden="true" tabindex="-1"></a>gp_mu <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb284-2"><a href="gaussian-process.html#cb284-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(x, <span class="cf">function</span>(x) <span class="at">x =</span> <span class="dv">0</span>)</span>
+<span id="cb284-3"><a href="gaussian-process.html#cb284-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The covariance function. Here it is the squared exponential kernel. <code>l</code> is the horizontal scale, <code>sigma_f</code> is the vertical scale, and, unlike the previous function, <code>sigma_n</code> the noise.</p>
-<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="gaussian-process.html#cb295-1" aria-hidden="true" tabindex="-1"></a>gp_K <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb295-2"><a href="gaussian-process.html#cb295-2" aria-hidden="true" tabindex="-1"></a>  x,</span>
-<span id="cb295-3"><a href="gaussian-process.html#cb295-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb295-4"><a href="gaussian-process.html#cb295-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">l =</span> <span class="dv">1</span>,</span>
-<span id="cb295-5"><a href="gaussian-process.html#cb295-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_f =</span> <span class="dv">1</span>,</span>
-<span id="cb295-6"><a href="gaussian-process.html#cb295-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_n =</span> .<span class="dv">5</span></span>
-<span id="cb295-7"><a href="gaussian-process.html#cb295-7" aria-hidden="true" tabindex="-1"></a>  ) {</span>
-<span id="cb295-8"><a href="gaussian-process.html#cb295-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb295-9"><a href="gaussian-process.html#cb295-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(y)){</span>
-<span id="cb295-10"><a href="gaussian-process.html#cb295-10" aria-hidden="true" tabindex="-1"></a>    sigma_f <span class="sc">*</span> <span class="fu">exp</span>( <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> l<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">*</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(x, <span class="at">upper =</span> <span class="cn">TRUE</span>, <span class="at">diag =</span> <span class="cn">TRUE</span>) <span class="sc">^</span> <span class="dv">2</span>) ) <span class="sc">+</span></span>
-<span id="cb295-11"><a href="gaussian-process.html#cb295-11" aria-hidden="true" tabindex="-1"></a>      sigma_n<span class="sc">*</span><span class="fu">diag</span>(<span class="fu">length</span>(x))    </span>
-<span id="cb295-12"><a href="gaussian-process.html#cb295-12" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb295-13"><a href="gaussian-process.html#cb295-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>{</span>
-<span id="cb295-14"><a href="gaussian-process.html#cb295-14" aria-hidden="true" tabindex="-1"></a>    sigma_f <span class="sc">*</span> <span class="fu">exp</span>( <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> l<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">*</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(x, <span class="at">upper =</span> <span class="cn">TRUE</span>, <span class="at">diag =</span> <span class="cn">TRUE</span>) <span class="sc">^</span> <span class="dv">2</span>) )</span>
-<span id="cb295-15"><a href="gaussian-process.html#cb295-15" aria-hidden="true" tabindex="-1"></a>  }  </span>
-<span id="cb295-16"><a href="gaussian-process.html#cb295-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="gaussian-process.html#cb285-1" aria-hidden="true" tabindex="-1"></a>gp_K <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb285-2"><a href="gaussian-process.html#cb285-2" aria-hidden="true" tabindex="-1"></a>  x,</span>
+<span id="cb285-3"><a href="gaussian-process.html#cb285-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb285-4"><a href="gaussian-process.html#cb285-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb285-5"><a href="gaussian-process.html#cb285-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_f =</span> <span class="dv">1</span>,</span>
+<span id="cb285-6"><a href="gaussian-process.html#cb285-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_n =</span> .<span class="dv">5</span></span>
+<span id="cb285-7"><a href="gaussian-process.html#cb285-7" aria-hidden="true" tabindex="-1"></a>  ) {</span>
+<span id="cb285-8"><a href="gaussian-process.html#cb285-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb285-9"><a href="gaussian-process.html#cb285-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(y)){</span>
+<span id="cb285-10"><a href="gaussian-process.html#cb285-10" aria-hidden="true" tabindex="-1"></a>    sigma_f <span class="sc">*</span> <span class="fu">exp</span>( <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> l<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">*</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(x, <span class="at">upper =</span> <span class="cn">TRUE</span>, <span class="at">diag =</span> <span class="cn">TRUE</span>) <span class="sc">^</span> <span class="dv">2</span>) ) <span class="sc">+</span></span>
+<span id="cb285-11"><a href="gaussian-process.html#cb285-11" aria-hidden="true" tabindex="-1"></a>      sigma_n<span class="sc">*</span><span class="fu">diag</span>(<span class="fu">length</span>(x))    </span>
+<span id="cb285-12"><a href="gaussian-process.html#cb285-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb285-13"><a href="gaussian-process.html#cb285-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>{</span>
+<span id="cb285-14"><a href="gaussian-process.html#cb285-14" aria-hidden="true" tabindex="-1"></a>    sigma_f <span class="sc">*</span> <span class="fu">exp</span>( <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> l<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">*</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(x, <span class="at">upper =</span> <span class="cn">TRUE</span>, <span class="at">diag =</span> <span class="cn">TRUE</span>) <span class="sc">^</span> <span class="dv">2</span>) )</span>
+<span id="cb285-15"><a href="gaussian-process.html#cb285-15" aria-hidden="true" tabindex="-1"></a>  }  </span>
+<span id="cb285-16"><a href="gaussian-process.html#cb285-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="visualize-the-prior-distribution-1" class="section level3">
 <h3>Visualize the prior distribution</h3>
 <p>Data setup.</p>
-<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="gaussian-process.html#cb296-1" aria-hidden="true" tabindex="-1"></a>x_prior <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, .<span class="dv">2</span>)</span>
-<span id="cb296-2"><a href="gaussian-process.html#cb296-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb296-3"><a href="gaussian-process.html#cb296-3" aria-hidden="true" tabindex="-1"></a>y_prior <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(</span>
-<span id="cb296-4"><a href="gaussian-process.html#cb296-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n     =</span> n_prior,</span>
-<span id="cb296-5"><a href="gaussian-process.html#cb296-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu    =</span> <span class="fu">gp_mu</span>(x_prior),</span>
-<span id="cb296-6"><a href="gaussian-process.html#cb296-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Sigma =</span> <span class="fu">gp_K</span>(</span>
-<span id="cb296-7"><a href="gaussian-process.html#cb296-7" aria-hidden="true" tabindex="-1"></a>    x_prior,</span>
-<span id="cb296-8"><a href="gaussian-process.html#cb296-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">l =</span> l,</span>
-<span id="cb296-9"><a href="gaussian-process.html#cb296-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_f =</span> sigma_f,</span>
-<span id="cb296-10"><a href="gaussian-process.html#cb296-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_n =</span> sigma_n</span>
-<span id="cb296-11"><a href="gaussian-process.html#cb296-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb296-12"><a href="gaussian-process.html#cb296-12" aria-hidden="true" tabindex="-1"></a>) </span></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="gaussian-process.html#cb286-1" aria-hidden="true" tabindex="-1"></a>x_prior <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, .<span class="dv">2</span>)</span>
+<span id="cb286-2"><a href="gaussian-process.html#cb286-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-3"><a href="gaussian-process.html#cb286-3" aria-hidden="true" tabindex="-1"></a>y_prior <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(</span>
+<span id="cb286-4"><a href="gaussian-process.html#cb286-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n     =</span> n_prior,</span>
+<span id="cb286-5"><a href="gaussian-process.html#cb286-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu    =</span> <span class="fu">gp_mu</span>(x_prior),</span>
+<span id="cb286-6"><a href="gaussian-process.html#cb286-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Sigma =</span> <span class="fu">gp_K</span>(</span>
+<span id="cb286-7"><a href="gaussian-process.html#cb286-7" aria-hidden="true" tabindex="-1"></a>    x_prior,</span>
+<span id="cb286-8"><a href="gaussian-process.html#cb286-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">l =</span> l,</span>
+<span id="cb286-9"><a href="gaussian-process.html#cb286-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_f =</span> sigma_f,</span>
+<span id="cb286-10"><a href="gaussian-process.html#cb286-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma_n =</span> sigma_n</span>
+<span id="cb286-11"><a href="gaussian-process.html#cb286-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb286-12"><a href="gaussian-process.html#cb286-12" aria-hidden="true" tabindex="-1"></a>) </span></code></pre></div>
 <p>Plot.</p>
-<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="gaussian-process.html#cb297-1" aria-hidden="true" tabindex="-1"></a>prior_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb297-2"><a href="gaussian-process.html#cb297-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">x  =</span> x_prior,</span>
-<span id="cb297-3"><a href="gaussian-process.html#cb297-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y  =</span> <span class="fu">t</span>(y_prior),</span>
-<span id="cb297-4"><a href="gaussian-process.html#cb297-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">apply</span>(y_prior, <span class="dv">2</span>, sd)) <span class="sc">%&gt;%</span> </span>
-<span id="cb297-5"><a href="gaussian-process.html#cb297-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(x, sd), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
-<span id="cb297-6"><a href="gaussian-process.html#cb297-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb297-7"><a href="gaussian-process.html#cb297-7" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> prior_data) <span class="sc">+</span></span>
-<span id="cb297-8"><a href="gaussian-process.html#cb297-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb297-9"><a href="gaussian-process.html#cb297-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Prior&#39;</span>)</span>
-<span id="cb297-10"><a href="gaussian-process.html#cb297-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb297-11"><a href="gaussian-process.html#cb297-11" aria-hidden="true" tabindex="-1"></a>g1</span></code></pre></div>
+<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="gaussian-process.html#cb287-1" aria-hidden="true" tabindex="-1"></a>prior_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb287-2"><a href="gaussian-process.html#cb287-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">x  =</span> x_prior,</span>
+<span id="cb287-3"><a href="gaussian-process.html#cb287-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y  =</span> <span class="fu">t</span>(y_prior),</span>
+<span id="cb287-4"><a href="gaussian-process.html#cb287-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">apply</span>(y_prior, <span class="dv">2</span>, sd)) <span class="sc">%&gt;%</span> </span>
+<span id="cb287-5"><a href="gaussian-process.html#cb287-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(x, sd), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
+<span id="cb287-6"><a href="gaussian-process.html#cb287-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb287-7"><a href="gaussian-process.html#cb287-7" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> prior_data) <span class="sc">+</span></span>
+<span id="cb287-8"><a href="gaussian-process.html#cb287-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb287-9"><a href="gaussian-process.html#cb287-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Prior&#39;</span>)</span>
+<span id="cb287-10"><a href="gaussian-process.html#cb287-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb287-11"><a href="gaussian-process.html#cb287-11" aria-hidden="true" tabindex="-1"></a>g1</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-noisy-prior-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="generate-the-posterior-predictive-distribution-1" class="section level3">
 <h3>Generate the posterior predictive distribution</h3>
 <p>Create Ky, K*, and K** matrices as defined in the texts.</p>
-<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="gaussian-process.html#cb298-1" aria-hidden="true" tabindex="-1"></a>Ky <span class="ot">=</span> <span class="fu">gp_K</span>(</span>
-<span id="cb298-2"><a href="gaussian-process.html#cb298-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> X_train,</span>
-<span id="cb298-3"><a href="gaussian-process.html#cb298-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y_train,</span>
-<span id="cb298-4"><a href="gaussian-process.html#cb298-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">l =</span> l,</span>
-<span id="cb298-5"><a href="gaussian-process.html#cb298-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_f =</span> sigma_f,</span>
-<span id="cb298-6"><a href="gaussian-process.html#cb298-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_n =</span> sigma_n</span>
-<span id="cb298-7"><a href="gaussian-process.html#cb298-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb298-8"><a href="gaussian-process.html#cb298-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb298-9"><a href="gaussian-process.html#cb298-9" aria-hidden="true" tabindex="-1"></a><span class="co"># initial matrix</span></span>
-<span id="cb298-10"><a href="gaussian-process.html#cb298-10" aria-hidden="true" tabindex="-1"></a>K_ <span class="ot">=</span> <span class="fu">gp_K</span>(</span>
-<span id="cb298-11"><a href="gaussian-process.html#cb298-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(X_train, X_test),</span>
-<span id="cb298-12"><a href="gaussian-process.html#cb298-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">l =</span> l,</span>
-<span id="cb298-13"><a href="gaussian-process.html#cb298-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_f =</span> sigma_f,</span>
-<span id="cb298-14"><a href="gaussian-process.html#cb298-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_n =</span> sigma_n</span>
-<span id="cb298-15"><a href="gaussian-process.html#cb298-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb298-16"><a href="gaussian-process.html#cb298-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb298-17"><a href="gaussian-process.html#cb298-17" aria-hidden="true" tabindex="-1"></a>Kstar  <span class="ot">=</span> K_[<span class="dv">1</span><span class="sc">:</span>n_train, (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)]                    <span class="co"># dim = N x N*</span></span>
-<span id="cb298-18"><a href="gaussian-process.html#cb298-18" aria-hidden="true" tabindex="-1"></a>tKstar <span class="ot">=</span> <span class="fu">t</span>(Kstar)                                               <span class="co"># dim = N* x N</span></span>
-<span id="cb298-19"><a href="gaussian-process.html#cb298-19" aria-hidden="true" tabindex="-1"></a>Kstarstar <span class="ot">=</span> K_[(n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">nrow</span>(K_), (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)] <span class="sc">+</span>    <span class="co"># dim = N* x N*</span></span>
-<span id="cb298-20"><a href="gaussian-process.html#cb298-20" aria-hidden="true" tabindex="-1"></a>  k_eps<span class="sc">*</span><span class="fu">diag</span>(n_test)      <span class="co"># the k_eps part is for positive definiteness</span></span>
-<span id="cb298-21"><a href="gaussian-process.html#cb298-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb298-22"><a href="gaussian-process.html#cb298-22" aria-hidden="true" tabindex="-1"></a>Kyinv <span class="ot">=</span> <span class="fu">solve</span>(Ky)</span></code></pre></div>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="gaussian-process.html#cb288-1" aria-hidden="true" tabindex="-1"></a>Ky <span class="ot">=</span> <span class="fu">gp_K</span>(</span>
+<span id="cb288-2"><a href="gaussian-process.html#cb288-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> X_train,</span>
+<span id="cb288-3"><a href="gaussian-process.html#cb288-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y_train,</span>
+<span id="cb288-4"><a href="gaussian-process.html#cb288-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">l =</span> l,</span>
+<span id="cb288-5"><a href="gaussian-process.html#cb288-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_f =</span> sigma_f,</span>
+<span id="cb288-6"><a href="gaussian-process.html#cb288-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_n =</span> sigma_n</span>
+<span id="cb288-7"><a href="gaussian-process.html#cb288-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb288-8"><a href="gaussian-process.html#cb288-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb288-9"><a href="gaussian-process.html#cb288-9" aria-hidden="true" tabindex="-1"></a><span class="co"># initial matrix</span></span>
+<span id="cb288-10"><a href="gaussian-process.html#cb288-10" aria-hidden="true" tabindex="-1"></a>K_ <span class="ot">=</span> <span class="fu">gp_K</span>(</span>
+<span id="cb288-11"><a href="gaussian-process.html#cb288-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(X_train, X_test),</span>
+<span id="cb288-12"><a href="gaussian-process.html#cb288-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">l =</span> l,</span>
+<span id="cb288-13"><a href="gaussian-process.html#cb288-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_f =</span> sigma_f,</span>
+<span id="cb288-14"><a href="gaussian-process.html#cb288-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_n =</span> sigma_n</span>
+<span id="cb288-15"><a href="gaussian-process.html#cb288-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb288-16"><a href="gaussian-process.html#cb288-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb288-17"><a href="gaussian-process.html#cb288-17" aria-hidden="true" tabindex="-1"></a>Kstar  <span class="ot">=</span> K_[<span class="dv">1</span><span class="sc">:</span>n_train, (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)]                    <span class="co"># dim = N x N*</span></span>
+<span id="cb288-18"><a href="gaussian-process.html#cb288-18" aria-hidden="true" tabindex="-1"></a>tKstar <span class="ot">=</span> <span class="fu">t</span>(Kstar)                                               <span class="co"># dim = N* x N</span></span>
+<span id="cb288-19"><a href="gaussian-process.html#cb288-19" aria-hidden="true" tabindex="-1"></a>Kstarstar <span class="ot">=</span> K_[(n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">nrow</span>(K_), (n_train<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="fu">ncol</span>(K_)] <span class="sc">+</span>    <span class="co"># dim = N* x N*</span></span>
+<span id="cb288-20"><a href="gaussian-process.html#cb288-20" aria-hidden="true" tabindex="-1"></a>  k_eps<span class="sc">*</span><span class="fu">diag</span>(n_test)      <span class="co"># the k_eps part is for positive definiteness</span></span>
+<span id="cb288-21"><a href="gaussian-process.html#cb288-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb288-22"><a href="gaussian-process.html#cb288-22" aria-hidden="true" tabindex="-1"></a>Kyinv <span class="ot">=</span> <span class="fu">solve</span>(Ky)</span></code></pre></div>
 <p>Calculate posterior mean and covariance.</p>
-<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="gaussian-process.html#cb299-1" aria-hidden="true" tabindex="-1"></a>post_mu <span class="ot">=</span> <span class="fu">gp_mu</span>(X_test) <span class="sc">+</span> tKstar <span class="sc">%*%</span> Kyinv <span class="sc">%*%</span> (y_train <span class="sc">-</span> <span class="fu">gp_mu</span>(X_train))</span>
-<span id="cb299-2"><a href="gaussian-process.html#cb299-2" aria-hidden="true" tabindex="-1"></a>post_K  <span class="ot">=</span> Kstarstar <span class="sc">-</span> tKstar <span class="sc">%*%</span> Kyinv <span class="sc">%*%</span> Kstar</span>
-<span id="cb299-3"><a href="gaussian-process.html#cb299-3" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">=</span> <span class="fu">diag</span>(post_K)</span>
-<span id="cb299-4"><a href="gaussian-process.html#cb299-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb299-5"><a href="gaussian-process.html#cb299-5" aria-hidden="true" tabindex="-1"></a><span class="co"># R = chol(post_K)  </span></span>
-<span id="cb299-6"><a href="gaussian-process.html#cb299-6" aria-hidden="true" tabindex="-1"></a><span class="co"># L = t(R)      # L is used in alternative formulation below based on gaussSample.m</span></span></code></pre></div>
+<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="gaussian-process.html#cb289-1" aria-hidden="true" tabindex="-1"></a>post_mu <span class="ot">=</span> <span class="fu">gp_mu</span>(X_test) <span class="sc">+</span> tKstar <span class="sc">%*%</span> Kyinv <span class="sc">%*%</span> (y_train <span class="sc">-</span> <span class="fu">gp_mu</span>(X_train))</span>
+<span id="cb289-2"><a href="gaussian-process.html#cb289-2" aria-hidden="true" tabindex="-1"></a>post_K  <span class="ot">=</span> Kstarstar <span class="sc">-</span> tKstar <span class="sc">%*%</span> Kyinv <span class="sc">%*%</span> Kstar</span>
+<span id="cb289-3"><a href="gaussian-process.html#cb289-3" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">=</span> <span class="fu">diag</span>(post_K)</span>
+<span id="cb289-4"><a href="gaussian-process.html#cb289-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb289-5"><a href="gaussian-process.html#cb289-5" aria-hidden="true" tabindex="-1"></a><span class="co"># R = chol(post_K)  </span></span>
+<span id="cb289-6"><a href="gaussian-process.html#cb289-6" aria-hidden="true" tabindex="-1"></a><span class="co"># L = t(R)      # L is used in alternative formulation below based on gaussSample.m</span></span></code></pre></div>
 <p>Generate draws from posterior predictive.</p>
-<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="gaussian-process.html#cb300-1" aria-hidden="true" tabindex="-1"></a>y_pp <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">t</span>(MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_post_pred, <span class="at">mu =</span> post_mu, <span class="at">Sigma =</span> post_K)))</span>
-<span id="cb300-2"><a href="gaussian-process.html#cb300-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb300-3"><a href="gaussian-process.html#cb300-3" aria-hidden="true" tabindex="-1"></a><span class="co"># alternative</span></span>
-<span id="cb300-4"><a href="gaussian-process.html#cb300-4" aria-hidden="true" tabindex="-1"></a><span class="co"># y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu)))</span></span></code></pre></div>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="gaussian-process.html#cb290-1" aria-hidden="true" tabindex="-1"></a>y_pp <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">t</span>(MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_post_pred, <span class="at">mu =</span> post_mu, <span class="at">Sigma =</span> post_K)))</span>
+<span id="cb290-2"><a href="gaussian-process.html#cb290-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb290-3"><a href="gaussian-process.html#cb290-3" aria-hidden="true" tabindex="-1"></a><span class="co"># alternative</span></span>
+<span id="cb290-4"><a href="gaussian-process.html#cb290-4" aria-hidden="true" tabindex="-1"></a><span class="co"># y_pp = data.frame(replicate(n_post_pred, post_mu + L %*% rnorm(post_mu)))</span></span></code></pre></div>
 </div>
 <div id="visualize-the-posterior-predictive-distribution-1" class="section level3">
 <h3>Visualize the Posterior Predictive Distribution</h3>
 <p>Reshape data for plotting and create the plot.</p>
-<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb301-1"><a href="gaussian-process.html#cb301-1" aria-hidden="true" tabindex="-1"></a>pp_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb301-2"><a href="gaussian-process.html#cb301-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> X_test,</span>
-<span id="cb301-3"><a href="gaussian-process.html#cb301-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y_pp,</span>
-<span id="cb301-4"><a href="gaussian-process.html#cb301-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fmean =</span> post_mu, </span>
-<span id="cb301-5"><a href="gaussian-process.html#cb301-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_lower =</span> post_mu <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2),</span>
-<span id="cb301-6"><a href="gaussian-process.html#cb301-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_upper =</span> post_mu <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2)</span>
-<span id="cb301-7"><a href="gaussian-process.html#cb301-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb301-8"><a href="gaussian-process.html#cb301-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">&#39;y&#39;</span>), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
-<span id="cb301-9"><a href="gaussian-process.html#cb301-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb301-10"><a href="gaussian-process.html#cb301-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb301-11"><a href="gaussian-process.html#cb301-11" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> pp_data) <span class="sc">+</span></span>
-<span id="cb301-12"><a href="gaussian-process.html#cb301-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> se_lower, <span class="at">ymax =</span> se_upper, <span class="at">group =</span> variable), </span>
-<span id="cb301-13"><a href="gaussian-process.html#cb301-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">&#39;gray92&#39;</span>) <span class="sc">+</span></span>
-<span id="cb301-14"><a href="gaussian-process.html#cb301-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>) <span class="sc">+</span></span>
-<span id="cb301-15"><a href="gaussian-process.html#cb301-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> X_train, <span class="at">y =</span> y_train), <span class="at">data =</span> <span class="fu">data.frame</span>(X_train, y_train)) <span class="sc">+</span></span>
-<span id="cb301-16"><a href="gaussian-process.html#cb301-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Posterior Predictive&#39;</span>)</span>
-<span id="cb301-17"><a href="gaussian-process.html#cb301-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb301-18"><a href="gaussian-process.html#cb301-18" aria-hidden="true" tabindex="-1"></a>g2</span></code></pre></div>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="gaussian-process.html#cb291-1" aria-hidden="true" tabindex="-1"></a>pp_data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb291-2"><a href="gaussian-process.html#cb291-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> X_test,</span>
+<span id="cb291-3"><a href="gaussian-process.html#cb291-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y_pp,</span>
+<span id="cb291-4"><a href="gaussian-process.html#cb291-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fmean =</span> post_mu, </span>
+<span id="cb291-5"><a href="gaussian-process.html#cb291-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_lower =</span> post_mu <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2),</span>
+<span id="cb291-6"><a href="gaussian-process.html#cb291-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_upper =</span> post_mu <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(s2)</span>
+<span id="cb291-7"><a href="gaussian-process.html#cb291-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb291-8"><a href="gaussian-process.html#cb291-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">&#39;y&#39;</span>), <span class="at">names_to =</span> <span class="st">&#39;variable&#39;</span>)</span>
+<span id="cb291-9"><a href="gaussian-process.html#cb291-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb291-10"><a href="gaussian-process.html#cb291-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb291-11"><a href="gaussian-process.html#cb291-11" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value), <span class="at">data =</span> pp_data) <span class="sc">+</span></span>
+<span id="cb291-12"><a href="gaussian-process.html#cb291-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> se_lower, <span class="at">ymax =</span> se_upper, <span class="at">group =</span> variable), </span>
+<span id="cb291-13"><a href="gaussian-process.html#cb291-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">&#39;gray92&#39;</span>) <span class="sc">+</span></span>
+<span id="cb291-14"><a href="gaussian-process.html#cb291-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> variable), <span class="at">color =</span> <span class="st">&#39;#FF550080&#39;</span>) <span class="sc">+</span></span>
+<span id="cb291-15"><a href="gaussian-process.html#cb291-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> X_train, <span class="at">y =</span> y_train), <span class="at">data =</span> <span class="fu">data.frame</span>(X_train, y_train)) <span class="sc">+</span></span>
+<span id="cb291-16"><a href="gaussian-process.html#cb291-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Posterior Predictive&#39;</span>)</span>
+<span id="cb291-17"><a href="gaussian-process.html#cb291-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb291-18"><a href="gaussian-process.html#cb291-18" aria-hidden="true" tabindex="-1"></a>g2</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-noisy-pp-plot-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 <p>Plot prior and posterior predictive together.</p>
-<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="gaussian-process.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb302-2"><a href="gaussian-process.html#cb302-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb302-3"><a href="gaussian-process.html#cb302-3" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">+</span> g2</span></code></pre></div>
+<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="gaussian-process.html#cb292-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb292-2"><a href="gaussian-process.html#cb292-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb292-3"><a href="gaussian-process.html#cb292-3" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">+</span> g2</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/gp-noisy-prior-pp-plot-1.svg" width="1200px" style="display: block; margin: auto;" /></p>
 </div>
 </div>

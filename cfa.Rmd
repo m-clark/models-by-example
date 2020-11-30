@@ -240,7 +240,9 @@ Compare with <span class="pack" style = "">lavaan</span>.
 
 ```{r cfa-lavaan}
 library(lavaan)
+
 y = data.frame(y)
+
 model = '
   F1  =~ X1 + X2 + X3 + X4
   F2  =~ X5 + X6 + X7 + X8
@@ -269,10 +271,8 @@ fit_lav_std = cfa(
 
 summary(fit_lav,
         fit.measures = TRUE,
-        standardized = TRUE)   
+        standardized = TRUE)
 ```
-
-
 
 
 

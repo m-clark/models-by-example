@@ -144,11 +144,7 @@ test = viterbi(
   emit_p
 )
 # test
-
 ```
-
-
-
 
 
 Now the vectorized approach.

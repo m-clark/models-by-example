@@ -803,130 +803,130 @@ coefficients. The L2 approach is akin to a normal prior with zero mean, while
 L1 is akin to a zero mean Laplace prior. See the <a href="bayesian-linear-regression.html#bayesian-linear-regression">Bayesian regression chapter</a> for an approach in that regard.</p>
 <div id="data-setup-35" class="section level2">
 <h2>Data Setup</h2>
-<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="penalized-maximum-likelihood.html#cb642-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb642-2"><a href="penalized-maximum-likelihood.html#cb642-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb642-3"><a href="penalized-maximum-likelihood.html#cb642-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># ensures replication</span></span>
-<span id="cb642-4"><a href="penalized-maximum-likelihood.html#cb642-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb642-5"><a href="penalized-maximum-likelihood.html#cb642-5" aria-hidden="true" tabindex="-1"></a><span class="co"># predictors and response</span></span>
-<span id="cb642-6"><a href="penalized-maximum-likelihood.html#cb642-6" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">100</span> <span class="co"># sample size</span></span>
-<span id="cb642-7"><a href="penalized-maximum-likelihood.html#cb642-7" aria-hidden="true" tabindex="-1"></a>k <span class="ot">=</span> <span class="dv">2</span>   <span class="co"># number of desired predictors</span></span>
-<span id="cb642-8"><a href="penalized-maximum-likelihood.html#cb642-8" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> k), <span class="at">ncol =</span> k)  </span>
-<span id="cb642-9"><a href="penalized-maximum-likelihood.html#cb642-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="sc">-</span>.<span class="dv">5</span> <span class="sc">+</span> .<span class="dv">2</span><span class="sc">*</span>X[, <span class="dv">1</span>] <span class="sc">+</span> .<span class="dv">1</span><span class="sc">*</span>X[, <span class="dv">2</span>] <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> .<span class="dv">5</span>)  <span class="co"># increasing N will get estimated values closer to these</span></span>
-<span id="cb642-10"><a href="penalized-maximum-likelihood.html#cb642-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb642-11"><a href="penalized-maximum-likelihood.html#cb642-11" aria-hidden="true" tabindex="-1"></a>dfXy <span class="ot">=</span> <span class="fu">data.frame</span>(X,y)</span></code></pre></div>
+<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="penalized-maximum-likelihood.html#cb630-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb630-2"><a href="penalized-maximum-likelihood.html#cb630-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb630-3"><a href="penalized-maximum-likelihood.html#cb630-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># ensures replication</span></span>
+<span id="cb630-4"><a href="penalized-maximum-likelihood.html#cb630-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb630-5"><a href="penalized-maximum-likelihood.html#cb630-5" aria-hidden="true" tabindex="-1"></a><span class="co"># predictors and response</span></span>
+<span id="cb630-6"><a href="penalized-maximum-likelihood.html#cb630-6" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">100</span> <span class="co"># sample size</span></span>
+<span id="cb630-7"><a href="penalized-maximum-likelihood.html#cb630-7" aria-hidden="true" tabindex="-1"></a>k <span class="ot">=</span> <span class="dv">2</span>   <span class="co"># number of desired predictors</span></span>
+<span id="cb630-8"><a href="penalized-maximum-likelihood.html#cb630-8" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> k), <span class="at">ncol =</span> k)  </span>
+<span id="cb630-9"><a href="penalized-maximum-likelihood.html#cb630-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="sc">-</span>.<span class="dv">5</span> <span class="sc">+</span> .<span class="dv">2</span><span class="sc">*</span>X[, <span class="dv">1</span>] <span class="sc">+</span> .<span class="dv">1</span><span class="sc">*</span>X[, <span class="dv">2</span>] <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> .<span class="dv">5</span>)  <span class="co"># increasing N will get estimated values closer to these</span></span>
+<span id="cb630-10"><a href="penalized-maximum-likelihood.html#cb630-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb630-11"><a href="penalized-maximum-likelihood.html#cb630-11" aria-hidden="true" tabindex="-1"></a>dfXy <span class="ot">=</span> <span class="fu">data.frame</span>(X,y)</span></code></pre></div>
 </div>
 <div id="functions-8" class="section level2">
 <h2>Functions</h2>
 <p>A straightforward function to estimate the log likelihood.</p>
-<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="penalized-maximum-likelihood.html#cb643-1" aria-hidden="true" tabindex="-1"></a>penalized_ML <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb643-2"><a href="penalized-maximum-likelihood.html#cb643-2" aria-hidden="true" tabindex="-1"></a>  par,</span>
-<span id="cb643-3"><a href="penalized-maximum-likelihood.html#cb643-3" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb643-4"><a href="penalized-maximum-likelihood.html#cb643-4" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb643-5"><a href="penalized-maximum-likelihood.html#cb643-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">1</span>,</span>
-<span id="cb643-6"><a href="penalized-maximum-likelihood.html#cb643-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&#39;L2&#39;</span></span>
-<span id="cb643-7"><a href="penalized-maximum-likelihood.html#cb643-7" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb643-8"><a href="penalized-maximum-likelihood.html#cb643-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments- </span></span>
-<span id="cb643-9"><a href="penalized-maximum-likelihood.html#cb643-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
-<span id="cb643-10"><a href="penalized-maximum-likelihood.html#cb643-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
-<span id="cb643-11"><a href="penalized-maximum-likelihood.html#cb643-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
-<span id="cb643-12"><a href="penalized-maximum-likelihood.html#cb643-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># lambda: penalty coefficient</span></span>
-<span id="cb643-13"><a href="penalized-maximum-likelihood.html#cb643-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># type: penalty approach</span></span>
-<span id="cb643-14"><a href="penalized-maximum-likelihood.html#cb643-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb643-15"><a href="penalized-maximum-likelihood.html#cb643-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
-<span id="cb643-16"><a href="penalized-maximum-likelihood.html#cb643-16" aria-hidden="true" tabindex="-1"></a>  beta   <span class="ot">=</span> par[<span class="sc">-</span><span class="dv">1</span>]                               <span class="co"># coefficients</span></span>
-<span id="cb643-17"><a href="penalized-maximum-likelihood.html#cb643-17" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> par[<span class="dv">1</span>]                                <span class="co"># error variance</span></span>
-<span id="cb643-18"><a href="penalized-maximum-likelihood.html#cb643-18" aria-hidden="true" tabindex="-1"></a>  sigma  <span class="ot">=</span> <span class="fu">sqrt</span>(sigma2)</span>
-<span id="cb643-19"><a href="penalized-maximum-likelihood.html#cb643-19" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb643-20"><a href="penalized-maximum-likelihood.html#cb643-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb643-21"><a href="penalized-maximum-likelihood.html#cb643-21" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                                <span class="co"># linear predictor</span></span>
-<span id="cb643-22"><a href="penalized-maximum-likelihood.html#cb643-22" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> LP                                        <span class="co"># identity link in the glm sense</span></span>
-<span id="cb643-23"><a href="penalized-maximum-likelihood.html#cb643-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb643-24"><a href="penalized-maximum-likelihood.html#cb643-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate likelihood</span></span>
-<span id="cb643-25"><a href="penalized-maximum-likelihood.html#cb643-25" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">dnorm</span>(y, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma, <span class="at">log =</span> T)   <span class="co"># log likelihood</span></span>
-<span id="cb643-26"><a href="penalized-maximum-likelihood.html#cb643-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb643-27"><a href="penalized-maximum-likelihood.html#cb643-27" aria-hidden="true" tabindex="-1"></a>  PL <span class="ot">=</span> <span class="cf">switch</span>(type,</span>
-<span id="cb643-28"><a href="penalized-maximum-likelihood.html#cb643-28" aria-hidden="true" tabindex="-1"></a>              <span class="st">&#39;L2&#39;</span> <span class="ot">=</span> <span class="sc">-</span><span class="fu">sum</span>(L) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">crossprod</span>(beta[<span class="sc">-</span><span class="dv">1</span>]),   <span class="co"># the intercept is not penalized</span></span>
-<span id="cb643-29"><a href="penalized-maximum-likelihood.html#cb643-29" aria-hidden="true" tabindex="-1"></a>              <span class="st">&#39;L1&#39;</span> <span class="ot">=</span> <span class="sc">-</span><span class="fu">sum</span>(L) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">abs</span>(beta[<span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb643-30"><a href="penalized-maximum-likelihood.html#cb643-30" aria-hidden="true" tabindex="-1"></a>              )</span>
-<span id="cb643-31"><a href="penalized-maximum-likelihood.html#cb643-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb631-1"><a href="penalized-maximum-likelihood.html#cb631-1" aria-hidden="true" tabindex="-1"></a>penalized_ML <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb631-2"><a href="penalized-maximum-likelihood.html#cb631-2" aria-hidden="true" tabindex="-1"></a>  par,</span>
+<span id="cb631-3"><a href="penalized-maximum-likelihood.html#cb631-3" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb631-4"><a href="penalized-maximum-likelihood.html#cb631-4" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb631-5"><a href="penalized-maximum-likelihood.html#cb631-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">1</span>,</span>
+<span id="cb631-6"><a href="penalized-maximum-likelihood.html#cb631-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&#39;L2&#39;</span></span>
+<span id="cb631-7"><a href="penalized-maximum-likelihood.html#cb631-7" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb631-8"><a href="penalized-maximum-likelihood.html#cb631-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments- </span></span>
+<span id="cb631-9"><a href="penalized-maximum-likelihood.html#cb631-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
+<span id="cb631-10"><a href="penalized-maximum-likelihood.html#cb631-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
+<span id="cb631-11"><a href="penalized-maximum-likelihood.html#cb631-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
+<span id="cb631-12"><a href="penalized-maximum-likelihood.html#cb631-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># lambda: penalty coefficient</span></span>
+<span id="cb631-13"><a href="penalized-maximum-likelihood.html#cb631-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># type: penalty approach</span></span>
+<span id="cb631-14"><a href="penalized-maximum-likelihood.html#cb631-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb631-15"><a href="penalized-maximum-likelihood.html#cb631-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
+<span id="cb631-16"><a href="penalized-maximum-likelihood.html#cb631-16" aria-hidden="true" tabindex="-1"></a>  beta   <span class="ot">=</span> par[<span class="sc">-</span><span class="dv">1</span>]                               <span class="co"># coefficients</span></span>
+<span id="cb631-17"><a href="penalized-maximum-likelihood.html#cb631-17" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> par[<span class="dv">1</span>]                                <span class="co"># error variance</span></span>
+<span id="cb631-18"><a href="penalized-maximum-likelihood.html#cb631-18" aria-hidden="true" tabindex="-1"></a>  sigma  <span class="ot">=</span> <span class="fu">sqrt</span>(sigma2)</span>
+<span id="cb631-19"><a href="penalized-maximum-likelihood.html#cb631-19" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb631-20"><a href="penalized-maximum-likelihood.html#cb631-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb631-21"><a href="penalized-maximum-likelihood.html#cb631-21" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                                <span class="co"># linear predictor</span></span>
+<span id="cb631-22"><a href="penalized-maximum-likelihood.html#cb631-22" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> LP                                        <span class="co"># identity link in the glm sense</span></span>
+<span id="cb631-23"><a href="penalized-maximum-likelihood.html#cb631-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb631-24"><a href="penalized-maximum-likelihood.html#cb631-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate likelihood</span></span>
+<span id="cb631-25"><a href="penalized-maximum-likelihood.html#cb631-25" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">dnorm</span>(y, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma, <span class="at">log =</span> T)   <span class="co"># log likelihood</span></span>
+<span id="cb631-26"><a href="penalized-maximum-likelihood.html#cb631-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb631-27"><a href="penalized-maximum-likelihood.html#cb631-27" aria-hidden="true" tabindex="-1"></a>  PL <span class="ot">=</span> <span class="cf">switch</span>(type,</span>
+<span id="cb631-28"><a href="penalized-maximum-likelihood.html#cb631-28" aria-hidden="true" tabindex="-1"></a>              <span class="st">&#39;L2&#39;</span> <span class="ot">=</span> <span class="sc">-</span><span class="fu">sum</span>(L) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">crossprod</span>(beta[<span class="sc">-</span><span class="dv">1</span>]),   <span class="co"># the intercept is not penalized</span></span>
+<span id="cb631-29"><a href="penalized-maximum-likelihood.html#cb631-29" aria-hidden="true" tabindex="-1"></a>              <span class="st">&#39;L1&#39;</span> <span class="ot">=</span> <span class="sc">-</span><span class="fu">sum</span>(L) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">abs</span>(beta[<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb631-30"><a href="penalized-maximum-likelihood.html#cb631-30" aria-hidden="true" tabindex="-1"></a>              )</span>
+<span id="cb631-31"><a href="penalized-maximum-likelihood.html#cb631-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>This next function is a <span class="pack" style="">glmnet</span> style
 approach that will put the lambda coefficient on equivalent scale. It uses a
 different objective function. Note that <span class="pack" style="">glmnet</span> is actually using <code>elasticnet</code>, which mixes both L1 and L2
 penalties.</p>
-<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb644-1"><a href="penalized-maximum-likelihood.html#cb644-1" aria-hidden="true" tabindex="-1"></a>penalized_ML2 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb644-2"><a href="penalized-maximum-likelihood.html#cb644-2" aria-hidden="true" tabindex="-1"></a>  par,</span>
-<span id="cb644-3"><a href="penalized-maximum-likelihood.html#cb644-3" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb644-4"><a href="penalized-maximum-likelihood.html#cb644-4" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb644-5"><a href="penalized-maximum-likelihood.html#cb644-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">1</span>,</span>
-<span id="cb644-6"><a href="penalized-maximum-likelihood.html#cb644-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&#39;L2&#39;</span></span>
-<span id="cb644-7"><a href="penalized-maximum-likelihood.html#cb644-7" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb644-8"><a href="penalized-maximum-likelihood.html#cb644-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb644-9"><a href="penalized-maximum-likelihood.html#cb644-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments- </span></span>
-<span id="cb644-10"><a href="penalized-maximum-likelihood.html#cb644-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
-<span id="cb644-11"><a href="penalized-maximum-likelihood.html#cb644-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
-<span id="cb644-12"><a href="penalized-maximum-likelihood.html#cb644-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
-<span id="cb644-13"><a href="penalized-maximum-likelihood.html#cb644-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># lambda: penalty coefficient</span></span>
-<span id="cb644-14"><a href="penalized-maximum-likelihood.html#cb644-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># type: penalty approach</span></span>
-<span id="cb644-15"><a href="penalized-maximum-likelihood.html#cb644-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb644-16"><a href="penalized-maximum-likelihood.html#cb644-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
-<span id="cb644-17"><a href="penalized-maximum-likelihood.html#cb644-17" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par                                   <span class="co"># coefficients</span></span>
-<span id="cb644-18"><a href="penalized-maximum-likelihood.html#cb644-18" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb644-19"><a href="penalized-maximum-likelihood.html#cb644-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb644-20"><a href="penalized-maximum-likelihood.html#cb644-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
-<span id="cb644-21"><a href="penalized-maximum-likelihood.html#cb644-21" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                              <span class="co"># linear predictor</span></span>
-<span id="cb644-22"><a href="penalized-maximum-likelihood.html#cb644-22" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> LP                                      <span class="co"># identity link in the glm sense</span></span>
-<span id="cb644-23"><a href="penalized-maximum-likelihood.html#cb644-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb644-24"><a href="penalized-maximum-likelihood.html#cb644-24" aria-hidden="true" tabindex="-1"></a>  obj <span class="ot">=</span> <span class="cf">switch</span>(type,</span>
-<span id="cb644-25"><a href="penalized-maximum-likelihood.html#cb644-25" aria-hidden="true" tabindex="-1"></a>               <span class="st">&#39;L2&#39;</span> <span class="ot">=</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> beta)<span class="sc">/</span>N <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">crossprod</span>(beta[<span class="sc">-</span><span class="dv">1</span>]),</span>
-<span id="cb644-26"><a href="penalized-maximum-likelihood.html#cb644-26" aria-hidden="true" tabindex="-1"></a>               <span class="st">&#39;L1&#39;</span> <span class="ot">=</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> beta)<span class="sc">/</span>N <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">abs</span>(beta[<span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb644-27"><a href="penalized-maximum-likelihood.html#cb644-27" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb644-28"><a href="penalized-maximum-likelihood.html#cb644-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="penalized-maximum-likelihood.html#cb632-1" aria-hidden="true" tabindex="-1"></a>penalized_ML2 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb632-2"><a href="penalized-maximum-likelihood.html#cb632-2" aria-hidden="true" tabindex="-1"></a>  par,</span>
+<span id="cb632-3"><a href="penalized-maximum-likelihood.html#cb632-3" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb632-4"><a href="penalized-maximum-likelihood.html#cb632-4" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb632-5"><a href="penalized-maximum-likelihood.html#cb632-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">1</span>,</span>
+<span id="cb632-6"><a href="penalized-maximum-likelihood.html#cb632-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&#39;L2&#39;</span></span>
+<span id="cb632-7"><a href="penalized-maximum-likelihood.html#cb632-7" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb632-8"><a href="penalized-maximum-likelihood.html#cb632-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb632-9"><a href="penalized-maximum-likelihood.html#cb632-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments- </span></span>
+<span id="cb632-10"><a href="penalized-maximum-likelihood.html#cb632-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
+<span id="cb632-11"><a href="penalized-maximum-likelihood.html#cb632-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
+<span id="cb632-12"><a href="penalized-maximum-likelihood.html#cb632-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
+<span id="cb632-13"><a href="penalized-maximum-likelihood.html#cb632-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># lambda: penalty coefficient</span></span>
+<span id="cb632-14"><a href="penalized-maximum-likelihood.html#cb632-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># type: penalty approach</span></span>
+<span id="cb632-15"><a href="penalized-maximum-likelihood.html#cb632-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb632-16"><a href="penalized-maximum-likelihood.html#cb632-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
+<span id="cb632-17"><a href="penalized-maximum-likelihood.html#cb632-17" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par                                   <span class="co"># coefficients</span></span>
+<span id="cb632-18"><a href="penalized-maximum-likelihood.html#cb632-18" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb632-19"><a href="penalized-maximum-likelihood.html#cb632-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb632-20"><a href="penalized-maximum-likelihood.html#cb632-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb632-21"><a href="penalized-maximum-likelihood.html#cb632-21" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                              <span class="co"># linear predictor</span></span>
+<span id="cb632-22"><a href="penalized-maximum-likelihood.html#cb632-22" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> LP                                      <span class="co"># identity link in the glm sense</span></span>
+<span id="cb632-23"><a href="penalized-maximum-likelihood.html#cb632-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb632-24"><a href="penalized-maximum-likelihood.html#cb632-24" aria-hidden="true" tabindex="-1"></a>  obj <span class="ot">=</span> <span class="cf">switch</span>(type,</span>
+<span id="cb632-25"><a href="penalized-maximum-likelihood.html#cb632-25" aria-hidden="true" tabindex="-1"></a>               <span class="st">&#39;L2&#39;</span> <span class="ot">=</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> beta)<span class="sc">/</span>N <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">crossprod</span>(beta[<span class="sc">-</span><span class="dv">1</span>]),</span>
+<span id="cb632-26"><a href="penalized-maximum-likelihood.html#cb632-26" aria-hidden="true" tabindex="-1"></a>               <span class="st">&#39;L1&#39;</span> <span class="ot">=</span> .<span class="dv">5</span><span class="sc">*</span><span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> beta)<span class="sc">/</span>N <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">abs</span>(beta[<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb632-27"><a href="penalized-maximum-likelihood.html#cb632-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb632-28"><a href="penalized-maximum-likelihood.html#cb632-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-34" class="section level2">
 <h2>Estimation</h2>
 <p>Setup the model matrix for use with <span class="func" style="">optim</span>.</p>
-<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="penalized-maximum-likelihood.html#cb645-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)</span></code></pre></div>
+<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="penalized-maximum-likelihood.html#cb633-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)</span></code></pre></div>
 <p>We’ll need to set initial values. Note we’d normally want to handle the sigma
 parameter differently as it’s bounded by zero, but we’ll ignore for
 demonstration.</p>
-<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="penalized-maximum-likelihood.html#cb646-1" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X)))</span>
-<span id="cb646-2"><a href="penalized-maximum-likelihood.html#cb646-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(init) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;sigma2&#39;</span>, <span class="st">&#39;intercept&#39;</span>, <span class="st">&#39;b1&#39;</span>, <span class="st">&#39;b2&#39;</span>)</span>
-<span id="cb646-3"><a href="penalized-maximum-likelihood.html#cb646-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb646-4"><a href="penalized-maximum-likelihood.html#cb646-4" aria-hidden="true" tabindex="-1"></a>optlmpenalized_MLL2 <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb646-5"><a href="penalized-maximum-likelihood.html#cb646-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
-<span id="cb646-6"><a href="penalized-maximum-likelihood.html#cb646-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML,</span>
-<span id="cb646-7"><a href="penalized-maximum-likelihood.html#cb646-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb646-8"><a href="penalized-maximum-likelihood.html#cb646-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb646-9"><a href="penalized-maximum-likelihood.html#cb646-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> <span class="dv">1</span>,</span>
-<span id="cb646-10"><a href="penalized-maximum-likelihood.html#cb646-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
-<span id="cb646-11"><a href="penalized-maximum-likelihood.html#cb646-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb646-12"><a href="penalized-maximum-likelihood.html#cb646-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb646-13"><a href="penalized-maximum-likelihood.html#cb646-13" aria-hidden="true" tabindex="-1"></a>optlmpenalized_MLL1 <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb646-14"><a href="penalized-maximum-likelihood.html#cb646-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
-<span id="cb646-15"><a href="penalized-maximum-likelihood.html#cb646-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML,</span>
-<span id="cb646-16"><a href="penalized-maximum-likelihood.html#cb646-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb646-17"><a href="penalized-maximum-likelihood.html#cb646-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb646-18"><a href="penalized-maximum-likelihood.html#cb646-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> <span class="dv">1</span>,</span>
-<span id="cb646-19"><a href="penalized-maximum-likelihood.html#cb646-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">type    =</span> <span class="st">&#39;L1&#39;</span>,</span>
-<span id="cb646-20"><a href="penalized-maximum-likelihood.html#cb646-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
-<span id="cb646-21"><a href="penalized-maximum-likelihood.html#cb646-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb646-22"><a href="penalized-maximum-likelihood.html#cb646-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb646-23"><a href="penalized-maximum-likelihood.html#cb646-23" aria-hidden="true" tabindex="-1"></a>parspenalized_MLL2 <span class="ot">=</span> optlmpenalized_MLL2<span class="sc">$</span>par</span>
-<span id="cb646-24"><a href="penalized-maximum-likelihood.html#cb646-24" aria-hidden="true" tabindex="-1"></a>parspenalized_MLL1 <span class="ot">=</span> optlmpenalized_MLL1<span class="sc">$</span>par</span></code></pre></div>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="penalized-maximum-likelihood.html#cb634-1" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X)))</span>
+<span id="cb634-2"><a href="penalized-maximum-likelihood.html#cb634-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(init) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;sigma2&#39;</span>, <span class="st">&#39;intercept&#39;</span>, <span class="st">&#39;b1&#39;</span>, <span class="st">&#39;b2&#39;</span>)</span>
+<span id="cb634-3"><a href="penalized-maximum-likelihood.html#cb634-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb634-4"><a href="penalized-maximum-likelihood.html#cb634-4" aria-hidden="true" tabindex="-1"></a>optlmpenalized_MLL2 <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb634-5"><a href="penalized-maximum-likelihood.html#cb634-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
+<span id="cb634-6"><a href="penalized-maximum-likelihood.html#cb634-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML,</span>
+<span id="cb634-7"><a href="penalized-maximum-likelihood.html#cb634-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb634-8"><a href="penalized-maximum-likelihood.html#cb634-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb634-9"><a href="penalized-maximum-likelihood.html#cb634-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> <span class="dv">1</span>,</span>
+<span id="cb634-10"><a href="penalized-maximum-likelihood.html#cb634-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb634-11"><a href="penalized-maximum-likelihood.html#cb634-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb634-12"><a href="penalized-maximum-likelihood.html#cb634-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb634-13"><a href="penalized-maximum-likelihood.html#cb634-13" aria-hidden="true" tabindex="-1"></a>optlmpenalized_MLL1 <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb634-14"><a href="penalized-maximum-likelihood.html#cb634-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
+<span id="cb634-15"><a href="penalized-maximum-likelihood.html#cb634-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML,</span>
+<span id="cb634-16"><a href="penalized-maximum-likelihood.html#cb634-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb634-17"><a href="penalized-maximum-likelihood.html#cb634-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb634-18"><a href="penalized-maximum-likelihood.html#cb634-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> <span class="dv">1</span>,</span>
+<span id="cb634-19"><a href="penalized-maximum-likelihood.html#cb634-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">type    =</span> <span class="st">&#39;L1&#39;</span>,</span>
+<span id="cb634-20"><a href="penalized-maximum-likelihood.html#cb634-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb634-21"><a href="penalized-maximum-likelihood.html#cb634-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb634-22"><a href="penalized-maximum-likelihood.html#cb634-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb634-23"><a href="penalized-maximum-likelihood.html#cb634-23" aria-hidden="true" tabindex="-1"></a>parspenalized_MLL2 <span class="ot">=</span> optlmpenalized_MLL2<span class="sc">$</span>par</span>
+<span id="cb634-24"><a href="penalized-maximum-likelihood.html#cb634-24" aria-hidden="true" tabindex="-1"></a>parspenalized_MLL1 <span class="ot">=</span> optlmpenalized_MLL1<span class="sc">$</span>par</span></code></pre></div>
 </div>
 <div id="comparison-38" class="section level2">
 <h2>Comparison</h2>
 <p>Compare to <code>lm</code> in base R.</p>
-<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb647-1"><a href="penalized-maximum-likelihood.html#cb647-1" aria-hidden="true" tabindex="-1"></a>modlm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., dfXy)</span>
-<span id="cb647-2"><a href="penalized-maximum-likelihood.html#cb647-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb647-3"><a href="penalized-maximum-likelihood.html#cb647-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(</span>
-<span id="cb647-4"><a href="penalized-maximum-likelihood.html#cb647-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbind</span>(</span>
-<span id="cb647-5"><a href="penalized-maximum-likelihood.html#cb647-5" aria-hidden="true" tabindex="-1"></a>    parspenalized_MLL2,</span>
-<span id="cb647-6"><a href="penalized-maximum-likelihood.html#cb647-6" aria-hidden="true" tabindex="-1"></a>    parspenalized_MLL1,</span>
-<span id="cb647-7"><a href="penalized-maximum-likelihood.html#cb647-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">modlm =</span> <span class="fu">c</span>(<span class="fu">summary</span>(modlm)<span class="sc">$</span>sigma <span class="sc">^</span> <span class="dv">2</span>, <span class="fu">coef</span>(modlm))</span>
-<span id="cb647-8"><a href="penalized-maximum-likelihood.html#cb647-8" aria-hidden="true" tabindex="-1"></a>  ), </span>
-<span id="cb647-9"><a href="penalized-maximum-likelihood.html#cb647-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">4</span></span>
-<span id="cb647-10"><a href="penalized-maximum-likelihood.html#cb647-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="penalized-maximum-likelihood.html#cb635-1" aria-hidden="true" tabindex="-1"></a>modlm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., dfXy)</span>
+<span id="cb635-2"><a href="penalized-maximum-likelihood.html#cb635-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb635-3"><a href="penalized-maximum-likelihood.html#cb635-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(</span>
+<span id="cb635-4"><a href="penalized-maximum-likelihood.html#cb635-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbind</span>(</span>
+<span id="cb635-5"><a href="penalized-maximum-likelihood.html#cb635-5" aria-hidden="true" tabindex="-1"></a>    parspenalized_MLL2,</span>
+<span id="cb635-6"><a href="penalized-maximum-likelihood.html#cb635-6" aria-hidden="true" tabindex="-1"></a>    parspenalized_MLL1,</span>
+<span id="cb635-7"><a href="penalized-maximum-likelihood.html#cb635-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">modlm =</span> <span class="fu">c</span>(<span class="fu">summary</span>(modlm)<span class="sc">$</span>sigma <span class="sc">^</span> <span class="dv">2</span>, <span class="fu">coef</span>(modlm))</span>
+<span id="cb635-8"><a href="penalized-maximum-likelihood.html#cb635-8" aria-hidden="true" tabindex="-1"></a>  ), </span>
+<span id="cb635-9"><a href="penalized-maximum-likelihood.html#cb635-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">4</span></span>
+<span id="cb635-10"><a href="penalized-maximum-likelihood.html#cb635-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>                   sigma2 intercept     b1     b2
 parspenalized_MLL2 0.2195   -0.4325 0.1327 0.1113
 parspenalized_MLL1 0.2195   -0.4325 0.1306 0.1094
@@ -935,42 +935,42 @@ modlm              0.2262   -0.4325 0.1334 0.1119</code></pre>
 is equivalent to L2 and L1 penalties respectively. You also wouldn’t want to
 specify lambda normally, and rather let it come about as part of the estimation
 procedure. We do so here just for demonstration.</p>
-<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb649-1"><a href="penalized-maximum-likelihood.html#cb649-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb649-2"><a href="penalized-maximum-likelihood.html#cb649-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb649-3"><a href="penalized-maximum-likelihood.html#cb649-3" aria-hidden="true" tabindex="-1"></a>glmnetL2 <span class="ot">=</span> <span class="fu">glmnet</span>(</span>
-<span id="cb649-4"><a href="penalized-maximum-likelihood.html#cb649-4" aria-hidden="true" tabindex="-1"></a>  X[, <span class="sc">-</span><span class="dv">1</span>],</span>
-<span id="cb649-5"><a href="penalized-maximum-likelihood.html#cb649-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb649-6"><a href="penalized-maximum-likelihood.html#cb649-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha  =</span> <span class="dv">0</span>,</span>
-<span id="cb649-7"><a href="penalized-maximum-likelihood.html#cb649-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">01</span>,</span>
-<span id="cb649-8"><a href="penalized-maximum-likelihood.html#cb649-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
-<span id="cb649-9"><a href="penalized-maximum-likelihood.html#cb649-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb649-10"><a href="penalized-maximum-likelihood.html#cb649-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb649-11"><a href="penalized-maximum-likelihood.html#cb649-11" aria-hidden="true" tabindex="-1"></a>glmnetL1 <span class="ot">=</span> <span class="fu">glmnet</span>(</span>
-<span id="cb649-12"><a href="penalized-maximum-likelihood.html#cb649-12" aria-hidden="true" tabindex="-1"></a>  X[, <span class="sc">-</span><span class="dv">1</span>],</span>
-<span id="cb649-13"><a href="penalized-maximum-likelihood.html#cb649-13" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb649-14"><a href="penalized-maximum-likelihood.html#cb649-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
-<span id="cb649-15"><a href="penalized-maximum-likelihood.html#cb649-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">01</span>,</span>
-<span id="cb649-16"><a href="penalized-maximum-likelihood.html#cb649-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
-<span id="cb649-17"><a href="penalized-maximum-likelihood.html#cb649-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb649-18"><a href="penalized-maximum-likelihood.html#cb649-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb649-19"><a href="penalized-maximum-likelihood.html#cb649-19" aria-hidden="true" tabindex="-1"></a>pars_L2 <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb649-20"><a href="penalized-maximum-likelihood.html#cb649-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init[<span class="sc">-</span><span class="dv">1</span>],</span>
-<span id="cb649-21"><a href="penalized-maximum-likelihood.html#cb649-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML2,</span>
-<span id="cb649-22"><a href="penalized-maximum-likelihood.html#cb649-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb649-23"><a href="penalized-maximum-likelihood.html#cb649-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb649-24"><a href="penalized-maximum-likelihood.html#cb649-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> .<span class="dv">01</span>,</span>
-<span id="cb649-25"><a href="penalized-maximum-likelihood.html#cb649-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
-<span id="cb649-26"><a href="penalized-maximum-likelihood.html#cb649-26" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>par</span>
-<span id="cb649-27"><a href="penalized-maximum-likelihood.html#cb649-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb649-28"><a href="penalized-maximum-likelihood.html#cb649-28" aria-hidden="true" tabindex="-1"></a>pars_L1 <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb649-29"><a href="penalized-maximum-likelihood.html#cb649-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init[<span class="sc">-</span><span class="dv">1</span>],</span>
-<span id="cb649-30"><a href="penalized-maximum-likelihood.html#cb649-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML2,</span>
-<span id="cb649-31"><a href="penalized-maximum-likelihood.html#cb649-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb649-32"><a href="penalized-maximum-likelihood.html#cb649-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb649-33"><a href="penalized-maximum-likelihood.html#cb649-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> .<span class="dv">01</span>,</span>
-<span id="cb649-34"><a href="penalized-maximum-likelihood.html#cb649-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">type    =</span> <span class="st">&#39;L1&#39;</span>,</span>
-<span id="cb649-35"><a href="penalized-maximum-likelihood.html#cb649-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
-<span id="cb649-36"><a href="penalized-maximum-likelihood.html#cb649-36" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>par</span></code></pre></div>
+<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="penalized-maximum-likelihood.html#cb637-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb637-2"><a href="penalized-maximum-likelihood.html#cb637-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb637-3"><a href="penalized-maximum-likelihood.html#cb637-3" aria-hidden="true" tabindex="-1"></a>glmnetL2 <span class="ot">=</span> <span class="fu">glmnet</span>(</span>
+<span id="cb637-4"><a href="penalized-maximum-likelihood.html#cb637-4" aria-hidden="true" tabindex="-1"></a>  X[, <span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb637-5"><a href="penalized-maximum-likelihood.html#cb637-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb637-6"><a href="penalized-maximum-likelihood.html#cb637-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha  =</span> <span class="dv">0</span>,</span>
+<span id="cb637-7"><a href="penalized-maximum-likelihood.html#cb637-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">01</span>,</span>
+<span id="cb637-8"><a href="penalized-maximum-likelihood.html#cb637-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
+<span id="cb637-9"><a href="penalized-maximum-likelihood.html#cb637-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb637-10"><a href="penalized-maximum-likelihood.html#cb637-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb637-11"><a href="penalized-maximum-likelihood.html#cb637-11" aria-hidden="true" tabindex="-1"></a>glmnetL1 <span class="ot">=</span> <span class="fu">glmnet</span>(</span>
+<span id="cb637-12"><a href="penalized-maximum-likelihood.html#cb637-12" aria-hidden="true" tabindex="-1"></a>  X[, <span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb637-13"><a href="penalized-maximum-likelihood.html#cb637-13" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb637-14"><a href="penalized-maximum-likelihood.html#cb637-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
+<span id="cb637-15"><a href="penalized-maximum-likelihood.html#cb637-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> .<span class="dv">01</span>,</span>
+<span id="cb637-16"><a href="penalized-maximum-likelihood.html#cb637-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
+<span id="cb637-17"><a href="penalized-maximum-likelihood.html#cb637-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb637-18"><a href="penalized-maximum-likelihood.html#cb637-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb637-19"><a href="penalized-maximum-likelihood.html#cb637-19" aria-hidden="true" tabindex="-1"></a>pars_L2 <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb637-20"><a href="penalized-maximum-likelihood.html#cb637-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb637-21"><a href="penalized-maximum-likelihood.html#cb637-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML2,</span>
+<span id="cb637-22"><a href="penalized-maximum-likelihood.html#cb637-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb637-23"><a href="penalized-maximum-likelihood.html#cb637-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb637-24"><a href="penalized-maximum-likelihood.html#cb637-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> .<span class="dv">01</span>,</span>
+<span id="cb637-25"><a href="penalized-maximum-likelihood.html#cb637-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb637-26"><a href="penalized-maximum-likelihood.html#cb637-26" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>par</span>
+<span id="cb637-27"><a href="penalized-maximum-likelihood.html#cb637-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb637-28"><a href="penalized-maximum-likelihood.html#cb637-28" aria-hidden="true" tabindex="-1"></a>pars_L1 <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb637-29"><a href="penalized-maximum-likelihood.html#cb637-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb637-30"><a href="penalized-maximum-likelihood.html#cb637-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> penalized_ML2,</span>
+<span id="cb637-31"><a href="penalized-maximum-likelihood.html#cb637-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb637-32"><a href="penalized-maximum-likelihood.html#cb637-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb637-33"><a href="penalized-maximum-likelihood.html#cb637-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda  =</span> .<span class="dv">01</span>,</span>
+<span id="cb637-34"><a href="penalized-maximum-likelihood.html#cb637-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">type    =</span> <span class="st">&#39;L1&#39;</span>,</span>
+<span id="cb637-35"><a href="penalized-maximum-likelihood.html#cb637-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-12</span>)</span>
+<span id="cb637-36"><a href="penalized-maximum-likelihood.html#cb637-36" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>par</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

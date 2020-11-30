@@ -791,150 +791,150 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This function duplicates <a href="supplemental.html#python-hmm">hmm_viterbi.py</a>, which comes from the <a href="https://en.wikipedia.org/wiki/Viterbi_algorithm">Viterbi algorithm wikipedia page</a> (at least as it was when I stumbled across it, see it in the <a href="supplemental.html#python-hmm">supplemental section</a>). This first function is just to provide R code that is similar, in case anyone is interested in a more direct comparison, but the original used lists of tuples and thus was very inefficient R-wise, and provided output that wasn’t succinct. The second function takes a vectorized approach and returns a matrix in a much more straightforward fashion. Both will provide the same result as the Python code. See The <a href="markov.html#markov-model">Markov Model chapter</a> also.</p>
 <div id="data-setup-15" class="section level2">
 <h2>Data Setup</h2>
-<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="hmm.html#cb253-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb253-2"><a href="hmm.html#cb253-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb253-3"><a href="hmm.html#cb253-3" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span>, <span class="st">&#39;cold&#39;</span>, <span class="st">&#39;dizzy&#39;</span>)  <span class="co"># observed state</span></span>
-<span id="cb253-4"><a href="hmm.html#cb253-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb253-5"><a href="hmm.html#cb253-5" aria-hidden="true" tabindex="-1"></a>states <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span>, <span class="st">&#39;Fever&#39;</span>)      <span class="co"># latent states</span></span>
-<span id="cb253-6"><a href="hmm.html#cb253-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb253-7"><a href="hmm.html#cb253-7" aria-hidden="true" tabindex="-1"></a>start_p <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>, <span class="st">&#39;Fever&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>) <span class="co"># starting probabilities</span></span>
-<span id="cb253-8"><a href="hmm.html#cb253-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb253-9"><a href="hmm.html#cb253-9" aria-hidden="true" tabindex="-1"></a><span class="co"># transition matrix</span></span>
-<span id="cb253-10"><a href="hmm.html#cb253-10" aria-hidden="true" tabindex="-1"></a>trans_p <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb253-11"><a href="hmm.html#cb253-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fl">0.7</span>, <span class="st">&#39;Fever&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>), </span>
-<span id="cb253-12"><a href="hmm.html#cb253-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Fever&#39;</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;Fever&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>)</span>
-<span id="cb253-13"><a href="hmm.html#cb253-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb253-14"><a href="hmm.html#cb253-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb253-15"><a href="hmm.html#cb253-15" aria-hidden="true" tabindex="-1"></a><span class="co"># emission matrix</span></span>
-<span id="cb253-16"><a href="hmm.html#cb253-16" aria-hidden="true" tabindex="-1"></a>emit_p <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb253-17"><a href="hmm.html#cb253-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span> <span class="ot">=</span> <span class="fl">0.5</span>, <span class="st">&#39;cold&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;dizzy&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>),</span>
-<span id="cb253-18"><a href="hmm.html#cb253-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Fever&#39;</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>, <span class="st">&#39;cold&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>, <span class="st">&#39;dizzy&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>)</span>
-<span id="cb253-19"><a href="hmm.html#cb253-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="hmm.html#cb244-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb244-2"><a href="hmm.html#cb244-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb244-3"><a href="hmm.html#cb244-3" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span>, <span class="st">&#39;cold&#39;</span>, <span class="st">&#39;dizzy&#39;</span>)  <span class="co"># observed state</span></span>
+<span id="cb244-4"><a href="hmm.html#cb244-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb244-5"><a href="hmm.html#cb244-5" aria-hidden="true" tabindex="-1"></a>states <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span>, <span class="st">&#39;Fever&#39;</span>)      <span class="co"># latent states</span></span>
+<span id="cb244-6"><a href="hmm.html#cb244-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb244-7"><a href="hmm.html#cb244-7" aria-hidden="true" tabindex="-1"></a>start_p <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>, <span class="st">&#39;Fever&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>) <span class="co"># starting probabilities</span></span>
+<span id="cb244-8"><a href="hmm.html#cb244-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb244-9"><a href="hmm.html#cb244-9" aria-hidden="true" tabindex="-1"></a><span class="co"># transition matrix</span></span>
+<span id="cb244-10"><a href="hmm.html#cb244-10" aria-hidden="true" tabindex="-1"></a>trans_p <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb244-11"><a href="hmm.html#cb244-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fl">0.7</span>, <span class="st">&#39;Fever&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>), </span>
+<span id="cb244-12"><a href="hmm.html#cb244-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Fever&#39;</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;Fever&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>)</span>
+<span id="cb244-13"><a href="hmm.html#cb244-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb244-14"><a href="hmm.html#cb244-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb244-15"><a href="hmm.html#cb244-15" aria-hidden="true" tabindex="-1"></a><span class="co"># emission matrix</span></span>
+<span id="cb244-16"><a href="hmm.html#cb244-16" aria-hidden="true" tabindex="-1"></a>emit_p <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb244-17"><a href="hmm.html#cb244-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Healthy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span> <span class="ot">=</span> <span class="fl">0.5</span>, <span class="st">&#39;cold&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;dizzy&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>),</span>
+<span id="cb244-18"><a href="hmm.html#cb244-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Fever&#39;</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>, <span class="st">&#39;cold&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>, <span class="st">&#39;dizzy&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>)</span>
+<span id="cb244-19"><a href="hmm.html#cb244-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="function-16" class="section level2">
 <h2>Function</h2>
 <p>This first function takes a Python-esque approach in the manner of the original, allowing for easier comparison.</p>
-<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="hmm.html#cb254-1" aria-hidden="true" tabindex="-1"></a>viterbi <span class="ot">&lt;-</span> <span class="cf">function</span>(obs, states, start_p, trans_p, emit_p) {</span>
-<span id="cb254-2"><a href="hmm.html#cb254-2" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">=</span> <span class="fu">vector</span>(<span class="st">&#39;list&#39;</span>, <span class="fu">length</span>(obs))</span>
-<span id="cb254-3"><a href="hmm.html#cb254-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb254-4"><a href="hmm.html#cb254-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (st <span class="cf">in</span> <span class="fu">seq_along</span>(states)) {</span>
-<span id="cb254-5"><a href="hmm.html#cb254-5" aria-hidden="true" tabindex="-1"></a>    V[[<span class="dv">1</span>]][[states[st]]] <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&quot;prob&quot;</span> <span class="ot">=</span> start_p[st] <span class="sc">*</span> emit_p[[st]][obs[<span class="dv">1</span>]], </span>
-<span id="cb254-6"><a href="hmm.html#cb254-6" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;prev&quot;</span> <span class="ot">=</span> <span class="cn">NULL</span>)</span>
-<span id="cb254-7"><a href="hmm.html#cb254-7" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb254-8"><a href="hmm.html#cb254-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb254-9"><a href="hmm.html#cb254-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(obs)) {</span>
-<span id="cb254-10"><a href="hmm.html#cb254-10" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb254-11"><a href="hmm.html#cb254-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (st <span class="cf">in</span> <span class="fu">seq_along</span>(states)) {</span>
-<span id="cb254-12"><a href="hmm.html#cb254-12" aria-hidden="true" tabindex="-1"></a>      max_tr_prob <span class="ot">=</span> <span class="fu">numeric</span>()</span>
-<span id="cb254-13"><a href="hmm.html#cb254-13" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb254-14"><a href="hmm.html#cb254-14" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (prev_st <span class="cf">in</span> states) {</span>
-<span id="cb254-15"><a href="hmm.html#cb254-15" aria-hidden="true" tabindex="-1"></a>        max_tr_prob[prev_st] <span class="ot">=</span> V[[t<span class="dv">-1</span>]][[prev_st]][[<span class="st">&quot;prob&quot;</span>]] <span class="sc">*</span> trans_p[[prev_st]][[st]]</span>
-<span id="cb254-16"><a href="hmm.html#cb254-16" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb254-17"><a href="hmm.html#cb254-17" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb254-18"><a href="hmm.html#cb254-18" aria-hidden="true" tabindex="-1"></a>      max_tr_prob <span class="ot">=</span> <span class="fu">max</span>(max_tr_prob)</span>
-<span id="cb254-19"><a href="hmm.html#cb254-19" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb254-20"><a href="hmm.html#cb254-20" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (prev_st <span class="cf">in</span> states) {</span>
-<span id="cb254-21"><a href="hmm.html#cb254-21" aria-hidden="true" tabindex="-1"></a>        flag <span class="ot">=</span>  V[[t<span class="dv">-1</span>]][[prev_st]][[<span class="st">&quot;prob&quot;</span>]] <span class="sc">*</span> trans_p[[prev_st]][[st]] <span class="sc">==</span> max_tr_prob</span>
-<span id="cb254-22"><a href="hmm.html#cb254-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (flag) {</span>
-<span id="cb254-23"><a href="hmm.html#cb254-23" aria-hidden="true" tabindex="-1"></a>          max_prob <span class="ot">=</span> max_tr_prob <span class="sc">*</span> emit_p[[st]][obs[t]]</span>
-<span id="cb254-24"><a href="hmm.html#cb254-24" aria-hidden="true" tabindex="-1"></a>          V[[t]][[states[st]]] <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&#39;prob&#39;</span> <span class="ot">=</span> max_prob, <span class="st">&#39;prev&#39;</span> <span class="ot">=</span> prev_st)</span>
-<span id="cb254-25"><a href="hmm.html#cb254-25" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb254-26"><a href="hmm.html#cb254-26" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb254-27"><a href="hmm.html#cb254-27" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb254-28"><a href="hmm.html#cb254-28" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb254-29"><a href="hmm.html#cb254-29" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb254-30"><a href="hmm.html#cb254-30" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb254-31"><a href="hmm.html#cb254-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb254-32"><a href="hmm.html#cb254-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># I don&#39;t bother duplicating the text output code of the original</span></span>
-<span id="cb254-33"><a href="hmm.html#cb254-33" aria-hidden="true" tabindex="-1"></a>  df_out <span class="ot">=</span> <span class="fu">rbind</span>(</span>
-<span id="cb254-34"><a href="hmm.html#cb254-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">Healthy =</span> <span class="fu">sapply</span>(V, <span class="cf">function</span>(x) x<span class="sc">$</span>Healthy<span class="sc">$</span>prob),</span>
-<span id="cb254-35"><a href="hmm.html#cb254-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">Fever   =</span> <span class="fu">sapply</span>(V, <span class="cf">function</span>(x) x<span class="sc">$</span>Fever<span class="sc">$</span>prob)</span>
-<span id="cb254-36"><a href="hmm.html#cb254-36" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb254-37"><a href="hmm.html#cb254-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb254-38"><a href="hmm.html#cb254-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(df_out) <span class="ot">=</span> obs</span>
-<span id="cb254-39"><a href="hmm.html#cb254-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(df_out)</span>
-<span id="cb254-40"><a href="hmm.html#cb254-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb254-41"><a href="hmm.html#cb254-41" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">paste0</span>(</span>
-<span id="cb254-42"><a href="hmm.html#cb254-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;The steps of states are: &#39;</span>, </span>
-<span id="cb254-43"><a href="hmm.html#cb254-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="fu">rownames</span>(df_out)[<span class="fu">apply</span>(df_out, <span class="dv">2</span>, which.max)], <span class="at">collapse =</span> <span class="st">&#39; &#39;</span>), </span>
-<span id="cb254-44"><a href="hmm.html#cb254-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">&#39;</span><span class="sc">\n</span><span class="st">Highest probability: &#39;</span>, <span class="fu">max</span>(df_out[, <span class="fu">ncol</span>(df_out)]))</span>
-<span id="cb254-45"><a href="hmm.html#cb254-45" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb254-46"><a href="hmm.html#cb254-46" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb254-47"><a href="hmm.html#cb254-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(m)</span>
-<span id="cb254-48"><a href="hmm.html#cb254-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb254-49"><a href="hmm.html#cb254-49" aria-hidden="true" tabindex="-1"></a>  V</span>
-<span id="cb254-50"><a href="hmm.html#cb254-50" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="hmm.html#cb245-1" aria-hidden="true" tabindex="-1"></a>viterbi <span class="ot">&lt;-</span> <span class="cf">function</span>(obs, states, start_p, trans_p, emit_p) {</span>
+<span id="cb245-2"><a href="hmm.html#cb245-2" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">=</span> <span class="fu">vector</span>(<span class="st">&#39;list&#39;</span>, <span class="fu">length</span>(obs))</span>
+<span id="cb245-3"><a href="hmm.html#cb245-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb245-4"><a href="hmm.html#cb245-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (st <span class="cf">in</span> <span class="fu">seq_along</span>(states)) {</span>
+<span id="cb245-5"><a href="hmm.html#cb245-5" aria-hidden="true" tabindex="-1"></a>    V[[<span class="dv">1</span>]][[states[st]]] <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&quot;prob&quot;</span> <span class="ot">=</span> start_p[st] <span class="sc">*</span> emit_p[[st]][obs[<span class="dv">1</span>]], </span>
+<span id="cb245-6"><a href="hmm.html#cb245-6" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;prev&quot;</span> <span class="ot">=</span> <span class="cn">NULL</span>)</span>
+<span id="cb245-7"><a href="hmm.html#cb245-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb245-8"><a href="hmm.html#cb245-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb245-9"><a href="hmm.html#cb245-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(obs)) {</span>
+<span id="cb245-10"><a href="hmm.html#cb245-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb245-11"><a href="hmm.html#cb245-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (st <span class="cf">in</span> <span class="fu">seq_along</span>(states)) {</span>
+<span id="cb245-12"><a href="hmm.html#cb245-12" aria-hidden="true" tabindex="-1"></a>      max_tr_prob <span class="ot">=</span> <span class="fu">numeric</span>()</span>
+<span id="cb245-13"><a href="hmm.html#cb245-13" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb245-14"><a href="hmm.html#cb245-14" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (prev_st <span class="cf">in</span> states) {</span>
+<span id="cb245-15"><a href="hmm.html#cb245-15" aria-hidden="true" tabindex="-1"></a>        max_tr_prob[prev_st] <span class="ot">=</span> V[[t<span class="dv">-1</span>]][[prev_st]][[<span class="st">&quot;prob&quot;</span>]] <span class="sc">*</span> trans_p[[prev_st]][[st]]</span>
+<span id="cb245-16"><a href="hmm.html#cb245-16" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb245-17"><a href="hmm.html#cb245-17" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb245-18"><a href="hmm.html#cb245-18" aria-hidden="true" tabindex="-1"></a>      max_tr_prob <span class="ot">=</span> <span class="fu">max</span>(max_tr_prob)</span>
+<span id="cb245-19"><a href="hmm.html#cb245-19" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb245-20"><a href="hmm.html#cb245-20" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (prev_st <span class="cf">in</span> states) {</span>
+<span id="cb245-21"><a href="hmm.html#cb245-21" aria-hidden="true" tabindex="-1"></a>        flag <span class="ot">=</span>  V[[t<span class="dv">-1</span>]][[prev_st]][[<span class="st">&quot;prob&quot;</span>]] <span class="sc">*</span> trans_p[[prev_st]][[st]] <span class="sc">==</span> max_tr_prob</span>
+<span id="cb245-22"><a href="hmm.html#cb245-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (flag) {</span>
+<span id="cb245-23"><a href="hmm.html#cb245-23" aria-hidden="true" tabindex="-1"></a>          max_prob <span class="ot">=</span> max_tr_prob <span class="sc">*</span> emit_p[[st]][obs[t]]</span>
+<span id="cb245-24"><a href="hmm.html#cb245-24" aria-hidden="true" tabindex="-1"></a>          V[[t]][[states[st]]] <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&#39;prob&#39;</span> <span class="ot">=</span> max_prob, <span class="st">&#39;prev&#39;</span> <span class="ot">=</span> prev_st)</span>
+<span id="cb245-25"><a href="hmm.html#cb245-25" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb245-26"><a href="hmm.html#cb245-26" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb245-27"><a href="hmm.html#cb245-27" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb245-28"><a href="hmm.html#cb245-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb245-29"><a href="hmm.html#cb245-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb245-30"><a href="hmm.html#cb245-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb245-31"><a href="hmm.html#cb245-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb245-32"><a href="hmm.html#cb245-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># I don&#39;t bother duplicating the text output code of the original</span></span>
+<span id="cb245-33"><a href="hmm.html#cb245-33" aria-hidden="true" tabindex="-1"></a>  df_out <span class="ot">=</span> <span class="fu">rbind</span>(</span>
+<span id="cb245-34"><a href="hmm.html#cb245-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">Healthy =</span> <span class="fu">sapply</span>(V, <span class="cf">function</span>(x) x<span class="sc">$</span>Healthy<span class="sc">$</span>prob),</span>
+<span id="cb245-35"><a href="hmm.html#cb245-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">Fever   =</span> <span class="fu">sapply</span>(V, <span class="cf">function</span>(x) x<span class="sc">$</span>Fever<span class="sc">$</span>prob)</span>
+<span id="cb245-36"><a href="hmm.html#cb245-36" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb245-37"><a href="hmm.html#cb245-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb245-38"><a href="hmm.html#cb245-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(df_out) <span class="ot">=</span> obs</span>
+<span id="cb245-39"><a href="hmm.html#cb245-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(df_out)</span>
+<span id="cb245-40"><a href="hmm.html#cb245-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb245-41"><a href="hmm.html#cb245-41" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">paste0</span>(</span>
+<span id="cb245-42"><a href="hmm.html#cb245-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;The steps of states are: &#39;</span>, </span>
+<span id="cb245-43"><a href="hmm.html#cb245-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="fu">rownames</span>(df_out)[<span class="fu">apply</span>(df_out, <span class="dv">2</span>, which.max)], <span class="at">collapse =</span> <span class="st">&#39; &#39;</span>), </span>
+<span id="cb245-44"><a href="hmm.html#cb245-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">&#39;</span><span class="sc">\n</span><span class="st">Highest probability: &#39;</span>, <span class="fu">max</span>(df_out[, <span class="fu">ncol</span>(df_out)]))</span>
+<span id="cb245-45"><a href="hmm.html#cb245-45" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb245-46"><a href="hmm.html#cb245-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb245-47"><a href="hmm.html#cb245-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(m)</span>
+<span id="cb245-48"><a href="hmm.html#cb245-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb245-49"><a href="hmm.html#cb245-49" aria-hidden="true" tabindex="-1"></a>  V</span>
+<span id="cb245-50"><a href="hmm.html#cb245-50" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>This approach is much more R-like.</p>
-<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="hmm.html#cb255-1" aria-hidden="true" tabindex="-1"></a>viterbi_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(obs, states, start_p, trans_mat, emit_mat) {</span>
-<span id="cb255-2"><a href="hmm.html#cb255-2" aria-hidden="true" tabindex="-1"></a>  prob_mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">length</span>(states), <span class="at">ncol =</span> <span class="fu">length</span>(obs))</span>
-<span id="cb255-3"><a href="hmm.html#cb255-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(prob_mat) <span class="ot">=</span> obs</span>
-<span id="cb255-4"><a href="hmm.html#cb255-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(prob_mat) <span class="ot">=</span> states</span>
-<span id="cb255-5"><a href="hmm.html#cb255-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb255-6"><a href="hmm.html#cb255-6" aria-hidden="true" tabindex="-1"></a>  prob_mat[,<span class="dv">1</span>] <span class="ot">=</span> start_p <span class="sc">*</span> emit_mat[,<span class="dv">1</span>]</span>
-<span id="cb255-7"><a href="hmm.html#cb255-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb255-8"><a href="hmm.html#cb255-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(obs)) {</span>
-<span id="cb255-9"><a href="hmm.html#cb255-9" aria-hidden="true" tabindex="-1"></a>    prob_tran    <span class="ot">=</span> prob_mat[,t<span class="dv">-1</span>] <span class="sc">*</span> trans_mat</span>
-<span id="cb255-10"><a href="hmm.html#cb255-10" aria-hidden="true" tabindex="-1"></a>    max_tr_prob  <span class="ot">=</span> <span class="fu">apply</span>(prob_tran, <span class="dv">2</span>, max)</span>
-<span id="cb255-11"><a href="hmm.html#cb255-11" aria-hidden="true" tabindex="-1"></a>    prob_mat[,t] <span class="ot">=</span> max_tr_prob <span class="sc">*</span> emit_mat[, obs[t]]</span>
-<span id="cb255-12"><a href="hmm.html#cb255-12" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb255-13"><a href="hmm.html#cb255-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb255-14"><a href="hmm.html#cb255-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(prob_mat)</span>
-<span id="cb255-15"><a href="hmm.html#cb255-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb255-16"><a href="hmm.html#cb255-16" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">paste0</span>(</span>
-<span id="cb255-17"><a href="hmm.html#cb255-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;The steps of states are: &#39;</span>, </span>
-<span id="cb255-18"><a href="hmm.html#cb255-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(states[<span class="fu">apply</span>(prob_mat, <span class="dv">2</span>, which.max)], <span class="at">collapse =</span> <span class="st">&#39; &#39;</span>), </span>
-<span id="cb255-19"><a href="hmm.html#cb255-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">&#39;</span><span class="sc">\n</span><span class="st">Highest probability: &#39;</span>, <span class="fu">max</span>(prob_mat[, <span class="fu">ncol</span>(prob_mat)]))</span>
-<span id="cb255-20"><a href="hmm.html#cb255-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb255-21"><a href="hmm.html#cb255-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb255-22"><a href="hmm.html#cb255-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(m)</span>
-<span id="cb255-23"><a href="hmm.html#cb255-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="hmm.html#cb246-1" aria-hidden="true" tabindex="-1"></a>viterbi_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(obs, states, start_p, trans_mat, emit_mat) {</span>
+<span id="cb246-2"><a href="hmm.html#cb246-2" aria-hidden="true" tabindex="-1"></a>  prob_mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">length</span>(states), <span class="at">ncol =</span> <span class="fu">length</span>(obs))</span>
+<span id="cb246-3"><a href="hmm.html#cb246-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(prob_mat) <span class="ot">=</span> obs</span>
+<span id="cb246-4"><a href="hmm.html#cb246-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(prob_mat) <span class="ot">=</span> states</span>
+<span id="cb246-5"><a href="hmm.html#cb246-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb246-6"><a href="hmm.html#cb246-6" aria-hidden="true" tabindex="-1"></a>  prob_mat[,<span class="dv">1</span>] <span class="ot">=</span> start_p <span class="sc">*</span> emit_mat[,<span class="dv">1</span>]</span>
+<span id="cb246-7"><a href="hmm.html#cb246-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb246-8"><a href="hmm.html#cb246-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(obs)) {</span>
+<span id="cb246-9"><a href="hmm.html#cb246-9" aria-hidden="true" tabindex="-1"></a>    prob_tran    <span class="ot">=</span> prob_mat[,t<span class="dv">-1</span>] <span class="sc">*</span> trans_mat</span>
+<span id="cb246-10"><a href="hmm.html#cb246-10" aria-hidden="true" tabindex="-1"></a>    max_tr_prob  <span class="ot">=</span> <span class="fu">apply</span>(prob_tran, <span class="dv">2</span>, max)</span>
+<span id="cb246-11"><a href="hmm.html#cb246-11" aria-hidden="true" tabindex="-1"></a>    prob_mat[,t] <span class="ot">=</span> max_tr_prob <span class="sc">*</span> emit_mat[, obs[t]]</span>
+<span id="cb246-12"><a href="hmm.html#cb246-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb246-13"><a href="hmm.html#cb246-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb246-14"><a href="hmm.html#cb246-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(prob_mat)</span>
+<span id="cb246-15"><a href="hmm.html#cb246-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb246-16"><a href="hmm.html#cb246-16" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">paste0</span>(</span>
+<span id="cb246-17"><a href="hmm.html#cb246-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;The steps of states are: &#39;</span>, </span>
+<span id="cb246-18"><a href="hmm.html#cb246-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(states[<span class="fu">apply</span>(prob_mat, <span class="dv">2</span>, which.max)], <span class="at">collapse =</span> <span class="st">&#39; &#39;</span>), </span>
+<span id="cb246-19"><a href="hmm.html#cb246-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">&#39;</span><span class="sc">\n</span><span class="st">Highest probability: &#39;</span>, <span class="fu">max</span>(prob_mat[, <span class="fu">ncol</span>(prob_mat)]))</span>
+<span id="cb246-20"><a href="hmm.html#cb246-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb246-21"><a href="hmm.html#cb246-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb246-22"><a href="hmm.html#cb246-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(m)</span>
+<span id="cb246-23"><a href="hmm.html#cb246-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-16" class="section level2">
 <h2>Estimation</h2>
 <p>First we demo the initial function.</p>
-<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="hmm.html#cb256-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">viterbi</span>(</span>
-<span id="cb256-2"><a href="hmm.html#cb256-2" aria-hidden="true" tabindex="-1"></a>  obs,</span>
-<span id="cb256-3"><a href="hmm.html#cb256-3" aria-hidden="true" tabindex="-1"></a>  states,</span>
-<span id="cb256-4"><a href="hmm.html#cb256-4" aria-hidden="true" tabindex="-1"></a>  start_p,</span>
-<span id="cb256-5"><a href="hmm.html#cb256-5" aria-hidden="true" tabindex="-1"></a>  trans_p,</span>
-<span id="cb256-6"><a href="hmm.html#cb256-6" aria-hidden="true" tabindex="-1"></a>  emit_p</span>
-<span id="cb256-7"><a href="hmm.html#cb256-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="hmm.html#cb247-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">viterbi</span>(</span>
+<span id="cb247-2"><a href="hmm.html#cb247-2" aria-hidden="true" tabindex="-1"></a>  obs,</span>
+<span id="cb247-3"><a href="hmm.html#cb247-3" aria-hidden="true" tabindex="-1"></a>  states,</span>
+<span id="cb247-4"><a href="hmm.html#cb247-4" aria-hidden="true" tabindex="-1"></a>  start_p,</span>
+<span id="cb247-5"><a href="hmm.html#cb247-5" aria-hidden="true" tabindex="-1"></a>  trans_p,</span>
+<span id="cb247-6"><a href="hmm.html#cb247-6" aria-hidden="true" tabindex="-1"></a>  emit_p</span>
+<span id="cb247-7"><a href="hmm.html#cb247-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>        normal  cold   dizzy
 Healthy   0.30 0.084 0.00588
 Fever     0.04 0.027 0.01512</code></pre>
-<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="hmm.html#cb258-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span>
-<span id="cb258-2"><a href="hmm.html#cb258-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb258-3"><a href="hmm.html#cb258-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb258-4"><a href="hmm.html#cb258-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">sample</span>(obs, <span class="dv">6</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb258-5"><a href="hmm.html#cb258-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb258-6"><a href="hmm.html#cb258-6" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">viterbi</span>(</span>
-<span id="cb258-7"><a href="hmm.html#cb258-7" aria-hidden="true" tabindex="-1"></a>  obs,</span>
-<span id="cb258-8"><a href="hmm.html#cb258-8" aria-hidden="true" tabindex="-1"></a>  states,</span>
-<span id="cb258-9"><a href="hmm.html#cb258-9" aria-hidden="true" tabindex="-1"></a>  start_p,</span>
-<span id="cb258-10"><a href="hmm.html#cb258-10" aria-hidden="true" tabindex="-1"></a>  trans_p,</span>
-<span id="cb258-11"><a href="hmm.html#cb258-11" aria-hidden="true" tabindex="-1"></a>  emit_p</span>
-<span id="cb258-12"><a href="hmm.html#cb258-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="hmm.html#cb249-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span>
+<span id="cb249-2"><a href="hmm.html#cb249-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb249-3"><a href="hmm.html#cb249-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb249-4"><a href="hmm.html#cb249-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">sample</span>(obs, <span class="dv">6</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb249-5"><a href="hmm.html#cb249-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb249-6"><a href="hmm.html#cb249-6" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">viterbi</span>(</span>
+<span id="cb249-7"><a href="hmm.html#cb249-7" aria-hidden="true" tabindex="-1"></a>  obs,</span>
+<span id="cb249-8"><a href="hmm.html#cb249-8" aria-hidden="true" tabindex="-1"></a>  states,</span>
+<span id="cb249-9"><a href="hmm.html#cb249-9" aria-hidden="true" tabindex="-1"></a>  start_p,</span>
+<span id="cb249-10"><a href="hmm.html#cb249-10" aria-hidden="true" tabindex="-1"></a>  trans_p,</span>
+<span id="cb249-11"><a href="hmm.html#cb249-11" aria-hidden="true" tabindex="-1"></a>  emit_p</span>
+<span id="cb249-12"><a href="hmm.html#cb249-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>        dizzy  dizzy    dizzy       cold        dizzy         cold
 Healthy  0.06 0.0096 0.003456 0.00497664 0.0003483648 0.0003224863
 Fever    0.24 0.0864 0.031104 0.00559872 0.0020155392 0.0003627971</code></pre>
-<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="hmm.html#cb260-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span></code></pre></div>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="hmm.html#cb251-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span></code></pre></div>
 <p>Now the vectorized approach.</p>
-<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="hmm.html#cb261-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb261-2"><a href="hmm.html#cb261-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb261-3"><a href="hmm.html#cb261-3" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span>, <span class="st">&#39;cold&#39;</span>, <span class="st">&#39;dizzy&#39;</span>)</span>
-<span id="cb261-4"><a href="hmm.html#cb261-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">sample</span>(obs, <span class="dv">6</span>, <span class="at">replace =</span> T)</span>
-<span id="cb261-5"><a href="hmm.html#cb261-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb261-6"><a href="hmm.html#cb261-6" aria-hidden="true" tabindex="-1"></a><span class="co"># need matrices now</span></span>
-<span id="cb261-7"><a href="hmm.html#cb261-7" aria-hidden="true" tabindex="-1"></a>emit_mat  <span class="ot">=</span> <span class="fu">do.call</span>(rbind, emit_p)</span>
-<span id="cb261-8"><a href="hmm.html#cb261-8" aria-hidden="true" tabindex="-1"></a>trans_mat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, trans_p)</span>
-<span id="cb261-9"><a href="hmm.html#cb261-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb261-10"><a href="hmm.html#cb261-10" aria-hidden="true" tabindex="-1"></a><span class="fu">viterbi_2</span>(</span>
-<span id="cb261-11"><a href="hmm.html#cb261-11" aria-hidden="true" tabindex="-1"></a>  obs, </span>
-<span id="cb261-12"><a href="hmm.html#cb261-12" aria-hidden="true" tabindex="-1"></a>  states, </span>
-<span id="cb261-13"><a href="hmm.html#cb261-13" aria-hidden="true" tabindex="-1"></a>  start_p, </span>
-<span id="cb261-14"><a href="hmm.html#cb261-14" aria-hidden="true" tabindex="-1"></a>  trans_mat, </span>
-<span id="cb261-15"><a href="hmm.html#cb261-15" aria-hidden="true" tabindex="-1"></a>  emit_mat</span>
-<span id="cb261-16"><a href="hmm.html#cb261-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="hmm.html#cb252-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb252-2"><a href="hmm.html#cb252-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb252-3"><a href="hmm.html#cb252-3" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;normal&#39;</span>, <span class="st">&#39;cold&#39;</span>, <span class="st">&#39;dizzy&#39;</span>)</span>
+<span id="cb252-4"><a href="hmm.html#cb252-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> <span class="fu">sample</span>(obs, <span class="dv">6</span>, <span class="at">replace =</span> T)</span>
+<span id="cb252-5"><a href="hmm.html#cb252-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb252-6"><a href="hmm.html#cb252-6" aria-hidden="true" tabindex="-1"></a><span class="co"># need matrices now</span></span>
+<span id="cb252-7"><a href="hmm.html#cb252-7" aria-hidden="true" tabindex="-1"></a>emit_mat  <span class="ot">=</span> <span class="fu">do.call</span>(rbind, emit_p)</span>
+<span id="cb252-8"><a href="hmm.html#cb252-8" aria-hidden="true" tabindex="-1"></a>trans_mat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, trans_p)</span>
+<span id="cb252-9"><a href="hmm.html#cb252-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb252-10"><a href="hmm.html#cb252-10" aria-hidden="true" tabindex="-1"></a><span class="fu">viterbi_2</span>(</span>
+<span id="cb252-11"><a href="hmm.html#cb252-11" aria-hidden="true" tabindex="-1"></a>  obs, </span>
+<span id="cb252-12"><a href="hmm.html#cb252-12" aria-hidden="true" tabindex="-1"></a>  states, </span>
+<span id="cb252-13"><a href="hmm.html#cb252-13" aria-hidden="true" tabindex="-1"></a>  start_p, </span>
+<span id="cb252-14"><a href="hmm.html#cb252-14" aria-hidden="true" tabindex="-1"></a>  trans_mat, </span>
+<span id="cb252-15"><a href="hmm.html#cb252-15" aria-hidden="true" tabindex="-1"></a>  emit_mat</span>
+<span id="cb252-16"><a href="hmm.html#cb252-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>        dizzy dizzy   dizzy      cold       dizzy         cold
 Healthy  0.30 0.021 0.00216 0.0031104 0.000217728 0.0002015539
 Fever    0.04 0.054 0.01944 0.0034992 0.001259712 0.0002267482</code></pre>
@@ -942,29 +942,29 @@ Fever    0.04 0.054 0.01944 0.0034992 0.001259712 0.0002267482</code></pre>
 <div id="supplemental-demo" class="section level2">
 <h2>Supplemental demo</h2>
 <p>This example comes from the <a href="https://en.wikipedia.org/wiki/Hidden_Markov_model">hidden markov model wikipedia page</a>.</p>
-<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="hmm.html#cb263-1" aria-hidden="true" tabindex="-1"></a>states <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span>, <span class="st">&#39;Sunny&#39;</span>)</span>
-<span id="cb263-2"><a href="hmm.html#cb263-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb263-3"><a href="hmm.html#cb263-3" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;walk&#39;</span>, <span class="st">&#39;shop&#39;</span>, <span class="st">&#39;clean&#39;</span>)</span>
-<span id="cb263-4"><a href="hmm.html#cb263-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb263-5"><a href="hmm.html#cb263-5" aria-hidden="true" tabindex="-1"></a>start_probability <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>, <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>)</span>
-<span id="cb263-6"><a href="hmm.html#cb263-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb263-7"><a href="hmm.html#cb263-7" aria-hidden="true" tabindex="-1"></a>transition_probability <span class="ot">=</span> <span class="fu">rbind</span>(</span>
-<span id="cb263-8"><a href="hmm.html#cb263-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fl">0.7</span>, <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>),</span>
-<span id="cb263-9"><a href="hmm.html#cb263-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>)</span>
-<span id="cb263-10"><a href="hmm.html#cb263-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb263-11"><a href="hmm.html#cb263-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb263-12"><a href="hmm.html#cb263-12" aria-hidden="true" tabindex="-1"></a>emission_probability <span class="ot">=</span> <span class="fu">rbind</span>(</span>
-<span id="cb263-13"><a href="hmm.html#cb263-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;walk&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>, <span class="st">&#39;shop&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;clean&#39;</span> <span class="ot">=</span> <span class="fl">0.5</span>),</span>
-<span id="cb263-14"><a href="hmm.html#cb263-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;walk&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>, <span class="st">&#39;shop&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>, <span class="st">&#39;clean&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>)</span>
-<span id="cb263-15"><a href="hmm.html#cb263-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb263-16"><a href="hmm.html#cb263-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb263-17"><a href="hmm.html#cb263-17" aria-hidden="true" tabindex="-1"></a><span class="fu">viterbi_2</span>(</span>
-<span id="cb263-18"><a href="hmm.html#cb263-18" aria-hidden="true" tabindex="-1"></a>  observations,</span>
-<span id="cb263-19"><a href="hmm.html#cb263-19" aria-hidden="true" tabindex="-1"></a>  states,</span>
-<span id="cb263-20"><a href="hmm.html#cb263-20" aria-hidden="true" tabindex="-1"></a>  start_probability,</span>
-<span id="cb263-21"><a href="hmm.html#cb263-21" aria-hidden="true" tabindex="-1"></a>  transition_probability,</span>
-<span id="cb263-22"><a href="hmm.html#cb263-22" aria-hidden="true" tabindex="-1"></a>  emission_probability</span>
-<span id="cb263-23"><a href="hmm.html#cb263-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="hmm.html#cb254-1" aria-hidden="true" tabindex="-1"></a>states <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span>, <span class="st">&#39;Sunny&#39;</span>)</span>
+<span id="cb254-2"><a href="hmm.html#cb254-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-3"><a href="hmm.html#cb254-3" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;walk&#39;</span>, <span class="st">&#39;shop&#39;</span>, <span class="st">&#39;clean&#39;</span>)</span>
+<span id="cb254-4"><a href="hmm.html#cb254-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-5"><a href="hmm.html#cb254-5" aria-hidden="true" tabindex="-1"></a>start_probability <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>, <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>)</span>
+<span id="cb254-6"><a href="hmm.html#cb254-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-7"><a href="hmm.html#cb254-7" aria-hidden="true" tabindex="-1"></a>transition_probability <span class="ot">=</span> <span class="fu">rbind</span>(</span>
+<span id="cb254-8"><a href="hmm.html#cb254-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fl">0.7</span>, <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>),</span>
+<span id="cb254-9"><a href="hmm.html#cb254-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>)</span>
+<span id="cb254-10"><a href="hmm.html#cb254-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb254-11"><a href="hmm.html#cb254-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-12"><a href="hmm.html#cb254-12" aria-hidden="true" tabindex="-1"></a>emission_probability <span class="ot">=</span> <span class="fu">rbind</span>(</span>
+<span id="cb254-13"><a href="hmm.html#cb254-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Rainy&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;walk&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>, <span class="st">&#39;shop&#39;</span> <span class="ot">=</span> <span class="fl">0.4</span>, <span class="st">&#39;clean&#39;</span> <span class="ot">=</span> <span class="fl">0.5</span>),</span>
+<span id="cb254-14"><a href="hmm.html#cb254-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;Sunny&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;walk&#39;</span> <span class="ot">=</span> <span class="fl">0.6</span>, <span class="st">&#39;shop&#39;</span> <span class="ot">=</span> <span class="fl">0.3</span>, <span class="st">&#39;clean&#39;</span> <span class="ot">=</span> <span class="fl">0.1</span>)</span>
+<span id="cb254-15"><a href="hmm.html#cb254-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb254-16"><a href="hmm.html#cb254-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-17"><a href="hmm.html#cb254-17" aria-hidden="true" tabindex="-1"></a><span class="fu">viterbi_2</span>(</span>
+<span id="cb254-18"><a href="hmm.html#cb254-18" aria-hidden="true" tabindex="-1"></a>  observations,</span>
+<span id="cb254-19"><a href="hmm.html#cb254-19" aria-hidden="true" tabindex="-1"></a>  states,</span>
+<span id="cb254-20"><a href="hmm.html#cb254-20" aria-hidden="true" tabindex="-1"></a>  start_probability,</span>
+<span id="cb254-21"><a href="hmm.html#cb254-21" aria-hidden="true" tabindex="-1"></a>  transition_probability,</span>
+<span id="cb254-22"><a href="hmm.html#cb254-22" aria-hidden="true" tabindex="-1"></a>  emission_probability</span>
+<span id="cb254-23"><a href="hmm.html#cb254-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>      walk   shop    clean
 Rainy 0.06 0.0384 0.013440
 Sunny 0.24 0.0432 0.002592</code></pre>

@@ -18,12 +18,13 @@ dtmcA = new(
 )
 
 dtmcA
+
 plot(dtmcA)
 
 transitionProbability(dtmcA, 'b', 'b')
 initialState = c(0, 1)
 steps = 4
-finalState = initialState * dtmcA ^ steps #using power operator
+finalState = initialState * dtmcA^steps # using power operator
 finalState
 
 

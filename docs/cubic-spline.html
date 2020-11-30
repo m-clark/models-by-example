@@ -792,116 +792,110 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="data-setup-17" class="section level2">
 <h2>Data Setup</h2>
 <p>The data regards engine wear index versus engine capacity for 19 Volvo car engines used. The idea is that a larger car engine will wear out less quickly than a smaller one (from Wood GAM 2e chapter 4).</p>
-<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="cubic-spline.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb272-2"><a href="cubic-spline.html#cb272-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-3"><a href="cubic-spline.html#cb272-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(engine, <span class="at">package =</span> <span class="st">&#39;gamair&#39;</span>)</span>
-<span id="cb272-4"><a href="cubic-spline.html#cb272-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-5"><a href="cubic-spline.html#cb272-5" aria-hidden="true" tabindex="-1"></a>size <span class="ot">=</span> engine<span class="sc">$</span>size</span>
-<span id="cb272-6"><a href="cubic-spline.html#cb272-6" aria-hidden="true" tabindex="-1"></a>wear <span class="ot">=</span> engine<span class="sc">$</span>wear</span>
-<span id="cb272-7"><a href="cubic-spline.html#cb272-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-8"><a href="cubic-spline.html#cb272-8" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> size <span class="sc">-</span> <span class="fu">min</span>(size)</span>
-<span id="cb272-9"><a href="cubic-spline.html#cb272-9" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> x <span class="sc">/</span> <span class="fu">max</span>(x)</span>
-<span id="cb272-10"><a href="cubic-spline.html#cb272-10" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">data.frame</span>(wear, x)</span></code></pre></div>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="cubic-spline.html#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb263-2"><a href="cubic-spline.html#cb263-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb263-3"><a href="cubic-spline.html#cb263-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(engine, <span class="at">package =</span> <span class="st">&#39;gamair&#39;</span>)</span>
+<span id="cb263-4"><a href="cubic-spline.html#cb263-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb263-5"><a href="cubic-spline.html#cb263-5" aria-hidden="true" tabindex="-1"></a>size <span class="ot">=</span> engine<span class="sc">$</span>size</span>
+<span id="cb263-6"><a href="cubic-spline.html#cb263-6" aria-hidden="true" tabindex="-1"></a>wear <span class="ot">=</span> engine<span class="sc">$</span>wear</span>
+<span id="cb263-7"><a href="cubic-spline.html#cb263-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb263-8"><a href="cubic-spline.html#cb263-8" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> size <span class="sc">-</span> <span class="fu">min</span>(size)</span>
+<span id="cb263-9"><a href="cubic-spline.html#cb263-9" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> x <span class="sc">/</span> <span class="fu">max</span>(x)</span>
+<span id="cb263-10"><a href="cubic-spline.html#cb263-10" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">data.frame</span>(wear, x)</span></code></pre></div>
 </div>
 <div id="functions-2" class="section level2">
 <h2>Functions</h2>
 <p>Cubic spline function, <code>rk</code> refers to <a href="rkhs.html#reproducing-kernel-hilbert-space-regression">reproducing kernel</a>. If I recall correctly, the function code is actually based on the first edition of Wood’s text.</p>
-<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="cubic-spline.html#cb273-1" aria-hidden="true" tabindex="-1"></a>rk <span class="ot">&lt;-</span> <span class="cf">function</span>(x, z) {</span>
-<span id="cb273-2"><a href="cubic-spline.html#cb273-2" aria-hidden="true" tabindex="-1"></a>  ((z <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">*</span> ((x <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>)<span class="sc">/</span><span class="dv">4</span> <span class="sc">-</span></span>
-<span id="cb273-3"><a href="cubic-spline.html#cb273-3" aria-hidden="true" tabindex="-1"></a>    ((<span class="fu">abs</span>(x <span class="sc">-</span> z) <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">4</span> <span class="sc">-</span> (<span class="fu">abs</span>(x <span class="sc">-</span> z) <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span><span class="sc">/</span><span class="dv">240</span>) <span class="sc">/</span> <span class="dv">24</span></span>
-<span id="cb273-4"><a href="cubic-spline.html#cb273-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="cubic-spline.html#cb264-1" aria-hidden="true" tabindex="-1"></a>rk <span class="ot">&lt;-</span> <span class="cf">function</span>(x, z) {</span>
+<span id="cb264-2"><a href="cubic-spline.html#cb264-2" aria-hidden="true" tabindex="-1"></a>  ((z <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">*</span> ((x <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>)<span class="sc">/</span><span class="dv">4</span> <span class="sc">-</span></span>
+<span id="cb264-3"><a href="cubic-spline.html#cb264-3" aria-hidden="true" tabindex="-1"></a>    ((<span class="fu">abs</span>(x <span class="sc">-</span> z) <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">4</span> <span class="sc">-</span> (<span class="fu">abs</span>(x <span class="sc">-</span> z) <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span><span class="sc">/</span><span class="dv">240</span>) <span class="sc">/</span> <span class="dv">24</span></span>
+<span id="cb264-4"><a href="cubic-spline.html#cb264-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Generate the model matrix.</p>
-<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="cubic-spline.html#cb274-1" aria-hidden="true" tabindex="-1"></a>splX <span class="ot">&lt;-</span> <span class="cf">function</span>(x, knots) {</span>
-<span id="cb274-2"><a href="cubic-spline.html#cb274-2" aria-hidden="true" tabindex="-1"></a>  q <span class="ot">=</span> <span class="fu">length</span>(knots) <span class="sc">+</span> <span class="dv">2</span>                <span class="co"># number of parameters</span></span>
-<span id="cb274-3"><a href="cubic-spline.html#cb274-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(x)                        <span class="co"># number of observations</span></span>
-<span id="cb274-4"><a href="cubic-spline.html#cb274-4" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n, q)                  <span class="co"># initialized model matrix</span></span>
-<span id="cb274-5"><a href="cubic-spline.html#cb274-5" aria-hidden="true" tabindex="-1"></a>  X[ ,<span class="dv">2</span>]   <span class="ot">=</span> x                         <span class="co"># set second column to x</span></span>
-<span id="cb274-6"><a href="cubic-spline.html#cb274-6" aria-hidden="true" tabindex="-1"></a>  X[ ,<span class="dv">3</span><span class="sc">:</span>q] <span class="ot">=</span> <span class="fu">outer</span>(x, knots, <span class="at">FUN =</span> rk) <span class="co"># remaining to cubic spline basis</span></span>
-<span id="cb274-7"><a href="cubic-spline.html#cb274-7" aria-hidden="true" tabindex="-1"></a>  X</span>
-<span id="cb274-8"><a href="cubic-spline.html#cb274-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb274-9"><a href="cubic-spline.html#cb274-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb274-10"><a href="cubic-spline.html#cb274-10" aria-hidden="true" tabindex="-1"></a>splS <span class="ot">&lt;-</span> <span class="cf">function</span>(knots) {</span>
-<span id="cb274-11"><a href="cubic-spline.html#cb274-11" aria-hidden="true" tabindex="-1"></a>  q <span class="ot">=</span> <span class="fu">length</span>(knots) <span class="sc">+</span> <span class="dv">2</span></span>
-<span id="cb274-12"><a href="cubic-spline.html#cb274-12" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, q, q)                         <span class="co"># initialize matrix</span></span>
-<span id="cb274-13"><a href="cubic-spline.html#cb274-13" aria-hidden="true" tabindex="-1"></a>  S[<span class="dv">3</span><span class="sc">:</span>q, <span class="dv">3</span><span class="sc">:</span>q] <span class="ot">=</span> <span class="fu">outer</span>(knots, knots, <span class="at">FUN =</span> rk) <span class="co"># fill in non-zero part</span></span>
-<span id="cb274-14"><a href="cubic-spline.html#cb274-14" aria-hidden="true" tabindex="-1"></a>  S</span>
-<span id="cb274-15"><a href="cubic-spline.html#cb274-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="cubic-spline.html#cb265-1" aria-hidden="true" tabindex="-1"></a>splX <span class="ot">&lt;-</span> <span class="cf">function</span>(x, knots) {</span>
+<span id="cb265-2"><a href="cubic-spline.html#cb265-2" aria-hidden="true" tabindex="-1"></a>  q <span class="ot">=</span> <span class="fu">length</span>(knots) <span class="sc">+</span> <span class="dv">2</span>                <span class="co"># number of parameters</span></span>
+<span id="cb265-3"><a href="cubic-spline.html#cb265-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(x)                        <span class="co"># number of observations</span></span>
+<span id="cb265-4"><a href="cubic-spline.html#cb265-4" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n, q)                  <span class="co"># initialized model matrix</span></span>
+<span id="cb265-5"><a href="cubic-spline.html#cb265-5" aria-hidden="true" tabindex="-1"></a>  X[ ,<span class="dv">2</span>]   <span class="ot">=</span> x                         <span class="co"># set second column to x</span></span>
+<span id="cb265-6"><a href="cubic-spline.html#cb265-6" aria-hidden="true" tabindex="-1"></a>  X[ ,<span class="dv">3</span><span class="sc">:</span>q] <span class="ot">=</span> <span class="fu">outer</span>(x, knots, <span class="at">FUN =</span> rk) <span class="co"># remaining to cubic spline basis</span></span>
+<span id="cb265-7"><a href="cubic-spline.html#cb265-7" aria-hidden="true" tabindex="-1"></a>  X</span>
+<span id="cb265-8"><a href="cubic-spline.html#cb265-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb265-9"><a href="cubic-spline.html#cb265-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb265-10"><a href="cubic-spline.html#cb265-10" aria-hidden="true" tabindex="-1"></a>splS <span class="ot">&lt;-</span> <span class="cf">function</span>(knots) {</span>
+<span id="cb265-11"><a href="cubic-spline.html#cb265-11" aria-hidden="true" tabindex="-1"></a>  q <span class="ot">=</span> <span class="fu">length</span>(knots) <span class="sc">+</span> <span class="dv">2</span></span>
+<span id="cb265-12"><a href="cubic-spline.html#cb265-12" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, q, q)                         <span class="co"># initialize matrix</span></span>
+<span id="cb265-13"><a href="cubic-spline.html#cb265-13" aria-hidden="true" tabindex="-1"></a>  S[<span class="dv">3</span><span class="sc">:</span>q, <span class="dv">3</span><span class="sc">:</span>q] <span class="ot">=</span> <span class="fu">outer</span>(knots, knots, <span class="at">FUN =</span> rk) <span class="co"># fill in non-zero part</span></span>
+<span id="cb265-14"><a href="cubic-spline.html#cb265-14" aria-hidden="true" tabindex="-1"></a>  S</span>
+<span id="cb265-15"><a href="cubic-spline.html#cb265-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Matrix square root function. Note that there are various packages with their own.</p>
-<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="cubic-spline.html#cb275-1" aria-hidden="true" tabindex="-1"></a>mat_sqrt <span class="ot">&lt;-</span> <span class="cf">function</span>(S) {</span>
-<span id="cb275-2"><a href="cubic-spline.html#cb275-2" aria-hidden="true" tabindex="-1"></a>  d  <span class="ot">=</span> <span class="fu">eigen</span>(S, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb275-3"><a href="cubic-spline.html#cb275-3" aria-hidden="true" tabindex="-1"></a>  rS <span class="ot">=</span> d<span class="sc">$</span>vectors <span class="sc">%*%</span> <span class="fu">diag</span>(d<span class="sc">$</span>values<span class="sc">^</span>.<span class="dv">5</span>) <span class="sc">%*%</span> <span class="fu">t</span>(d<span class="sc">$</span>vectors)</span>
-<span id="cb275-4"><a href="cubic-spline.html#cb275-4" aria-hidden="true" tabindex="-1"></a>  rS</span>
-<span id="cb275-5"><a href="cubic-spline.html#cb275-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="cubic-spline.html#cb266-1" aria-hidden="true" tabindex="-1"></a>mat_sqrt <span class="ot">&lt;-</span> <span class="cf">function</span>(S) {</span>
+<span id="cb266-2"><a href="cubic-spline.html#cb266-2" aria-hidden="true" tabindex="-1"></a>  d  <span class="ot">=</span> <span class="fu">eigen</span>(S, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb266-3"><a href="cubic-spline.html#cb266-3" aria-hidden="true" tabindex="-1"></a>  rS <span class="ot">=</span> d<span class="sc">$</span>vectors <span class="sc">%*%</span> <span class="fu">diag</span>(d<span class="sc">$</span>values<span class="sc">^</span>.<span class="dv">5</span>) <span class="sc">%*%</span> <span class="fu">t</span>(d<span class="sc">$</span>vectors)</span>
+<span id="cb266-4"><a href="cubic-spline.html#cb266-4" aria-hidden="true" tabindex="-1"></a>  rS</span>
+<span id="cb266-5"><a href="cubic-spline.html#cb266-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Penalized fitting function.</p>
-<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="cubic-spline.html#cb276-1" aria-hidden="true" tabindex="-1"></a>prs_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(y, x, knots, lambda) {</span>
-<span id="cb276-2"><a href="cubic-spline.html#cb276-2" aria-hidden="true" tabindex="-1"></a>  q  <span class="ot">=</span> <span class="fu">length</span>(knots) <span class="sc">+</span> <span class="dv">2</span>    <span class="co"># dimension of basis</span></span>
-<span id="cb276-3"><a href="cubic-spline.html#cb276-3" aria-hidden="true" tabindex="-1"></a>  n  <span class="ot">=</span> <span class="fu">length</span>(x)            <span class="co"># number of observations</span></span>
-<span id="cb276-4"><a href="cubic-spline.html#cb276-4" aria-hidden="true" tabindex="-1"></a>  Xa <span class="ot">=</span> <span class="fu">rbind</span>(<span class="fu">splX</span>(x, knots), <span class="fu">mat_sqrt</span>(<span class="fu">splS</span>(knots))<span class="sc">*</span><span class="fu">sqrt</span>(lambda)) <span class="co"># augmented model matrix</span></span>
-<span id="cb276-5"><a href="cubic-spline.html#cb276-5" aria-hidden="true" tabindex="-1"></a>  y[(n <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n<span class="sc">+</span>q)] <span class="ot">=</span> <span class="dv">0</span>      <span class="co"># augment the data vector</span></span>
-<span id="cb276-6"><a href="cubic-spline.html#cb276-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb276-7"><a href="cubic-spline.html#cb276-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(y <span class="sc">~</span> Xa <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># fit and return penalized regression spline</span></span>
-<span id="cb276-8"><a href="cubic-spline.html#cb276-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="cubic-spline.html#cb267-1" aria-hidden="true" tabindex="-1"></a>prs_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(y, x, knots, lambda) {</span>
+<span id="cb267-2"><a href="cubic-spline.html#cb267-2" aria-hidden="true" tabindex="-1"></a>  q  <span class="ot">=</span> <span class="fu">length</span>(knots) <span class="sc">+</span> <span class="dv">2</span>    <span class="co"># dimension of basis</span></span>
+<span id="cb267-3"><a href="cubic-spline.html#cb267-3" aria-hidden="true" tabindex="-1"></a>  n  <span class="ot">=</span> <span class="fu">length</span>(x)            <span class="co"># number of observations</span></span>
+<span id="cb267-4"><a href="cubic-spline.html#cb267-4" aria-hidden="true" tabindex="-1"></a>  Xa <span class="ot">=</span> <span class="fu">rbind</span>(<span class="fu">splX</span>(x, knots), <span class="fu">mat_sqrt</span>(<span class="fu">splS</span>(knots))<span class="sc">*</span><span class="fu">sqrt</span>(lambda)) <span class="co"># augmented model matrix</span></span>
+<span id="cb267-5"><a href="cubic-spline.html#cb267-5" aria-hidden="true" tabindex="-1"></a>  y[(n <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n<span class="sc">+</span>q)] <span class="ot">=</span> <span class="dv">0</span>      <span class="co"># augment the data vector</span></span>
+<span id="cb267-6"><a href="cubic-spline.html#cb267-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb267-7"><a href="cubic-spline.html#cb267-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(y <span class="sc">~</span> Xa <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># fit and return penalized regression spline</span></span>
+<span id="cb267-8"><a href="cubic-spline.html#cb267-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="example-1" class="section level2">
 <h2>Example 1</h2>
 <p>We start with an unpenalized approach.</p>
-<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="cubic-spline.html#cb277-1" aria-hidden="true" tabindex="-1"></a>knots <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span><span class="sc">/</span><span class="dv">5</span></span>
-<span id="cb277-2"><a href="cubic-spline.html#cb277-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">splX</span>(x, knots)            <span class="co"># generate model matrix</span></span>
-<span id="cb277-3"><a href="cubic-spline.html#cb277-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb277-4"><a href="cubic-spline.html#cb277-4" aria-hidden="true" tabindex="-1"></a>fit_lm  <span class="ot">=</span> <span class="fu">lm</span>(wear <span class="sc">~</span> X <span class="sc">-</span> <span class="dv">1</span>)    <span class="co"># fit model</span></span>
-<span id="cb277-5"><a href="cubic-spline.html#cb277-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb277-6"><a href="cubic-spline.html#cb277-6" aria-hidden="true" tabindex="-1"></a>xp <span class="ot">=</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">100</span><span class="sc">/</span><span class="dv">100</span>                <span class="co"># x values for prediction</span></span>
-<span id="cb277-7"><a href="cubic-spline.html#cb277-7" aria-hidden="true" tabindex="-1"></a>Xp <span class="ot">=</span> <span class="fu">splX</span>(xp, knots)          <span class="co"># prediction matrix</span></span></code></pre></div>
+<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="cubic-spline.html#cb268-1" aria-hidden="true" tabindex="-1"></a>knots <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span><span class="sc">/</span><span class="dv">5</span></span>
+<span id="cb268-2"><a href="cubic-spline.html#cb268-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">splX</span>(x, knots)            <span class="co"># generate model matrix</span></span>
+<span id="cb268-3"><a href="cubic-spline.html#cb268-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb268-4"><a href="cubic-spline.html#cb268-4" aria-hidden="true" tabindex="-1"></a>fit_lm  <span class="ot">=</span> <span class="fu">lm</span>(wear <span class="sc">~</span> X <span class="sc">-</span> <span class="dv">1</span>)    <span class="co"># fit model</span></span>
+<span id="cb268-5"><a href="cubic-spline.html#cb268-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb268-6"><a href="cubic-spline.html#cb268-6" aria-hidden="true" tabindex="-1"></a>xp <span class="ot">=</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">100</span><span class="sc">/</span><span class="dv">100</span>                <span class="co"># x values for prediction</span></span>
+<span id="cb268-7"><a href="cubic-spline.html#cb268-7" aria-hidden="true" tabindex="-1"></a>Xp <span class="ot">=</span> <span class="fu">splX</span>(xp, knots)          <span class="co"># prediction matrix</span></span></code></pre></div>
 <p>Visualize.</p>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="cubic-spline.html#cb278-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> wear), <span class="at">data =</span> <span class="fu">data.frame</span>(x, wear)) <span class="sc">+</span></span>
-<span id="cb278-2"><a href="cubic-spline.html#cb278-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;#FF5500&quot;</span>) <span class="sc">+</span></span>
-<span id="cb278-3"><a href="cubic-spline.html#cb278-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> xp, <span class="at">y =</span> Xp <span class="sc">%*%</span> <span class="fu">coef</span>(fit_lm)),</span>
-<span id="cb278-4"><a href="cubic-spline.html#cb278-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> <span class="fu">data.frame</span>(xp, Xp),</span>
-<span id="cb278-5"><a href="cubic-spline.html#cb278-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">&quot;#00AAFF&quot;</span>) <span class="sc">+</span></span>
-<span id="cb278-6"><a href="cubic-spline.html#cb278-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&#39;Scaled Engine size&#39;</span>, <span class="at">y  =</span> <span class="st">&#39;Wear Index&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="cubic-spline.html#cb269-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> wear), <span class="at">data =</span> <span class="fu">data.frame</span>(x, wear)) <span class="sc">+</span></span>
+<span id="cb269-2"><a href="cubic-spline.html#cb269-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;#FF5500&quot;</span>) <span class="sc">+</span></span>
+<span id="cb269-3"><a href="cubic-spline.html#cb269-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> xp, <span class="at">y =</span> Xp <span class="sc">%*%</span> <span class="fu">coef</span>(fit_lm)),</span>
+<span id="cb269-4"><a href="cubic-spline.html#cb269-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> <span class="fu">data.frame</span>(xp, Xp),</span>
+<span id="cb269-5"><a href="cubic-spline.html#cb269-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">&quot;#00AAFF&quot;</span>) <span class="sc">+</span></span>
+<span id="cb269-6"><a href="cubic-spline.html#cb269-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&#39;Scaled Engine size&#39;</span>, <span class="at">y  =</span> <span class="st">&#39;Wear Index&#39;</span>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/cs-unpenal-vis-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="example-2" class="section level2">
 <h2>Example 2</h2>
 <p>Now we add the <code>lambda</code> penalty and compare fits at different values of <code>lambda</code>.</p>
-<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="cubic-spline.html#cb279-1" aria-hidden="true" tabindex="-1"></a>knots <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span><span class="sc">/</span><span class="dv">8</span></span>
-<span id="cb279-2"><a href="cubic-spline.html#cb279-2" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> xp)</span>
-<span id="cb279-3"><a href="cubic-spline.html#cb279-3" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> <span class="fu">c</span>(.<span class="dv">1</span>, .<span class="dv">01</span>, .<span class="dv">001</span>, .<span class="dv">0001</span>, .<span class="dv">00001</span>, .<span class="dv">000001</span>)</span>
-<span id="cb279-4"><a href="cubic-spline.html#cb279-4" aria-hidden="true" tabindex="-1"></a>rmse   <span class="ot">=</span> <span class="fu">vector</span>(<span class="st">&#39;numeric&#39;</span>, <span class="fu">length</span>(lambda))</span>
-<span id="cb279-5"><a href="cubic-spline.html#cb279-5" aria-hidden="true" tabindex="-1"></a>idx <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb279-6"><a href="cubic-spline.html#cb279-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb279-7"><a href="cubic-spline.html#cb279-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> lambda) {</span>
-<span id="cb279-8"><a href="cubic-spline.html#cb279-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit penalized regression</span></span>
-<span id="cb279-9"><a href="cubic-spline.html#cb279-9" aria-hidden="true" tabindex="-1"></a>  fit_penalized <span class="ot">=</span> <span class="fu">prs_fit</span>(</span>
-<span id="cb279-10"><a href="cubic-spline.html#cb279-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> wear,</span>
-<span id="cb279-11"><a href="cubic-spline.html#cb279-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> x,</span>
-<span id="cb279-12"><a href="cubic-spline.html#cb279-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">knots =</span> knots,</span>
-<span id="cb279-13"><a href="cubic-spline.html#cb279-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> i</span>
-<span id="cb279-14"><a href="cubic-spline.html#cb279-14" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb279-15"><a href="cubic-spline.html#cb279-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># spline choosing lambda</span></span>
-<span id="cb279-16"><a href="cubic-spline.html#cb279-16" aria-hidden="true" tabindex="-1"></a>  Xp <span class="ot">=</span> <span class="fu">splX</span>(xp, knots) <span class="co"># matrix to map parameters to fitted values at xp</span></span>
-<span id="cb279-17"><a href="cubic-spline.html#cb279-17" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> Xp <span class="sc">%*%</span> <span class="fu">coef</span>(fit_penalized)</span>
-<span id="cb279-18"><a href="cubic-spline.html#cb279-18" aria-hidden="true" tabindex="-1"></a>  d2[, <span class="fu">paste0</span>(<span class="st">&#39;lambda = &#39;</span>, i)] <span class="ot">=</span> LP[, <span class="dv">1</span>]</span>
-<span id="cb279-19"><a href="cubic-spline.html#cb279-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb279-20"><a href="cubic-spline.html#cb279-20" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">resid</span>(fit_penalized)</span>
-<span id="cb279-21"><a href="cubic-spline.html#cb279-21" aria-hidden="true" tabindex="-1"></a>  idx <span class="ot">=</span> <span class="dv">1</span> <span class="sc">+</span> idx</span>
-<span id="cb279-22"><a href="cubic-spline.html#cb279-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb279-23"><a href="cubic-spline.html#cb279-23" aria-hidden="true" tabindex="-1"></a>  rmse[idx] <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(r<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb279-24"><a href="cubic-spline.html#cb279-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="cubic-spline.html#cb270-1" aria-hidden="true" tabindex="-1"></a>knots <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span><span class="sc">/</span><span class="dv">8</span></span>
+<span id="cb270-2"><a href="cubic-spline.html#cb270-2" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> xp)</span>
+<span id="cb270-3"><a href="cubic-spline.html#cb270-3" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> <span class="fu">c</span>(.<span class="dv">1</span>, .<span class="dv">01</span>, .<span class="dv">001</span>, .<span class="dv">0001</span>, .<span class="dv">00001</span>, .<span class="dv">000001</span>)</span>
+<span id="cb270-4"><a href="cubic-spline.html#cb270-4" aria-hidden="true" tabindex="-1"></a>rmse   <span class="ot">=</span> <span class="fu">vector</span>(<span class="st">&#39;numeric&#39;</span>, <span class="fu">length</span>(lambda))</span>
+<span id="cb270-5"><a href="cubic-spline.html#cb270-5" aria-hidden="true" tabindex="-1"></a>idx <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb270-6"><a href="cubic-spline.html#cb270-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb270-7"><a href="cubic-spline.html#cb270-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> lambda) {</span>
+<span id="cb270-8"><a href="cubic-spline.html#cb270-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit penalized regression</span></span>
+<span id="cb270-9"><a href="cubic-spline.html#cb270-9" aria-hidden="true" tabindex="-1"></a>  fit_penalized <span class="ot">=</span> <span class="fu">prs_fit</span>(</span>
+<span id="cb270-10"><a href="cubic-spline.html#cb270-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> wear,</span>
+<span id="cb270-11"><a href="cubic-spline.html#cb270-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> x,</span>
+<span id="cb270-12"><a href="cubic-spline.html#cb270-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">knots =</span> knots,</span>
+<span id="cb270-13"><a href="cubic-spline.html#cb270-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> i</span>
+<span id="cb270-14"><a href="cubic-spline.html#cb270-14" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb270-15"><a href="cubic-spline.html#cb270-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># spline choosing lambda</span></span>
+<span id="cb270-16"><a href="cubic-spline.html#cb270-16" aria-hidden="true" tabindex="-1"></a>  Xp <span class="ot">=</span> <span class="fu">splX</span>(xp, knots) <span class="co"># matrix to map parameters to fitted values at xp</span></span>
+<span id="cb270-17"><a href="cubic-spline.html#cb270-17" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> Xp <span class="sc">%*%</span> <span class="fu">coef</span>(fit_penalized)</span>
+<span id="cb270-18"><a href="cubic-spline.html#cb270-18" aria-hidden="true" tabindex="-1"></a>  d2[, <span class="fu">paste0</span>(<span class="st">&#39;lambda = &#39;</span>, i)] <span class="ot">=</span> LP[, <span class="dv">1</span>]</span>
+<span id="cb270-19"><a href="cubic-spline.html#cb270-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb270-20"><a href="cubic-spline.html#cb270-20" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">resid</span>(fit_penalized)</span>
+<span id="cb270-21"><a href="cubic-spline.html#cb270-21" aria-hidden="true" tabindex="-1"></a>  idx <span class="ot">=</span> <span class="dv">1</span> <span class="sc">+</span> idx</span>
+<span id="cb270-22"><a href="cubic-spline.html#cb270-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb270-23"><a href="cubic-spline.html#cb270-23" aria-hidden="true" tabindex="-1"></a>  rmse[idx] <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(r<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb270-24"><a href="cubic-spline.html#cb270-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Visualize. I add the root mean square error for model comparison.</p>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="cubic-spline.html#cb280-1" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">=</span> d2 <span class="sc">%&gt;%</span></span>
-<span id="cb280-2"><a href="cubic-spline.html#cb280-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>x,</span>
-<span id="cb280-3"><a href="cubic-spline.html#cb280-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to  =</span> <span class="st">&#39;lambda&#39;</span>,</span>
-<span id="cb280-4"><a href="cubic-spline.html#cb280-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb280-5"><a href="cubic-spline.html#cb280-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lambda =</span> <span class="fu">fct_inorder</span>(lambda),</span>
-<span id="cb280-6"><a href="cubic-spline.html#cb280-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">rmse   =</span> <span class="fu">round</span>(rmse[lambda], <span class="dv">3</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="cubic-spline.html#cb271-1" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">=</span> d2 <span class="sc">%&gt;%</span></span>
+<span id="cb271-2"><a href="cubic-spline.html#cb271-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>x,</span>
+<span id="cb271-3"><a href="cubic-spline.html#cb271-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to  =</span> <span class="st">&#39;lambda&#39;</span>,</span>
+<span id="cb271-4"><a href="cubic-spline.html#cb271-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb271-5"><a href="cubic-spline.html#cb271-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lambda =</span> <span class="fu">fct_inorder</span>(lambda),</span>
+<span id="cb271-6"><a href="cubic-spline.html#cb271-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">rmse   =</span> <span class="fu">round</span>(rmse[lambda], <span class="dv">3</span>))</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/cs-penal-vis-show-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="cubic-spline.html#cb281-1" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">=</span> d2 <span class="sc">%&gt;%</span></span>
-<span id="cb281-2"><a href="cubic-spline.html#cb281-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>x,</span>
-<span id="cb281-3"><a href="cubic-spline.html#cb281-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to  =</span> <span class="st">&#39;lambda&#39;</span>,</span>
-<span id="cb281-4"><a href="cubic-spline.html#cb281-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb281-5"><a href="cubic-spline.html#cb281-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lambda =</span> <span class="fu">fct_inorder</span>(lambda),</span>
-<span id="cb281-6"><a href="cubic-spline.html#cb281-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">rmse   =</span> <span class="fu">round</span>(rmse[lambda], <span class="dv">3</span>))</span></code></pre></div>
 </div>
 <div id="source-18" class="section level2">
 <h2>Source</h2>

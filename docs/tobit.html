@@ -805,89 +805,79 @@ and math test scores, as well as the type of program the student is enrolled in
 (academic, general, or vocational). See
 <a href="https://stats.idre.ucla.edu/r/dae/tobit-models/">this</a> for an applied example
 and more detail.</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="tobit.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb112-2"><a href="tobit.html#cb112-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-3"><a href="tobit.html#cb112-3" aria-hidden="true" tabindex="-1"></a>acad_apt <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/data/tobit.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb112-4"><a href="tobit.html#cb112-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prog =</span> <span class="fu">factor</span>(prog, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&#39;acad&#39;</span>, <span class="st">&#39;general&#39;</span>, <span class="st">&#39;vocational&#39;</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="tobit.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb102-2"><a href="tobit.html#cb102-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-3"><a href="tobit.html#cb102-3" aria-hidden="true" tabindex="-1"></a>acad_apt <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/data/tobit.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb102-4"><a href="tobit.html#cb102-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prog =</span> <span class="fu">factor</span>(prog, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&#39;acad&#39;</span>, <span class="st">&#39;general&#39;</span>, <span class="st">&#39;vocational&#39;</span>)))</span></code></pre></div>
 <p>Setup data and initial values.</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="tobit.html#cb113-1" aria-hidden="true" tabindex="-1"></a>initmod <span class="ot">=</span> <span class="fu">lm</span>(apt <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog, <span class="at">data =</span> acad_apt)</span>
-<span id="cb113-2"><a href="tobit.html#cb113-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(initmod)</span>
-<span id="cb113-3"><a href="tobit.html#cb113-3" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">coef</span>(initmod), <span class="at">log_sigma =</span> <span class="fu">log</span>(<span class="fu">summary</span>(initmod)<span class="sc">$</span>sigma))</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="tobit.html#cb103-1" aria-hidden="true" tabindex="-1"></a>initmod <span class="ot">=</span> <span class="fu">lm</span>(apt <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog, <span class="at">data =</span> acad_apt)</span>
+<span id="cb103-2"><a href="tobit.html#cb103-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(initmod)</span>
+<span id="cb103-3"><a href="tobit.html#cb103-3" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">coef</span>(initmod), <span class="at">log_sigma =</span> <span class="fu">log</span>(<span class="fu">summary</span>(initmod)<span class="sc">$</span>sigma))</span></code></pre></div>
 </div>
 <div id="function-5" class="section level3">
 <h3>Function</h3>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="tobit.html#cb114-1" aria-hidden="true" tabindex="-1"></a>tobit_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y, <span class="at">ul =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ll =</span> <span class="cn">Inf</span>) {</span>
-<span id="cb114-2"><a href="tobit.html#cb114-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb114-3"><a href="tobit.html#cb114-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this function only takes a lower OR upper limit</span></span>
-<span id="cb114-4"><a href="tobit.html#cb114-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb114-5"><a href="tobit.html#cb114-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># parameters</span></span>
-<span id="cb114-6"><a href="tobit.html#cb114-6" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <span class="fu">exp</span>(par[<span class="fu">length</span>(par)]) </span>
-<span id="cb114-7"><a href="tobit.html#cb114-7" aria-hidden="true" tabindex="-1"></a>  beta  <span class="ot">=</span> par[<span class="sc">-</span><span class="fu">length</span>(par)]</span>
-<span id="cb114-8"><a href="tobit.html#cb114-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb114-9"><a href="tobit.html#cb114-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create indicator depending on chosen limit</span></span>
-<span id="cb114-10"><a href="tobit.html#cb114-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.infinite</span>(ll)) {</span>
-<span id="cb114-11"><a href="tobit.html#cb114-11" aria-hidden="true" tabindex="-1"></a>    limit <span class="ot">=</span> ll</span>
-<span id="cb114-12"><a href="tobit.html#cb114-12" aria-hidden="true" tabindex="-1"></a>    indicator <span class="ot">=</span> y <span class="sc">&gt;</span> ll</span>
-<span id="cb114-13"><a href="tobit.html#cb114-13" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb114-14"><a href="tobit.html#cb114-14" aria-hidden="true" tabindex="-1"></a>    limit <span class="ot">=</span> ul</span>
-<span id="cb114-15"><a href="tobit.html#cb114-15" aria-hidden="true" tabindex="-1"></a>    indicator <span class="ot">=</span> y <span class="sc">&lt;</span> ul</span>
-<span id="cb114-16"><a href="tobit.html#cb114-16" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb114-17"><a href="tobit.html#cb114-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb114-18"><a href="tobit.html#cb114-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
-<span id="cb114-19"><a href="tobit.html#cb114-19" aria-hidden="true" tabindex="-1"></a>  lp <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb114-20"><a href="tobit.html#cb114-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb114-21"><a href="tobit.html#cb114-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log likelihood</span></span>
-<span id="cb114-22"><a href="tobit.html#cb114-22" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="fu">sum</span>(indicator <span class="sc">*</span> <span class="fu">log</span>((<span class="dv">1</span><span class="sc">/</span>sigma)<span class="sc">*</span><span class="fu">dnorm</span>((y<span class="sc">-</span>lp)<span class="sc">/</span>sigma)) ) <span class="sc">+</span> </span>
-<span id="cb114-23"><a href="tobit.html#cb114-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>((<span class="dv">1</span><span class="sc">-</span>indicator) <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">pnorm</span>((lp<span class="sc">-</span>limit)<span class="sc">/</span>sigma, <span class="at">lower =</span> <span class="fu">is.infinite</span>(ll))))</span>
-<span id="cb114-24"><a href="tobit.html#cb114-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb114-25"><a href="tobit.html#cb114-25" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
-<span id="cb114-26"><a href="tobit.html#cb114-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="tobit.html#cb104-1" aria-hidden="true" tabindex="-1"></a>tobit_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y, <span class="at">ul =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ll =</span> <span class="cn">Inf</span>) {</span>
+<span id="cb104-2"><a href="tobit.html#cb104-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-3"><a href="tobit.html#cb104-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this function only takes a lower OR upper limit</span></span>
+<span id="cb104-4"><a href="tobit.html#cb104-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-5"><a href="tobit.html#cb104-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># parameters</span></span>
+<span id="cb104-6"><a href="tobit.html#cb104-6" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <span class="fu">exp</span>(par[<span class="fu">length</span>(par)]) </span>
+<span id="cb104-7"><a href="tobit.html#cb104-7" aria-hidden="true" tabindex="-1"></a>  beta  <span class="ot">=</span> par[<span class="sc">-</span><span class="fu">length</span>(par)]</span>
+<span id="cb104-8"><a href="tobit.html#cb104-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-9"><a href="tobit.html#cb104-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create indicator depending on chosen limit</span></span>
+<span id="cb104-10"><a href="tobit.html#cb104-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.infinite</span>(ll)) {</span>
+<span id="cb104-11"><a href="tobit.html#cb104-11" aria-hidden="true" tabindex="-1"></a>    limit <span class="ot">=</span> ll</span>
+<span id="cb104-12"><a href="tobit.html#cb104-12" aria-hidden="true" tabindex="-1"></a>    indicator <span class="ot">=</span> y <span class="sc">&gt;</span> ll</span>
+<span id="cb104-13"><a href="tobit.html#cb104-13" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb104-14"><a href="tobit.html#cb104-14" aria-hidden="true" tabindex="-1"></a>    limit <span class="ot">=</span> ul</span>
+<span id="cb104-15"><a href="tobit.html#cb104-15" aria-hidden="true" tabindex="-1"></a>    indicator <span class="ot">=</span> y <span class="sc">&lt;</span> ul</span>
+<span id="cb104-16"><a href="tobit.html#cb104-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb104-17"><a href="tobit.html#cb104-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-18"><a href="tobit.html#cb104-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb104-19"><a href="tobit.html#cb104-19" aria-hidden="true" tabindex="-1"></a>  lp <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb104-20"><a href="tobit.html#cb104-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-21"><a href="tobit.html#cb104-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log likelihood</span></span>
+<span id="cb104-22"><a href="tobit.html#cb104-22" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="fu">sum</span>(indicator <span class="sc">*</span> <span class="fu">log</span>((<span class="dv">1</span><span class="sc">/</span>sigma)<span class="sc">*</span><span class="fu">dnorm</span>((y<span class="sc">-</span>lp)<span class="sc">/</span>sigma)) ) <span class="sc">+</span> </span>
+<span id="cb104-23"><a href="tobit.html#cb104-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>((<span class="dv">1</span><span class="sc">-</span>indicator) <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">pnorm</span>((lp<span class="sc">-</span>limit)<span class="sc">/</span>sigma, <span class="at">lower =</span> <span class="fu">is.infinite</span>(ll))))</span>
+<span id="cb104-24"><a href="tobit.html#cb104-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-25"><a href="tobit.html#cb104-25" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
+<span id="cb104-26"><a href="tobit.html#cb104-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-6" class="section level3">
 <h3>Estimation</h3>
 <p>Estimate via <span class="func" style="">optim</span>.</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="tobit.html#cb115-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb115-2"><a href="tobit.html#cb115-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
-<span id="cb115-3"><a href="tobit.html#cb115-3" aria-hidden="true" tabindex="-1"></a>  tobit_ll,</span>
-<span id="cb115-4"><a href="tobit.html#cb115-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y  =</span> acad_apt<span class="sc">$</span>apt,</span>
-<span id="cb115-5"><a href="tobit.html#cb115-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X  =</span> X,</span>
-<span id="cb115-6"><a href="tobit.html#cb115-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ul =</span> <span class="dv">800</span>,</span>
-<span id="cb115-7"><a href="tobit.html#cb115-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
-<span id="cb115-8"><a href="tobit.html#cb115-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">2000</span>, <span class="at">reltol =</span> <span class="fl">1e-15</span>)</span>
-<span id="cb115-9"><a href="tobit.html#cb115-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb115-10"><a href="tobit.html#cb115-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb115-11"><a href="tobit.html#cb115-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb115-12"><a href="tobit.html#cb115-12" aria-hidden="true" tabindex="-1"></a><span class="co"># this would be more akin to the default Stata default approach</span></span>
-<span id="cb115-13"><a href="tobit.html#cb115-13" aria-hidden="true" tabindex="-1"></a><span class="co"># optim(</span></span>
-<span id="cb115-14"><a href="tobit.html#cb115-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   par = init,</span></span>
-<span id="cb115-15"><a href="tobit.html#cb115-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   tobit_ll,</span></span>
-<span id="cb115-16"><a href="tobit.html#cb115-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   y = acad_apt$apt,</span></span>
-<span id="cb115-17"><a href="tobit.html#cb115-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   X = X,</span></span>
-<span id="cb115-18"><a href="tobit.html#cb115-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   ul = 800,</span></span>
-<span id="cb115-19"><a href="tobit.html#cb115-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   control = list(maxit = 16000, reltol = 1e-15)</span></span>
-<span id="cb115-20"><a href="tobit.html#cb115-20" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="tobit.html#cb105-1" aria-hidden="true" tabindex="-1"></a>fit_tobit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb105-2"><a href="tobit.html#cb105-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
+<span id="cb105-3"><a href="tobit.html#cb105-3" aria-hidden="true" tabindex="-1"></a>  tobit_ll,</span>
+<span id="cb105-4"><a href="tobit.html#cb105-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y  =</span> acad_apt<span class="sc">$</span>apt,</span>
+<span id="cb105-5"><a href="tobit.html#cb105-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X  =</span> X,</span>
+<span id="cb105-6"><a href="tobit.html#cb105-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ul =</span> <span class="dv">800</span>,</span>
+<span id="cb105-7"><a href="tobit.html#cb105-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
+<span id="cb105-8"><a href="tobit.html#cb105-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">2000</span>, <span class="at">reltol =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb105-9"><a href="tobit.html#cb105-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb105-10"><a href="tobit.html#cb105-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-11"><a href="tobit.html#cb105-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-12"><a href="tobit.html#cb105-12" aria-hidden="true" tabindex="-1"></a><span class="co"># this would be more akin to the default Stata default approach</span></span>
+<span id="cb105-13"><a href="tobit.html#cb105-13" aria-hidden="true" tabindex="-1"></a><span class="co"># optim(</span></span>
+<span id="cb105-14"><a href="tobit.html#cb105-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   par = init,</span></span>
+<span id="cb105-15"><a href="tobit.html#cb105-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   tobit_ll,</span></span>
+<span id="cb105-16"><a href="tobit.html#cb105-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   y = acad_apt$apt,</span></span>
+<span id="cb105-17"><a href="tobit.html#cb105-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   X = X,</span></span>
+<span id="cb105-18"><a href="tobit.html#cb105-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   ul = 800,</span></span>
+<span id="cb105-19"><a href="tobit.html#cb105-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   control = list(maxit = 16000, reltol = 1e-15)</span></span>
+<span id="cb105-20"><a href="tobit.html#cb105-20" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code></pre></div>
 </div>
 <div id="comparison-6" class="section level3">
 <h3>Comparison</h3>
 <p>Compare to <span class="pack" style="">AER</span> package tobit function.</p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="tobit.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
-<span id="cb116-2"><a href="tobit.html#cb116-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb116-3"><a href="tobit.html#cb116-3" aria-hidden="true" tabindex="-1"></a>aer_mod <span class="ot">=</span> AER<span class="sc">::</span><span class="fu">tobit</span>(</span>
-<span id="cb116-4"><a href="tobit.html#cb116-4" aria-hidden="true" tabindex="-1"></a>  apt <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog,</span>
-<span id="cb116-5"><a href="tobit.html#cb116-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> acad_apt,</span>
-<span id="cb116-6"><a href="tobit.html#cb116-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">left =</span> <span class="sc">-</span><span class="cn">Inf</span>,</span>
-<span id="cb116-7"><a href="tobit.html#cb116-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">right =</span> <span class="dv">800</span></span>
-<span id="cb116-8"><a href="tobit.html#cb116-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb116-9"><a href="tobit.html#cb116-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb116-10"><a href="tobit.html#cb116-10" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(</span>
-<span id="cb116-11"><a href="tobit.html#cb116-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">tobit =</span> <span class="fu">c</span>(</span>
-<span id="cb116-12"><a href="tobit.html#cb116-12" aria-hidden="true" tabindex="-1"></a>    res<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>],</span>
-<span id="cb116-13"><a href="tobit.html#cb116-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma   =</span> <span class="fu">exp</span>(res<span class="sc">$</span>par[<span class="dv">6</span>]),</span>
-<span id="cb116-14"><a href="tobit.html#cb116-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">logLike =</span> <span class="sc">-</span>res<span class="sc">$</span>value</span>
-<span id="cb116-15"><a href="tobit.html#cb116-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb116-16"><a href="tobit.html#cb116-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">AER =</span> <span class="fu">c</span>(<span class="fu">coef</span>(aer_mod), aer_mod<span class="sc">$</span>scale, <span class="fu">logLik</span>(aer_mod))</span>
-<span id="cb116-17"><a href="tobit.html#cb116-17" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb116-18"><a href="tobit.html#cb116-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_df</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="tobit.html#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb106-2"><a href="tobit.html#cb106-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-3"><a href="tobit.html#cb106-3" aria-hidden="true" tabindex="-1"></a>fit_aer <span class="ot">=</span> AER<span class="sc">::</span><span class="fu">tobit</span>(</span>
+<span id="cb106-4"><a href="tobit.html#cb106-4" aria-hidden="true" tabindex="-1"></a>  apt <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog,</span>
+<span id="cb106-5"><a href="tobit.html#cb106-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> acad_apt,</span>
+<span id="cb106-6"><a href="tobit.html#cb106-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">left =</span> <span class="sc">-</span><span class="cn">Inf</span>,</span>
+<span id="cb106-7"><a href="tobit.html#cb106-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">right =</span> <span class="dv">800</span></span>
+<span id="cb106-8"><a href="tobit.html#cb106-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -919,7 +909,7 @@ logLike
 <tbody>
 <tr>
 <td style="text-align:left;">
-tobit
+fit_tobit
 </td>
 <td style="text-align:right;">
 209.566
@@ -971,15 +961,23 @@ AER
 </tr>
 </tbody>
 </table>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="tobit.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb107-2"><a href="tobit.html#cb107-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb107-3"><a href="tobit.html#cb107-3" aria-hidden="true" tabindex="-1"></a>fit_aer <span class="ot">=</span> AER<span class="sc">::</span><span class="fu">tobit</span>(</span>
+<span id="cb107-4"><a href="tobit.html#cb107-4" aria-hidden="true" tabindex="-1"></a>  apt <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog,</span>
+<span id="cb107-5"><a href="tobit.html#cb107-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> acad_apt,</span>
+<span id="cb107-6"><a href="tobit.html#cb107-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">left =</span> <span class="sc">-</span><span class="cn">Inf</span>,</span>
+<span id="cb107-7"><a href="tobit.html#cb107-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">right =</span> <span class="dv">800</span></span>
+<span id="cb107-8"><a href="tobit.html#cb107-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p><span class="pack" style="">AER</span> is actually just using <span class="func" style="">survreg</span> from the <span class="pack" style="">survival</span> package. Survival models are usually for modeling time to
 some event, e.g. death in medical studies, and the censoring comes from the fact
 that the observed event does not occur for some people. Like our tobit function,
 an indicator is needed to denote who is or isn’t censored. In survival models,
 the indicator is for the event itself, and means they are NOT censored. So
 we’ll reverse the indicator used in the tobit function for <span class="func" style="">survreg</span>.</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="tobit.html#cb117-1" aria-hidden="true" tabindex="-1"></a>surv_mod <span class="ot">=</span> <span class="fu">survreg</span>(<span class="fu">Surv</span>(apt, apt <span class="sc">&lt;</span> <span class="dv">800</span>, <span class="at">type =</span> <span class="st">&#39;right&#39;</span>) <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog,</span>
-<span id="cb117-2"><a href="tobit.html#cb117-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> acad_apt,</span>
-<span id="cb117-3"><a href="tobit.html#cb117-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dist =</span> <span class="st">&#39;gaussian&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="tobit.html#cb108-1" aria-hidden="true" tabindex="-1"></a>fit_surv <span class="ot">=</span> <span class="fu">survreg</span>(<span class="fu">Surv</span>(apt, apt <span class="sc">&lt;</span> <span class="dv">800</span>, <span class="at">type =</span> <span class="st">&#39;right&#39;</span>) <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog,</span>
+<span id="cb108-2"><a href="tobit.html#cb108-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> acad_apt,</span>
+<span id="cb108-3"><a href="tobit.html#cb108-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dist =</span> <span class="st">&#39;gaussian&#39;</span>)</span></code></pre></div>
 <p>Compare all results.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1012,7 +1010,7 @@ logLike
 <tbody>
 <tr>
 <td style="text-align:left;">
-tobit_ll
+fit_tobit
 </td>
 <td style="text-align:right;">
 209.566
@@ -1095,23 +1093,23 @@ survival
 <div id="censoring-with-a-lower-limit" class="section level2">
 <h2>Censoring with a Lower Limit</h2>
 <p>Create a censored data situation for the low end. The scale itself would be censored for anyone scoring a 200, but that basically doesn’t happen. In this data, 15 are less than a score of 500, so we’ll do that.</p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="tobit.html#cb118-1" aria-hidden="true" tabindex="-1"></a>acad_apt <span class="ot">=</span> acad_apt <span class="sc">%&gt;%</span></span>
-<span id="cb118-2"><a href="tobit.html#cb118-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">apt2 =</span> apt,</span>
-<span id="cb118-3"><a href="tobit.html#cb118-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">apt2 =</span> <span class="fu">if_else</span>(apt2 <span class="sc">&lt;</span> <span class="dv">500</span>, <span class="dv">500</span>, apt2))</span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="tobit.html#cb109-1" aria-hidden="true" tabindex="-1"></a>acad_apt <span class="ot">=</span> acad_apt <span class="sc">%&gt;%</span></span>
+<span id="cb109-2"><a href="tobit.html#cb109-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">apt2 =</span> apt,</span>
+<span id="cb109-3"><a href="tobit.html#cb109-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">apt2 =</span> <span class="fu">if_else</span>(apt2 <span class="sc">&lt;</span> <span class="dv">500</span>, <span class="dv">500</span>, apt2))</span></code></pre></div>
 <p>Estimate and use <span class="pack" style="">AER</span> for comparison.</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="tobit.html#cb119-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb119-2"><a href="tobit.html#cb119-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
-<span id="cb119-3"><a href="tobit.html#cb119-3" aria-hidden="true" tabindex="-1"></a>  tobit_ll,</span>
-<span id="cb119-4"><a href="tobit.html#cb119-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y  =</span> acad_apt<span class="sc">$</span>apt2,</span>
-<span id="cb119-5"><a href="tobit.html#cb119-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X  =</span> X,</span>
-<span id="cb119-6"><a href="tobit.html#cb119-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ll =</span> <span class="dv">400</span>,</span>
-<span id="cb119-7"><a href="tobit.html#cb119-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
-<span id="cb119-8"><a href="tobit.html#cb119-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">2000</span>, <span class="at">reltol =</span> <span class="fl">1e-15</span>)</span>
-<span id="cb119-9"><a href="tobit.html#cb119-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb119-10"><a href="tobit.html#cb119-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb119-11"><a href="tobit.html#cb119-11" aria-hidden="true" tabindex="-1"></a>aer_mod <span class="ot">=</span> AER<span class="sc">::</span><span class="fu">tobit</span>(apt2 <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog,</span>
-<span id="cb119-12"><a href="tobit.html#cb119-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> acad_apt,</span>
-<span id="cb119-13"><a href="tobit.html#cb119-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">left =</span> <span class="dv">400</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="tobit.html#cb110-1" aria-hidden="true" tabindex="-1"></a>fit_tobit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb110-2"><a href="tobit.html#cb110-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
+<span id="cb110-3"><a href="tobit.html#cb110-3" aria-hidden="true" tabindex="-1"></a>  tobit_ll,</span>
+<span id="cb110-4"><a href="tobit.html#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y  =</span> acad_apt<span class="sc">$</span>apt2,</span>
+<span id="cb110-5"><a href="tobit.html#cb110-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X  =</span> X,</span>
+<span id="cb110-6"><a href="tobit.html#cb110-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ll =</span> <span class="dv">400</span>,</span>
+<span id="cb110-7"><a href="tobit.html#cb110-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;BFGS&#39;</span>,</span>
+<span id="cb110-8"><a href="tobit.html#cb110-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">2000</span>, <span class="at">reltol =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb110-9"><a href="tobit.html#cb110-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb110-10"><a href="tobit.html#cb110-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-11"><a href="tobit.html#cb110-11" aria-hidden="true" tabindex="-1"></a>fit_aer <span class="ot">=</span> AER<span class="sc">::</span><span class="fu">tobit</span>(apt2 <span class="sc">~</span> read <span class="sc">+</span> math <span class="sc">+</span> prog,</span>
+<span id="cb110-12"><a href="tobit.html#cb110-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> acad_apt,</span>
+<span id="cb110-13"><a href="tobit.html#cb110-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">left =</span> <span class="dv">400</span>)</span></code></pre></div>
 <div id="comparison-7" class="section level3">
 <h3>Comparison</h3>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1145,7 +1143,7 @@ logLike
 <tbody>
 <tr>
 <td style="text-align:left;">
-tobit_ll
+fit_tobit
 </td>
 <td style="text-align:right;">
 270.408

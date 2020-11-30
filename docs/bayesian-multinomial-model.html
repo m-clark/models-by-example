@@ -793,15 +793,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="data-setup-32" class="section level2">
 <h2>Data Setup</h2>
 <p>Depending on the complexity of the data, you may need to create a data set specific to the problem.</p>
-<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="bayesian-multinomial-model.html#cb585-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
-<span id="cb585-2"><a href="bayesian-multinomial-model.html#cb585-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb585-3"><a href="bayesian-multinomial-model.html#cb585-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb585-4"><a href="bayesian-multinomial-model.html#cb585-4" aria-hidden="true" tabindex="-1"></a>program <span class="ot">=</span> <span class="fu">read_dta</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/data/hsbdemo.dta&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb585-5"><a href="bayesian-multinomial-model.html#cb585-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_factor</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb585-6"><a href="bayesian-multinomial-model.html#cb585-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prog =</span> <span class="fu">relevel</span>(prog, <span class="at">ref =</span> <span class="st">&quot;academic&quot;</span>))</span>
-<span id="cb585-7"><a href="bayesian-multinomial-model.html#cb585-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb585-8"><a href="bayesian-multinomial-model.html#cb585-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb585-9"><a href="bayesian-multinomial-model.html#cb585-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(program[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="bayesian-multinomial-model.html#cb573-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb573-2"><a href="bayesian-multinomial-model.html#cb573-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb573-3"><a href="bayesian-multinomial-model.html#cb573-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb573-4"><a href="bayesian-multinomial-model.html#cb573-4" aria-hidden="true" tabindex="-1"></a>program <span class="ot">=</span> <span class="fu">read_dta</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/data/hsbdemo.dta&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb573-5"><a href="bayesian-multinomial-model.html#cb573-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_factor</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb573-6"><a href="bayesian-multinomial-model.html#cb573-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prog =</span> <span class="fu">relevel</span>(prog, <span class="at">ref =</span> <span class="st">&quot;academic&quot;</span>))</span>
+<span id="cb573-7"><a href="bayesian-multinomial-model.html#cb573-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb573-8"><a href="bayesian-multinomial-model.html#cb573-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb573-9"><a href="bayesian-multinomial-model.html#cb573-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(program[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
 <pre><code># A tibble: 6 x 5
      id female ses    schtyp prog    
   &lt;dbl&gt; &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;   
@@ -811,17 +811,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 4    67 male   low    public vocation
 5   153 male   middle public vocation
 6    51 female high   public general </code></pre>
-<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="bayesian-multinomial-model.html#cb587-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
-<span id="cb587-2"><a href="bayesian-multinomial-model.html#cb587-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb587-3"><a href="bayesian-multinomial-model.html#cb587-3" aria-hidden="true" tabindex="-1"></a>programLong <span class="ot">=</span> program <span class="sc">%&gt;%</span> </span>
-<span id="cb587-4"><a href="bayesian-multinomial-model.html#cb587-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, prog, ses, write) <span class="sc">%&gt;%</span> </span>
-<span id="cb587-5"><a href="bayesian-multinomial-model.html#cb587-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mlogit.data</span>(</span>
-<span id="cb587-6"><a href="bayesian-multinomial-model.html#cb587-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape  =</span> <span class="st">&#39;wide&#39;</span>,</span>
-<span id="cb587-7"><a href="bayesian-multinomial-model.html#cb587-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">choice =</span> <span class="st">&#39;prog&#39;</span>,</span>
-<span id="cb587-8"><a href="bayesian-multinomial-model.html#cb587-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">id.var =</span> <span class="st">&#39;id&#39;</span></span>
-<span id="cb587-9"><a href="bayesian-multinomial-model.html#cb587-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb587-10"><a href="bayesian-multinomial-model.html#cb587-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb587-11"><a href="bayesian-multinomial-model.html#cb587-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(programLong)</span></code></pre></div>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="bayesian-multinomial-model.html#cb575-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb575-2"><a href="bayesian-multinomial-model.html#cb575-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb575-3"><a href="bayesian-multinomial-model.html#cb575-3" aria-hidden="true" tabindex="-1"></a>programLong <span class="ot">=</span> program <span class="sc">%&gt;%</span> </span>
+<span id="cb575-4"><a href="bayesian-multinomial-model.html#cb575-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, prog, ses, write) <span class="sc">%&gt;%</span> </span>
+<span id="cb575-5"><a href="bayesian-multinomial-model.html#cb575-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mlogit.data</span>(</span>
+<span id="cb575-6"><a href="bayesian-multinomial-model.html#cb575-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape  =</span> <span class="st">&#39;wide&#39;</span>,</span>
+<span id="cb575-7"><a href="bayesian-multinomial-model.html#cb575-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">choice =</span> <span class="st">&#39;prog&#39;</span>,</span>
+<span id="cb575-8"><a href="bayesian-multinomial-model.html#cb575-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">id.var =</span> <span class="st">&#39;id&#39;</span></span>
+<span id="cb575-9"><a href="bayesian-multinomial-model.html#cb575-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb575-10"><a href="bayesian-multinomial-model.html#cb575-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb575-11"><a href="bayesian-multinomial-model.html#cb575-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(programLong)</span></code></pre></div>
 <pre><code>~~~~~~~
  first 10 observations out of 600 
 ~~~~~~~
@@ -850,11 +850,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 9   159  3 vocation
 10   30  4 academic
 indexes:  1, 1, 2 </code></pre>
-<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb589-1"><a href="bayesian-multinomial-model.html#cb589-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(prog <span class="sc">~</span> ses <span class="sc">+</span> write, <span class="at">data =</span> program)</span>
-<span id="cb589-2"><a href="bayesian-multinomial-model.html#cb589-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> program<span class="sc">$</span>prog</span>
-<span id="cb589-3"><a href="bayesian-multinomial-model.html#cb589-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb589-4"><a href="bayesian-multinomial-model.html#cb589-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> X[<span class="fu">order</span>(y),]</span>
-<span id="cb589-5"><a href="bayesian-multinomial-model.html#cb589-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> y[<span class="fu">order</span>(y)]</span></code></pre></div>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="bayesian-multinomial-model.html#cb577-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(prog <span class="sc">~</span> ses <span class="sc">+</span> write, <span class="at">data =</span> program)</span>
+<span id="cb577-2"><a href="bayesian-multinomial-model.html#cb577-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> program<span class="sc">$</span>prog</span>
+<span id="cb577-3"><a href="bayesian-multinomial-model.html#cb577-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb577-4"><a href="bayesian-multinomial-model.html#cb577-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> X[<span class="fu">order</span>(y),]</span>
+<span id="cb577-5"><a href="bayesian-multinomial-model.html#cb577-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> y[<span class="fu">order</span>(y)]</span></code></pre></div>
 </div>
 <div id="model-code-9" class="section level2">
 <h2>Model Code</h2>
@@ -898,35 +898,35 @@ model {
 <div id="estimation-31" class="section level2">
 <h2>Estimation</h2>
 <p>We’ll get the data prepped for Stan, and the model code is assumed to be in an object <code>bayes_multinom</code>.</p>
-<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb591-1"><a href="bayesian-multinomial-model.html#cb591-1" aria-hidden="true" tabindex="-1"></a><span class="co"># N = sample size, x is the model matrix, y integer version of class outcome, k=</span></span>
-<span id="cb591-2"><a href="bayesian-multinomial-model.html#cb591-2" aria-hidden="true" tabindex="-1"></a><span class="co"># number of classes, D is dimension of model matrix</span></span>
-<span id="cb591-3"><a href="bayesian-multinomial-model.html#cb591-3" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb591-4"><a href="bayesian-multinomial-model.html#cb591-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">nrow</span>(X),</span>
-<span id="cb591-5"><a href="bayesian-multinomial-model.html#cb591-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
-<span id="cb591-6"><a href="bayesian-multinomial-model.html#cb591-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">as.integer</span>(y),</span>
-<span id="cb591-7"><a href="bayesian-multinomial-model.html#cb591-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">K =</span> <span class="fu">n_distinct</span>(y),</span>
-<span id="cb591-8"><a href="bayesian-multinomial-model.html#cb591-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">D =</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb591-9"><a href="bayesian-multinomial-model.html#cb591-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb591-10"><a href="bayesian-multinomial-model.html#cb591-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-11"><a href="bayesian-multinomial-model.html#cb591-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-12"><a href="bayesian-multinomial-model.html#cb591-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb591-13"><a href="bayesian-multinomial-model.html#cb591-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb591-14"><a href="bayesian-multinomial-model.html#cb591-14" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb591-15"><a href="bayesian-multinomial-model.html#cb591-15" aria-hidden="true" tabindex="-1"></a>  bayes_multinom,</span>
-<span id="cb591-16"><a href="bayesian-multinomial-model.html#cb591-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> stan_data,</span>
-<span id="cb591-17"><a href="bayesian-multinomial-model.html#cb591-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span>,</span>
-<span id="cb591-18"><a href="bayesian-multinomial-model.html#cb591-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span></span>
-<span id="cb591-19"><a href="bayesian-multinomial-model.html#cb591-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="bayesian-multinomial-model.html#cb579-1" aria-hidden="true" tabindex="-1"></a><span class="co"># N = sample size, x is the model matrix, y integer version of class outcome, k=</span></span>
+<span id="cb579-2"><a href="bayesian-multinomial-model.html#cb579-2" aria-hidden="true" tabindex="-1"></a><span class="co"># number of classes, D is dimension of model matrix</span></span>
+<span id="cb579-3"><a href="bayesian-multinomial-model.html#cb579-3" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb579-4"><a href="bayesian-multinomial-model.html#cb579-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">nrow</span>(X),</span>
+<span id="cb579-5"><a href="bayesian-multinomial-model.html#cb579-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
+<span id="cb579-6"><a href="bayesian-multinomial-model.html#cb579-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">as.integer</span>(y),</span>
+<span id="cb579-7"><a href="bayesian-multinomial-model.html#cb579-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">K =</span> <span class="fu">n_distinct</span>(y),</span>
+<span id="cb579-8"><a href="bayesian-multinomial-model.html#cb579-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">D =</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb579-9"><a href="bayesian-multinomial-model.html#cb579-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb579-10"><a href="bayesian-multinomial-model.html#cb579-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb579-11"><a href="bayesian-multinomial-model.html#cb579-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb579-12"><a href="bayesian-multinomial-model.html#cb579-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb579-13"><a href="bayesian-multinomial-model.html#cb579-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb579-14"><a href="bayesian-multinomial-model.html#cb579-14" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
+<span id="cb579-15"><a href="bayesian-multinomial-model.html#cb579-15" aria-hidden="true" tabindex="-1"></a>  bayes_multinom,</span>
+<span id="cb579-16"><a href="bayesian-multinomial-model.html#cb579-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> stan_data,</span>
+<span id="cb579-17"><a href="bayesian-multinomial-model.html#cb579-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span>,</span>
+<span id="cb579-18"><a href="bayesian-multinomial-model.html#cb579-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span></span>
+<span id="cb579-19"><a href="bayesian-multinomial-model.html#cb579-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="comparison-35" class="section level2">
 <h2>Comparison</h2>
 <p>We’ll need to do a bit of reordering, but otherwise we can see that the models come to similar conclusions.</p>
-<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="bayesian-multinomial-model.html#cb592-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb592-2"><a href="bayesian-multinomial-model.html#cb592-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb592-3"><a href="bayesian-multinomial-model.html#cb592-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb592-4"><a href="bayesian-multinomial-model.html#cb592-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;beta&#39;</span>),</span>
-<span id="cb592-5"><a href="bayesian-multinomial-model.html#cb592-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
-<span id="cb592-6"><a href="bayesian-multinomial-model.html#cb592-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="bayesian-multinomial-model.html#cb580-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb580-2"><a href="bayesian-multinomial-model.html#cb580-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
+<span id="cb580-3"><a href="bayesian-multinomial-model.html#cb580-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb580-4"><a href="bayesian-multinomial-model.html#cb580-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;beta&#39;</span>),</span>
+<span id="cb580-5"><a href="bayesian-multinomial-model.html#cb580-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
+<span id="cb580-6"><a href="bayesian-multinomial-model.html#cb580-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Inference for Stan model: 6f6b51695c6eeda4b74c0665f4447c97.
 4 chains, each with iter=2000; warmup=1000; thin=4; 
 post-warmup draws per chain=250, total post-warmup draws=1000.
@@ -949,10 +949,10 @@ Samples were drawn using NUTS(diag_e) at Wed Nov 25 18:00:51 2020.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
-<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="bayesian-multinomial-model.html#cb594-1" aria-hidden="true" tabindex="-1"></a>fit_coefs    <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">par =</span> <span class="st">&#39;beta_raw&#39;</span>)[, <span class="dv">5</span>]</span>
-<span id="cb594-2"><a href="bayesian-multinomial-model.html#cb594-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb594-3"><a href="bayesian-multinomial-model.html#cb594-3" aria-hidden="true" tabindex="-1"></a>mlogit_mod   <span class="ot">=</span> <span class="fu">mlogit</span>(prog <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> ses <span class="sc">+</span> write, <span class="at">data =</span> programLong)</span>
-<span id="cb594-4"><a href="bayesian-multinomial-model.html#cb594-4" aria-hidden="true" tabindex="-1"></a>mlogit_coefs <span class="ot">=</span> <span class="fu">coef</span>(mlogit_mod)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>)]</span></code></pre></div>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="bayesian-multinomial-model.html#cb582-1" aria-hidden="true" tabindex="-1"></a>fit_coefs    <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">par =</span> <span class="st">&#39;beta_raw&#39;</span>)[, <span class="dv">5</span>]</span>
+<span id="cb582-2"><a href="bayesian-multinomial-model.html#cb582-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb582-3"><a href="bayesian-multinomial-model.html#cb582-3" aria-hidden="true" tabindex="-1"></a>mlogit_mod   <span class="ot">=</span> <span class="fu">mlogit</span>(prog <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> ses <span class="sc">+</span> write, <span class="at">data =</span> programLong)</span>
+<span id="cb582-4"><a href="bayesian-multinomial-model.html#cb582-4" aria-hidden="true" tabindex="-1"></a>mlogit_coefs <span class="ot">=</span> <span class="fu">coef</span>(mlogit_mod)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>)]</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

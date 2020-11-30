@@ -109,19 +109,21 @@ gcv_search = map(lambda, function(lam) ridge(X, y, lam))
 
 V = map_dbl(gcv_search, function(x) x$gcv)
 
-ridge_coefs = map_df(gcv_search, function(x)
-  data.frame(
-    value = x$beta_hat[-1],
-    coef  = colnames(X)
-    ), .id = 'iter') %>% 
-  mutate(
-    lambda = lambda[as.integer(iter)]
-  )
+ridge_coefs = map_df(
+  gcv_search, 
+  function(x)
+    data.frame(
+      value = x$beta_hat[-1],
+      coef  = colnames(X)
+    ), 
+  .id = 'iter'
+) %>% 
+  mutate(lambda = lambda[as.integer(iter)])
 ```
 
 Compare with Figure 3 in the article.
 
-```{r rk-ridge-plot, out.width='1200px', fig.asp=.5, layout = 'l-body-outset'}
+```{r rk-ridge-plot}
 gcv_plot = qplot(
   lambda,
   V,
@@ -137,20 +139,23 @@ beta_plot = ridge_coefs %>%
   scale_x_log10() +
   scico::scale_color_scico_d(end = .8) +
   labs(title = 'Betas Across Lambda')
+```
 
 
+```{r rk-ridge-plot-show, out.width='1200px', fig.asp=.5, layout = 'l-body-outset', echo=FALSE}
 library(patchwork)
 
 gcv_plot + beta_plot
 ```
 
+
 Pick the best model and obtain the estimates.
 
 ```{r rk-ridge-best}
-ridge_model = ridge(X, y, lambda[which.min(V)])  # fit optimal model
+fit_ridge = ridge(X, y, lambda[which.min(V)])  # fit optimal model
 
-gamma_hat = ridge_model$gamma_hat
-beta_0    = ridge_model$gamma_hat[1]             # intercept
+gamma_hat = fit_ridge$gamma_hat
+beta_0    = fit_ridge$gamma_hat[1]             # intercept
 beta_hat  = crossprod(gamma_hat[-1,], X)         # slope and noise term coefficients
 ```
 
@@ -161,19 +166,27 @@ I add a comparison to <span class="pack" style = "">glmnet</span>, where setting
 ```{r rk-ridge-compare-glmnet, message=FALSE}
 c(beta_0, beta_hat)
 
-ridge_glmnet = glmnet::glmnet(
+fit_glmnet = glmnet::glmnet(
   X,
   y,
   alpha  = 0,
   lambda = lambda,
   standardize = FALSE
 )
-
-cbind(
-  est    = c(beta_0, beta_hat),
-  glmnet = coef(ridge_glmnet)[, which.max(ridge_glmnet$dev.ratio)]
-)
 ```
+
+
+```{r rk-ridge-compare-glmnet-show, echo=FALSE}
+rbind(
+  fit_ridge  = c(beta_0, beta_hat),
+  fit_glmnet = coef(fit_glmnet)[, which.max(fit_glmnet$dev.ratio)]
+) %>% 
+  kable_df()
+```
+
+
+
+
 
 ## Example: Cubic Spline
 
@@ -236,6 +249,7 @@ smoothing_spline <- function(X, y, lambda) {
 
 ### Estimation
 
+We'll now get fits for multiple lambda values.
 
 ```{r rk-spline-est}
 lambda = 10^seq(-6, 0, by = .1)
@@ -245,9 +259,9 @@ gcv_search = map(lambda, function(lam) smoothing_spline(x, y, lam))
 V = map_dbl(gcv_search, function(x) x$gcv)
 ```
 
-Plot of GCV.
+Plot of GCV across different lambdas.
 
-```{r rk-spline-gcv-plot}
+```{r rk-spline-gcv-plot, echo=FALSE}
 gcv_plot = qplot(
   lambda,
   V,
@@ -264,13 +278,13 @@ gcv_plot = qplot(
 
 I've added comparison to an additive model using <span class="pack" style = "">mgcv</span>. Compare the result to Figure 2 of the Supplementary Material.
 
-```{r rk-spline-comparison, out.width='1200px', fig.asp=.5, layout = 'l-body-outset'}
-spline_model = smoothing_spline(x, y, lambda[which.min(V)])       # fit optimal model
-gam_model    = mgcv::gam(y ~ s(x))
+```{r rk-spline-comparison, out.width='1200px', fig.asp=.5, layout = 'l-body-outset', echo=1:2}
+fit_rk  = smoothing_spline(x, y, lambda[which.min(V)])   # fit optimal model
+fit_gam = mgcv::gam(y ~ s(x))
 
 fit_plot = MASS::mcycle %>%
-  mutate(rk_fit  = spline_model$f_hat[, 1],
-         gam_fit = fitted(gam_model)) %>%
+  mutate(fit_rk  = fit_rk$f_hat[, 1],
+         fit_gam = fitted(fit_gam)) %>%
   arrange(times) %>%
   pivot_longer(-c(times, accel), names_to = 'fit', values_to = 'value')  %>%
   ggplot(aes(times, accel)) +
@@ -488,13 +502,13 @@ plot(1:60,
      main = "GCV score",
      xlab = "i") # plot score
 i <- (1:60)[V == min(V)] # extract index of min(V)
-spline_model <- smoothing.spline(x.star, y, 1.5 ^ (i - 1) * 1e-8) #fit optimal
+fit_rk <- smoothing.spline(x.star, y, 1.5 ^ (i - 1) * 1e-8) #fit optimal
 model
 
 #Graph (Cubic Spline)
 plot(
   x.star,
-  spline_model$f.hat,
+  fit_rk$f.hat,
   type = "l",
   lty = 2,
   lwd = 2,

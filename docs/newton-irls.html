@@ -801,121 +801,121 @@ more prestige). See corresponding demo
 difference is that I treat rank as numeric rather than categorical. We will be
 comparing results to base R <span class="func" style="">glm</span> function,
 so I will use it to create the model data.</p>
-<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="newton-irls.html#cb664-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb664-2"><a href="newton-irls.html#cb664-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb664-3"><a href="newton-irls.html#cb664-3" aria-hidden="true" tabindex="-1"></a>admit <span class="ot">=</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&#39;https://stats.idre.ucla.edu/stat/stata/dae/binary.dta&#39;</span>)</span>
-<span id="cb664-4"><a href="newton-irls.html#cb664-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb664-5"><a href="newton-irls.html#cb664-5" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">=</span> <span class="fu">glm</span>(admit <span class="sc">~</span> gre <span class="sc">+</span> gpa <span class="sc">+</span> rank, <span class="at">data =</span> admit, <span class="at">family =</span> binomial)</span>
-<span id="cb664-6"><a href="newton-irls.html#cb664-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb664-7"><a href="newton-irls.html#cb664-7" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_glm)</span></span>
-<span id="cb664-8"><a href="newton-irls.html#cb664-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb664-9"><a href="newton-irls.html#cb664-9" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(fit_glm)</span>
-<span id="cb664-10"><a href="newton-irls.html#cb664-10" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> fit_glm<span class="sc">$</span>y</span></code></pre></div>
+<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="newton-irls.html#cb652-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb652-2"><a href="newton-irls.html#cb652-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb652-3"><a href="newton-irls.html#cb652-3" aria-hidden="true" tabindex="-1"></a>admit <span class="ot">=</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&#39;https://stats.idre.ucla.edu/stat/stata/dae/binary.dta&#39;</span>)</span>
+<span id="cb652-4"><a href="newton-irls.html#cb652-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb652-5"><a href="newton-irls.html#cb652-5" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">=</span> <span class="fu">glm</span>(admit <span class="sc">~</span> gre <span class="sc">+</span> gpa <span class="sc">+</span> rank, <span class="at">data =</span> admit, <span class="at">family =</span> binomial)</span>
+<span id="cb652-6"><a href="newton-irls.html#cb652-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb652-7"><a href="newton-irls.html#cb652-7" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_glm)</span></span>
+<span id="cb652-8"><a href="newton-irls.html#cb652-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb652-9"><a href="newton-irls.html#cb652-9" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(fit_glm)</span>
+<span id="cb652-10"><a href="newton-irls.html#cb652-10" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> fit_glm<span class="sc">$</span>y</span></code></pre></div>
 </div>
 <div id="functions-10" class="section level2">
 <h2>Functions</h2>
 <div id="newtons-method" class="section level3">
 <h3>Newton’s Method</h3>
-<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="newton-irls.html#cb665-1" aria-hidden="true" tabindex="-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb665-2"><a href="newton-irls.html#cb665-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb665-3"><a href="newton-irls.html#cb665-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb665-4"><a href="newton-irls.html#cb665-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol  =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb665-5"><a href="newton-irls.html#cb665-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">500</span>,</span>
-<span id="cb665-6"><a href="newton-irls.html#cb665-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize =</span> .<span class="dv">5</span></span>
-<span id="cb665-7"><a href="newton-irls.html#cb665-7" aria-hidden="true" tabindex="-1"></a>  ) {</span>
-<span id="cb665-8"><a href="newton-irls.html#cb665-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb665-9"><a href="newton-irls.html#cb665-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args: </span></span>
-<span id="cb665-10"><a href="newton-irls.html#cb665-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: model matrix</span></span>
-<span id="cb665-11"><a href="newton-irls.html#cb665-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: target</span></span>
-<span id="cb665-12"><a href="newton-irls.html#cb665-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tol: tolerance</span></span>
-<span id="cb665-13"><a href="newton-irls.html#cb665-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># iter: maximum number of iterations</span></span>
-<span id="cb665-14"><a href="newton-irls.html#cb665-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># stepsize: (0, 1)</span></span>
-<span id="cb665-15"><a href="newton-irls.html#cb665-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb665-16"><a href="newton-irls.html#cb665-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># intialize</span></span>
-<span id="cb665-17"><a href="newton-irls.html#cb665-17" aria-hidden="true" tabindex="-1"></a>  int     <span class="ot">=</span> <span class="fu">log</span>(<span class="fu">mean</span>(y) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">mean</span>(y)))         <span class="co"># intercept</span></span>
-<span id="cb665-18"><a href="newton-irls.html#cb665-18" aria-hidden="true" tabindex="-1"></a>  beta    <span class="ot">=</span> <span class="fu">c</span>(int, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X) <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb665-19"><a href="newton-irls.html#cb665-19" aria-hidden="true" tabindex="-1"></a>  currtol <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb665-20"><a href="newton-irls.html#cb665-20" aria-hidden="true" tabindex="-1"></a>  it <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb665-21"><a href="newton-irls.html#cb665-21" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb665-22"><a href="newton-irls.html#cb665-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb665-23"><a href="newton-irls.html#cb665-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (currtol <span class="sc">&gt;</span> tol <span class="sc">&amp;&amp;</span> it <span class="sc">&lt;</span> iter) {</span>
-<span id="cb665-24"><a href="newton-irls.html#cb665-24" aria-hidden="true" tabindex="-1"></a>    it <span class="ot">=</span> it <span class="sc">+</span><span class="dv">1</span></span>
-<span id="cb665-25"><a href="newton-irls.html#cb665-25" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="ot">=</span> ll</span>
-<span id="cb665-26"><a href="newton-irls.html#cb665-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb665-27"><a href="newton-irls.html#cb665-27" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">=</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta)[,<span class="dv">1</span>]</span>
-<span id="cb665-28"><a href="newton-irls.html#cb665-28" aria-hidden="true" tabindex="-1"></a>    g  <span class="ot">=</span> <span class="fu">crossprod</span>(X, mu<span class="sc">-</span>y)               <span class="co"># gradient</span></span>
-<span id="cb665-29"><a href="newton-irls.html#cb665-29" aria-hidden="true" tabindex="-1"></a>    S  <span class="ot">=</span> <span class="fu">diag</span>(mu<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>mu)) </span>
-<span id="cb665-30"><a href="newton-irls.html#cb665-30" aria-hidden="true" tabindex="-1"></a>    H  <span class="ot">=</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> S <span class="sc">%*%</span> X                 <span class="co"># hessian</span></span>
-<span id="cb665-31"><a href="newton-irls.html#cb665-31" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">=</span> beta <span class="sc">-</span> stepsize <span class="sc">*</span> <span class="fu">solve</span>(H) <span class="sc">%*%</span> g</span>
-<span id="cb665-32"><a href="newton-irls.html#cb665-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb665-33"><a href="newton-irls.html#cb665-33" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">dbinom</span>(y, <span class="at">prob =</span> mu, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb665-34"><a href="newton-irls.html#cb665-34" aria-hidden="true" tabindex="-1"></a>    currtol <span class="ot">=</span> <span class="fu">abs</span>(ll <span class="sc">-</span> ll_old)</span>
-<span id="cb665-35"><a href="newton-irls.html#cb665-35" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb665-36"><a href="newton-irls.html#cb665-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb665-37"><a href="newton-irls.html#cb665-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb665-38"><a href="newton-irls.html#cb665-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta =</span> beta,</span>
-<span id="cb665-39"><a href="newton-irls.html#cb665-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> it,</span>
-<span id="cb665-40"><a href="newton-irls.html#cb665-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">tol  =</span> currtol,</span>
-<span id="cb665-41"><a href="newton-irls.html#cb665-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">loglik =</span> ll</span>
-<span id="cb665-42"><a href="newton-irls.html#cb665-42" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb665-43"><a href="newton-irls.html#cb665-43" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb653-1"><a href="newton-irls.html#cb653-1" aria-hidden="true" tabindex="-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb653-2"><a href="newton-irls.html#cb653-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb653-3"><a href="newton-irls.html#cb653-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb653-4"><a href="newton-irls.html#cb653-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb653-5"><a href="newton-irls.html#cb653-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">500</span>,</span>
+<span id="cb653-6"><a href="newton-irls.html#cb653-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize =</span> .<span class="dv">5</span></span>
+<span id="cb653-7"><a href="newton-irls.html#cb653-7" aria-hidden="true" tabindex="-1"></a>  ) {</span>
+<span id="cb653-8"><a href="newton-irls.html#cb653-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb653-9"><a href="newton-irls.html#cb653-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args: </span></span>
+<span id="cb653-10"><a href="newton-irls.html#cb653-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: model matrix</span></span>
+<span id="cb653-11"><a href="newton-irls.html#cb653-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: target</span></span>
+<span id="cb653-12"><a href="newton-irls.html#cb653-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tol: tolerance</span></span>
+<span id="cb653-13"><a href="newton-irls.html#cb653-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># iter: maximum number of iterations</span></span>
+<span id="cb653-14"><a href="newton-irls.html#cb653-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># stepsize: (0, 1)</span></span>
+<span id="cb653-15"><a href="newton-irls.html#cb653-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb653-16"><a href="newton-irls.html#cb653-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># intialize</span></span>
+<span id="cb653-17"><a href="newton-irls.html#cb653-17" aria-hidden="true" tabindex="-1"></a>  int     <span class="ot">=</span> <span class="fu">log</span>(<span class="fu">mean</span>(y) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">mean</span>(y)))         <span class="co"># intercept</span></span>
+<span id="cb653-18"><a href="newton-irls.html#cb653-18" aria-hidden="true" tabindex="-1"></a>  beta    <span class="ot">=</span> <span class="fu">c</span>(int, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X) <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb653-19"><a href="newton-irls.html#cb653-19" aria-hidden="true" tabindex="-1"></a>  currtol <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb653-20"><a href="newton-irls.html#cb653-20" aria-hidden="true" tabindex="-1"></a>  it <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb653-21"><a href="newton-irls.html#cb653-21" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb653-22"><a href="newton-irls.html#cb653-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb653-23"><a href="newton-irls.html#cb653-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (currtol <span class="sc">&gt;</span> tol <span class="sc">&amp;&amp;</span> it <span class="sc">&lt;</span> iter) {</span>
+<span id="cb653-24"><a href="newton-irls.html#cb653-24" aria-hidden="true" tabindex="-1"></a>    it <span class="ot">=</span> it <span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb653-25"><a href="newton-irls.html#cb653-25" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="ot">=</span> ll</span>
+<span id="cb653-26"><a href="newton-irls.html#cb653-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb653-27"><a href="newton-irls.html#cb653-27" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">=</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta)[,<span class="dv">1</span>]</span>
+<span id="cb653-28"><a href="newton-irls.html#cb653-28" aria-hidden="true" tabindex="-1"></a>    g  <span class="ot">=</span> <span class="fu">crossprod</span>(X, mu<span class="sc">-</span>y)               <span class="co"># gradient</span></span>
+<span id="cb653-29"><a href="newton-irls.html#cb653-29" aria-hidden="true" tabindex="-1"></a>    S  <span class="ot">=</span> <span class="fu">diag</span>(mu<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>mu)) </span>
+<span id="cb653-30"><a href="newton-irls.html#cb653-30" aria-hidden="true" tabindex="-1"></a>    H  <span class="ot">=</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> S <span class="sc">%*%</span> X                 <span class="co"># hessian</span></span>
+<span id="cb653-31"><a href="newton-irls.html#cb653-31" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">=</span> beta <span class="sc">-</span> stepsize <span class="sc">*</span> <span class="fu">solve</span>(H) <span class="sc">%*%</span> g</span>
+<span id="cb653-32"><a href="newton-irls.html#cb653-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb653-33"><a href="newton-irls.html#cb653-33" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">dbinom</span>(y, <span class="at">prob =</span> mu, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb653-34"><a href="newton-irls.html#cb653-34" aria-hidden="true" tabindex="-1"></a>    currtol <span class="ot">=</span> <span class="fu">abs</span>(ll <span class="sc">-</span> ll_old)</span>
+<span id="cb653-35"><a href="newton-irls.html#cb653-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb653-36"><a href="newton-irls.html#cb653-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb653-37"><a href="newton-irls.html#cb653-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb653-38"><a href="newton-irls.html#cb653-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta =</span> beta,</span>
+<span id="cb653-39"><a href="newton-irls.html#cb653-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> it,</span>
+<span id="cb653-40"><a href="newton-irls.html#cb653-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">tol  =</span> currtol,</span>
+<span id="cb653-41"><a href="newton-irls.html#cb653-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">loglik =</span> ll</span>
+<span id="cb653-42"><a href="newton-irls.html#cb653-42" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb653-43"><a href="newton-irls.html#cb653-43" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="irls" class="section level3">
 <h3>IRLS</h3>
 <p>Note that <span class="func" style="">glm</span> is actually using IRLS, so
 the results from this should be fairly spot on.</p>
-<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="newton-irls.html#cb666-1" aria-hidden="true" tabindex="-1"></a>irls <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, <span class="at">tol =</span> <span class="fl">1e-12</span>, <span class="at">iter =</span> <span class="dv">500</span>) {</span>
-<span id="cb666-2"><a href="newton-irls.html#cb666-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb666-3"><a href="newton-irls.html#cb666-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># intialize</span></span>
-<span id="cb666-4"><a href="newton-irls.html#cb666-4" aria-hidden="true" tabindex="-1"></a>  int  <span class="ot">=</span> <span class="fu">log</span>(<span class="fu">mean</span>(y) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">mean</span>(y)))   <span class="co"># intercept</span></span>
-<span id="cb666-5"><a href="newton-irls.html#cb666-5" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> <span class="fu">c</span>(int, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X) <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb666-6"><a href="newton-irls.html#cb666-6" aria-hidden="true" tabindex="-1"></a>  currtol <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb666-7"><a href="newton-irls.html#cb666-7" aria-hidden="true" tabindex="-1"></a>  it <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb666-8"><a href="newton-irls.html#cb666-8" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb666-9"><a href="newton-irls.html#cb666-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb666-10"><a href="newton-irls.html#cb666-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (currtol <span class="sc">&gt;</span> tol <span class="sc">&amp;&amp;</span> it <span class="sc">&lt;</span> iter) {</span>
-<span id="cb666-11"><a href="newton-irls.html#cb666-11" aria-hidden="true" tabindex="-1"></a>    it <span class="ot">=</span> it <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb666-12"><a href="newton-irls.html#cb666-12" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="ot">=</span> ll</span>
-<span id="cb666-13"><a href="newton-irls.html#cb666-13" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb666-14"><a href="newton-irls.html#cb666-14" aria-hidden="true" tabindex="-1"></a>    eta  <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb666-15"><a href="newton-irls.html#cb666-15" aria-hidden="true" tabindex="-1"></a>    mu   <span class="ot">=</span> <span class="fu">plogis</span>(eta)[,<span class="dv">1</span>]</span>
-<span id="cb666-16"><a href="newton-irls.html#cb666-16" aria-hidden="true" tabindex="-1"></a>    s    <span class="ot">=</span> mu <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> mu)</span>
-<span id="cb666-17"><a href="newton-irls.html#cb666-17" aria-hidden="true" tabindex="-1"></a>    S    <span class="ot">=</span> <span class="fu">diag</span>(s)</span>
-<span id="cb666-18"><a href="newton-irls.html#cb666-18" aria-hidden="true" tabindex="-1"></a>    z    <span class="ot">=</span> eta <span class="sc">+</span> (y <span class="sc">-</span> mu)<span class="sc">/</span>s</span>
-<span id="cb666-19"><a href="newton-irls.html#cb666-19" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">=</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> S <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> (S <span class="sc">%*%</span> z))</span>
-<span id="cb666-20"><a href="newton-irls.html#cb666-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb666-21"><a href="newton-irls.html#cb666-21" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">=</span> <span class="fu">sum</span>(</span>
-<span id="cb666-22"><a href="newton-irls.html#cb666-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dbinom</span>(</span>
-<span id="cb666-23"><a href="newton-irls.html#cb666-23" aria-hidden="true" tabindex="-1"></a>        y,</span>
-<span id="cb666-24"><a href="newton-irls.html#cb666-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">prob =</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta),</span>
-<span id="cb666-25"><a href="newton-irls.html#cb666-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="dv">1</span>,</span>
-<span id="cb666-26"><a href="newton-irls.html#cb666-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">log  =</span> <span class="cn">TRUE</span></span>
-<span id="cb666-27"><a href="newton-irls.html#cb666-27" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb666-28"><a href="newton-irls.html#cb666-28" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb666-29"><a href="newton-irls.html#cb666-29" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb666-30"><a href="newton-irls.html#cb666-30" aria-hidden="true" tabindex="-1"></a>    currtol <span class="ot">=</span> <span class="fu">abs</span>(ll <span class="sc">-</span> ll_old)</span>
-<span id="cb666-31"><a href="newton-irls.html#cb666-31" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb666-32"><a href="newton-irls.html#cb666-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb666-33"><a href="newton-irls.html#cb666-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb666-34"><a href="newton-irls.html#cb666-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta =</span> beta,</span>
-<span id="cb666-35"><a href="newton-irls.html#cb666-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> it,</span>
-<span id="cb666-36"><a href="newton-irls.html#cb666-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">tol  =</span> currtol,</span>
-<span id="cb666-37"><a href="newton-irls.html#cb666-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">loglik  =</span> ll,</span>
-<span id="cb666-38"><a href="newton-irls.html#cb666-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta))</span>
-<span id="cb666-39"><a href="newton-irls.html#cb666-39" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb666-40"><a href="newton-irls.html#cb666-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="newton-irls.html#cb654-1" aria-hidden="true" tabindex="-1"></a>irls <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, <span class="at">tol =</span> <span class="fl">1e-12</span>, <span class="at">iter =</span> <span class="dv">500</span>) {</span>
+<span id="cb654-2"><a href="newton-irls.html#cb654-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb654-3"><a href="newton-irls.html#cb654-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># intialize</span></span>
+<span id="cb654-4"><a href="newton-irls.html#cb654-4" aria-hidden="true" tabindex="-1"></a>  int  <span class="ot">=</span> <span class="fu">log</span>(<span class="fu">mean</span>(y) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">mean</span>(y)))   <span class="co"># intercept</span></span>
+<span id="cb654-5"><a href="newton-irls.html#cb654-5" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> <span class="fu">c</span>(int, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X) <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb654-6"><a href="newton-irls.html#cb654-6" aria-hidden="true" tabindex="-1"></a>  currtol <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb654-7"><a href="newton-irls.html#cb654-7" aria-hidden="true" tabindex="-1"></a>  it <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb654-8"><a href="newton-irls.html#cb654-8" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb654-9"><a href="newton-irls.html#cb654-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb654-10"><a href="newton-irls.html#cb654-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (currtol <span class="sc">&gt;</span> tol <span class="sc">&amp;&amp;</span> it <span class="sc">&lt;</span> iter) {</span>
+<span id="cb654-11"><a href="newton-irls.html#cb654-11" aria-hidden="true" tabindex="-1"></a>    it <span class="ot">=</span> it <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb654-12"><a href="newton-irls.html#cb654-12" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="ot">=</span> ll</span>
+<span id="cb654-13"><a href="newton-irls.html#cb654-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb654-14"><a href="newton-irls.html#cb654-14" aria-hidden="true" tabindex="-1"></a>    eta  <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb654-15"><a href="newton-irls.html#cb654-15" aria-hidden="true" tabindex="-1"></a>    mu   <span class="ot">=</span> <span class="fu">plogis</span>(eta)[,<span class="dv">1</span>]</span>
+<span id="cb654-16"><a href="newton-irls.html#cb654-16" aria-hidden="true" tabindex="-1"></a>    s    <span class="ot">=</span> mu <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> mu)</span>
+<span id="cb654-17"><a href="newton-irls.html#cb654-17" aria-hidden="true" tabindex="-1"></a>    S    <span class="ot">=</span> <span class="fu">diag</span>(s)</span>
+<span id="cb654-18"><a href="newton-irls.html#cb654-18" aria-hidden="true" tabindex="-1"></a>    z    <span class="ot">=</span> eta <span class="sc">+</span> (y <span class="sc">-</span> mu)<span class="sc">/</span>s</span>
+<span id="cb654-19"><a href="newton-irls.html#cb654-19" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">=</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> S <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> (S <span class="sc">%*%</span> z))</span>
+<span id="cb654-20"><a href="newton-irls.html#cb654-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb654-21"><a href="newton-irls.html#cb654-21" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">=</span> <span class="fu">sum</span>(</span>
+<span id="cb654-22"><a href="newton-irls.html#cb654-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dbinom</span>(</span>
+<span id="cb654-23"><a href="newton-irls.html#cb654-23" aria-hidden="true" tabindex="-1"></a>        y,</span>
+<span id="cb654-24"><a href="newton-irls.html#cb654-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">prob =</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta),</span>
+<span id="cb654-25"><a href="newton-irls.html#cb654-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="dv">1</span>,</span>
+<span id="cb654-26"><a href="newton-irls.html#cb654-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">log  =</span> <span class="cn">TRUE</span></span>
+<span id="cb654-27"><a href="newton-irls.html#cb654-27" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb654-28"><a href="newton-irls.html#cb654-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb654-29"><a href="newton-irls.html#cb654-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb654-30"><a href="newton-irls.html#cb654-30" aria-hidden="true" tabindex="-1"></a>    currtol <span class="ot">=</span> <span class="fu">abs</span>(ll <span class="sc">-</span> ll_old)</span>
+<span id="cb654-31"><a href="newton-irls.html#cb654-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb654-32"><a href="newton-irls.html#cb654-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb654-33"><a href="newton-irls.html#cb654-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb654-34"><a href="newton-irls.html#cb654-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta =</span> beta,</span>
+<span id="cb654-35"><a href="newton-irls.html#cb654-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> it,</span>
+<span id="cb654-36"><a href="newton-irls.html#cb654-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">tol  =</span> currtol,</span>
+<span id="cb654-37"><a href="newton-irls.html#cb654-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">loglik  =</span> ll,</span>
+<span id="cb654-38"><a href="newton-irls.html#cb654-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta))</span>
+<span id="cb654-39"><a href="newton-irls.html#cb654-39" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb654-40"><a href="newton-irls.html#cb654-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
 <div id="estimation-37" class="section level2">
 <h2>Estimation</h2>
-<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="newton-irls.html#cb667-1" aria-hidden="true" tabindex="-1"></a>fit_newton <span class="ot">=</span> <span class="fu">newton</span>(</span>
-<span id="cb667-2"><a href="newton-irls.html#cb667-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
-<span id="cb667-3"><a href="newton-irls.html#cb667-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
-<span id="cb667-4"><a href="newton-irls.html#cb667-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize =</span> .<span class="dv">9</span>,</span>
-<span id="cb667-5"><a href="newton-irls.html#cb667-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol =</span> <span class="fl">1e-8</span>      <span class="co"># tol set to 1e-8 as in glm default</span></span>
-<span id="cb667-6"><a href="newton-irls.html#cb667-6" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb667-7"><a href="newton-irls.html#cb667-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb667-8"><a href="newton-irls.html#cb667-8" aria-hidden="true" tabindex="-1"></a>fit_newton</span></code></pre></div>
+<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="newton-irls.html#cb655-1" aria-hidden="true" tabindex="-1"></a>fit_newton <span class="ot">=</span> <span class="fu">newton</span>(</span>
+<span id="cb655-2"><a href="newton-irls.html#cb655-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
+<span id="cb655-3"><a href="newton-irls.html#cb655-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
+<span id="cb655-4"><a href="newton-irls.html#cb655-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepsize =</span> .<span class="dv">9</span>,</span>
+<span id="cb655-5"><a href="newton-irls.html#cb655-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol =</span> <span class="fl">1e-8</span>      <span class="co"># tol set to 1e-8 as in glm default</span></span>
+<span id="cb655-6"><a href="newton-irls.html#cb655-6" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb655-7"><a href="newton-irls.html#cb655-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb655-8"><a href="newton-irls.html#cb655-8" aria-hidden="true" tabindex="-1"></a>fit_newton</span></code></pre></div>
 <pre><code>$beta
                     [,1]
 (Intercept) -3.449548577
@@ -931,11 +931,11 @@ $tol
 
 $loglik
 [1] -229.7209</code></pre>
-<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="newton-irls.html#cb669-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_glm</span></span></code></pre></div>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="newton-irls.html#cb657-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_glm</span></span></code></pre></div>
 <p><code>tol</code> set to 1e-8 as in <span class="func" style="">glm</span> default.</p>
-<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="newton-irls.html#cb670-1" aria-hidden="true" tabindex="-1"></a>irls_result <span class="ot">=</span> <span class="fu">irls</span>(<span class="at">X =</span> X, <span class="at">y =</span> y, <span class="at">tol =</span> <span class="fl">1e-8</span>) </span>
-<span id="cb670-2"><a href="newton-irls.html#cb670-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb670-3"><a href="newton-irls.html#cb670-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(irls_result)</span></code></pre></div>
+<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="newton-irls.html#cb658-1" aria-hidden="true" tabindex="-1"></a>irls_result <span class="ot">=</span> <span class="fu">irls</span>(<span class="at">X =</span> X, <span class="at">y =</span> y, <span class="at">tol =</span> <span class="fl">1e-8</span>) </span>
+<span id="cb658-2"><a href="newton-irls.html#cb658-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb658-3"><a href="newton-irls.html#cb658-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(irls_result)</span></code></pre></div>
 <pre><code>List of 5
  $ beta   : num [1:4, 1] -3.44955 0.00229 0.77701 -0.56003
   ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -948,7 +948,7 @@ $loglik
   ..- attr(*, &quot;dimnames&quot;)=List of 2
   .. ..$ : chr [1:400] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
   .. ..$ : NULL</code></pre>
-<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="newton-irls.html#cb672-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_glm</span></span></code></pre></div>
+<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="newton-irls.html#cb660-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_glm</span></span></code></pre></div>
 </div>
 <div id="comparison-41" class="section level2">
 <h2>Comparison</h2>
@@ -1063,7 +1063,7 @@ NA
 </tbody>
 </table>
 <p>Compare weights between the <span class="func" style="">irls</span> and <span class="func" style="">glm</span> results.</p>
-<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="newton-irls.html#cb673-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">cbind</span>(irls_result<span class="sc">$</span>weights, fit_glm<span class="sc">$</span>weights))</span></code></pre></div>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="newton-irls.html#cb661-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">cbind</span>(irls_result<span class="sc">$</span>weights, fit_glm<span class="sc">$</span>weights))</span></code></pre></div>
 <pre><code>        [,1]       [,2]
 1 0.15362250 0.15362250
 2 0.21679615 0.21679615

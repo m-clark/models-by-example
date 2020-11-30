@@ -813,51 +813,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><strong>x.dot(y)</strong> If x and y are vectors, this is a dot product. If both are matrices, it’s a matrix-matrix multiplication. If only one is a matrix, then it’s vector matrix multiplication.</li>
 </ul>
 </blockquote>
-<div class="sourceCode" id="cb303"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb303-1"><a href="neural-network.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb303-2"><a href="neural-network.html#cb303-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-3"><a href="neural-network.html#cb303-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sigmoid function</span></span>
-<span id="cb303-4"><a href="neural-network.html#cb303-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nonlin(x, deriv <span class="op">=</span> <span class="va">False</span>):</span>
-<span id="cb303-5"><a href="neural-network.html#cb303-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(deriv <span class="op">==</span> <span class="va">True</span>):</span>
-<span id="cb303-6"><a href="neural-network.html#cb303-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> x)</span>
-<span id="cb303-7"><a href="neural-network.html#cb303-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
-<span id="cb303-8"><a href="neural-network.html#cb303-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb303-9"><a href="neural-network.html#cb303-9" aria-hidden="true" tabindex="-1"></a><span class="co"># input dataset</span></span>
-<span id="cb303-10"><a href="neural-network.html#cb303-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([ </span>
-<span id="cb303-11"><a href="neural-network.html#cb303-11" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
-<span id="cb303-12"><a href="neural-network.html#cb303-12" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
-<span id="cb303-13"><a href="neural-network.html#cb303-13" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
-<span id="cb303-14"><a href="neural-network.html#cb303-14" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>] </span>
-<span id="cb303-15"><a href="neural-network.html#cb303-15" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb303-16"><a href="neural-network.html#cb303-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb303-17"><a href="neural-network.html#cb303-17" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
-<span id="cb303-18"><a href="neural-network.html#cb303-18" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>]]).T</span>
-<span id="cb303-19"><a href="neural-network.html#cb303-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-20"><a href="neural-network.html#cb303-20" aria-hidden="true" tabindex="-1"></a><span class="co"># seed random numbers to make calculation</span></span>
-<span id="cb303-21"><a href="neural-network.html#cb303-21" aria-hidden="true" tabindex="-1"></a><span class="co"># deterministic (just a good practice)</span></span>
-<span id="cb303-22"><a href="neural-network.html#cb303-22" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
-<span id="cb303-23"><a href="neural-network.html#cb303-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-24"><a href="neural-network.html#cb303-24" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize weights randomly with mean 0 (or just use np.random.uniform)</span></span>
-<span id="cb303-25"><a href="neural-network.html#cb303-25" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb303-26"><a href="neural-network.html#cb303-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-27"><a href="neural-network.html#cb303-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">iter</span> <span class="kw">in</span> np.arange(<span class="dv">10000</span>):</span>
-<span id="cb303-28"><a href="neural-network.html#cb303-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-29"><a href="neural-network.html#cb303-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># forward propagation</span></span>
-<span id="cb303-30"><a href="neural-network.html#cb303-30" aria-hidden="true" tabindex="-1"></a>    layer_0 <span class="op">=</span> X</span>
-<span id="cb303-31"><a href="neural-network.html#cb303-31" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> nonlin(np.dot(layer_0, synapse_0))</span>
-<span id="cb303-32"><a href="neural-network.html#cb303-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-33"><a href="neural-network.html#cb303-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss?</span></span>
-<span id="cb303-34"><a href="neural-network.html#cb303-34" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> y <span class="op">-</span> layer_1</span>
-<span id="cb303-35"><a href="neural-network.html#cb303-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-36"><a href="neural-network.html#cb303-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># multiply how much we missed by the </span></span>
-<span id="cb303-37"><a href="neural-network.html#cb303-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># slope of the sigmoid at the values in layer_1</span></span>
-<span id="cb303-38"><a href="neural-network.html#cb303-38" aria-hidden="true" tabindex="-1"></a>    l1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> nonlin(layer_1, <span class="va">True</span>)</span>
-<span id="cb303-39"><a href="neural-network.html#cb303-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-40"><a href="neural-network.html#cb303-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update weights</span></span>
-<span id="cb303-41"><a href="neural-network.html#cb303-41" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">+=</span> np.dot(layer_0.T, l1_delta)</span>
-<span id="cb303-42"><a href="neural-network.html#cb303-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-43"><a href="neural-network.html#cb303-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Output After Training:&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb293"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb293-1"><a href="neural-network.html#cb293-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb293-2"><a href="neural-network.html#cb293-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-3"><a href="neural-network.html#cb293-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sigmoid function</span></span>
+<span id="cb293-4"><a href="neural-network.html#cb293-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nonlin(x, deriv <span class="op">=</span> <span class="va">False</span>):</span>
+<span id="cb293-5"><a href="neural-network.html#cb293-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(deriv <span class="op">==</span> <span class="va">True</span>):</span>
+<span id="cb293-6"><a href="neural-network.html#cb293-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> x)</span>
+<span id="cb293-7"><a href="neural-network.html#cb293-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
+<span id="cb293-8"><a href="neural-network.html#cb293-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb293-9"><a href="neural-network.html#cb293-9" aria-hidden="true" tabindex="-1"></a><span class="co"># input dataset</span></span>
+<span id="cb293-10"><a href="neural-network.html#cb293-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([ </span>
+<span id="cb293-11"><a href="neural-network.html#cb293-11" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb293-12"><a href="neural-network.html#cb293-12" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb293-13"><a href="neural-network.html#cb293-13" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb293-14"><a href="neural-network.html#cb293-14" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>] </span>
+<span id="cb293-15"><a href="neural-network.html#cb293-15" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb293-16"><a href="neural-network.html#cb293-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb293-17"><a href="neural-network.html#cb293-17" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
+<span id="cb293-18"><a href="neural-network.html#cb293-18" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>]]).T</span>
+<span id="cb293-19"><a href="neural-network.html#cb293-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-20"><a href="neural-network.html#cb293-20" aria-hidden="true" tabindex="-1"></a><span class="co"># seed random numbers to make calculation</span></span>
+<span id="cb293-21"><a href="neural-network.html#cb293-21" aria-hidden="true" tabindex="-1"></a><span class="co"># deterministic (just a good practice)</span></span>
+<span id="cb293-22"><a href="neural-network.html#cb293-22" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb293-23"><a href="neural-network.html#cb293-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-24"><a href="neural-network.html#cb293-24" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize weights randomly with mean 0 (or just use np.random.uniform)</span></span>
+<span id="cb293-25"><a href="neural-network.html#cb293-25" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb293-26"><a href="neural-network.html#cb293-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-27"><a href="neural-network.html#cb293-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">iter</span> <span class="kw">in</span> np.arange(<span class="dv">10000</span>):</span>
+<span id="cb293-28"><a href="neural-network.html#cb293-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-29"><a href="neural-network.html#cb293-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># forward propagation</span></span>
+<span id="cb293-30"><a href="neural-network.html#cb293-30" aria-hidden="true" tabindex="-1"></a>    layer_0 <span class="op">=</span> X</span>
+<span id="cb293-31"><a href="neural-network.html#cb293-31" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> nonlin(np.dot(layer_0, synapse_0))</span>
+<span id="cb293-32"><a href="neural-network.html#cb293-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-33"><a href="neural-network.html#cb293-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss?</span></span>
+<span id="cb293-34"><a href="neural-network.html#cb293-34" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> y <span class="op">-</span> layer_1</span>
+<span id="cb293-35"><a href="neural-network.html#cb293-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-36"><a href="neural-network.html#cb293-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># multiply how much we missed by the </span></span>
+<span id="cb293-37"><a href="neural-network.html#cb293-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># slope of the sigmoid at the values in layer_1</span></span>
+<span id="cb293-38"><a href="neural-network.html#cb293-38" aria-hidden="true" tabindex="-1"></a>    l1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> nonlin(layer_1, <span class="va">True</span>)</span>
+<span id="cb293-39"><a href="neural-network.html#cb293-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-40"><a href="neural-network.html#cb293-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update weights</span></span>
+<span id="cb293-41"><a href="neural-network.html#cb293-41" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">+=</span> np.dot(layer_0.T, l1_delta)</span>
+<span id="cb293-42"><a href="neural-network.html#cb293-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-43"><a href="neural-network.html#cb293-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Output After Training:&quot;</span>)</span></code></pre></div>
 <pre><code>Output After Training:</code></pre>
-<div class="sourceCode" id="cb305"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb305-1"><a href="neural-network.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.append(layer_1, y, axis <span class="op">=</span> <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb295"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb295-1"><a href="neural-network.html#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.append(layer_1, y, axis <span class="op">=</span> <span class="dv">1</span>))</span></code></pre></div>
 <pre><code>[[0.00966449 0.        ]
  [0.00786506 0.        ]
  [0.99358898 1.        ]
@@ -866,61 +866,61 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="r" class="section level3">
 <h3>R</h3>
 <p>For R I make a couple changes, but it should be easy to follow from the original Python, and I keep the original comments. I convert the code into a function so that settings can be altered more easily.</p>
-<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="neural-network.html#cb307-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>( </span>
-<span id="cb307-2"><a href="neural-network.html#cb307-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, </span>
-<span id="cb307-3"><a href="neural-network.html#cb307-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, </span>
-<span id="cb307-4"><a href="neural-network.html#cb307-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, </span>
-<span id="cb307-5"><a href="neural-network.html#cb307-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb307-6"><a href="neural-network.html#cb307-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow  =</span> <span class="dv">4</span>,</span>
-<span id="cb307-7"><a href="neural-network.html#cb307-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol  =</span> <span class="dv">3</span>,</span>
-<span id="cb307-8"><a href="neural-network.html#cb307-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
-<span id="cb307-9"><a href="neural-network.html#cb307-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb307-10"><a href="neural-network.html#cb307-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-11"><a href="neural-network.html#cb307-11" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
-<span id="cb307-12"><a href="neural-network.html#cb307-12" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb307-13"><a href="neural-network.html#cb307-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-14"><a href="neural-network.html#cb307-14" aria-hidden="true" tabindex="-1"></a><span class="co"># seed random numbers to make calculation</span></span>
-<span id="cb307-15"><a href="neural-network.html#cb307-15" aria-hidden="true" tabindex="-1"></a><span class="co"># deterministic (just a good practice)</span></span>
-<span id="cb307-16"><a href="neural-network.html#cb307-16" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb307-17"><a href="neural-network.html#cb307-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-18"><a href="neural-network.html#cb307-18" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize weights randomly with mean 0</span></span>
-<span id="cb307-19"><a href="neural-network.html#cb307-19" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">3</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>), <span class="dv">3</span>, <span class="dv">1</span>)</span>
-<span id="cb307-20"><a href="neural-network.html#cb307-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-21"><a href="neural-network.html#cb307-21" aria-hidden="true" tabindex="-1"></a><span class="co"># sigmoid function</span></span>
-<span id="cb307-22"><a href="neural-network.html#cb307-22" aria-hidden="true" tabindex="-1"></a>nonlin <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">deriv =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb307-23"><a href="neural-network.html#cb307-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (deriv)</span>
-<span id="cb307-24"><a href="neural-network.html#cb307-24" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> x)</span>
-<span id="cb307-25"><a href="neural-network.html#cb307-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
-<span id="cb307-26"><a href="neural-network.html#cb307-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plogis</span>(x)</span>
-<span id="cb307-27"><a href="neural-network.html#cb307-27" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb307-28"><a href="neural-network.html#cb307-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-29"><a href="neural-network.html#cb307-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-30"><a href="neural-network.html#cb307-30" aria-hidden="true" tabindex="-1"></a>nn_1 <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, synapse_0, <span class="at">maxiter =</span> <span class="dv">10000</span>) {</span>
-<span id="cb307-31"><a href="neural-network.html#cb307-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb307-32"><a href="neural-network.html#cb307-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
-<span id="cb307-33"><a href="neural-network.html#cb307-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb307-34"><a href="neural-network.html#cb307-34" aria-hidden="true" tabindex="-1"></a>      <span class="co"># forward propagation</span></span>
-<span id="cb307-35"><a href="neural-network.html#cb307-35" aria-hidden="true" tabindex="-1"></a>      layer_0 <span class="ot">=</span> X</span>
-<span id="cb307-36"><a href="neural-network.html#cb307-36" aria-hidden="true" tabindex="-1"></a>      layer_1 <span class="ot">=</span> <span class="fu">nonlin</span>(layer_0 <span class="sc">%*%</span> synapse_0)</span>
-<span id="cb307-37"><a href="neural-network.html#cb307-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb307-38"><a href="neural-network.html#cb307-38" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did we miss?</span></span>
-<span id="cb307-39"><a href="neural-network.html#cb307-39" aria-hidden="true" tabindex="-1"></a>      layer_1_error <span class="ot">=</span> y <span class="sc">-</span> layer_1</span>
-<span id="cb307-40"><a href="neural-network.html#cb307-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb307-41"><a href="neural-network.html#cb307-41" aria-hidden="true" tabindex="-1"></a>      <span class="co"># multiply how much we missed by the </span></span>
-<span id="cb307-42"><a href="neural-network.html#cb307-42" aria-hidden="true" tabindex="-1"></a>      <span class="co"># slope of the sigmoid at the values in layer_1</span></span>
-<span id="cb307-43"><a href="neural-network.html#cb307-43" aria-hidden="true" tabindex="-1"></a>      l1_delta <span class="ot">=</span> layer_1_error <span class="sc">*</span> <span class="fu">nonlin</span>(layer_1, <span class="at">deriv =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb307-44"><a href="neural-network.html#cb307-44" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb307-45"><a href="neural-network.html#cb307-45" aria-hidden="true" tabindex="-1"></a>      <span class="co"># update weights</span></span>
-<span id="cb307-46"><a href="neural-network.html#cb307-46" aria-hidden="true" tabindex="-1"></a>      synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">+</span> <span class="fu">crossprod</span>(layer_0, l1_delta)</span>
-<span id="cb307-47"><a href="neural-network.html#cb307-47" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb307-48"><a href="neural-network.html#cb307-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb307-49"><a href="neural-network.html#cb307-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">layer_1 =</span> layer_1, <span class="at">layer_1_error =</span> layer_1_error, <span class="at">synapse_0 =</span> synapse_0)</span>
-<span id="cb307-50"><a href="neural-network.html#cb307-50" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb307-51"><a href="neural-network.html#cb307-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-52"><a href="neural-network.html#cb307-52" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_1</span>(X, y, synapse_0)</span>
-<span id="cb307-53"><a href="neural-network.html#cb307-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-54"><a href="neural-network.html#cb307-54" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Output After Training: </span><span class="sc">\n</span><span class="st">&quot;</span>, </span>
-<span id="cb307-55"><a href="neural-network.html#cb307-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="fu">capture.output</span>(<span class="fu">cbind</span>(fit_nn<span class="sc">$</span>layer_1, y)), <span class="at">collapse =</span> <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="neural-network.html#cb297-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>( </span>
+<span id="cb297-2"><a href="neural-network.html#cb297-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, </span>
+<span id="cb297-3"><a href="neural-network.html#cb297-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, </span>
+<span id="cb297-4"><a href="neural-network.html#cb297-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, </span>
+<span id="cb297-5"><a href="neural-network.html#cb297-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb297-6"><a href="neural-network.html#cb297-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow  =</span> <span class="dv">4</span>,</span>
+<span id="cb297-7"><a href="neural-network.html#cb297-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol  =</span> <span class="dv">3</span>,</span>
+<span id="cb297-8"><a href="neural-network.html#cb297-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb297-9"><a href="neural-network.html#cb297-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb297-10"><a href="neural-network.html#cb297-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-11"><a href="neural-network.html#cb297-11" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
+<span id="cb297-12"><a href="neural-network.html#cb297-12" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb297-13"><a href="neural-network.html#cb297-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-14"><a href="neural-network.html#cb297-14" aria-hidden="true" tabindex="-1"></a><span class="co"># seed random numbers to make calculation</span></span>
+<span id="cb297-15"><a href="neural-network.html#cb297-15" aria-hidden="true" tabindex="-1"></a><span class="co"># deterministic (just a good practice)</span></span>
+<span id="cb297-16"><a href="neural-network.html#cb297-16" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb297-17"><a href="neural-network.html#cb297-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-18"><a href="neural-network.html#cb297-18" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize weights randomly with mean 0</span></span>
+<span id="cb297-19"><a href="neural-network.html#cb297-19" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">3</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>), <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb297-20"><a href="neural-network.html#cb297-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-21"><a href="neural-network.html#cb297-21" aria-hidden="true" tabindex="-1"></a><span class="co"># sigmoid function</span></span>
+<span id="cb297-22"><a href="neural-network.html#cb297-22" aria-hidden="true" tabindex="-1"></a>nonlin <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">deriv =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb297-23"><a href="neural-network.html#cb297-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (deriv)</span>
+<span id="cb297-24"><a href="neural-network.html#cb297-24" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> x)</span>
+<span id="cb297-25"><a href="neural-network.html#cb297-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb297-26"><a href="neural-network.html#cb297-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plogis</span>(x)</span>
+<span id="cb297-27"><a href="neural-network.html#cb297-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb297-28"><a href="neural-network.html#cb297-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-29"><a href="neural-network.html#cb297-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-30"><a href="neural-network.html#cb297-30" aria-hidden="true" tabindex="-1"></a>nn_1 <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, synapse_0, <span class="at">maxiter =</span> <span class="dv">10000</span>) {</span>
+<span id="cb297-31"><a href="neural-network.html#cb297-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb297-32"><a href="neural-network.html#cb297-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
+<span id="cb297-33"><a href="neural-network.html#cb297-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb297-34"><a href="neural-network.html#cb297-34" aria-hidden="true" tabindex="-1"></a>      <span class="co"># forward propagation</span></span>
+<span id="cb297-35"><a href="neural-network.html#cb297-35" aria-hidden="true" tabindex="-1"></a>      layer_0 <span class="ot">=</span> X</span>
+<span id="cb297-36"><a href="neural-network.html#cb297-36" aria-hidden="true" tabindex="-1"></a>      layer_1 <span class="ot">=</span> <span class="fu">nonlin</span>(layer_0 <span class="sc">%*%</span> synapse_0)</span>
+<span id="cb297-37"><a href="neural-network.html#cb297-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb297-38"><a href="neural-network.html#cb297-38" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did we miss?</span></span>
+<span id="cb297-39"><a href="neural-network.html#cb297-39" aria-hidden="true" tabindex="-1"></a>      layer_1_error <span class="ot">=</span> y <span class="sc">-</span> layer_1</span>
+<span id="cb297-40"><a href="neural-network.html#cb297-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb297-41"><a href="neural-network.html#cb297-41" aria-hidden="true" tabindex="-1"></a>      <span class="co"># multiply how much we missed by the </span></span>
+<span id="cb297-42"><a href="neural-network.html#cb297-42" aria-hidden="true" tabindex="-1"></a>      <span class="co"># slope of the sigmoid at the values in layer_1</span></span>
+<span id="cb297-43"><a href="neural-network.html#cb297-43" aria-hidden="true" tabindex="-1"></a>      l1_delta <span class="ot">=</span> layer_1_error <span class="sc">*</span> <span class="fu">nonlin</span>(layer_1, <span class="at">deriv =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb297-44"><a href="neural-network.html#cb297-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb297-45"><a href="neural-network.html#cb297-45" aria-hidden="true" tabindex="-1"></a>      <span class="co"># update weights</span></span>
+<span id="cb297-46"><a href="neural-network.html#cb297-46" aria-hidden="true" tabindex="-1"></a>      synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">+</span> <span class="fu">crossprod</span>(layer_0, l1_delta)</span>
+<span id="cb297-47"><a href="neural-network.html#cb297-47" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb297-48"><a href="neural-network.html#cb297-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb297-49"><a href="neural-network.html#cb297-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">layer_1 =</span> layer_1, <span class="at">layer_1_error =</span> layer_1_error, <span class="at">synapse_0 =</span> synapse_0)</span>
+<span id="cb297-50"><a href="neural-network.html#cb297-50" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb297-51"><a href="neural-network.html#cb297-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-52"><a href="neural-network.html#cb297-52" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_1</span>(X, y, synapse_0)</span>
+<span id="cb297-53"><a href="neural-network.html#cb297-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb297-54"><a href="neural-network.html#cb297-54" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Output After Training: </span><span class="sc">\n</span><span class="st">&quot;</span>, </span>
+<span id="cb297-55"><a href="neural-network.html#cb297-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="fu">capture.output</span>(<span class="fu">cbind</span>(fit_nn<span class="sc">$</span>layer_1, y)), <span class="at">collapse =</span> <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>))</span></code></pre></div>
 <pre><code>Output After Training: 
                  y
 [1,] 0.009670417 0
@@ -940,78 +940,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="python-1" class="section level3">
 <h3>Python</h3>
 <p>For the following, I remove defining <code>layer_0</code>, as it is just the input matrix <code>X</code>. But otherwise, only minor cleanup and more explicit names as before.</p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb309-1"><a href="neural-network.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb309-2"><a href="neural-network.html#cb309-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-3"><a href="neural-network.html#cb309-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nonlin(x, deriv <span class="op">=</span> <span class="va">False</span>):</span>
-<span id="cb309-4"><a href="neural-network.html#cb309-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(deriv <span class="op">==</span> <span class="va">True</span>):</span>
-<span id="cb309-5"><a href="neural-network.html#cb309-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> x)</span>
-<span id="cb309-6"><a href="neural-network.html#cb309-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
-<span id="cb309-7"><a href="neural-network.html#cb309-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-8"><a href="neural-network.html#cb309-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
-<span id="cb309-9"><a href="neural-network.html#cb309-9" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
-<span id="cb309-10"><a href="neural-network.html#cb309-10" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
-<span id="cb309-11"><a href="neural-network.html#cb309-11" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
-<span id="cb309-12"><a href="neural-network.html#cb309-12" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb309-13"><a href="neural-network.html#cb309-13" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb309-14"><a href="neural-network.html#cb309-14" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb309-15"><a href="neural-network.html#cb309-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([</span>
-<span id="cb309-16"><a href="neural-network.html#cb309-16" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>],</span>
-<span id="cb309-17"><a href="neural-network.html#cb309-17" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
-<span id="cb309-18"><a href="neural-network.html#cb309-18" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
-<span id="cb309-19"><a href="neural-network.html#cb309-19" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>]</span>
-<span id="cb309-20"><a href="neural-network.html#cb309-20" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb309-21"><a href="neural-network.html#cb309-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-22"><a href="neural-network.html#cb309-22" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
-<span id="cb309-23"><a href="neural-network.html#cb309-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-24"><a href="neural-network.html#cb309-24" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly initialize our weights with mean 0</span></span>
-<span id="cb309-25"><a href="neural-network.html#cb309-25" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, <span class="dv">4</span>)) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb309-26"><a href="neural-network.html#cb309-26" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">4</span>, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb309-27"><a href="neural-network.html#cb309-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-28"><a href="neural-network.html#cb309-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
-<span id="cb309-29"><a href="neural-network.html#cb309-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-30"><a href="neural-network.html#cb309-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Feed forward through layers 0, 1, and 2</span></span>
-<span id="cb309-31"><a href="neural-network.html#cb309-31" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> nonlin(np.dot(X, synapse_0))</span>
-<span id="cb309-32"><a href="neural-network.html#cb309-32" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="op">=</span> nonlin(np.dot(layer_1, synapse_1))</span>
-<span id="cb309-33"><a href="neural-network.html#cb309-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-34"><a href="neural-network.html#cb309-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
-<span id="cb309-35"><a href="neural-network.html#cb309-35" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="op">=</span> y <span class="op">-</span> layer_2</span>
-<span id="cb309-36"><a href="neural-network.html#cb309-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb309-37"><a href="neural-network.html#cb309-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (j<span class="op">%</span> <span class="dv">10000</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb309-38"><a href="neural-network.html#cb309-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error:&quot;</span> <span class="op">+</span> <span class="bu">str</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error))))</span>
-<span id="cb309-39"><a href="neural-network.html#cb309-39" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb309-40"><a href="neural-network.html#cb309-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
-<span id="cb309-41"><a href="neural-network.html#cb309-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb309-42"><a href="neural-network.html#cb309-42" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>nonlin(layer_2, deriv<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb309-43"><a href="neural-network.html#cb309-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-44"><a href="neural-network.html#cb309-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each layer_1 value contribute to the layer_2 error (according to the weights)?</span></span>
-<span id="cb309-45"><a href="neural-network.html#cb309-45" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
-<span id="cb309-46"><a href="neural-network.html#cb309-46" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb309-47"><a href="neural-network.html#cb309-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target layer_1?</span></span>
-<span id="cb309-48"><a href="neural-network.html#cb309-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb309-49"><a href="neural-network.html#cb309-49" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> nonlin(layer_1, deriv<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb309-50"><a href="neural-network.html#cb309-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb309-51"><a href="neural-network.html#cb309-51" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="op">+=</span> layer_1.T.dot(layer_2_delta)</span>
-<span id="cb309-52"><a href="neural-network.html#cb309-52" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">+=</span> X.T.dot(layer_1_delta)</span></code></pre></div>
+<div class="sourceCode" id="cb299"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb299-1"><a href="neural-network.html#cb299-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb299-2"><a href="neural-network.html#cb299-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-3"><a href="neural-network.html#cb299-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nonlin(x, deriv <span class="op">=</span> <span class="va">False</span>):</span>
+<span id="cb299-4"><a href="neural-network.html#cb299-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(deriv <span class="op">==</span> <span class="va">True</span>):</span>
+<span id="cb299-5"><a href="neural-network.html#cb299-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> x)</span>
+<span id="cb299-6"><a href="neural-network.html#cb299-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
+<span id="cb299-7"><a href="neural-network.html#cb299-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-8"><a href="neural-network.html#cb299-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
+<span id="cb299-9"><a href="neural-network.html#cb299-9" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb299-10"><a href="neural-network.html#cb299-10" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb299-11"><a href="neural-network.html#cb299-11" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb299-12"><a href="neural-network.html#cb299-12" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
+<span id="cb299-13"><a href="neural-network.html#cb299-13" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb299-14"><a href="neural-network.html#cb299-14" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb299-15"><a href="neural-network.html#cb299-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([</span>
+<span id="cb299-16"><a href="neural-network.html#cb299-16" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>],</span>
+<span id="cb299-17"><a href="neural-network.html#cb299-17" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb299-18"><a href="neural-network.html#cb299-18" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb299-19"><a href="neural-network.html#cb299-19" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>]</span>
+<span id="cb299-20"><a href="neural-network.html#cb299-20" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb299-21"><a href="neural-network.html#cb299-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-22"><a href="neural-network.html#cb299-22" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb299-23"><a href="neural-network.html#cb299-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-24"><a href="neural-network.html#cb299-24" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb299-25"><a href="neural-network.html#cb299-25" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, <span class="dv">4</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb299-26"><a href="neural-network.html#cb299-26" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">4</span>, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb299-27"><a href="neural-network.html#cb299-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-28"><a href="neural-network.html#cb299-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
+<span id="cb299-29"><a href="neural-network.html#cb299-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-30"><a href="neural-network.html#cb299-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Feed forward through layers 0, 1, and 2</span></span>
+<span id="cb299-31"><a href="neural-network.html#cb299-31" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> nonlin(np.dot(X, synapse_0))</span>
+<span id="cb299-32"><a href="neural-network.html#cb299-32" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="op">=</span> nonlin(np.dot(layer_1, synapse_1))</span>
+<span id="cb299-33"><a href="neural-network.html#cb299-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-34"><a href="neural-network.html#cb299-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb299-35"><a href="neural-network.html#cb299-35" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="op">=</span> y <span class="op">-</span> layer_2</span>
+<span id="cb299-36"><a href="neural-network.html#cb299-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb299-37"><a href="neural-network.html#cb299-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (j<span class="op">%</span> <span class="dv">10000</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb299-38"><a href="neural-network.html#cb299-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error:&quot;</span> <span class="op">+</span> <span class="bu">str</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error))))</span>
+<span id="cb299-39"><a href="neural-network.html#cb299-39" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb299-40"><a href="neural-network.html#cb299-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
+<span id="cb299-41"><a href="neural-network.html#cb299-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb299-42"><a href="neural-network.html#cb299-42" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>nonlin(layer_2, deriv<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb299-43"><a href="neural-network.html#cb299-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-44"><a href="neural-network.html#cb299-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each layer_1 value contribute to the layer_2 error (according to the weights)?</span></span>
+<span id="cb299-45"><a href="neural-network.html#cb299-45" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
+<span id="cb299-46"><a href="neural-network.html#cb299-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb299-47"><a href="neural-network.html#cb299-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target layer_1?</span></span>
+<span id="cb299-48"><a href="neural-network.html#cb299-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb299-49"><a href="neural-network.html#cb299-49" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> nonlin(layer_1, deriv<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb299-50"><a href="neural-network.html#cb299-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb299-51"><a href="neural-network.html#cb299-51" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="op">+=</span> layer_1.T.dot(layer_2_delta)</span>
+<span id="cb299-52"><a href="neural-network.html#cb299-52" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">+=</span> X.T.dot(layer_1_delta)</span></code></pre></div>
 <pre><code>Error:0.4964100319027255
 Error:0.008584525653247153
 Error:0.005789459862507812</code></pre>
-<div class="sourceCode" id="cb311"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb311-1"><a href="neural-network.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39;Final error: &#39;</span> <span class="op">+</span> <span class="bu">str</span>(np.<span class="bu">round</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error)), <span class="dv">5</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb301-1"><a href="neural-network.html#cb301-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39;Final error: &#39;</span> <span class="op">+</span> <span class="bu">str</span>(np.<span class="bu">round</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error)), <span class="dv">5</span>)))</span></code></pre></div>
 <pre><code>Final error: 0.00463</code></pre>
-<div class="sourceCode" id="cb313"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb313-1"><a href="neural-network.html#cb313-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(layer_1, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb303"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb303-1"><a href="neural-network.html#cb303-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(layer_1, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>array([[0.696, 0.124, 0.923, 0.996],
        [0.18 , 0.   , 0.017, 0.893],
        [0.995, 0.888, 0.023, 0.822],
        [0.947, 0.026, 0.   , 0.122]])</code></pre>
-<div class="sourceCode" id="cb315"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb315-1"><a href="neural-network.html#cb315-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(np.append(layer_2, y, axis <span class="op">=</span> <span class="dv">1</span>), <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb305"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb305-1"><a href="neural-network.html#cb305-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(np.append(layer_2, y, axis <span class="op">=</span> <span class="dv">1</span>), <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>array([[0.004, 0.   ],
        [0.995, 1.   ],
        [0.996, 1.   ],
        [0.006, 0.   ]])</code></pre>
-<div class="sourceCode" id="cb317"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb317-1"><a href="neural-network.html#cb317-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(synapse_0, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb307"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb307-1"><a href="neural-network.html#cb307-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(synapse_0, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>array([[ 4.407,  4.028, -6.225, -4.092],
        [-2.342, -5.706, -6.53 , -3.506],
        [ 0.826, -1.959,  2.488,  5.623]])</code></pre>
-<div class="sourceCode" id="cb319"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb319-1"><a href="neural-network.html#cb319-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(synapse_1, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb309"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb309-1"><a href="neural-network.html#cb309-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">round</span>(synapse_1, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>array([[ -6.611],
        [  6.857],
        [-10.069],
@@ -1020,106 +1020,106 @@ Error:0.005789459862507812</code></pre>
 <div id="r-1" class="section level3">
 <h3>R</h3>
 <p>In general, different weights can ultimately produce similar predictions, and combinations for a particular node are arbitrary. For example, node 1 in one network might become more like node 3 on a separate run with different starting points. So things are somewhat more difficult to compare across runs, let alone across different tools. However, what matters more is the final prediction, and you should see essentially the same result for R and Python. Again we create a function for repeated use.</p>
-<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb321-1"><a href="neural-network.html#cb321-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(</span>
-<span id="cb321-2"><a href="neural-network.html#cb321-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb321-3"><a href="neural-network.html#cb321-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
-<span id="cb321-4"><a href="neural-network.html#cb321-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb321-5"><a href="neural-network.html#cb321-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb321-6"><a href="neural-network.html#cb321-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">4</span>,</span>
-<span id="cb321-7"><a href="neural-network.html#cb321-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>,</span>
-<span id="cb321-8"><a href="neural-network.html#cb321-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
-<span id="cb321-9"><a href="neural-network.html#cb321-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb321-10"><a href="neural-network.html#cb321-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb321-11"><a href="neural-network.html#cb321-11" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">as.integer</span>(<span class="fu">xor</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>])), <span class="at">ncol =</span> <span class="dv">1</span>)  <span class="co"># make the relationship explicit</span></span>
-<span id="cb321-12"><a href="neural-network.html#cb321-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb321-13"><a href="neural-network.html#cb321-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb321-14"><a href="neural-network.html#cb321-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb321-15"><a href="neural-network.html#cb321-15" aria-hidden="true" tabindex="-1"></a><span class="co"># or do randomly in same fashion</span></span>
-<span id="cb321-16"><a href="neural-network.html#cb321-16" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">3</span>, <span class="dv">4</span>)</span>
-<span id="cb321-17"><a href="neural-network.html#cb321-17" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">4</span>, <span class="dv">1</span>)</span>
-<span id="cb321-18"><a href="neural-network.html#cb321-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb321-19"><a href="neural-network.html#cb321-19" aria-hidden="true" tabindex="-1"></a><span class="co"># synapse_0</span></span>
-<span id="cb321-20"><a href="neural-network.html#cb321-20" aria-hidden="true" tabindex="-1"></a><span class="co"># synapse_1</span></span>
-<span id="cb321-21"><a href="neural-network.html#cb321-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb321-22"><a href="neural-network.html#cb321-22" aria-hidden="true" tabindex="-1"></a>nn_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb321-23"><a href="neural-network.html#cb321-23" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb321-24"><a href="neural-network.html#cb321-24" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb321-25"><a href="neural-network.html#cb321-25" aria-hidden="true" tabindex="-1"></a>  synapse_0_start,</span>
-<span id="cb321-26"><a href="neural-network.html#cb321-26" aria-hidden="true" tabindex="-1"></a>  synapse_1_start,</span>
-<span id="cb321-27"><a href="neural-network.html#cb321-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
-<span id="cb321-28"><a href="neural-network.html#cb321-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
-<span id="cb321-29"><a href="neural-network.html#cb321-29" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb321-30"><a href="neural-network.html#cb321-30" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb321-31"><a href="neural-network.html#cb321-31" aria-hidden="true" tabindex="-1"></a>  synapse_0 <span class="ot">=</span> synapse_0_start</span>
-<span id="cb321-32"><a href="neural-network.html#cb321-32" aria-hidden="true" tabindex="-1"></a>  synapse_1 <span class="ot">=</span> synapse_1_start</span>
-<span id="cb321-33"><a href="neural-network.html#cb321-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb321-34"><a href="neural-network.html#cb321-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
-<span id="cb321-35"><a href="neural-network.html#cb321-35" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="ot">=</span> <span class="fu">plogis</span>(X  <span class="sc">%*%</span> synapse_0)              <span class="co"># 4 x 4</span></span>
-<span id="cb321-36"><a href="neural-network.html#cb321-36" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="ot">=</span> <span class="fu">plogis</span>(layer_1 <span class="sc">%*%</span> synapse_1)         <span class="co"># 4 x 1</span></span>
-<span id="cb321-37"><a href="neural-network.html#cb321-37" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb321-38"><a href="neural-network.html#cb321-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
-<span id="cb321-39"><a href="neural-network.html#cb321-39" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="ot">=</span> y <span class="sc">-</span> layer_2</span>
-<span id="cb321-40"><a href="neural-network.html#cb321-40" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb321-41"><a href="neural-network.html#cb321-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose <span class="sc">&amp;&amp;</span> (j <span class="sc">%%</span> <span class="dv">10000</span>) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb321-42"><a href="neural-network.html#cb321-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Error: {mean(abs(layer_2_error))}&quot;</span>))</span>
-<span id="cb321-43"><a href="neural-network.html#cb321-43" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb321-44"><a href="neural-network.html#cb321-44" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb321-45"><a href="neural-network.html#cb321-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
-<span id="cb321-46"><a href="neural-network.html#cb321-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb321-47"><a href="neural-network.html#cb321-47" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="ot">=</span> (y <span class="sc">-</span> layer_2) <span class="sc">*</span> (layer_2 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> layer_2))</span>
-<span id="cb321-48"><a href="neural-network.html#cb321-48" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb321-49"><a href="neural-network.html#cb321-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
-<span id="cb321-50"><a href="neural-network.html#cb321-50" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="ot">=</span> layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(synapse_1)</span>
-<span id="cb321-51"><a href="neural-network.html#cb321-51" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb321-52"><a href="neural-network.html#cb321-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target l1?</span></span>
-<span id="cb321-53"><a href="neural-network.html#cb321-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.  </span></span>
-<span id="cb321-54"><a href="neural-network.html#cb321-54" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="ot">=</span> <span class="fu">tcrossprod</span>(layer_2_delta, synapse_1) <span class="sc">*</span> (layer_1 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> layer_1))</span>
-<span id="cb321-55"><a href="neural-network.html#cb321-55" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb321-56"><a href="neural-network.html#cb321-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update</span></span>
-<span id="cb321-57"><a href="neural-network.html#cb321-57" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="ot">=</span> synapse_1 <span class="sc">+</span> <span class="fu">crossprod</span>(layer_1, layer_2_delta)</span>
-<span id="cb321-58"><a href="neural-network.html#cb321-58" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">+</span> <span class="fu">crossprod</span>(X, layer_1_delta)</span>
-<span id="cb321-59"><a href="neural-network.html#cb321-59" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb321-60"><a href="neural-network.html#cb321-60" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb321-61"><a href="neural-network.html#cb321-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb321-62"><a href="neural-network.html#cb321-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1_error =</span> layer_1_error,</span>
-<span id="cb321-63"><a href="neural-network.html#cb321-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2_error =</span> layer_2_error,</span>
-<span id="cb321-64"><a href="neural-network.html#cb321-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_0 =</span> synapse_0,</span>
-<span id="cb321-65"><a href="neural-network.html#cb321-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_1 =</span> synapse_1,</span>
-<span id="cb321-66"><a href="neural-network.html#cb321-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1 =</span> layer_1,</span>
-<span id="cb321-67"><a href="neural-network.html#cb321-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2 =</span> layer_2</span>
-<span id="cb321-68"><a href="neural-network.html#cb321-68" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb321-69"><a href="neural-network.html#cb321-69" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="neural-network.html#cb311-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(</span>
+<span id="cb311-2"><a href="neural-network.html#cb311-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb311-3"><a href="neural-network.html#cb311-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb311-4"><a href="neural-network.html#cb311-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb311-5"><a href="neural-network.html#cb311-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb311-6"><a href="neural-network.html#cb311-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">4</span>,</span>
+<span id="cb311-7"><a href="neural-network.html#cb311-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>,</span>
+<span id="cb311-8"><a href="neural-network.html#cb311-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb311-9"><a href="neural-network.html#cb311-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb311-10"><a href="neural-network.html#cb311-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-11"><a href="neural-network.html#cb311-11" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">as.integer</span>(<span class="fu">xor</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>])), <span class="at">ncol =</span> <span class="dv">1</span>)  <span class="co"># make the relationship explicit</span></span>
+<span id="cb311-12"><a href="neural-network.html#cb311-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-13"><a href="neural-network.html#cb311-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb311-14"><a href="neural-network.html#cb311-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-15"><a href="neural-network.html#cb311-15" aria-hidden="true" tabindex="-1"></a><span class="co"># or do randomly in same fashion</span></span>
+<span id="cb311-16"><a href="neural-network.html#cb311-16" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb311-17"><a href="neural-network.html#cb311-17" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">4</span>, <span class="dv">1</span>)</span>
+<span id="cb311-18"><a href="neural-network.html#cb311-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-19"><a href="neural-network.html#cb311-19" aria-hidden="true" tabindex="-1"></a><span class="co"># synapse_0</span></span>
+<span id="cb311-20"><a href="neural-network.html#cb311-20" aria-hidden="true" tabindex="-1"></a><span class="co"># synapse_1</span></span>
+<span id="cb311-21"><a href="neural-network.html#cb311-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-22"><a href="neural-network.html#cb311-22" aria-hidden="true" tabindex="-1"></a>nn_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb311-23"><a href="neural-network.html#cb311-23" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb311-24"><a href="neural-network.html#cb311-24" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb311-25"><a href="neural-network.html#cb311-25" aria-hidden="true" tabindex="-1"></a>  synapse_0_start,</span>
+<span id="cb311-26"><a href="neural-network.html#cb311-26" aria-hidden="true" tabindex="-1"></a>  synapse_1_start,</span>
+<span id="cb311-27"><a href="neural-network.html#cb311-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
+<span id="cb311-28"><a href="neural-network.html#cb311-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb311-29"><a href="neural-network.html#cb311-29" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb311-30"><a href="neural-network.html#cb311-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb311-31"><a href="neural-network.html#cb311-31" aria-hidden="true" tabindex="-1"></a>  synapse_0 <span class="ot">=</span> synapse_0_start</span>
+<span id="cb311-32"><a href="neural-network.html#cb311-32" aria-hidden="true" tabindex="-1"></a>  synapse_1 <span class="ot">=</span> synapse_1_start</span>
+<span id="cb311-33"><a href="neural-network.html#cb311-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb311-34"><a href="neural-network.html#cb311-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
+<span id="cb311-35"><a href="neural-network.html#cb311-35" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="ot">=</span> <span class="fu">plogis</span>(X  <span class="sc">%*%</span> synapse_0)              <span class="co"># 4 x 4</span></span>
+<span id="cb311-36"><a href="neural-network.html#cb311-36" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="ot">=</span> <span class="fu">plogis</span>(layer_1 <span class="sc">%*%</span> synapse_1)         <span class="co"># 4 x 1</span></span>
+<span id="cb311-37"><a href="neural-network.html#cb311-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb311-38"><a href="neural-network.html#cb311-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb311-39"><a href="neural-network.html#cb311-39" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="ot">=</span> y <span class="sc">-</span> layer_2</span>
+<span id="cb311-40"><a href="neural-network.html#cb311-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb311-41"><a href="neural-network.html#cb311-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose <span class="sc">&amp;&amp;</span> (j <span class="sc">%%</span> <span class="dv">10000</span>) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb311-42"><a href="neural-network.html#cb311-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Error: {mean(abs(layer_2_error))}&quot;</span>))</span>
+<span id="cb311-43"><a href="neural-network.html#cb311-43" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb311-44"><a href="neural-network.html#cb311-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb311-45"><a href="neural-network.html#cb311-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
+<span id="cb311-46"><a href="neural-network.html#cb311-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb311-47"><a href="neural-network.html#cb311-47" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="ot">=</span> (y <span class="sc">-</span> layer_2) <span class="sc">*</span> (layer_2 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> layer_2))</span>
+<span id="cb311-48"><a href="neural-network.html#cb311-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb311-49"><a href="neural-network.html#cb311-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb311-50"><a href="neural-network.html#cb311-50" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="ot">=</span> layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(synapse_1)</span>
+<span id="cb311-51"><a href="neural-network.html#cb311-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb311-52"><a href="neural-network.html#cb311-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb311-53"><a href="neural-network.html#cb311-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.  </span></span>
+<span id="cb311-54"><a href="neural-network.html#cb311-54" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="ot">=</span> <span class="fu">tcrossprod</span>(layer_2_delta, synapse_1) <span class="sc">*</span> (layer_1 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> layer_1))</span>
+<span id="cb311-55"><a href="neural-network.html#cb311-55" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb311-56"><a href="neural-network.html#cb311-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update</span></span>
+<span id="cb311-57"><a href="neural-network.html#cb311-57" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="ot">=</span> synapse_1 <span class="sc">+</span> <span class="fu">crossprod</span>(layer_1, layer_2_delta)</span>
+<span id="cb311-58"><a href="neural-network.html#cb311-58" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">+</span> <span class="fu">crossprod</span>(X, layer_1_delta)</span>
+<span id="cb311-59"><a href="neural-network.html#cb311-59" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb311-60"><a href="neural-network.html#cb311-60" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb311-61"><a href="neural-network.html#cb311-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb311-62"><a href="neural-network.html#cb311-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1_error =</span> layer_1_error,</span>
+<span id="cb311-63"><a href="neural-network.html#cb311-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2_error =</span> layer_2_error,</span>
+<span id="cb311-64"><a href="neural-network.html#cb311-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_0 =</span> synapse_0,</span>
+<span id="cb311-65"><a href="neural-network.html#cb311-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_1 =</span> synapse_1,</span>
+<span id="cb311-66"><a href="neural-network.html#cb311-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1 =</span> layer_1,</span>
+<span id="cb311-67"><a href="neural-network.html#cb311-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2 =</span> layer_2</span>
+<span id="cb311-68"><a href="neural-network.html#cb311-68" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb311-69"><a href="neural-network.html#cb311-69" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>With function in place, we’re ready to try it out.</p>
-<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="neural-network.html#cb322-1" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_2</span>(</span>
-<span id="cb322-2"><a href="neural-network.html#cb322-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb322-3"><a href="neural-network.html#cb322-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb322-4"><a href="neural-network.html#cb322-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">synapse_0_start =</span> synapse_0,</span>
-<span id="cb322-5"><a href="neural-network.html#cb322-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">synapse_1_start =</span> synapse_1,</span>
-<span id="cb322-6"><a href="neural-network.html#cb322-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span></span>
-<span id="cb322-7"><a href="neural-network.html#cb322-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="neural-network.html#cb312-1" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_2</span>(</span>
+<span id="cb312-2"><a href="neural-network.html#cb312-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb312-3"><a href="neural-network.html#cb312-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb312-4"><a href="neural-network.html#cb312-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">synapse_0_start =</span> synapse_0,</span>
+<span id="cb312-5"><a href="neural-network.html#cb312-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">synapse_1_start =</span> synapse_1,</span>
+<span id="cb312-6"><a href="neural-network.html#cb312-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span></span>
+<span id="cb312-7"><a href="neural-network.html#cb312-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Error: 0.0105538166393651</code></pre>
 <pre><code>Error: 0.00729252475321203</code></pre>
 <pre><code>Error: 0.0058973637409426</code></pre>
-<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="neural-network.html#cb326-1" aria-hidden="true" tabindex="-1"></a>glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&#39;Final error: {round(mean(abs(fit_nn$layer_2_error)), 5)}&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="neural-network.html#cb316-1" aria-hidden="true" tabindex="-1"></a>glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&#39;Final error: {round(mean(abs(fit_nn$layer_2_error)), 5)}&#39;</span>)</span></code></pre></div>
 <pre><code>Final error: 0.0059</code></pre>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="neural-network.html#cb328-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>layer_1, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb318-1"><a href="neural-network.html#cb318-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>layer_1, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>      [,1]  [,2]  [,3]  [,4]
 [1,] 0.259 0.889 0.364 0.445
 [2,] 0.000 0.037 0.978 0.030
 [3,] 0.946 1.000 0.984 0.020
 [4,] 0.016 0.984 1.000 0.001</code></pre>
-<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="neural-network.html#cb330-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(fit_nn<span class="sc">$</span>layer_2, y), <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb320-1"><a href="neural-network.html#cb320-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(fit_nn<span class="sc">$</span>layer_2, y), <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>      [,1] [,2]
 [1,] 0.002    0
 [2,] 0.993    1
 [3,] 0.994    1
 [4,] 0.008    0</code></pre>
-<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="neural-network.html#cb332-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>synapse_0, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="neural-network.html#cb322-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>synapse_0, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>       [,1]   [,2]   [,3]   [,4]
 [1,]  3.915  7.364  4.705 -3.669
 [2,] -6.970 -5.351  4.337 -3.242
 [3,] -1.050  2.079 -0.559 -0.221</code></pre>
-<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="neural-network.html#cb334-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>synapse_1, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="neural-network.html#cb324-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit_nn<span class="sc">$</span>synapse_1, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>        [,1]
 [1,]  10.988
 [2,] -10.733
@@ -1129,14 +1129,14 @@ Error:0.005789459862507812</code></pre>
 <div id="comparison-21" class="section level3">
 <h3>Comparison</h3>
 <p>Let’s compare our results to the <span class="pack" style="">nnet</span> package that comes with the base R installation. Note that it will include intercepts (a.k.a. <em>biases</em>) for each node, so it’s estimating more parameters in total.</p>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="neural-network.html#cb336-1" aria-hidden="true" tabindex="-1"></a>fit_nnet <span class="ot">=</span> nnet<span class="sc">::</span><span class="fu">nnet</span>(X, y, <span class="at">size =</span> <span class="dv">4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="neural-network.html#cb326-1" aria-hidden="true" tabindex="-1"></a>fit_nnet <span class="ot">=</span> nnet<span class="sc">::</span><span class="fu">nnet</span>(X, y, <span class="at">size =</span> <span class="dv">4</span>)</span></code></pre></div>
 <pre><code># weights:  21
 initial  value 1.152323 
 iter  10 value 0.998588
 iter  20 value 0.558917
 final  value 0.000000 
 converged</code></pre>
-<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="neural-network.html#cb338-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">coef</span>(fit_nnet))</span></code></pre></div>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="neural-network.html#cb328-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">coef</span>(fit_nnet))</span></code></pre></div>
 <pre><code>       coef.fit_nnet.
 b-&gt;h1        5320.330
 i1-&gt;h1     -49025.055
@@ -1159,7 +1159,7 @@ h1-&gt;o      -37130.643
 h2-&gt;o       32075.031
 h3-&gt;o      -36018.926
 h4-&gt;o      -18446.081</code></pre>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="neural-network.html#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitted</span>(fit_nnet)</span></code></pre></div>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="neural-network.html#cb330-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitted</span>(fit_nnet)</span></code></pre></div>
 <pre><code>     [,1]
 [1,]    0
 [2,]    1
@@ -1173,68 +1173,68 @@ h4-&gt;o      -18446.081</code></pre>
 <div id="python-2" class="section level3">
 <h3>Python</h3>
 <p>As before, I make names more explicit, and other very minor updates to the original code.</p>
-<div class="sourceCode" id="cb342"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb342-1"><a href="neural-network.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb342-2"><a href="neural-network.html#cb342-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-3"><a href="neural-network.html#cb342-3" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>]</span>
-<span id="cb342-4"><a href="neural-network.html#cb342-4" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="op">=</span> <span class="dv">32</span></span>
-<span id="cb342-5"><a href="neural-network.html#cb342-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-6"><a href="neural-network.html#cb342-6" aria-hidden="true" tabindex="-1"></a><span class="co"># compute sigmoid nonlinearity</span></span>
-<span id="cb342-7"><a href="neural-network.html#cb342-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid(x):</span>
-<span id="cb342-8"><a href="neural-network.html#cb342-8" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
-<span id="cb342-9"><a href="neural-network.html#cb342-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output</span>
-<span id="cb342-10"><a href="neural-network.html#cb342-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-11"><a href="neural-network.html#cb342-11" aria-hidden="true" tabindex="-1"></a><span class="co"># convert output of sigmoid function to its derivative</span></span>
-<span id="cb342-12"><a href="neural-network.html#cb342-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid_output_to_derivative(output):</span>
-<span id="cb342-13"><a href="neural-network.html#cb342-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> output)</span>
-<span id="cb342-14"><a href="neural-network.html#cb342-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb342-15"><a href="neural-network.html#cb342-15" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
-<span id="cb342-16"><a href="neural-network.html#cb342-16" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
-<span id="cb342-17"><a href="neural-network.html#cb342-17" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
-<span id="cb342-18"><a href="neural-network.html#cb342-18" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
-<span id="cb342-19"><a href="neural-network.html#cb342-19" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb342-20"><a href="neural-network.html#cb342-20" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb342-21"><a href="neural-network.html#cb342-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb342-22"><a href="neural-network.html#cb342-22" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([</span>
-<span id="cb342-23"><a href="neural-network.html#cb342-23" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>],</span>
-<span id="cb342-24"><a href="neural-network.html#cb342-24" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
-<span id="cb342-25"><a href="neural-network.html#cb342-25" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
-<span id="cb342-26"><a href="neural-network.html#cb342-26" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>]</span>
-<span id="cb342-27"><a href="neural-network.html#cb342-27" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb342-28"><a href="neural-network.html#cb342-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-29"><a href="neural-network.html#cb342-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
-<span id="cb342-30"><a href="neural-network.html#cb342-30" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Training With Alpha:&quot;</span> <span class="op">+</span> <span class="bu">str</span>(alpha))</span>
-<span id="cb342-31"><a href="neural-network.html#cb342-31" aria-hidden="true" tabindex="-1"></a>  np.random.seed(<span class="dv">1</span>)</span>
-<span id="cb342-32"><a href="neural-network.html#cb342-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-33"><a href="neural-network.html#cb342-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># randomly initialize our weights with mean 0</span></span>
-<span id="cb342-34"><a href="neural-network.html#cb342-34" aria-hidden="true" tabindex="-1"></a>  synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, hidden_size)) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb342-35"><a href="neural-network.html#cb342-35" aria-hidden="true" tabindex="-1"></a>  synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((hidden_size, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb342-36"><a href="neural-network.html#cb342-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-37"><a href="neural-network.html#cb342-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
-<span id="cb342-38"><a href="neural-network.html#cb342-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-39"><a href="neural-network.html#cb342-39" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Feed forward through layers input, 1, and 2</span></span>
-<span id="cb342-40"><a href="neural-network.html#cb342-40" aria-hidden="true" tabindex="-1"></a>      layer_1 <span class="op">=</span> sigmoid(np.dot(X, synapse_0))</span>
-<span id="cb342-41"><a href="neural-network.html#cb342-41" aria-hidden="true" tabindex="-1"></a>      layer_2 <span class="op">=</span> sigmoid(np.dot(layer_1, synapse_1))</span>
-<span id="cb342-42"><a href="neural-network.html#cb342-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-43"><a href="neural-network.html#cb342-43" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did we miss the target value?</span></span>
-<span id="cb342-44"><a href="neural-network.html#cb342-44" aria-hidden="true" tabindex="-1"></a>      layer_2_error <span class="op">=</span> layer_2 <span class="op">-</span> y</span>
-<span id="cb342-45"><a href="neural-network.html#cb342-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-46"><a href="neural-network.html#cb342-46" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (j<span class="op">%</span> <span class="dv">10000</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb342-47"><a href="neural-network.html#cb342-47" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error after &quot;</span><span class="op">+</span> <span class="bu">str</span>(j) <span class="op">+</span><span class="st">&quot; iterations:&quot;</span> <span class="op">+</span> </span>
-<span id="cb342-48"><a href="neural-network.html#cb342-48" aria-hidden="true" tabindex="-1"></a>        <span class="bu">str</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error))))</span>
-<span id="cb342-49"><a href="neural-network.html#cb342-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-50"><a href="neural-network.html#cb342-50" aria-hidden="true" tabindex="-1"></a>      <span class="co"># in what direction is the target value?</span></span>
-<span id="cb342-51"><a href="neural-network.html#cb342-51" aria-hidden="true" tabindex="-1"></a>      <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb342-52"><a href="neural-network.html#cb342-52" aria-hidden="true" tabindex="-1"></a>      layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>sigmoid_output_to_derivative(layer_2)</span>
-<span id="cb342-53"><a href="neural-network.html#cb342-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-54"><a href="neural-network.html#cb342-54" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
-<span id="cb342-55"><a href="neural-network.html#cb342-55" aria-hidden="true" tabindex="-1"></a>      layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
-<span id="cb342-56"><a href="neural-network.html#cb342-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-57"><a href="neural-network.html#cb342-57" aria-hidden="true" tabindex="-1"></a>      <span class="co"># in what direction is the target l1?</span></span>
-<span id="cb342-58"><a href="neural-network.html#cb342-58" aria-hidden="true" tabindex="-1"></a>      <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb342-59"><a href="neural-network.html#cb342-59" aria-hidden="true" tabindex="-1"></a>      layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> sigmoid_output_to_derivative(layer_1)</span>
-<span id="cb342-60"><a href="neural-network.html#cb342-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb342-61"><a href="neural-network.html#cb342-61" aria-hidden="true" tabindex="-1"></a>      synapse_1 <span class="op">-=</span> alpha <span class="op">*</span> (layer_1.T.dot(layer_2_delta))</span>
-<span id="cb342-62"><a href="neural-network.html#cb342-62" aria-hidden="true" tabindex="-1"></a>      synapse_0 <span class="op">-=</span> alpha <span class="op">*</span> (X.T.dot(layer_1_delta))</span></code></pre></div>
+<div class="sourceCode" id="cb332"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb332-1"><a href="neural-network.html#cb332-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb332-2"><a href="neural-network.html#cb332-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-3"><a href="neural-network.html#cb332-3" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>]</span>
+<span id="cb332-4"><a href="neural-network.html#cb332-4" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb332-5"><a href="neural-network.html#cb332-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-6"><a href="neural-network.html#cb332-6" aria-hidden="true" tabindex="-1"></a><span class="co"># compute sigmoid nonlinearity</span></span>
+<span id="cb332-7"><a href="neural-network.html#cb332-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid(x):</span>
+<span id="cb332-8"><a href="neural-network.html#cb332-8" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
+<span id="cb332-9"><a href="neural-network.html#cb332-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output</span>
+<span id="cb332-10"><a href="neural-network.html#cb332-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-11"><a href="neural-network.html#cb332-11" aria-hidden="true" tabindex="-1"></a><span class="co"># convert output of sigmoid function to its derivative</span></span>
+<span id="cb332-12"><a href="neural-network.html#cb332-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid_output_to_derivative(output):</span>
+<span id="cb332-13"><a href="neural-network.html#cb332-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> output)</span>
+<span id="cb332-14"><a href="neural-network.html#cb332-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb332-15"><a href="neural-network.html#cb332-15" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
+<span id="cb332-16"><a href="neural-network.html#cb332-16" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb332-17"><a href="neural-network.html#cb332-17" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb332-18"><a href="neural-network.html#cb332-18" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb332-19"><a href="neural-network.html#cb332-19" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
+<span id="cb332-20"><a href="neural-network.html#cb332-20" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb332-21"><a href="neural-network.html#cb332-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb332-22"><a href="neural-network.html#cb332-22" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([</span>
+<span id="cb332-23"><a href="neural-network.html#cb332-23" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>],</span>
+<span id="cb332-24"><a href="neural-network.html#cb332-24" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb332-25"><a href="neural-network.html#cb332-25" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span>],</span>
+<span id="cb332-26"><a href="neural-network.html#cb332-26" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span>]</span>
+<span id="cb332-27"><a href="neural-network.html#cb332-27" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb332-28"><a href="neural-network.html#cb332-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-29"><a href="neural-network.html#cb332-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
+<span id="cb332-30"><a href="neural-network.html#cb332-30" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Training With Alpha:&quot;</span> <span class="op">+</span> <span class="bu">str</span>(alpha))</span>
+<span id="cb332-31"><a href="neural-network.html#cb332-31" aria-hidden="true" tabindex="-1"></a>  np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb332-32"><a href="neural-network.html#cb332-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-33"><a href="neural-network.html#cb332-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb332-34"><a href="neural-network.html#cb332-34" aria-hidden="true" tabindex="-1"></a>  synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, hidden_size)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb332-35"><a href="neural-network.html#cb332-35" aria-hidden="true" tabindex="-1"></a>  synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((hidden_size, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb332-36"><a href="neural-network.html#cb332-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-37"><a href="neural-network.html#cb332-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
+<span id="cb332-38"><a href="neural-network.html#cb332-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-39"><a href="neural-network.html#cb332-39" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Feed forward through layers input, 1, and 2</span></span>
+<span id="cb332-40"><a href="neural-network.html#cb332-40" aria-hidden="true" tabindex="-1"></a>      layer_1 <span class="op">=</span> sigmoid(np.dot(X, synapse_0))</span>
+<span id="cb332-41"><a href="neural-network.html#cb332-41" aria-hidden="true" tabindex="-1"></a>      layer_2 <span class="op">=</span> sigmoid(np.dot(layer_1, synapse_1))</span>
+<span id="cb332-42"><a href="neural-network.html#cb332-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-43"><a href="neural-network.html#cb332-43" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb332-44"><a href="neural-network.html#cb332-44" aria-hidden="true" tabindex="-1"></a>      layer_2_error <span class="op">=</span> layer_2 <span class="op">-</span> y</span>
+<span id="cb332-45"><a href="neural-network.html#cb332-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-46"><a href="neural-network.html#cb332-46" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (j<span class="op">%</span> <span class="dv">10000</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb332-47"><a href="neural-network.html#cb332-47" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error after &quot;</span><span class="op">+</span> <span class="bu">str</span>(j) <span class="op">+</span><span class="st">&quot; iterations:&quot;</span> <span class="op">+</span> </span>
+<span id="cb332-48"><a href="neural-network.html#cb332-48" aria-hidden="true" tabindex="-1"></a>        <span class="bu">str</span>(np.mean(np.<span class="bu">abs</span>(layer_2_error))))</span>
+<span id="cb332-49"><a href="neural-network.html#cb332-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-50"><a href="neural-network.html#cb332-50" aria-hidden="true" tabindex="-1"></a>      <span class="co"># in what direction is the target value?</span></span>
+<span id="cb332-51"><a href="neural-network.html#cb332-51" aria-hidden="true" tabindex="-1"></a>      <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb332-52"><a href="neural-network.html#cb332-52" aria-hidden="true" tabindex="-1"></a>      layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>sigmoid_output_to_derivative(layer_2)</span>
+<span id="cb332-53"><a href="neural-network.html#cb332-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-54"><a href="neural-network.html#cb332-54" aria-hidden="true" tabindex="-1"></a>      <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb332-55"><a href="neural-network.html#cb332-55" aria-hidden="true" tabindex="-1"></a>      layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
+<span id="cb332-56"><a href="neural-network.html#cb332-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-57"><a href="neural-network.html#cb332-57" aria-hidden="true" tabindex="-1"></a>      <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb332-58"><a href="neural-network.html#cb332-58" aria-hidden="true" tabindex="-1"></a>      <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb332-59"><a href="neural-network.html#cb332-59" aria-hidden="true" tabindex="-1"></a>      layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> sigmoid_output_to_derivative(layer_1)</span>
+<span id="cb332-60"><a href="neural-network.html#cb332-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb332-61"><a href="neural-network.html#cb332-61" aria-hidden="true" tabindex="-1"></a>      synapse_1 <span class="op">-=</span> alpha <span class="op">*</span> (layer_1.T.dot(layer_2_delta))</span>
+<span id="cb332-62"><a href="neural-network.html#cb332-62" aria-hidden="true" tabindex="-1"></a>      synapse_0 <span class="op">-=</span> alpha <span class="op">*</span> (X.T.dot(layer_1_delta))</span></code></pre></div>
 <pre><code>
 Training With Alpha:0.001
 Error after 0 iterations:0.49643992250078794
@@ -1271,41 +1271,41 @@ Error after 0 iterations:0.49643992250078794
 Error after 10000 iterations:0.5
 Error after 20000 iterations:0.5</code></pre>
 <p>Since <code>alpha = 10</code> seems reasonable, let’s inspect the results just for that. Note that this value being the ‘best’ likely won’t hold on another random run, and in general we would assess this <em>hyperparameter</em> using cross-validation or other means.</p>
-<div class="sourceCode" id="cb344"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb344-1"><a href="neural-network.html#cb344-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb344-2"><a href="neural-network.html#cb344-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb344-3"><a href="neural-network.html#cb344-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-4"><a href="neural-network.html#cb344-4" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly initialize our weights with mean 0</span></span>
-<span id="cb344-5"><a href="neural-network.html#cb344-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
-<span id="cb344-6"><a href="neural-network.html#cb344-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-7"><a href="neural-network.html#cb344-7" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, hidden_size)) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb344-8"><a href="neural-network.html#cb344-8" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((hidden_size, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb344-9"><a href="neural-network.html#cb344-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-10"><a href="neural-network.html#cb344-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-11"><a href="neural-network.html#cb344-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
-<span id="cb344-12"><a href="neural-network.html#cb344-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-13"><a href="neural-network.html#cb344-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Feed forward through layers input, 1, and 2</span></span>
-<span id="cb344-14"><a href="neural-network.html#cb344-14" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> sigmoid(np.dot(X, synapse_0))</span>
-<span id="cb344-15"><a href="neural-network.html#cb344-15" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="op">=</span> sigmoid(np.dot(layer_1, synapse_1))</span>
-<span id="cb344-16"><a href="neural-network.html#cb344-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-17"><a href="neural-network.html#cb344-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
-<span id="cb344-18"><a href="neural-network.html#cb344-18" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="op">=</span> layer_2 <span class="op">-</span> y</span>
-<span id="cb344-19"><a href="neural-network.html#cb344-19" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb344-20"><a href="neural-network.html#cb344-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
-<span id="cb344-21"><a href="neural-network.html#cb344-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb344-22"><a href="neural-network.html#cb344-22" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>sigmoid_output_to_derivative(layer_2)</span>
-<span id="cb344-23"><a href="neural-network.html#cb344-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-24"><a href="neural-network.html#cb344-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
-<span id="cb344-25"><a href="neural-network.html#cb344-25" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
-<span id="cb344-26"><a href="neural-network.html#cb344-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-27"><a href="neural-network.html#cb344-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target l1?</span></span>
-<span id="cb344-28"><a href="neural-network.html#cb344-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb344-29"><a href="neural-network.html#cb344-29" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> sigmoid_output_to_derivative(layer_1)</span>
-<span id="cb344-30"><a href="neural-network.html#cb344-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-31"><a href="neural-network.html#cb344-31" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="op">-=</span> alpha <span class="op">*</span> (layer_1.T.dot(layer_2_delta))</span>
-<span id="cb344-32"><a href="neural-network.html#cb344-32" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">-=</span> alpha <span class="op">*</span> (X.T.dot(layer_1_delta))</span>
-<span id="cb344-33"><a href="neural-network.html#cb344-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-34"><a href="neural-network.html#cb344-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb344-35"><a href="neural-network.html#cb344-35" aria-hidden="true" tabindex="-1"></a>np.append(np.<span class="bu">round</span>(layer_2, <span class="dv">4</span>), y, axis <span class="op">=</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb334-1"><a href="neural-network.html#cb334-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb334-2"><a href="neural-network.html#cb334-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb334-3"><a href="neural-network.html#cb334-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-4"><a href="neural-network.html#cb334-4" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb334-5"><a href="neural-network.html#cb334-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb334-6"><a href="neural-network.html#cb334-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-7"><a href="neural-network.html#cb334-7" aria-hidden="true" tabindex="-1"></a>synapse_0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((<span class="dv">3</span>, hidden_size)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb334-8"><a href="neural-network.html#cb334-8" aria-hidden="true" tabindex="-1"></a>synapse_1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.random.random((hidden_size, <span class="dv">1</span>)) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb334-9"><a href="neural-network.html#cb334-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-10"><a href="neural-network.html#cb334-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-11"><a href="neural-network.html#cb334-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> np.arange(<span class="dv">30000</span>):</span>
+<span id="cb334-12"><a href="neural-network.html#cb334-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-13"><a href="neural-network.html#cb334-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Feed forward through layers input, 1, and 2</span></span>
+<span id="cb334-14"><a href="neural-network.html#cb334-14" aria-hidden="true" tabindex="-1"></a>    layer_1 <span class="op">=</span> sigmoid(np.dot(X, synapse_0))</span>
+<span id="cb334-15"><a href="neural-network.html#cb334-15" aria-hidden="true" tabindex="-1"></a>    layer_2 <span class="op">=</span> sigmoid(np.dot(layer_1, synapse_1))</span>
+<span id="cb334-16"><a href="neural-network.html#cb334-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-17"><a href="neural-network.html#cb334-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb334-18"><a href="neural-network.html#cb334-18" aria-hidden="true" tabindex="-1"></a>    layer_2_error <span class="op">=</span> layer_2 <span class="op">-</span> y</span>
+<span id="cb334-19"><a href="neural-network.html#cb334-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb334-20"><a href="neural-network.html#cb334-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target value?</span></span>
+<span id="cb334-21"><a href="neural-network.html#cb334-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb334-22"><a href="neural-network.html#cb334-22" aria-hidden="true" tabindex="-1"></a>    layer_2_delta <span class="op">=</span> layer_2_error<span class="op">*</span>sigmoid_output_to_derivative(layer_2)</span>
+<span id="cb334-23"><a href="neural-network.html#cb334-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-24"><a href="neural-network.html#cb334-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb334-25"><a href="neural-network.html#cb334-25" aria-hidden="true" tabindex="-1"></a>    layer_1_error <span class="op">=</span> layer_2_delta.dot(synapse_1.T)</span>
+<span id="cb334-26"><a href="neural-network.html#cb334-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-27"><a href="neural-network.html#cb334-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb334-28"><a href="neural-network.html#cb334-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb334-29"><a href="neural-network.html#cb334-29" aria-hidden="true" tabindex="-1"></a>    layer_1_delta <span class="op">=</span> layer_1_error <span class="op">*</span> sigmoid_output_to_derivative(layer_1)</span>
+<span id="cb334-30"><a href="neural-network.html#cb334-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-31"><a href="neural-network.html#cb334-31" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="op">-=</span> alpha <span class="op">*</span> (layer_1.T.dot(layer_2_delta))</span>
+<span id="cb334-32"><a href="neural-network.html#cb334-32" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="op">-=</span> alpha <span class="op">*</span> (X.T.dot(layer_1_delta))</span>
+<span id="cb334-33"><a href="neural-network.html#cb334-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-34"><a href="neural-network.html#cb334-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb334-35"><a href="neural-network.html#cb334-35" aria-hidden="true" tabindex="-1"></a>np.append(np.<span class="bu">round</span>(layer_2, <span class="dv">4</span>), y, axis <span class="op">=</span> <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>array([[0.0011, 0.    ],
        [0.9989, 1.    ],
        [0.9989, 1.    ],
@@ -1314,116 +1314,116 @@ Error after 20000 iterations:0.5</code></pre>
 <div id="r-2" class="section level3">
 <h3>R</h3>
 <p>The following has little to no modification, but again creates a function for easier manipulation of inputs.</p>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="neural-network.html#cb346-1" aria-hidden="true" tabindex="-1"></a><span class="co"># input dataset</span></span>
-<span id="cb346-2"><a href="neural-network.html#cb346-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(</span>
-<span id="cb346-3"><a href="neural-network.html#cb346-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb346-4"><a href="neural-network.html#cb346-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
-<span id="cb346-5"><a href="neural-network.html#cb346-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb346-6"><a href="neural-network.html#cb346-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb346-7"><a href="neural-network.html#cb346-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">4</span>,</span>
-<span id="cb346-8"><a href="neural-network.html#cb346-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>,</span>
-<span id="cb346-9"><a href="neural-network.html#cb346-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
-<span id="cb346-10"><a href="neural-network.html#cb346-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb346-11"><a href="neural-network.html#cb346-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb346-12"><a href="neural-network.html#cb346-12" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
-<span id="cb346-13"><a href="neural-network.html#cb346-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">ncol =</span> <span class="dv">1</span>)</span>
-<span id="cb346-14"><a href="neural-network.html#cb346-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-15"><a href="neural-network.html#cb346-15" aria-hidden="true" tabindex="-1"></a>alphas <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>)</span>
-<span id="cb346-16"><a href="neural-network.html#cb346-16" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="ot">=</span> <span class="dv">32</span></span>
-<span id="cb346-17"><a href="neural-network.html#cb346-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-18"><a href="neural-network.html#cb346-18" aria-hidden="true" tabindex="-1"></a><span class="co"># compute sigmoid nonlinearity</span></span>
-<span id="cb346-19"><a href="neural-network.html#cb346-19" aria-hidden="true" tabindex="-1"></a>sigmoid <span class="ot">=</span> plogis <span class="co"># already part of base R, no function needed</span></span>
-<span id="cb346-20"><a href="neural-network.html#cb346-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-21"><a href="neural-network.html#cb346-21" aria-hidden="true" tabindex="-1"></a><span class="co"># convert output of sigmoid function to its derivative</span></span>
-<span id="cb346-22"><a href="neural-network.html#cb346-22" aria-hidden="true" tabindex="-1"></a>sigmoid_output_to_derivative <span class="ot">&lt;-</span> <span class="cf">function</span>(output) {</span>
-<span id="cb346-23"><a href="neural-network.html#cb346-23" aria-hidden="true" tabindex="-1"></a>  output <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> output)</span>
-<span id="cb346-24"><a href="neural-network.html#cb346-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb346-25"><a href="neural-network.html#cb346-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-26"><a href="neural-network.html#cb346-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb346-27"><a href="neural-network.html#cb346-27" aria-hidden="true" tabindex="-1"></a>nn_3 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb346-28"><a href="neural-network.html#cb346-28" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb346-29"><a href="neural-network.html#cb346-29" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb346-30"><a href="neural-network.html#cb346-30" aria-hidden="true" tabindex="-1"></a>  hidden_size,</span>
-<span id="cb346-31"><a href="neural-network.html#cb346-31" aria-hidden="true" tabindex="-1"></a>  alpha,</span>
-<span id="cb346-32"><a href="neural-network.html#cb346-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
-<span id="cb346-33"><a href="neural-network.html#cb346-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">FALSE</span></span>
-<span id="cb346-34"><a href="neural-network.html#cb346-34" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb346-35"><a href="neural-network.html#cb346-35" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb346-36"><a href="neural-network.html#cb346-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (val <span class="cf">in</span> alpha) {</span>
-<span id="cb346-37"><a href="neural-network.html#cb346-37" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb346-38"><a href="neural-network.html#cb346-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(show_messages)</span>
-<span id="cb346-39"><a href="neural-network.html#cb346-39" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Training With Alpha: {val}&quot;</span>))</span>
-<span id="cb346-40"><a href="neural-network.html#cb346-40" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb346-41"><a href="neural-network.html#cb346-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb346-42"><a href="neural-network.html#cb346-42" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb346-43"><a href="neural-network.html#cb346-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># randomly initialize our weights with mean 0</span></span>
-<span id="cb346-44"><a href="neural-network.html#cb346-44" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">3</span> <span class="sc">*</span> hidden_size, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">3</span>, hidden_size)</span>
-<span id="cb346-45"><a href="neural-network.html#cb346-45" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(hidden_size), hidden_size, <span class="dv">1</span>)</span>
-<span id="cb346-46"><a href="neural-network.html#cb346-46" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-47"><a href="neural-network.html#cb346-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
-<span id="cb346-48"><a href="neural-network.html#cb346-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-49"><a href="neural-network.html#cb346-49" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Feed forward through layers input, 1, and 2</span></span>
-<span id="cb346-50"><a href="neural-network.html#cb346-50" aria-hidden="true" tabindex="-1"></a>        layer_1 <span class="ot">=</span> <span class="fu">sigmoid</span>(X <span class="sc">%*%</span> synapse_0)</span>
-<span id="cb346-51"><a href="neural-network.html#cb346-51" aria-hidden="true" tabindex="-1"></a>        layer_2 <span class="ot">=</span> <span class="fu">sigmoid</span>(layer_1 <span class="sc">%*%</span> synapse_1)</span>
-<span id="cb346-52"><a href="neural-network.html#cb346-52" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-53"><a href="neural-network.html#cb346-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># how much did we miss the target value?</span></span>
-<span id="cb346-54"><a href="neural-network.html#cb346-54" aria-hidden="true" tabindex="-1"></a>        layer_2_error <span class="ot">=</span> layer_2 <span class="sc">-</span> y</span>
-<span id="cb346-55"><a href="neural-network.html#cb346-55" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb346-56"><a href="neural-network.html#cb346-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ((j <span class="sc">%%</span> <span class="dv">10000</span>) <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> show_messages) {</span>
-<span id="cb346-57"><a href="neural-network.html#cb346-57" aria-hidden="true" tabindex="-1"></a>          <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Error after {j} iterations: {mean(abs(layer_2_error))}&quot;</span>))</span>
-<span id="cb346-58"><a href="neural-network.html#cb346-58" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb346-59"><a href="neural-network.html#cb346-59" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-60"><a href="neural-network.html#cb346-60" aria-hidden="true" tabindex="-1"></a>        <span class="co"># in what direction is the target value?</span></span>
-<span id="cb346-61"><a href="neural-network.html#cb346-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb346-62"><a href="neural-network.html#cb346-62" aria-hidden="true" tabindex="-1"></a>        layer_2_delta <span class="ot">=</span> layer_2_error <span class="sc">*</span> <span class="fu">sigmoid_output_to_derivative</span>(layer_2)</span>
-<span id="cb346-63"><a href="neural-network.html#cb346-63" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-64"><a href="neural-network.html#cb346-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
-<span id="cb346-65"><a href="neural-network.html#cb346-65" aria-hidden="true" tabindex="-1"></a>        layer_1_error <span class="ot">=</span> layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(synapse_1)</span>
-<span id="cb346-66"><a href="neural-network.html#cb346-66" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-67"><a href="neural-network.html#cb346-67" aria-hidden="true" tabindex="-1"></a>        <span class="co"># in what direction is the target l1?</span></span>
-<span id="cb346-68"><a href="neural-network.html#cb346-68" aria-hidden="true" tabindex="-1"></a>        <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
-<span id="cb346-69"><a href="neural-network.html#cb346-69" aria-hidden="true" tabindex="-1"></a>        layer_1_delta <span class="ot">=</span> layer_1_error <span class="sc">*</span> <span class="fu">sigmoid_output_to_derivative</span>(layer_1)</span>
-<span id="cb346-70"><a href="neural-network.html#cb346-70" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-71"><a href="neural-network.html#cb346-71" aria-hidden="true" tabindex="-1"></a>        synapse_1 <span class="ot">=</span> synapse_1 <span class="sc">-</span> val <span class="sc">*</span> <span class="fu">crossprod</span>(layer_1, layer_2_delta)</span>
-<span id="cb346-72"><a href="neural-network.html#cb346-72" aria-hidden="true" tabindex="-1"></a>        synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">-</span> val <span class="sc">*</span> <span class="fu">crossprod</span>(X, layer_1_delta)</span>
-<span id="cb346-73"><a href="neural-network.html#cb346-73" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb346-74"><a href="neural-network.html#cb346-74" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb346-75"><a href="neural-network.html#cb346-75" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb346-76"><a href="neural-network.html#cb346-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb346-77"><a href="neural-network.html#cb346-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1_error =</span> layer_1_error,</span>
-<span id="cb346-78"><a href="neural-network.html#cb346-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2_error =</span> layer_2_error,</span>
-<span id="cb346-79"><a href="neural-network.html#cb346-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_0 =</span> synapse_0,</span>
-<span id="cb346-80"><a href="neural-network.html#cb346-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_1 =</span> synapse_1,</span>
-<span id="cb346-81"><a href="neural-network.html#cb346-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1 =</span> layer_1,</span>
-<span id="cb346-82"><a href="neural-network.html#cb346-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2 =</span> layer_2</span>
-<span id="cb346-83"><a href="neural-network.html#cb346-83" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb346-84"><a href="neural-network.html#cb346-84" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="neural-network.html#cb336-1" aria-hidden="true" tabindex="-1"></a><span class="co"># input dataset</span></span>
+<span id="cb336-2"><a href="neural-network.html#cb336-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(</span>
+<span id="cb336-3"><a href="neural-network.html#cb336-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb336-4"><a href="neural-network.html#cb336-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb336-5"><a href="neural-network.html#cb336-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb336-6"><a href="neural-network.html#cb336-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb336-7"><a href="neural-network.html#cb336-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">4</span>,</span>
+<span id="cb336-8"><a href="neural-network.html#cb336-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>,</span>
+<span id="cb336-9"><a href="neural-network.html#cb336-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb336-10"><a href="neural-network.html#cb336-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb336-11"><a href="neural-network.html#cb336-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb336-12"><a href="neural-network.html#cb336-12" aria-hidden="true" tabindex="-1"></a><span class="co"># output dataset            </span></span>
+<span id="cb336-13"><a href="neural-network.html#cb336-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb336-14"><a href="neural-network.html#cb336-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb336-15"><a href="neural-network.html#cb336-15" aria-hidden="true" tabindex="-1"></a>alphas <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>)</span>
+<span id="cb336-16"><a href="neural-network.html#cb336-16" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="ot">=</span> <span class="dv">32</span></span>
+<span id="cb336-17"><a href="neural-network.html#cb336-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb336-18"><a href="neural-network.html#cb336-18" aria-hidden="true" tabindex="-1"></a><span class="co"># compute sigmoid nonlinearity</span></span>
+<span id="cb336-19"><a href="neural-network.html#cb336-19" aria-hidden="true" tabindex="-1"></a>sigmoid <span class="ot">=</span> plogis <span class="co"># already part of base R, no function needed</span></span>
+<span id="cb336-20"><a href="neural-network.html#cb336-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb336-21"><a href="neural-network.html#cb336-21" aria-hidden="true" tabindex="-1"></a><span class="co"># convert output of sigmoid function to its derivative</span></span>
+<span id="cb336-22"><a href="neural-network.html#cb336-22" aria-hidden="true" tabindex="-1"></a>sigmoid_output_to_derivative <span class="ot">&lt;-</span> <span class="cf">function</span>(output) {</span>
+<span id="cb336-23"><a href="neural-network.html#cb336-23" aria-hidden="true" tabindex="-1"></a>  output <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> output)</span>
+<span id="cb336-24"><a href="neural-network.html#cb336-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb336-25"><a href="neural-network.html#cb336-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb336-26"><a href="neural-network.html#cb336-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb336-27"><a href="neural-network.html#cb336-27" aria-hidden="true" tabindex="-1"></a>nn_3 <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb336-28"><a href="neural-network.html#cb336-28" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb336-29"><a href="neural-network.html#cb336-29" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb336-30"><a href="neural-network.html#cb336-30" aria-hidden="true" tabindex="-1"></a>  hidden_size,</span>
+<span id="cb336-31"><a href="neural-network.html#cb336-31" aria-hidden="true" tabindex="-1"></a>  alpha,</span>
+<span id="cb336-32"><a href="neural-network.html#cb336-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
+<span id="cb336-33"><a href="neural-network.html#cb336-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">FALSE</span></span>
+<span id="cb336-34"><a href="neural-network.html#cb336-34" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb336-35"><a href="neural-network.html#cb336-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb336-36"><a href="neural-network.html#cb336-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (val <span class="cf">in</span> alpha) {</span>
+<span id="cb336-37"><a href="neural-network.html#cb336-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb336-38"><a href="neural-network.html#cb336-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(show_messages)</span>
+<span id="cb336-39"><a href="neural-network.html#cb336-39" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Training With Alpha: {val}&quot;</span>))</span>
+<span id="cb336-40"><a href="neural-network.html#cb336-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb336-41"><a href="neural-network.html#cb336-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb336-42"><a href="neural-network.html#cb336-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb336-43"><a href="neural-network.html#cb336-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># randomly initialize our weights with mean 0</span></span>
+<span id="cb336-44"><a href="neural-network.html#cb336-44" aria-hidden="true" tabindex="-1"></a>    synapse_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="dv">3</span> <span class="sc">*</span> hidden_size, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">3</span>, hidden_size)</span>
+<span id="cb336-45"><a href="neural-network.html#cb336-45" aria-hidden="true" tabindex="-1"></a>    synapse_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(hidden_size), hidden_size, <span class="dv">1</span>)</span>
+<span id="cb336-46"><a href="neural-network.html#cb336-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-47"><a href="neural-network.html#cb336-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxiter) {</span>
+<span id="cb336-48"><a href="neural-network.html#cb336-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-49"><a href="neural-network.html#cb336-49" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Feed forward through layers input, 1, and 2</span></span>
+<span id="cb336-50"><a href="neural-network.html#cb336-50" aria-hidden="true" tabindex="-1"></a>        layer_1 <span class="ot">=</span> <span class="fu">sigmoid</span>(X <span class="sc">%*%</span> synapse_0)</span>
+<span id="cb336-51"><a href="neural-network.html#cb336-51" aria-hidden="true" tabindex="-1"></a>        layer_2 <span class="ot">=</span> <span class="fu">sigmoid</span>(layer_1 <span class="sc">%*%</span> synapse_1)</span>
+<span id="cb336-52"><a href="neural-network.html#cb336-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-53"><a href="neural-network.html#cb336-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># how much did we miss the target value?</span></span>
+<span id="cb336-54"><a href="neural-network.html#cb336-54" aria-hidden="true" tabindex="-1"></a>        layer_2_error <span class="ot">=</span> layer_2 <span class="sc">-</span> y</span>
+<span id="cb336-55"><a href="neural-network.html#cb336-55" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb336-56"><a href="neural-network.html#cb336-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ((j <span class="sc">%%</span> <span class="dv">10000</span>) <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> show_messages) {</span>
+<span id="cb336-57"><a href="neural-network.html#cb336-57" aria-hidden="true" tabindex="-1"></a>          <span class="fu">message</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">&quot;Error after {j} iterations: {mean(abs(layer_2_error))}&quot;</span>))</span>
+<span id="cb336-58"><a href="neural-network.html#cb336-58" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb336-59"><a href="neural-network.html#cb336-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-60"><a href="neural-network.html#cb336-60" aria-hidden="true" tabindex="-1"></a>        <span class="co"># in what direction is the target value?</span></span>
+<span id="cb336-61"><a href="neural-network.html#cb336-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb336-62"><a href="neural-network.html#cb336-62" aria-hidden="true" tabindex="-1"></a>        layer_2_delta <span class="ot">=</span> layer_2_error <span class="sc">*</span> <span class="fu">sigmoid_output_to_derivative</span>(layer_2)</span>
+<span id="cb336-63"><a href="neural-network.html#cb336-63" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-64"><a href="neural-network.html#cb336-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># how much did each l1 value contribute to the l2 error (according to the weights)?</span></span>
+<span id="cb336-65"><a href="neural-network.html#cb336-65" aria-hidden="true" tabindex="-1"></a>        layer_1_error <span class="ot">=</span> layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(synapse_1)</span>
+<span id="cb336-66"><a href="neural-network.html#cb336-66" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-67"><a href="neural-network.html#cb336-67" aria-hidden="true" tabindex="-1"></a>        <span class="co"># in what direction is the target l1?</span></span>
+<span id="cb336-68"><a href="neural-network.html#cb336-68" aria-hidden="true" tabindex="-1"></a>        <span class="co"># were we really sure? if so, don&#39;t change too much.</span></span>
+<span id="cb336-69"><a href="neural-network.html#cb336-69" aria-hidden="true" tabindex="-1"></a>        layer_1_delta <span class="ot">=</span> layer_1_error <span class="sc">*</span> <span class="fu">sigmoid_output_to_derivative</span>(layer_1)</span>
+<span id="cb336-70"><a href="neural-network.html#cb336-70" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-71"><a href="neural-network.html#cb336-71" aria-hidden="true" tabindex="-1"></a>        synapse_1 <span class="ot">=</span> synapse_1 <span class="sc">-</span> val <span class="sc">*</span> <span class="fu">crossprod</span>(layer_1, layer_2_delta)</span>
+<span id="cb336-72"><a href="neural-network.html#cb336-72" aria-hidden="true" tabindex="-1"></a>        synapse_0 <span class="ot">=</span> synapse_0 <span class="sc">-</span> val <span class="sc">*</span> <span class="fu">crossprod</span>(X, layer_1_delta)</span>
+<span id="cb336-73"><a href="neural-network.html#cb336-73" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb336-74"><a href="neural-network.html#cb336-74" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb336-75"><a href="neural-network.html#cb336-75" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb336-76"><a href="neural-network.html#cb336-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb336-77"><a href="neural-network.html#cb336-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1_error =</span> layer_1_error,</span>
+<span id="cb336-78"><a href="neural-network.html#cb336-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2_error =</span> layer_2_error,</span>
+<span id="cb336-79"><a href="neural-network.html#cb336-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_0 =</span> synapse_0,</span>
+<span id="cb336-80"><a href="neural-network.html#cb336-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">synapse_1 =</span> synapse_1,</span>
+<span id="cb336-81"><a href="neural-network.html#cb336-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_1 =</span> layer_1,</span>
+<span id="cb336-82"><a href="neural-network.html#cb336-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">layer_2 =</span> layer_2</span>
+<span id="cb336-83"><a href="neural-network.html#cb336-83" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb336-84"><a href="neural-network.html#cb336-84" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>With function in place, we are now ready to try it out. You can change whether you show the messages or not to compare with the Python. I don’t in this case for the sake of the document, but it won’t be overwhelming if you do interactively, and is recommended. We will also see that <code>alpha = 10</code> is the better option under the default settings as it was with the Python code. Note that this simple demo code will probably not work well beyond a hidden size of 50 (add more iterations even then).</p>
-<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="neural-network.html#cb347-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb347-2"><a href="neural-network.html#cb347-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb347-3"><a href="neural-network.html#cb347-3" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_3</span>(</span>
-<span id="cb347-4"><a href="neural-network.html#cb347-4" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb347-5"><a href="neural-network.html#cb347-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb347-6"><a href="neural-network.html#cb347-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">hidden_size =</span> <span class="dv">32</span>,</span>
-<span id="cb347-7"><a href="neural-network.html#cb347-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
-<span id="cb347-8"><a href="neural-network.html#cb347-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha   =</span> alphas,</span>
-<span id="cb347-9"><a href="neural-network.html#cb347-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">FALSE</span></span>
-<span id="cb347-10"><a href="neural-network.html#cb347-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="neural-network.html#cb337-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb337-2"><a href="neural-network.html#cb337-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-3"><a href="neural-network.html#cb337-3" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_3</span>(</span>
+<span id="cb337-4"><a href="neural-network.html#cb337-4" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb337-5"><a href="neural-network.html#cb337-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb337-6"><a href="neural-network.html#cb337-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">hidden_size =</span> <span class="dv">32</span>,</span>
+<span id="cb337-7"><a href="neural-network.html#cb337-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">30000</span>,</span>
+<span id="cb337-8"><a href="neural-network.html#cb337-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha   =</span> alphas,</span>
+<span id="cb337-9"><a href="neural-network.html#cb337-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">FALSE</span></span>
+<span id="cb337-10"><a href="neural-network.html#cb337-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Let’s rerun at <code>alpha = 10</code>.</p>
-<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="neural-network.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb348-2"><a href="neural-network.html#cb348-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb348-3"><a href="neural-network.html#cb348-3" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_3</span>(</span>
-<span id="cb348-4"><a href="neural-network.html#cb348-4" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb348-5"><a href="neural-network.html#cb348-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb348-6"><a href="neural-network.html#cb348-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">hidden_size =</span> <span class="dv">32</span>,</span>
-<span id="cb348-7"><a href="neural-network.html#cb348-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="dv">10</span>,</span>
-<span id="cb348-8"><a href="neural-network.html#cb348-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">TRUE</span></span>
-<span id="cb348-9"><a href="neural-network.html#cb348-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="neural-network.html#cb338-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb338-2"><a href="neural-network.html#cb338-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb338-3"><a href="neural-network.html#cb338-3" aria-hidden="true" tabindex="-1"></a>fit_nn <span class="ot">=</span> <span class="fu">nn_3</span>(</span>
+<span id="cb338-4"><a href="neural-network.html#cb338-4" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb338-5"><a href="neural-network.html#cb338-5" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb338-6"><a href="neural-network.html#cb338-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">hidden_size =</span> <span class="dv">32</span>,</span>
+<span id="cb338-7"><a href="neural-network.html#cb338-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="dv">10</span>,</span>
+<span id="cb338-8"><a href="neural-network.html#cb338-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_messages =</span> <span class="cn">TRUE</span></span>
+<span id="cb338-9"><a href="neural-network.html#cb338-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Training With Alpha: 10</code></pre>
 <pre><code>Error after 10000 iterations: 0.00483502508464005</code></pre>
 <pre><code>Error after 20000 iterations: 0.00207985328313795</code></pre>
 <pre><code>Error after 30000 iterations: 0.00152092933542719</code></pre>
-<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="neural-network.html#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">round</span>(fit_nn<span class="sc">$</span>layer_2, <span class="dv">4</span>), y)</span></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="neural-network.html#cb343-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">round</span>(fit_nn<span class="sc">$</span>layer_2, <span class="dv">4</span>), y)</span></code></pre></div>
 <pre><code>       [,1] [,2]
 [1,] 0.0013    0
 [2,] 0.9985    1
@@ -1433,14 +1433,14 @@ Error after 20000 iterations:0.5</code></pre>
 <div id="comparison-22" class="section level3">
 <h3>Comparison</h3>
 <p>Again we can compare to <span class="pack" style="">nnet</span>.</p>
-<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="neural-network.html#cb355-1" aria-hidden="true" tabindex="-1"></a>fit_nnet <span class="ot">=</span> nnet<span class="sc">::</span><span class="fu">nnet</span>(X, y, <span class="at">size =</span> <span class="dv">32</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="neural-network.html#cb345-1" aria-hidden="true" tabindex="-1"></a>fit_nnet <span class="ot">=</span> nnet<span class="sc">::</span><span class="fu">nnet</span>(X, y, <span class="at">size =</span> <span class="dv">32</span>)</span></code></pre></div>
 <pre><code># weights:  161
 initial  value 1.851187 
 iter  10 value 0.936564
 iter  20 value 0.008594
 final  value 0.000065 
 converged</code></pre>
-<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="neural-network.html#cb357-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitted</span>(fit_nnet)</span></code></pre></div>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="neural-network.html#cb347-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitted</span>(fit_nnet)</span></code></pre></div>
 <pre><code>             [,1]
 [1,] 0.0001274475
 [2,] 0.9933000550

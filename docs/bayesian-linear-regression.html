@@ -796,60 +796,60 @@ You would normally just use <span class="pack" style="">rstanarm</span> or
 <div id="data-setup-25" class="section level2">
 <h2>Data Setup</h2>
 <p>Create a correlation matrix of one’s choosing assuming response as last column/row. This approach allows for some collinearity in the predictors.</p>
-<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="bayesian-linear-regression.html#cb468-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb468-2"><a href="bayesian-linear-regression.html#cb468-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb468-3"><a href="bayesian-linear-regression.html#cb468-3" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">=</span> <span class="fu">matrix</span>(</span>
-<span id="cb468-4"><a href="bayesian-linear-regression.html#cb468-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
-<span id="cb468-5"><a href="bayesian-linear-regression.html#cb468-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, .<span class="dv">2</span>, <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">3</span>,</span>
-<span id="cb468-6"><a href="bayesian-linear-regression.html#cb468-6" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">2</span>, <span class="dv">1</span>, .<span class="dv">1</span>, .<span class="dv">2</span>,</span>
-<span id="cb468-7"><a href="bayesian-linear-regression.html#cb468-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">1</span>, <span class="dv">1</span>, .<span class="dv">1</span>,</span>
-<span id="cb468-8"><a href="bayesian-linear-regression.html#cb468-8" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">3</span>, .<span class="dv">2</span>, .<span class="dv">1</span>, <span class="dv">1</span></span>
-<span id="cb468-9"><a href="bayesian-linear-regression.html#cb468-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb468-10"><a href="bayesian-linear-regression.html#cb468-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">4</span>, </span>
-<span id="cb468-11"><a href="bayesian-linear-regression.html#cb468-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
-<span id="cb468-12"><a href="bayesian-linear-regression.html#cb468-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb468-13"><a href="bayesian-linear-regression.html#cb468-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb468-14"><a href="bayesian-linear-regression.html#cb468-14" aria-hidden="true" tabindex="-1"></a>cormat</span></code></pre></div>
+<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb456-1"><a href="bayesian-linear-regression.html#cb456-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb456-2"><a href="bayesian-linear-regression.html#cb456-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb456-3"><a href="bayesian-linear-regression.html#cb456-3" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">=</span> <span class="fu">matrix</span>(</span>
+<span id="cb456-4"><a href="bayesian-linear-regression.html#cb456-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb456-5"><a href="bayesian-linear-regression.html#cb456-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, .<span class="dv">2</span>, <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">3</span>,</span>
+<span id="cb456-6"><a href="bayesian-linear-regression.html#cb456-6" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">2</span>, <span class="dv">1</span>, .<span class="dv">1</span>, .<span class="dv">2</span>,</span>
+<span id="cb456-7"><a href="bayesian-linear-regression.html#cb456-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">1</span>, <span class="dv">1</span>, .<span class="dv">1</span>,</span>
+<span id="cb456-8"><a href="bayesian-linear-regression.html#cb456-8" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">3</span>, .<span class="dv">2</span>, .<span class="dv">1</span>, <span class="dv">1</span></span>
+<span id="cb456-9"><a href="bayesian-linear-regression.html#cb456-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb456-10"><a href="bayesian-linear-regression.html#cb456-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">4</span>, </span>
+<span id="cb456-11"><a href="bayesian-linear-regression.html#cb456-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb456-12"><a href="bayesian-linear-regression.html#cb456-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb456-13"><a href="bayesian-linear-regression.html#cb456-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb456-14"><a href="bayesian-linear-regression.html#cb456-14" aria-hidden="true" tabindex="-1"></a>cormat</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3] [,4]
 [1,]  1.0  0.2 -0.1  0.3
 [2,]  0.2  1.0  0.1  0.2
 [3,] -0.1  0.1  1.0  0.1
 [4,]  0.3  0.2  0.1  1.0</code></pre>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="bayesian-linear-regression.html#cb470-1" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">=</span> Matrix<span class="sc">::</span><span class="fu">nearPD</span>(cormat, <span class="at">corr =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>mat</span>
-<span id="cb470-2"><a href="bayesian-linear-regression.html#cb470-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb470-3"><a href="bayesian-linear-regression.html#cb470-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb470-4"><a href="bayesian-linear-regression.html#cb470-4" aria-hidden="true" tabindex="-1"></a>means <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(cormat))</span>
-<span id="cb470-5"><a href="bayesian-linear-regression.html#cb470-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n, means, cormat, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb470-6"><a href="bayesian-linear-regression.html#cb470-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(d) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>, <span class="st">&#39;y&#39;</span>)</span>
-<span id="cb470-7"><a href="bayesian-linear-regression.html#cb470-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb470-8"><a href="bayesian-linear-regression.html#cb470-8" aria-hidden="true" tabindex="-1"></a>d[,<span class="st">&#39;y&#39;</span>] <span class="ot">=</span> d[,<span class="st">&#39;y&#39;</span>] <span class="sc">-</span> .<span class="dv">1</span> <span class="co"># unnecessary, just to model a non-zero intercept</span></span>
-<span id="cb470-9"><a href="bayesian-linear-regression.html#cb470-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb470-10"><a href="bayesian-linear-regression.html#cb470-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(d)</span></code></pre></div>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="bayesian-linear-regression.html#cb458-1" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">=</span> Matrix<span class="sc">::</span><span class="fu">nearPD</span>(cormat, <span class="at">corr =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>mat</span>
+<span id="cb458-2"><a href="bayesian-linear-regression.html#cb458-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb458-3"><a href="bayesian-linear-regression.html#cb458-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb458-4"><a href="bayesian-linear-regression.html#cb458-4" aria-hidden="true" tabindex="-1"></a>means <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(cormat))</span>
+<span id="cb458-5"><a href="bayesian-linear-regression.html#cb458-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n, means, cormat, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb458-6"><a href="bayesian-linear-regression.html#cb458-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(d) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>, <span class="st">&#39;y&#39;</span>)</span>
+<span id="cb458-7"><a href="bayesian-linear-regression.html#cb458-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb458-8"><a href="bayesian-linear-regression.html#cb458-8" aria-hidden="true" tabindex="-1"></a>d[,<span class="st">&#39;y&#39;</span>] <span class="ot">=</span> d[,<span class="st">&#39;y&#39;</span>] <span class="sc">-</span> .<span class="dv">1</span> <span class="co"># unnecessary, just to model a non-zero intercept</span></span>
+<span id="cb458-9"><a href="bayesian-linear-regression.html#cb458-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb458-10"><a href="bayesian-linear-regression.html#cb458-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(d)</span></code></pre></div>
 <pre><code> num [1:1000, 1:4] -0.114 -0.409 4.198 1.098 0.331 ...
  - attr(*, &quot;dimnames&quot;)=List of 2
   ..$ : NULL
   ..$ : chr [1:4] &quot;X1&quot; &quot;X2&quot; &quot;X3&quot; &quot;y&quot;</code></pre>
-<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="bayesian-linear-regression.html#cb472-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(d)</span></code></pre></div>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="bayesian-linear-regression.html#cb460-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(d)</span></code></pre></div>
 <pre><code>     X1  X2   X3   y
 X1  1.0 0.2 -0.1 0.3
 X2  0.2 1.0  0.1 0.2
 X3 -0.1 0.1  1.0 0.1
 y   0.3 0.2  0.1 1.0</code></pre>
-<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="bayesian-linear-regression.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare for Stan</span></span>
-<span id="cb474-2"><a href="bayesian-linear-regression.html#cb474-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb474-3"><a href="bayesian-linear-regression.html#cb474-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create X (add intercept column) and y for vectorized version later</span></span>
-<span id="cb474-4"><a href="bayesian-linear-regression.html#cb474-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, d[,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]); <span class="fu">colnames</span>(X) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Intercept&#39;</span>, <span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>)</span>
-<span id="cb474-5"><a href="bayesian-linear-regression.html#cb474-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> d[,<span class="dv">4</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="bayesian-linear-regression.html#cb462-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare for Stan</span></span>
+<span id="cb462-2"><a href="bayesian-linear-regression.html#cb462-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb462-3"><a href="bayesian-linear-regression.html#cb462-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create X (add intercept column) and y for vectorized version later</span></span>
+<span id="cb462-4"><a href="bayesian-linear-regression.html#cb462-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, d[,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]); <span class="fu">colnames</span>(X) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;Intercept&#39;</span>, <span class="st">&#39;X1&#39;</span>, <span class="st">&#39;X2&#39;</span>, <span class="st">&#39;X3&#39;</span>)</span>
+<span id="cb462-5"><a href="bayesian-linear-regression.html#cb462-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> d[,<span class="dv">4</span>]</span></code></pre></div>
 </div>
 <div id="model-code-1" class="section level2">
 <h2>Model Code</h2>
 <p>Initial preparation, create the data list object.</p>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="bayesian-linear-regression.html#cb475-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb475-2"><a href="bayesian-linear-regression.html#cb475-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> n,</span>
-<span id="cb475-3"><a href="bayesian-linear-regression.html#cb475-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">4</span>,</span>
-<span id="cb475-4"><a href="bayesian-linear-regression.html#cb475-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
-<span id="cb475-5"><a href="bayesian-linear-regression.html#cb475-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X</span>
-<span id="cb475-6"><a href="bayesian-linear-regression.html#cb475-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="bayesian-linear-regression.html#cb463-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb463-2"><a href="bayesian-linear-regression.html#cb463-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> n,</span>
+<span id="cb463-3"><a href="bayesian-linear-regression.html#cb463-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">4</span>,</span>
+<span id="cb463-4"><a href="bayesian-linear-regression.html#cb463-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
+<span id="cb463-5"><a href="bayesian-linear-regression.html#cb463-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X</span>
+<span id="cb463-6"><a href="bayesian-linear-regression.html#cb463-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Create the Stan model code.</p>
 <pre class="stan"><code>data {                      // Data block; declarations only
   int&lt;lower = 0&gt; N;         // Sample size                         
@@ -898,21 +898,21 @@ generated quantities {      // Generated quantities block; declarations and stat
 <div id="estimation-23" class="section level2">
 <h2>Estimation</h2>
 <p>Run the model and examine results. The following assumes a character string or file (<code>bayes_linreg</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="bayesian-linear-regression.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb477-2"><a href="bayesian-linear-regression.html#cb477-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb477-3"><a href="bayesian-linear-regression.html#cb477-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb477-4"><a href="bayesian-linear-regression.html#cb477-4" aria-hidden="true" tabindex="-1"></a>  bayes_linreg,</span>
-<span id="cb477-5"><a href="bayesian-linear-regression.html#cb477-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> dat,</span>
-<span id="cb477-6"><a href="bayesian-linear-regression.html#cb477-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span>,</span>
-<span id="cb477-7"><a href="bayesian-linear-regression.html#cb477-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb477-8"><a href="bayesian-linear-regression.html#cb477-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="bayesian-linear-regression.html#cb465-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb465-2"><a href="bayesian-linear-regression.html#cb465-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb465-3"><a href="bayesian-linear-regression.html#cb465-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
+<span id="cb465-4"><a href="bayesian-linear-regression.html#cb465-4" aria-hidden="true" tabindex="-1"></a>  bayes_linreg,</span>
+<span id="cb465-5"><a href="bayesian-linear-regression.html#cb465-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> dat,</span>
+<span id="cb465-6"><a href="bayesian-linear-regression.html#cb465-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span>,</span>
+<span id="cb465-7"><a href="bayesian-linear-regression.html#cb465-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb465-8"><a href="bayesian-linear-regression.html#cb465-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Note the <code>pars</code> argument in the following. You must specify desired parameters or it will print out everything, including the <code>y_hat</code>, i.e. expected values. Also note that by taking into account the additional uncertainty estimating sigma, you get a shrunken Rsq (see Gelman &amp; Pardoe 2006 sec. 3).</p>
-<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="bayesian-linear-regression.html#cb478-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb478-2"><a href="bayesian-linear-regression.html#cb478-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb478-3"><a href="bayesian-linear-regression.html#cb478-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits_summary =</span> <span class="dv">3</span>,</span>
-<span id="cb478-4"><a href="bayesian-linear-regression.html#cb478-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars  =</span> <span class="fu">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma&#39;</span>, <span class="st">&#39;R2&#39;</span>),</span>
-<span id="cb478-5"><a href="bayesian-linear-regression.html#cb478-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
-<span id="cb478-6"><a href="bayesian-linear-regression.html#cb478-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="bayesian-linear-regression.html#cb466-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb466-2"><a href="bayesian-linear-regression.html#cb466-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
+<span id="cb466-3"><a href="bayesian-linear-regression.html#cb466-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits_summary =</span> <span class="dv">3</span>,</span>
+<span id="cb466-4"><a href="bayesian-linear-regression.html#cb466-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars  =</span> <span class="fu">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma&#39;</span>, <span class="st">&#39;R2&#39;</span>),</span>
+<span id="cb466-5"><a href="bayesian-linear-regression.html#cb466-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
+<span id="cb466-6"><a href="bayesian-linear-regression.html#cb466-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Inference for Stan model: 17507cf73e3a44aeee4c4249d3521a85.
 4 chains, each with iter=2000; warmup=1000; thin=4; 
 post-warmup draws per chain=250, total post-warmup draws=1000.
@@ -933,9 +933,9 @@ convergence, Rhat=1).</code></pre>
 <div id="comparison-28" class="section level2">
 <h2>Comparison</h2>
 <p>Compare to basic <span class="func" style="">lm</span> result.</p>
-<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="bayesian-linear-regression.html#cb480-1" aria-hidden="true" tabindex="-1"></a>modlm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="fu">data.frame</span>(d))</span>
-<span id="cb480-2"><a href="bayesian-linear-regression.html#cb480-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare</span></span>
-<span id="cb480-3"><a href="bayesian-linear-regression.html#cb480-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modlm)</span></code></pre></div>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="bayesian-linear-regression.html#cb468-1" aria-hidden="true" tabindex="-1"></a>modlm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="fu">data.frame</span>(d))</span>
+<span id="cb468-2"><a href="bayesian-linear-regression.html#cb468-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare</span></span>
+<span id="cb468-3"><a href="bayesian-linear-regression.html#cb468-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modlm)</span></code></pre></div>
 <pre><code>
 Call:
 lm(formula = y ~ ., data = data.frame(d))
@@ -960,14 +960,14 @@ F-statistic: 46.73 on 3 and 996 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div id="visualize-1" class="section level2">
 <h2>Visualize</h2>
 <p>Visualize the posterior predictive distribution.</p>
-<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="bayesian-linear-regression.html#cb482-1" aria-hidden="true" tabindex="-1"></a><span class="co"># shinystan::launch_shinystan(fit)   # diagnostic plots</span></span>
-<span id="cb482-2"><a href="bayesian-linear-regression.html#cb482-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb482-3"><a href="bayesian-linear-regression.html#cb482-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb482-4"><a href="bayesian-linear-regression.html#cb482-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(</span>
-<span id="cb482-5"><a href="bayesian-linear-regression.html#cb482-5" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>y, </span>
-<span id="cb482-6"><a href="bayesian-linear-regression.html#cb482-6" aria-hidden="true" tabindex="-1"></a>  rstan<span class="sc">::</span><span class="fu">extract</span>(fit, <span class="at">par =</span> <span class="st">&#39;y_hat&#39;</span>)<span class="sc">$</span>y_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ], </span>
-<span id="cb482-7"><a href="bayesian-linear-regression.html#cb482-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">&#39;dens_overlay&#39;</span></span>
-<span id="cb482-8"><a href="bayesian-linear-regression.html#cb482-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="bayesian-linear-regression.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="co"># shinystan::launch_shinystan(fit)   # diagnostic plots</span></span>
+<span id="cb470-2"><a href="bayesian-linear-regression.html#cb470-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb470-3"><a href="bayesian-linear-regression.html#cb470-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb470-4"><a href="bayesian-linear-regression.html#cb470-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(</span>
+<span id="cb470-5"><a href="bayesian-linear-regression.html#cb470-5" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>y, </span>
+<span id="cb470-6"><a href="bayesian-linear-regression.html#cb470-6" aria-hidden="true" tabindex="-1"></a>  rstan<span class="sc">::</span><span class="fu">extract</span>(fit, <span class="at">par =</span> <span class="st">&#39;y_hat&#39;</span>)<span class="sc">$</span>y_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ], </span>
+<span id="cb470-7"><a href="bayesian-linear-regression.html#cb470-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">&#39;dens_overlay&#39;</span></span>
+<span id="cb470-8"><a href="bayesian-linear-regression.html#cb470-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/bayes-linreg-pp-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="source-26" class="section level2">

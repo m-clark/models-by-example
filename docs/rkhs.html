@@ -792,245 +792,288 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To start, we will use an example for <a href="ridge.html#l2-ridge-regularization">ridge regression</a>, followed by a <a href="cubic-spline">spline example</a>.</p>
 <div id="data-setup-21" class="section level2">
 <h2>Data Setup</h2>
-<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="rkhs.html#cb390-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb390-2"><a href="rkhs.html#cb390-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb390-3"><a href="rkhs.html#cb390-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(longley)    <span class="co"># avaiable in base R</span></span>
-<span id="cb390-4"><a href="rkhs.html#cb390-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb390-5"><a href="rkhs.html#cb390-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> longley[,<span class="dv">1</span>]</span>
-<span id="cb390-6"><a href="rkhs.html#cb390-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">as.matrix</span>(longley[,<span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>])</span>
-<span id="cb390-7"><a href="rkhs.html#cb390-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">apply</span>(X, <span class="dv">2</span>, scales<span class="sc">::</span>rescale, <span class="at">to =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb380-1"><a href="rkhs.html#cb380-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb380-2"><a href="rkhs.html#cb380-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb380-3"><a href="rkhs.html#cb380-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(longley)    <span class="co"># avaiable in base R</span></span>
+<span id="cb380-4"><a href="rkhs.html#cb380-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb380-5"><a href="rkhs.html#cb380-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> longley[,<span class="dv">1</span>]</span>
+<span id="cb380-6"><a href="rkhs.html#cb380-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">as.matrix</span>(longley[,<span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>])</span>
+<span id="cb380-7"><a href="rkhs.html#cb380-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">apply</span>(X, <span class="dv">2</span>, scales<span class="sc">::</span>rescale, <span class="at">to =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div>
 </div>
 <div id="functions-5" class="section level2">
 <h2>Functions</h2>
 <div id="function-to-find-the-inverse-of-a-matrix" class="section level3">
 <h3>Function to find the inverse of a matrix</h3>
 <p>We can use <code>base::solve</code>, but this function avoids a computationally singular result.</p>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="rkhs.html#cb391-1" aria-hidden="true" tabindex="-1"></a>inverse <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">eps =</span> <span class="fl">1e-12</span>) {</span>
-<span id="cb391-2"><a href="rkhs.html#cb391-2" aria-hidden="true" tabindex="-1"></a>  eig.X <span class="ot">=</span> <span class="fu">eigen</span>(X, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb391-3"><a href="rkhs.html#cb391-3" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">=</span> eig.X[[<span class="dv">2</span>]] </span>
-<span id="cb391-4"><a href="rkhs.html#cb391-4" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">=</span> eig.X[[<span class="dv">1</span>]]</span>
-<span id="cb391-5"><a href="rkhs.html#cb391-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb391-6"><a href="rkhs.html#cb391-6" aria-hidden="true" tabindex="-1"></a>  ind <span class="ot">=</span> lambda <span class="sc">&gt;</span> eps</span>
-<span id="cb391-7"><a href="rkhs.html#cb391-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb391-8"><a href="rkhs.html#cb391-8" aria-hidden="true" tabindex="-1"></a>  lambda[ind]  <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>lambda[ind] </span>
-<span id="cb391-9"><a href="rkhs.html#cb391-9" aria-hidden="true" tabindex="-1"></a>  lambda[<span class="sc">!</span>ind] <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb391-10"><a href="rkhs.html#cb391-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb391-11"><a href="rkhs.html#cb391-11" aria-hidden="true" tabindex="-1"></a>  P <span class="sc">%*%</span> <span class="fu">diag</span>(lambda) <span class="sc">%*%</span> <span class="fu">t</span>(P)</span>
-<span id="cb391-12"><a href="rkhs.html#cb391-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="rkhs.html#cb381-1" aria-hidden="true" tabindex="-1"></a>inverse <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">eps =</span> <span class="fl">1e-12</span>) {</span>
+<span id="cb381-2"><a href="rkhs.html#cb381-2" aria-hidden="true" tabindex="-1"></a>  eig.X <span class="ot">=</span> <span class="fu">eigen</span>(X, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb381-3"><a href="rkhs.html#cb381-3" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">=</span> eig.X[[<span class="dv">2</span>]] </span>
+<span id="cb381-4"><a href="rkhs.html#cb381-4" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">=</span> eig.X[[<span class="dv">1</span>]]</span>
+<span id="cb381-5"><a href="rkhs.html#cb381-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb381-6"><a href="rkhs.html#cb381-6" aria-hidden="true" tabindex="-1"></a>  ind <span class="ot">=</span> lambda <span class="sc">&gt;</span> eps</span>
+<span id="cb381-7"><a href="rkhs.html#cb381-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb381-8"><a href="rkhs.html#cb381-8" aria-hidden="true" tabindex="-1"></a>  lambda[ind]  <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>lambda[ind] </span>
+<span id="cb381-9"><a href="rkhs.html#cb381-9" aria-hidden="true" tabindex="-1"></a>  lambda[<span class="sc">!</span>ind] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb381-10"><a href="rkhs.html#cb381-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb381-11"><a href="rkhs.html#cb381-11" aria-hidden="true" tabindex="-1"></a>  P <span class="sc">%*%</span> <span class="fu">diag</span>(lambda) <span class="sc">%*%</span> <span class="fu">t</span>(P)</span>
+<span id="cb381-12"><a href="rkhs.html#cb381-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="reproducing-kernel" class="section level3">
 <h3>Reproducing Kernel</h3>
-<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="rkhs.html#cb392-1" aria-hidden="true" tabindex="-1"></a>rk <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
-<span id="cb392-2"><a href="rkhs.html#cb392-2" aria-hidden="true" tabindex="-1"></a>  init_len <span class="ot">=</span> <span class="fu">length</span>(s)</span>
-<span id="cb392-3"><a href="rkhs.html#cb392-3" aria-hidden="true" tabindex="-1"></a>  rk <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb392-4"><a href="rkhs.html#cb392-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb392-5"><a href="rkhs.html#cb392-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>init_len)</span>
-<span id="cb392-6"><a href="rkhs.html#cb392-6" aria-hidden="true" tabindex="-1"></a>    rk <span class="ot">=</span> s[i]<span class="sc">*</span>t[i] <span class="sc">+</span> rk</span>
-<span id="cb392-7"><a href="rkhs.html#cb392-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb392-8"><a href="rkhs.html#cb392-8" aria-hidden="true" tabindex="-1"></a>  rk</span>
-<span id="cb392-9"><a href="rkhs.html#cb392-9" aria-hidden="true" tabindex="-1"></a>} </span></code></pre></div>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="rkhs.html#cb382-1" aria-hidden="true" tabindex="-1"></a>rk <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
+<span id="cb382-2"><a href="rkhs.html#cb382-2" aria-hidden="true" tabindex="-1"></a>  init_len <span class="ot">=</span> <span class="fu">length</span>(s)</span>
+<span id="cb382-3"><a href="rkhs.html#cb382-3" aria-hidden="true" tabindex="-1"></a>  rk <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb382-4"><a href="rkhs.html#cb382-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb382-5"><a href="rkhs.html#cb382-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>init_len)</span>
+<span id="cb382-6"><a href="rkhs.html#cb382-6" aria-hidden="true" tabindex="-1"></a>    rk <span class="ot">=</span> s[i]<span class="sc">*</span>t[i] <span class="sc">+</span> rk</span>
+<span id="cb382-7"><a href="rkhs.html#cb382-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb382-8"><a href="rkhs.html#cb382-8" aria-hidden="true" tabindex="-1"></a>  rk</span>
+<span id="cb382-9"><a href="rkhs.html#cb382-9" aria-hidden="true" tabindex="-1"></a>} </span></code></pre></div>
 </div>
 <div id="gram-matrix" class="section level3">
 <h3>Gram matrix</h3>
 <p>For the first example involving ridge regression, the <span class="func" style="">gram</span> function just produces <code>tcrossprod(X)</code>. I generalize it in case a different kernel is desired, and add that as an additional argument. This will avoid having to redo the function later.</p>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb393-1"><a href="rkhs.html#cb393-1" aria-hidden="true" tabindex="-1"></a>gram <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">rkfunc =</span> rk) {</span>
-<span id="cb393-2"><a href="rkhs.html#cb393-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(X, <span class="dv">1</span>, <span class="cf">function</span>(Row) </span>
-<span id="cb393-3"><a href="rkhs.html#cb393-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">apply</span>(X, <span class="dv">1</span>, <span class="cf">function</span>(tRow) <span class="fu">rkfunc</span>(Row, tRow))</span>
-<span id="cb393-4"><a href="rkhs.html#cb393-4" aria-hidden="true" tabindex="-1"></a>  )  </span>
-<span id="cb393-5"><a href="rkhs.html#cb393-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb383-1"><a href="rkhs.html#cb383-1" aria-hidden="true" tabindex="-1"></a>gram <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">rkfunc =</span> rk) {</span>
+<span id="cb383-2"><a href="rkhs.html#cb383-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(X, <span class="dv">1</span>, <span class="cf">function</span>(Row) </span>
+<span id="cb383-3"><a href="rkhs.html#cb383-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">apply</span>(X, <span class="dv">1</span>, <span class="cf">function</span>(tRow) <span class="fu">rkfunc</span>(Row, tRow))</span>
+<span id="cb383-4"><a href="rkhs.html#cb383-4" aria-hidden="true" tabindex="-1"></a>  )  </span>
+<span id="cb383-5"><a href="rkhs.html#cb383-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="ridge-regression" class="section level3">
 <h3>Ridge regression</h3>
-<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="rkhs.html#cb394-1" aria-hidden="true" tabindex="-1"></a>ridge <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
-<span id="cb394-2"><a href="rkhs.html#cb394-2" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">=</span> <span class="fu">gram</span>(X)                                 <span class="co"># Gramm matrix (nxn)</span></span>
-<span id="cb394-3"><a href="rkhs.html#cb394-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb394-4"><a href="rkhs.html#cb394-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)                                   </span>
-<span id="cb394-5"><a href="rkhs.html#cb394-5" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, Gramm)                             <span class="co"># design matrix</span></span>
-<span id="cb394-6"><a href="rkhs.html#cb394-6" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">=</span> <span class="fu">rbind</span>(<span class="dv">0</span>, <span class="fu">cbind</span>(<span class="dv">0</span>, Gramm))</span>
-<span id="cb394-7"><a href="rkhs.html#cb394-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb394-8"><a href="rkhs.html#cb394-8" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">=</span> <span class="fu">crossprod</span>(Q) <span class="sc">+</span> lambda<span class="sc">*</span>S</span>
-<span id="cb394-9"><a href="rkhs.html#cb394-9" aria-hidden="true" tabindex="-1"></a>  M_inv <span class="ot">=</span> <span class="fu">inverse</span>(M)                              <span class="co"># inverse of M</span></span>
-<span id="cb394-10"><a href="rkhs.html#cb394-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb394-11"><a href="rkhs.html#cb394-11" aria-hidden="true" tabindex="-1"></a>  gamma_hat <span class="ot">=</span> <span class="fu">crossprod</span>(M_inv, <span class="fu">crossprod</span>(Q, y))</span>
-<span id="cb394-12"><a href="rkhs.html#cb394-12" aria-hidden="true" tabindex="-1"></a>  f_hat <span class="ot">=</span> Q <span class="sc">%*%</span> gamma_hat</span>
-<span id="cb394-13"><a href="rkhs.html#cb394-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb394-14"><a href="rkhs.html#cb394-14" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">=</span> Q <span class="sc">%*%</span> M_inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
-<span id="cb394-15"><a href="rkhs.html#cb394-15" aria-hidden="true" tabindex="-1"></a>  tr_A <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A))                             <span class="co"># trace of hat matrix</span></span>
-<span id="cb394-16"><a href="rkhs.html#cb394-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb394-17"><a href="rkhs.html#cb394-17" aria-hidden="true" tabindex="-1"></a>  rss  <span class="ot">=</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> f_hat)                     <span class="co"># residual sum of squares</span></span>
-<span id="cb394-18"><a href="rkhs.html#cb394-18" aria-hidden="true" tabindex="-1"></a>  gcv  <span class="ot">=</span> n<span class="sc">*</span>rss <span class="sc">/</span> (n <span class="sc">-</span> tr_A)<span class="sc">^</span><span class="dv">2</span>                     <span class="co"># obtain GCV score</span></span>
-<span id="cb394-19"><a href="rkhs.html#cb394-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb394-20"><a href="rkhs.html#cb394-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb394-21"><a href="rkhs.html#cb394-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">f_hat =</span> f_hat,</span>
-<span id="cb394-22"><a href="rkhs.html#cb394-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma_hat =</span> gamma_hat,</span>
-<span id="cb394-23"><a href="rkhs.html#cb394-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_hat =</span> <span class="fu">c</span>(gamma_hat[<span class="dv">1</span>], <span class="fu">crossprod</span>(gamma_hat[<span class="sc">-</span><span class="dv">1</span>], X)),</span>
-<span id="cb394-24"><a href="rkhs.html#cb394-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
-<span id="cb394-25"><a href="rkhs.html#cb394-25" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb394-26"><a href="rkhs.html#cb394-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb384-1"><a href="rkhs.html#cb384-1" aria-hidden="true" tabindex="-1"></a>ridge <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
+<span id="cb384-2"><a href="rkhs.html#cb384-2" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">=</span> <span class="fu">gram</span>(X)                                 <span class="co"># Gramm matrix (nxn)</span></span>
+<span id="cb384-3"><a href="rkhs.html#cb384-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb384-4"><a href="rkhs.html#cb384-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)                                   </span>
+<span id="cb384-5"><a href="rkhs.html#cb384-5" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, Gramm)                             <span class="co"># design matrix</span></span>
+<span id="cb384-6"><a href="rkhs.html#cb384-6" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">=</span> <span class="fu">rbind</span>(<span class="dv">0</span>, <span class="fu">cbind</span>(<span class="dv">0</span>, Gramm))</span>
+<span id="cb384-7"><a href="rkhs.html#cb384-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb384-8"><a href="rkhs.html#cb384-8" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">=</span> <span class="fu">crossprod</span>(Q) <span class="sc">+</span> lambda<span class="sc">*</span>S</span>
+<span id="cb384-9"><a href="rkhs.html#cb384-9" aria-hidden="true" tabindex="-1"></a>  M_inv <span class="ot">=</span> <span class="fu">inverse</span>(M)                              <span class="co"># inverse of M</span></span>
+<span id="cb384-10"><a href="rkhs.html#cb384-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb384-11"><a href="rkhs.html#cb384-11" aria-hidden="true" tabindex="-1"></a>  gamma_hat <span class="ot">=</span> <span class="fu">crossprod</span>(M_inv, <span class="fu">crossprod</span>(Q, y))</span>
+<span id="cb384-12"><a href="rkhs.html#cb384-12" aria-hidden="true" tabindex="-1"></a>  f_hat <span class="ot">=</span> Q <span class="sc">%*%</span> gamma_hat</span>
+<span id="cb384-13"><a href="rkhs.html#cb384-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb384-14"><a href="rkhs.html#cb384-14" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">=</span> Q <span class="sc">%*%</span> M_inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
+<span id="cb384-15"><a href="rkhs.html#cb384-15" aria-hidden="true" tabindex="-1"></a>  tr_A <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A))                             <span class="co"># trace of hat matrix</span></span>
+<span id="cb384-16"><a href="rkhs.html#cb384-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb384-17"><a href="rkhs.html#cb384-17" aria-hidden="true" tabindex="-1"></a>  rss  <span class="ot">=</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> f_hat)                     <span class="co"># residual sum of squares</span></span>
+<span id="cb384-18"><a href="rkhs.html#cb384-18" aria-hidden="true" tabindex="-1"></a>  gcv  <span class="ot">=</span> n<span class="sc">*</span>rss <span class="sc">/</span> (n <span class="sc">-</span> tr_A)<span class="sc">^</span><span class="dv">2</span>                     <span class="co"># obtain GCV score</span></span>
+<span id="cb384-19"><a href="rkhs.html#cb384-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb384-20"><a href="rkhs.html#cb384-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb384-21"><a href="rkhs.html#cb384-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">f_hat =</span> f_hat,</span>
+<span id="cb384-22"><a href="rkhs.html#cb384-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma_hat =</span> gamma_hat,</span>
+<span id="cb384-23"><a href="rkhs.html#cb384-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_hat =</span> <span class="fu">c</span>(gamma_hat[<span class="dv">1</span>], <span class="fu">crossprod</span>(gamma_hat[<span class="sc">-</span><span class="dv">1</span>], X)),</span>
+<span id="cb384-24"><a href="rkhs.html#cb384-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
+<span id="cb384-25"><a href="rkhs.html#cb384-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb384-26"><a href="rkhs.html#cb384-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
 <div id="estimation-19" class="section level2">
 <h2>Estimation</h2>
 <p>A simple direct search for the GCV optimal smoothing parameter can be made as follows:</p>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="rkhs.html#cb395-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">0</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
-<span id="cb395-2"><a href="rkhs.html#cb395-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb395-3"><a href="rkhs.html#cb395-3" aria-hidden="true" tabindex="-1"></a>gcv_search <span class="ot">=</span> <span class="fu">map</span>(lambda, <span class="cf">function</span>(lam) <span class="fu">ridge</span>(X, y, lam))</span>
-<span id="cb395-4"><a href="rkhs.html#cb395-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb395-5"><a href="rkhs.html#cb395-5" aria-hidden="true" tabindex="-1"></a>V <span class="ot">=</span> <span class="fu">map_dbl</span>(gcv_search, <span class="cf">function</span>(x) x<span class="sc">$</span>gcv)</span>
-<span id="cb395-6"><a href="rkhs.html#cb395-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb395-7"><a href="rkhs.html#cb395-7" aria-hidden="true" tabindex="-1"></a>ridge_coefs <span class="ot">=</span> <span class="fu">map_df</span>(gcv_search, <span class="cf">function</span>(x)</span>
-<span id="cb395-8"><a href="rkhs.html#cb395-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb395-9"><a href="rkhs.html#cb395-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">value =</span> x<span class="sc">$</span>beta_hat[<span class="sc">-</span><span class="dv">1</span>],</span>
-<span id="cb395-10"><a href="rkhs.html#cb395-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef  =</span> <span class="fu">colnames</span>(X)</span>
-<span id="cb395-11"><a href="rkhs.html#cb395-11" aria-hidden="true" tabindex="-1"></a>    ), <span class="at">.id =</span> <span class="st">&#39;iter&#39;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb395-12"><a href="rkhs.html#cb395-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb395-13"><a href="rkhs.html#cb395-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambda[<span class="fu">as.integer</span>(iter)]</span>
-<span id="cb395-14"><a href="rkhs.html#cb395-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="rkhs.html#cb385-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">0</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
+<span id="cb385-2"><a href="rkhs.html#cb385-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb385-3"><a href="rkhs.html#cb385-3" aria-hidden="true" tabindex="-1"></a>gcv_search <span class="ot">=</span> <span class="fu">map</span>(lambda, <span class="cf">function</span>(lam) <span class="fu">ridge</span>(X, y, lam))</span>
+<span id="cb385-4"><a href="rkhs.html#cb385-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb385-5"><a href="rkhs.html#cb385-5" aria-hidden="true" tabindex="-1"></a>V <span class="ot">=</span> <span class="fu">map_dbl</span>(gcv_search, <span class="cf">function</span>(x) x<span class="sc">$</span>gcv)</span>
+<span id="cb385-6"><a href="rkhs.html#cb385-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb385-7"><a href="rkhs.html#cb385-7" aria-hidden="true" tabindex="-1"></a>ridge_coefs <span class="ot">=</span> <span class="fu">map_df</span>(</span>
+<span id="cb385-8"><a href="rkhs.html#cb385-8" aria-hidden="true" tabindex="-1"></a>  gcv_search, </span>
+<span id="cb385-9"><a href="rkhs.html#cb385-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x)</span>
+<span id="cb385-10"><a href="rkhs.html#cb385-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb385-11"><a href="rkhs.html#cb385-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> x<span class="sc">$</span>beta_hat[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb385-12"><a href="rkhs.html#cb385-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">coef  =</span> <span class="fu">colnames</span>(X)</span>
+<span id="cb385-13"><a href="rkhs.html#cb385-13" aria-hidden="true" tabindex="-1"></a>    ), </span>
+<span id="cb385-14"><a href="rkhs.html#cb385-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">&#39;iter&#39;</span></span>
+<span id="cb385-15"><a href="rkhs.html#cb385-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb385-16"><a href="rkhs.html#cb385-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lambda =</span> lambda[<span class="fu">as.integer</span>(iter)])</span></code></pre></div>
 <p>Compare with Figure 3 in the article.</p>
-<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="rkhs.html#cb396-1" aria-hidden="true" tabindex="-1"></a>gcv_plot <span class="ot">=</span> <span class="fu">qplot</span>(</span>
-<span id="cb396-2"><a href="rkhs.html#cb396-2" aria-hidden="true" tabindex="-1"></a>  lambda,</span>
-<span id="cb396-3"><a href="rkhs.html#cb396-3" aria-hidden="true" tabindex="-1"></a>  V,</span>
-<span id="cb396-4"><a href="rkhs.html#cb396-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geom =</span> <span class="st">&#39;line&#39;</span>,</span>
-<span id="cb396-5"><a href="rkhs.html#cb396-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&#39;GCV score&#39;</span>,</span>
-<span id="cb396-6"><a href="rkhs.html#cb396-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&#39;GCV&#39;</span></span>
-<span id="cb396-7"><a href="rkhs.html#cb396-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
-<span id="cb396-8"><a href="rkhs.html#cb396-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>()</span>
-<span id="cb396-9"><a href="rkhs.html#cb396-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb396-10"><a href="rkhs.html#cb396-10" aria-hidden="true" tabindex="-1"></a>beta_plot <span class="ot">=</span> ridge_coefs <span class="sc">%&gt;%</span> </span>
-<span id="cb396-11"><a href="rkhs.html#cb396-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lambda, <span class="at">y =</span> value, <span class="at">color =</span> coef)) <span class="sc">+</span></span>
-<span id="cb396-12"><a href="rkhs.html#cb396-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb396-13"><a href="rkhs.html#cb396-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
-<span id="cb396-14"><a href="rkhs.html#cb396-14" aria-hidden="true" tabindex="-1"></a>  scico<span class="sc">::</span><span class="fu">scale_color_scico_d</span>(<span class="at">end =</span> .<span class="dv">8</span>) <span class="sc">+</span></span>
-<span id="cb396-15"><a href="rkhs.html#cb396-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Betas Across Lambda&#39;</span>)</span>
-<span id="cb396-16"><a href="rkhs.html#cb396-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb396-17"><a href="rkhs.html#cb396-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb396-18"><a href="rkhs.html#cb396-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb396-19"><a href="rkhs.html#cb396-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb396-20"><a href="rkhs.html#cb396-20" aria-hidden="true" tabindex="-1"></a>gcv_plot <span class="sc">+</span> beta_plot</span></code></pre></div>
-<p><img src="model-demos_files/figure-html/rk-ridge-plot-1.svg" width="1200px" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb386-1"><a href="rkhs.html#cb386-1" aria-hidden="true" tabindex="-1"></a>gcv_plot <span class="ot">=</span> <span class="fu">qplot</span>(</span>
+<span id="cb386-2"><a href="rkhs.html#cb386-2" aria-hidden="true" tabindex="-1"></a>  lambda,</span>
+<span id="cb386-3"><a href="rkhs.html#cb386-3" aria-hidden="true" tabindex="-1"></a>  V,</span>
+<span id="cb386-4"><a href="rkhs.html#cb386-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geom =</span> <span class="st">&#39;line&#39;</span>,</span>
+<span id="cb386-5"><a href="rkhs.html#cb386-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&#39;GCV score&#39;</span>,</span>
+<span id="cb386-6"><a href="rkhs.html#cb386-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&#39;GCV&#39;</span></span>
+<span id="cb386-7"><a href="rkhs.html#cb386-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb386-8"><a href="rkhs.html#cb386-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>()</span>
+<span id="cb386-9"><a href="rkhs.html#cb386-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb386-10"><a href="rkhs.html#cb386-10" aria-hidden="true" tabindex="-1"></a>beta_plot <span class="ot">=</span> ridge_coefs <span class="sc">%&gt;%</span> </span>
+<span id="cb386-11"><a href="rkhs.html#cb386-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lambda, <span class="at">y =</span> value, <span class="at">color =</span> coef)) <span class="sc">+</span></span>
+<span id="cb386-12"><a href="rkhs.html#cb386-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb386-13"><a href="rkhs.html#cb386-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb386-14"><a href="rkhs.html#cb386-14" aria-hidden="true" tabindex="-1"></a>  scico<span class="sc">::</span><span class="fu">scale_color_scico_d</span>(<span class="at">end =</span> .<span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb386-15"><a href="rkhs.html#cb386-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Betas Across Lambda&#39;</span>)</span></code></pre></div>
+<p><img src="model-demos_files/figure-html/rk-ridge-plot-show-1.svg" width="1200px" style="display: block; margin: auto;" /></p>
 <p>Pick the best model and obtain the estimates.</p>
-<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb397-1"><a href="rkhs.html#cb397-1" aria-hidden="true" tabindex="-1"></a>ridge_model <span class="ot">=</span> <span class="fu">ridge</span>(X, y, lambda[<span class="fu">which.min</span>(V)])  <span class="co"># fit optimal model</span></span>
-<span id="cb397-2"><a href="rkhs.html#cb397-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb397-3"><a href="rkhs.html#cb397-3" aria-hidden="true" tabindex="-1"></a>gamma_hat <span class="ot">=</span> ridge_model<span class="sc">$</span>gamma_hat</span>
-<span id="cb397-4"><a href="rkhs.html#cb397-4" aria-hidden="true" tabindex="-1"></a>beta_0    <span class="ot">=</span> ridge_model<span class="sc">$</span>gamma_hat[<span class="dv">1</span>]             <span class="co"># intercept</span></span>
-<span id="cb397-5"><a href="rkhs.html#cb397-5" aria-hidden="true" tabindex="-1"></a>beta_hat  <span class="ot">=</span> <span class="fu">crossprod</span>(gamma_hat[<span class="sc">-</span><span class="dv">1</span>,], X)         <span class="co"># slope and noise term coefficients</span></span></code></pre></div>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="rkhs.html#cb387-1" aria-hidden="true" tabindex="-1"></a>fit_ridge <span class="ot">=</span> <span class="fu">ridge</span>(X, y, lambda[<span class="fu">which.min</span>(V)])  <span class="co"># fit optimal model</span></span>
+<span id="cb387-2"><a href="rkhs.html#cb387-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb387-3"><a href="rkhs.html#cb387-3" aria-hidden="true" tabindex="-1"></a>gamma_hat <span class="ot">=</span> fit_ridge<span class="sc">$</span>gamma_hat</span>
+<span id="cb387-4"><a href="rkhs.html#cb387-4" aria-hidden="true" tabindex="-1"></a>beta_0    <span class="ot">=</span> fit_ridge<span class="sc">$</span>gamma_hat[<span class="dv">1</span>]             <span class="co"># intercept</span></span>
+<span id="cb387-5"><a href="rkhs.html#cb387-5" aria-hidden="true" tabindex="-1"></a>beta_hat  <span class="ot">=</span> <span class="fu">crossprod</span>(gamma_hat[<span class="sc">-</span><span class="dv">1</span>,], X)         <span class="co"># slope and noise term coefficients</span></span></code></pre></div>
 </div>
 <div id="comparison-24" class="section level2">
 <h2>Comparison</h2>
 <p>I add a comparison to <span class="pack" style="">glmnet</span>, where setting <code>alpha = 0</code> is equivalent to ridge regression.</p>
-<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="rkhs.html#cb398-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(beta_0, beta_hat)</span></code></pre></div>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="rkhs.html#cb388-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(beta_0, beta_hat)</span></code></pre></div>
 <pre><code>[1]  82.7840043  54.1683427   5.3640251   1.3781910 -28.7948627   5.3956341  -0.6095799</code></pre>
-<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb400-1"><a href="rkhs.html#cb400-1" aria-hidden="true" tabindex="-1"></a>ridge_glmnet <span class="ot">=</span> glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
-<span id="cb400-2"><a href="rkhs.html#cb400-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
-<span id="cb400-3"><a href="rkhs.html#cb400-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
-<span id="cb400-4"><a href="rkhs.html#cb400-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha  =</span> <span class="dv">0</span>,</span>
-<span id="cb400-5"><a href="rkhs.html#cb400-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> lambda,</span>
-<span id="cb400-6"><a href="rkhs.html#cb400-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
-<span id="cb400-7"><a href="rkhs.html#cb400-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb400-8"><a href="rkhs.html#cb400-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb400-9"><a href="rkhs.html#cb400-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(</span>
-<span id="cb400-10"><a href="rkhs.html#cb400-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">est    =</span> <span class="fu">c</span>(beta_0, beta_hat),</span>
-<span id="cb400-11"><a href="rkhs.html#cb400-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">glmnet =</span> <span class="fu">coef</span>(ridge_glmnet)[, <span class="fu">which.max</span>(ridge_glmnet<span class="sc">$</span>dev.ratio)]</span>
-<span id="cb400-12"><a href="rkhs.html#cb400-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>                     est     glmnet
-(Intercept)   82.7840043  82.328741
-GNP           54.1683427  69.783267
-Unemployed     5.3640251   6.962672
-Armed.Forces   1.3781910   1.245064
-Population   -28.7948627 -37.323055
-Year           5.3956341  -1.497405
-Employed      -0.6095799  -1.605646</code></pre>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="rkhs.html#cb390-1" aria-hidden="true" tabindex="-1"></a>fit_glmnet <span class="ot">=</span> glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
+<span id="cb390-2"><a href="rkhs.html#cb390-2" aria-hidden="true" tabindex="-1"></a>  X,</span>
+<span id="cb390-3"><a href="rkhs.html#cb390-3" aria-hidden="true" tabindex="-1"></a>  y,</span>
+<span id="cb390-4"><a href="rkhs.html#cb390-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha  =</span> <span class="dv">0</span>,</span>
+<span id="cb390-5"><a href="rkhs.html#cb390-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> lambda,</span>
+<span id="cb390-6"><a href="rkhs.html#cb390-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
+<span id="cb390-7"><a href="rkhs.html#cb390-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+(Intercept)
+</th>
+<th style="text-align:right;">
+GNP
+</th>
+<th style="text-align:right;">
+Unemployed
+</th>
+<th style="text-align:right;">
+Armed.Forces
+</th>
+<th style="text-align:right;">
+Population
+</th>
+<th style="text-align:right;">
+Year
+</th>
+<th style="text-align:right;">
+Employed
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+fit_ridge
+</td>
+<td style="text-align:right;">
+82.784
+</td>
+<td style="text-align:right;">
+54.168
+</td>
+<td style="text-align:right;">
+5.364
+</td>
+<td style="text-align:right;">
+1.378
+</td>
+<td style="text-align:right;">
+-28.795
+</td>
+<td style="text-align:right;">
+5.396
+</td>
+<td style="text-align:right;">
+-0.610
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fit_glmnet
+</td>
+<td style="text-align:right;">
+82.329
+</td>
+<td style="text-align:right;">
+69.783
+</td>
+<td style="text-align:right;">
+6.963
+</td>
+<td style="text-align:right;">
+1.245
+</td>
+<td style="text-align:right;">
+-37.323
+</td>
+<td style="text-align:right;">
+-1.497
+</td>
+<td style="text-align:right;">
+-1.606
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="example-cubic-spline" class="section level2">
 <h2>Example: Cubic Spline</h2>
 <div id="data-setup-22" class="section level3">
 <h3>Data Setup</h3>
 <p>For this example we’ll use the <code>MASS::mcycle</code> data.</p>
-<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="rkhs.html#cb402-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">as.matrix</span>(MASS<span class="sc">::</span>mcycle<span class="sc">$</span>times)</span>
-<span id="cb402-2"><a href="rkhs.html#cb402-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> scales<span class="sc">::</span><span class="fu">rescale</span>(x, <span class="at">to =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="co"># rescale predictor to [0,1]</span></span>
-<span id="cb402-3"><a href="rkhs.html#cb402-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> MASS<span class="sc">::</span>mcycle<span class="sc">$</span>accel</span></code></pre></div>
+<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="rkhs.html#cb391-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">as.matrix</span>(MASS<span class="sc">::</span>mcycle<span class="sc">$</span>times)</span>
+<span id="cb391-2"><a href="rkhs.html#cb391-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> scales<span class="sc">::</span><span class="fu">rescale</span>(x, <span class="at">to =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="co"># rescale predictor to [0,1]</span></span>
+<span id="cb391-3"><a href="rkhs.html#cb391-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> MASS<span class="sc">::</span>mcycle<span class="sc">$</span>accel</span></code></pre></div>
 </div>
 <div id="functions-6" class="section level3">
 <h3>Functions</h3>
 <div id="reproducing-kernel-1" class="section level4">
 <h4>Reproducing Kernel</h4>
-<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb403-1"><a href="rkhs.html#cb403-1" aria-hidden="true" tabindex="-1"></a>rk_spline <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
-<span id="cb403-2"><a href="rkhs.html#cb403-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(.<span class="dv">5</span> <span class="sc">*</span> <span class="fu">min</span>(s, t)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">max</span>(s, t) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>) <span class="sc">*</span> <span class="fu">min</span>(s, t)<span class="sc">^</span><span class="dv">3</span>)</span>
-<span id="cb403-3"><a href="rkhs.html#cb403-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="rkhs.html#cb392-1" aria-hidden="true" tabindex="-1"></a>rk_spline <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
+<span id="cb392-2"><a href="rkhs.html#cb392-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(.<span class="dv">5</span> <span class="sc">*</span> <span class="fu">min</span>(s, t)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">max</span>(s, t) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>) <span class="sc">*</span> <span class="fu">min</span>(s, t)<span class="sc">^</span><span class="dv">3</span>)</span>
+<span id="cb392-3"><a href="rkhs.html#cb392-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>No need to redo the gram function do to previous change that accepts the kernel as an argument</p>
 </div>
 <div id="smoothing-spline" class="section level4">
 <h4>Smoothing Spline</h4>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="rkhs.html#cb404-1" aria-hidden="true" tabindex="-1"></a>smoothing_spline <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
-<span id="cb404-2"><a href="rkhs.html#cb404-2" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">=</span> <span class="fu">gram</span>(X, <span class="at">rkfunc =</span> rk_spline)   <span class="co"># Gramm matrix (nxn)</span></span>
-<span id="cb404-3"><a href="rkhs.html#cb404-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb404-4"><a href="rkhs.html#cb404-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
-<span id="cb404-5"><a href="rkhs.html#cb404-5" aria-hidden="true" tabindex="-1"></a>  J <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)                       <span class="co"># matrix with a basis for the null space of the penalty</span></span>
-<span id="cb404-6"><a href="rkhs.html#cb404-6" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">=</span> <span class="fu">cbind</span>(J, Gramm)                   <span class="co"># design matrix</span></span>
-<span id="cb404-7"><a href="rkhs.html#cb404-7" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">ncol</span>(J)                           <span class="co"># dimension of the null space of the penalty</span></span>
-<span id="cb404-8"><a href="rkhs.html#cb404-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb404-9"><a href="rkhs.html#cb404-9" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n <span class="sc">+</span> m, n <span class="sc">+</span> m)                        <span class="co"># initialize S</span></span>
-<span id="cb404-10"><a href="rkhs.html#cb404-10" aria-hidden="true" tabindex="-1"></a>  S[(m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m), (m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m)] <span class="ot">=</span> Gramm        <span class="co"># non-zero part of S</span></span>
-<span id="cb404-11"><a href="rkhs.html#cb404-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb404-12"><a href="rkhs.html#cb404-12" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">=</span> <span class="fu">crossprod</span>(Q) <span class="sc">+</span> lambda<span class="sc">*</span>S</span>
-<span id="cb404-13"><a href="rkhs.html#cb404-13" aria-hidden="true" tabindex="-1"></a>  M_inv <span class="ot">=</span> <span class="fu">inverse</span>(M)                                 <span class="co"># inverse of M</span></span>
-<span id="cb404-14"><a href="rkhs.html#cb404-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb404-15"><a href="rkhs.html#cb404-15" aria-hidden="true" tabindex="-1"></a>  gamma_hat <span class="ot">=</span> <span class="fu">crossprod</span>(M_inv, <span class="fu">crossprod</span>(Q, y))</span>
-<span id="cb404-16"><a href="rkhs.html#cb404-16" aria-hidden="true" tabindex="-1"></a>  f_hat <span class="ot">=</span> Q <span class="sc">%*%</span> gamma_hat</span>
-<span id="cb404-17"><a href="rkhs.html#cb404-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb404-18"><a href="rkhs.html#cb404-18" aria-hidden="true" tabindex="-1"></a>  A    <span class="ot">=</span> Q <span class="sc">%*%</span> M_inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
-<span id="cb404-19"><a href="rkhs.html#cb404-19" aria-hidden="true" tabindex="-1"></a>  tr_A <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A))                                <span class="co"># trace of hat matrix</span></span>
-<span id="cb404-20"><a href="rkhs.html#cb404-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb404-21"><a href="rkhs.html#cb404-21" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">=</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> f_hat)                         <span class="co"># residual sum of squares</span></span>
-<span id="cb404-22"><a href="rkhs.html#cb404-22" aria-hidden="true" tabindex="-1"></a>  gcv <span class="ot">=</span> n <span class="sc">*</span> rss<span class="sc">/</span>(n <span class="sc">-</span> tr_A)<span class="sc">^</span><span class="dv">2</span>                         <span class="co"># obtain GCV score</span></span>
-<span id="cb404-23"><a href="rkhs.html#cb404-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb404-24"><a href="rkhs.html#cb404-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb404-25"><a href="rkhs.html#cb404-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">f_hat =</span> f_hat,</span>
-<span id="cb404-26"><a href="rkhs.html#cb404-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma_hat =</span> gamma_hat,</span>
-<span id="cb404-27"><a href="rkhs.html#cb404-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
-<span id="cb404-28"><a href="rkhs.html#cb404-28" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb404-29"><a href="rkhs.html#cb404-29" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb393-1"><a href="rkhs.html#cb393-1" aria-hidden="true" tabindex="-1"></a>smoothing_spline <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
+<span id="cb393-2"><a href="rkhs.html#cb393-2" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">=</span> <span class="fu">gram</span>(X, <span class="at">rkfunc =</span> rk_spline)   <span class="co"># Gramm matrix (nxn)</span></span>
+<span id="cb393-3"><a href="rkhs.html#cb393-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb393-4"><a href="rkhs.html#cb393-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
+<span id="cb393-5"><a href="rkhs.html#cb393-5" aria-hidden="true" tabindex="-1"></a>  J <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)                       <span class="co"># matrix with a basis for the null space of the penalty</span></span>
+<span id="cb393-6"><a href="rkhs.html#cb393-6" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">=</span> <span class="fu">cbind</span>(J, Gramm)                   <span class="co"># design matrix</span></span>
+<span id="cb393-7"><a href="rkhs.html#cb393-7" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">ncol</span>(J)                           <span class="co"># dimension of the null space of the penalty</span></span>
+<span id="cb393-8"><a href="rkhs.html#cb393-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb393-9"><a href="rkhs.html#cb393-9" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n <span class="sc">+</span> m, n <span class="sc">+</span> m)                        <span class="co"># initialize S</span></span>
+<span id="cb393-10"><a href="rkhs.html#cb393-10" aria-hidden="true" tabindex="-1"></a>  S[(m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m), (m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m)] <span class="ot">=</span> Gramm        <span class="co"># non-zero part of S</span></span>
+<span id="cb393-11"><a href="rkhs.html#cb393-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb393-12"><a href="rkhs.html#cb393-12" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">=</span> <span class="fu">crossprod</span>(Q) <span class="sc">+</span> lambda<span class="sc">*</span>S</span>
+<span id="cb393-13"><a href="rkhs.html#cb393-13" aria-hidden="true" tabindex="-1"></a>  M_inv <span class="ot">=</span> <span class="fu">inverse</span>(M)                                 <span class="co"># inverse of M</span></span>
+<span id="cb393-14"><a href="rkhs.html#cb393-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb393-15"><a href="rkhs.html#cb393-15" aria-hidden="true" tabindex="-1"></a>  gamma_hat <span class="ot">=</span> <span class="fu">crossprod</span>(M_inv, <span class="fu">crossprod</span>(Q, y))</span>
+<span id="cb393-16"><a href="rkhs.html#cb393-16" aria-hidden="true" tabindex="-1"></a>  f_hat <span class="ot">=</span> Q <span class="sc">%*%</span> gamma_hat</span>
+<span id="cb393-17"><a href="rkhs.html#cb393-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb393-18"><a href="rkhs.html#cb393-18" aria-hidden="true" tabindex="-1"></a>  A    <span class="ot">=</span> Q <span class="sc">%*%</span> M_inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
+<span id="cb393-19"><a href="rkhs.html#cb393-19" aria-hidden="true" tabindex="-1"></a>  tr_A <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A))                                <span class="co"># trace of hat matrix</span></span>
+<span id="cb393-20"><a href="rkhs.html#cb393-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb393-21"><a href="rkhs.html#cb393-21" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">=</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> f_hat)                         <span class="co"># residual sum of squares</span></span>
+<span id="cb393-22"><a href="rkhs.html#cb393-22" aria-hidden="true" tabindex="-1"></a>  gcv <span class="ot">=</span> n <span class="sc">*</span> rss<span class="sc">/</span>(n <span class="sc">-</span> tr_A)<span class="sc">^</span><span class="dv">2</span>                         <span class="co"># obtain GCV score</span></span>
+<span id="cb393-23"><a href="rkhs.html#cb393-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb393-24"><a href="rkhs.html#cb393-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb393-25"><a href="rkhs.html#cb393-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">f_hat =</span> f_hat,</span>
+<span id="cb393-26"><a href="rkhs.html#cb393-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma_hat =</span> gamma_hat,</span>
+<span id="cb393-27"><a href="rkhs.html#cb393-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
+<span id="cb393-28"><a href="rkhs.html#cb393-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb393-29"><a href="rkhs.html#cb393-29" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
 <div id="estimation-20" class="section level3">
 <h3>Estimation</h3>
-<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="rkhs.html#cb405-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">0</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
-<span id="cb405-2"><a href="rkhs.html#cb405-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb405-3"><a href="rkhs.html#cb405-3" aria-hidden="true" tabindex="-1"></a>gcv_search <span class="ot">=</span> <span class="fu">map</span>(lambda, <span class="cf">function</span>(lam) <span class="fu">smoothing_spline</span>(x, y, lam))</span>
-<span id="cb405-4"><a href="rkhs.html#cb405-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb405-5"><a href="rkhs.html#cb405-5" aria-hidden="true" tabindex="-1"></a>V <span class="ot">=</span> <span class="fu">map_dbl</span>(gcv_search, <span class="cf">function</span>(x) x<span class="sc">$</span>gcv)</span></code></pre></div>
-<p>Plot of GCV.</p>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="rkhs.html#cb406-1" aria-hidden="true" tabindex="-1"></a>gcv_plot <span class="ot">=</span> <span class="fu">qplot</span>(</span>
-<span id="cb406-2"><a href="rkhs.html#cb406-2" aria-hidden="true" tabindex="-1"></a>  lambda,</span>
-<span id="cb406-3"><a href="rkhs.html#cb406-3" aria-hidden="true" tabindex="-1"></a>  V,</span>
-<span id="cb406-4"><a href="rkhs.html#cb406-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geom =</span> <span class="st">&#39;line&#39;</span>,</span>
-<span id="cb406-5"><a href="rkhs.html#cb406-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&#39;GCV score&#39;</span>,</span>
-<span id="cb406-6"><a href="rkhs.html#cb406-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&#39;GCV&#39;</span></span>
-<span id="cb406-7"><a href="rkhs.html#cb406-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
-<span id="cb406-8"><a href="rkhs.html#cb406-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>()</span>
-<span id="cb406-9"><a href="rkhs.html#cb406-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb406-10"><a href="rkhs.html#cb406-10" aria-hidden="true" tabindex="-1"></a><span class="co"># gcv_plot</span></span></code></pre></div>
+<p>We’ll now get fits for multiple lambda values.</p>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="rkhs.html#cb394-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">0</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
+<span id="cb394-2"><a href="rkhs.html#cb394-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb394-3"><a href="rkhs.html#cb394-3" aria-hidden="true" tabindex="-1"></a>gcv_search <span class="ot">=</span> <span class="fu">map</span>(lambda, <span class="cf">function</span>(lam) <span class="fu">smoothing_spline</span>(x, y, lam))</span>
+<span id="cb394-4"><a href="rkhs.html#cb394-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb394-5"><a href="rkhs.html#cb394-5" aria-hidden="true" tabindex="-1"></a>V <span class="ot">=</span> <span class="fu">map_dbl</span>(gcv_search, <span class="cf">function</span>(x) x<span class="sc">$</span>gcv)</span></code></pre></div>
+<p>Plot of GCV across different lambdas.</p>
 </div>
 <div id="comparison-25" class="section level3">
 <h3>Comparison</h3>
 <p>I’ve added comparison to an additive model using <span class="pack" style="">mgcv</span>. Compare the result to Figure 2 of the Supplementary Material.</p>
-<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="rkhs.html#cb407-1" aria-hidden="true" tabindex="-1"></a>spline_model <span class="ot">=</span> <span class="fu">smoothing_spline</span>(x, y, lambda[<span class="fu">which.min</span>(V)])       <span class="co"># fit optimal model</span></span>
-<span id="cb407-2"><a href="rkhs.html#cb407-2" aria-hidden="true" tabindex="-1"></a>gam_model    <span class="ot">=</span> mgcv<span class="sc">::</span><span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x))</span>
-<span id="cb407-3"><a href="rkhs.html#cb407-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb407-4"><a href="rkhs.html#cb407-4" aria-hidden="true" tabindex="-1"></a>fit_plot <span class="ot">=</span> MASS<span class="sc">::</span>mcycle <span class="sc">%&gt;%</span></span>
-<span id="cb407-5"><a href="rkhs.html#cb407-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rk_fit  =</span> spline_model<span class="sc">$</span>f_hat[, <span class="dv">1</span>],</span>
-<span id="cb407-6"><a href="rkhs.html#cb407-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">gam_fit =</span> <span class="fu">fitted</span>(gam_model)) <span class="sc">%&gt;%</span></span>
-<span id="cb407-7"><a href="rkhs.html#cb407-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(times) <span class="sc">%&gt;%</span></span>
-<span id="cb407-8"><a href="rkhs.html#cb407-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(times, accel), <span class="at">names_to =</span> <span class="st">&#39;fit&#39;</span>, <span class="at">values_to =</span> <span class="st">&#39;value&#39;</span>)  <span class="sc">%&gt;%</span></span>
-<span id="cb407-9"><a href="rkhs.html#cb407-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(times, accel)) <span class="sc">+</span></span>
-<span id="cb407-10"><a href="rkhs.html#cb407-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&#39;#FF55001A&#39;</span>) <span class="sc">+</span></span>
-<span id="cb407-11"><a href="rkhs.html#cb407-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> value, <span class="at">color =</span> fit)) <span class="sc">+</span></span>
-<span id="cb407-12"><a href="rkhs.html#cb407-12" aria-hidden="true" tabindex="-1"></a>  scico<span class="sc">::</span><span class="fu">scale_color_scico_d</span>(<span class="at">palette =</span> <span class="st">&#39;hawaii&#39;</span>, <span class="at">begin =</span> .<span class="dv">2</span>, <span class="at">end =</span> .<span class="dv">8</span>)</span>
-<span id="cb407-13"><a href="rkhs.html#cb407-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb407-14"><a href="rkhs.html#cb407-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb407-15"><a href="rkhs.html#cb407-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb407-16"><a href="rkhs.html#cb407-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb407-17"><a href="rkhs.html#cb407-17" aria-hidden="true" tabindex="-1"></a>gcv_plot <span class="sc">+</span> fit_plot</span></code></pre></div>
+<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="rkhs.html#cb395-1" aria-hidden="true" tabindex="-1"></a>fit_rk  <span class="ot">=</span> <span class="fu">smoothing_spline</span>(x, y, lambda[<span class="fu">which.min</span>(V)])   <span class="co"># fit optimal model</span></span>
+<span id="cb395-2"><a href="rkhs.html#cb395-2" aria-hidden="true" tabindex="-1"></a>fit_gam <span class="ot">=</span> mgcv<span class="sc">::</span><span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x))</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/rk-spline-comparison-1.svg" width="1200px" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -1047,108 +1090,108 @@ Employed      -0.6095799  -1.605646</code></pre>
 <p>This was the old original code from the supplemental section for the article, but was changed at some point (I can’t remember, it may have been at one of the author’s website). The R code on the repo follows these examples, while this document follows the currently accessible supplementary material. I used RStudio’s default cleanup to make the code a little easier to read, and maybe added a little spacing, but otherwise it is identical to what’s in the linked paper.</p>
 <div id="a.1" class="section level4">
 <h4>A.1</h4>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="rkhs.html#cb408-1" aria-hidden="true" tabindex="-1"></a><span class="do">###### Data ########</span></span>
-<span id="cb408-2"><a href="rkhs.html#cb408-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
-<span id="cb408-3"><a href="rkhs.html#cb408-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb408-4"><a href="rkhs.html#cb408-4" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
-<span id="cb408-5"><a href="rkhs.html#cb408-5" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
-<span id="cb408-6"><a href="rkhs.html#cb408-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(x1, x2), <span class="at">ncol =</span> <span class="dv">2</span>) <span class="co"># design matrix</span></span>
-<span id="cb408-7"><a href="rkhs.html#cb408-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
-<span id="cb408-8"><a href="rkhs.html#cb408-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-9"><a href="rkhs.html#cb408-9" aria-hidden="true" tabindex="-1"></a><span class="do">##### function to find the inverse of a matrix ####</span></span>
-<span id="cb408-10"><a href="rkhs.html#cb408-10" aria-hidden="true" tabindex="-1"></a>my.inv <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">eps =</span> <span class="fl">1e-12</span>) {</span>
-<span id="cb408-11"><a href="rkhs.html#cb408-11" aria-hidden="true" tabindex="-1"></a>  eig.X <span class="ot">&lt;-</span> <span class="fu">eigen</span>(X, <span class="at">symmetric =</span> T)</span>
-<span id="cb408-12"><a href="rkhs.html#cb408-12" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">&lt;-</span> eig.X[[<span class="dv">2</span>]] </span>
-<span id="cb408-13"><a href="rkhs.html#cb408-13" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> eig.X[[<span class="dv">1</span>]] </span>
-<span id="cb408-14"><a href="rkhs.html#cb408-14" aria-hidden="true" tabindex="-1"></a>  ind <span class="ot">&lt;-</span> lambda <span class="sc">&gt;</span> eps</span>
-<span id="cb408-15"><a href="rkhs.html#cb408-15" aria-hidden="true" tabindex="-1"></a>  lambda[ind] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> lambda[ind] </span>
-<span id="cb408-16"><a href="rkhs.html#cb408-16" aria-hidden="true" tabindex="-1"></a>  lambda[<span class="sc">!</span>ind] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb408-17"><a href="rkhs.html#cb408-17" aria-hidden="true" tabindex="-1"></a>  ans <span class="ot">&lt;-</span> P <span class="sc">%*%</span> <span class="fu">diag</span>(lambda, <span class="at">nrow =</span> <span class="fu">length</span>(lambda)) <span class="sc">%*%</span> <span class="fu">t</span>(P)</span>
-<span id="cb408-18"><a href="rkhs.html#cb408-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ans)</span>
-<span id="cb408-19"><a href="rkhs.html#cb408-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb408-20"><a href="rkhs.html#cb408-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-21"><a href="rkhs.html#cb408-21" aria-hidden="true" tabindex="-1"></a><span class="do">###### Reproducing Kernel #########</span></span>
-<span id="cb408-22"><a href="rkhs.html#cb408-22" aria-hidden="true" tabindex="-1"></a>rk <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
-<span id="cb408-23"><a href="rkhs.html#cb408-23" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">length</span>(s)</span>
-<span id="cb408-24"><a href="rkhs.html#cb408-24" aria-hidden="true" tabindex="-1"></a>  rk <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb408-25"><a href="rkhs.html#cb408-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>p) {</span>
-<span id="cb408-26"><a href="rkhs.html#cb408-26" aria-hidden="true" tabindex="-1"></a>    rk <span class="ot">&lt;-</span> s[i] <span class="sc">*</span> t[i] <span class="sc">+</span> rk</span>
-<span id="cb408-27"><a href="rkhs.html#cb408-27" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb408-28"><a href="rkhs.html#cb408-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((rk))</span>
-<span id="cb408-29"><a href="rkhs.html#cb408-29" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb408-30"><a href="rkhs.html#cb408-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-31"><a href="rkhs.html#cb408-31" aria-hidden="true" tabindex="-1"></a><span class="do">##### Gram matrix #######</span></span>
-<span id="cb408-32"><a href="rkhs.html#cb408-32" aria-hidden="true" tabindex="-1"></a>get.gramm <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
-<span id="cb408-33"><a href="rkhs.html#cb408-33" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>]</span>
-<span id="cb408-34"><a href="rkhs.html#cb408-34" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span></span>
-<span id="cb408-35"><a href="rkhs.html#cb408-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">matrix</span>(<span class="dv">0</span>, n, n) <span class="co">#initializes Gramm array #i=index for rows</span></span>
-<span id="cb408-36"><a href="rkhs.html#cb408-36" aria-hidden="true" tabindex="-1"></a>  <span class="co">#j=index for columns Gramm&lt;-as.matrix(Gramm) # Gramm matrix</span></span>
-<span id="cb408-37"><a href="rkhs.html#cb408-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb408-38"><a href="rkhs.html#cb408-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb408-39"><a href="rkhs.html#cb408-39" aria-hidden="true" tabindex="-1"></a>      Gramm[i, j] <span class="ot">&lt;-</span> <span class="fu">rk</span>(X[i,], X[j,])</span>
-<span id="cb408-40"><a href="rkhs.html#cb408-40" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb408-41"><a href="rkhs.html#cb408-41" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb408-42"><a href="rkhs.html#cb408-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Gramm)</span>
-<span id="cb408-43"><a href="rkhs.html#cb408-43" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb408-44"><a href="rkhs.html#cb408-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-45"><a href="rkhs.html#cb408-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-46"><a href="rkhs.html#cb408-46" aria-hidden="true" tabindex="-1"></a>ridge.regression <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
-<span id="cb408-47"><a href="rkhs.html#cb408-47" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">get.gramm</span>(X) <span class="co">#Gramm matrix (nxn)</span></span>
-<span id="cb408-48"><a href="rkhs.html#cb408-48" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>] <span class="co"># n=length of y</span></span>
-<span id="cb408-49"><a href="rkhs.html#cb408-49" aria-hidden="true" tabindex="-1"></a>  J <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n, <span class="dv">1</span>) <span class="co"># vector of ones dim</span></span>
-<span id="cb408-50"><a href="rkhs.html#cb408-50" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">&lt;-</span> <span class="fu">cbind</span>(J, Gramm) <span class="co"># design matrix</span></span>
-<span id="cb408-51"><a href="rkhs.html#cb408-51" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># dimension of the null space of the penalty</span></span>
-<span id="cb408-52"><a href="rkhs.html#cb408-52" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n <span class="sc">+</span> m, n <span class="sc">+</span> m) <span class="co">#initialize S</span></span>
-<span id="cb408-53"><a href="rkhs.html#cb408-53" aria-hidden="true" tabindex="-1"></a>  S[(m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m), (m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m)] <span class="ot">&lt;-</span> Gramm <span class="co">#non-zero part of S</span></span>
-<span id="cb408-54"><a href="rkhs.html#cb408-54" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">&lt;-</span> (<span class="fu">t</span>(Q) <span class="sc">%*%</span> Q <span class="sc">+</span> lambda <span class="sc">*</span> S)</span>
-<span id="cb408-55"><a href="rkhs.html#cb408-55" aria-hidden="true" tabindex="-1"></a>  M.inv <span class="ot">&lt;-</span> <span class="fu">my.inv</span>(M) <span class="co"># inverse of M</span></span>
-<span id="cb408-56"><a href="rkhs.html#cb408-56" aria-hidden="true" tabindex="-1"></a>  gamma.hat <span class="ot">&lt;-</span> <span class="fu">crossprod</span>(M.inv, <span class="fu">crossprod</span>(Q, y))</span>
-<span id="cb408-57"><a href="rkhs.html#cb408-57" aria-hidden="true" tabindex="-1"></a>  f.hat <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> gamma.hat</span>
-<span id="cb408-58"><a href="rkhs.html#cb408-58" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> M.inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
-<span id="cb408-59"><a href="rkhs.html#cb408-59" aria-hidden="true" tabindex="-1"></a>  tr.A <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A)) <span class="co">#trace of hat matrix</span></span>
-<span id="cb408-60"><a href="rkhs.html#cb408-60" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">&lt;-</span> <span class="fu">t</span>(y <span class="sc">-</span> f.hat) <span class="sc">%*%</span> (y <span class="sc">-</span> f.hat) <span class="co">#residual sum of squares</span></span>
-<span id="cb408-61"><a href="rkhs.html#cb408-61" aria-hidden="true" tabindex="-1"></a>  gcv <span class="ot">&lt;-</span> n <span class="sc">*</span> rss <span class="sc">/</span> (n <span class="sc">-</span> tr.A) <span class="sc">^</span> <span class="dv">2</span> <span class="co">#obtain GCV score</span></span>
-<span id="cb408-62"><a href="rkhs.html#cb408-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
-<span id="cb408-63"><a href="rkhs.html#cb408-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">f.hat =</span> f.hat,</span>
-<span id="cb408-64"><a href="rkhs.html#cb408-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma.hat =</span> gamma.hat,</span>
-<span id="cb408-65"><a href="rkhs.html#cb408-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
-<span id="cb408-66"><a href="rkhs.html#cb408-66" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb408-67"><a href="rkhs.html#cb408-67" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb408-68"><a href="rkhs.html#cb408-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-69"><a href="rkhs.html#cb408-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-70"><a href="rkhs.html#cb408-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot of GCV</span></span>
-<span id="cb408-71"><a href="rkhs.html#cb408-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-72"><a href="rkhs.html#cb408-72" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fl">1e-8</span></span>
-<span id="cb408-73"><a href="rkhs.html#cb408-73" aria-hidden="true" tabindex="-1"></a>V <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">40</span>)</span>
-<span id="cb408-74"><a href="rkhs.html#cb408-74" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>) {</span>
-<span id="cb408-75"><a href="rkhs.html#cb408-75" aria-hidden="true" tabindex="-1"></a>  V[i] <span class="ot">&lt;-</span> <span class="fu">ridge.regression</span>(X, y, lambda)<span class="sc">$</span>gcv <span class="co">#obtain GCV score</span></span>
-<span id="cb408-76"><a href="rkhs.html#cb408-76" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> lambda <span class="sc">*</span> <span class="fl">1.5</span> <span class="co">#increase lambda</span></span>
-<span id="cb408-77"><a href="rkhs.html#cb408-77" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb408-78"><a href="rkhs.html#cb408-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-79"><a href="rkhs.html#cb408-79" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>) </span>
-<span id="cb408-80"><a href="rkhs.html#cb408-80" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb408-81"><a href="rkhs.html#cb408-81" aria-hidden="true" tabindex="-1"></a>  <span class="fl">1.5</span> <span class="sc">^</span> (index <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fl">1e-8</span>,</span>
-<span id="cb408-82"><a href="rkhs.html#cb408-82" aria-hidden="true" tabindex="-1"></a>  V,</span>
-<span id="cb408-83"><a href="rkhs.html#cb408-83" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
-<span id="cb408-84"><a href="rkhs.html#cb408-84" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;GCV</span></span>
-<span id="cb408-85"><a href="rkhs.html#cb408-85" aria-hidden="true" tabindex="-1"></a><span class="st">  score&quot;</span>,</span>
-<span id="cb408-86"><a href="rkhs.html#cb408-86" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">2</span>,</span>
-<span id="cb408-87"><a href="rkhs.html#cb408-87" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;lambda&quot;</span>,</span>
-<span id="cb408-88"><a href="rkhs.html#cb408-88" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;GCV&quot;</span></span>
-<span id="cb408-89"><a href="rkhs.html#cb408-89" aria-hidden="true" tabindex="-1"></a>) <span class="co"># plot score</span></span>
-<span id="cb408-90"><a href="rkhs.html#cb408-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-91"><a href="rkhs.html#cb408-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-92"><a href="rkhs.html#cb408-92" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>)[V <span class="sc">==</span> <span class="fu">min</span>(V)] <span class="co"># extract index of min(V)</span></span>
-<span id="cb408-93"><a href="rkhs.html#cb408-93" aria-hidden="true" tabindex="-1"></a>opt.mod <span class="ot">&lt;-</span> <span class="fu">ridge.regression</span>(X, y, <span class="fl">1.5</span> <span class="sc">^</span> (i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fl">1e-8</span>) <span class="co">#fit optimal model</span></span>
-<span id="cb408-94"><a href="rkhs.html#cb408-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-95"><a href="rkhs.html#cb408-95" aria-hidden="true" tabindex="-1"></a><span class="do">### finding beta.0, beta.1 and beta.2 ##########</span></span>
-<span id="cb408-96"><a href="rkhs.html#cb408-96" aria-hidden="true" tabindex="-1"></a>gamma.hat <span class="ot">&lt;-</span> opt.mod<span class="sc">$</span>gamma.hat</span>
-<span id="cb408-97"><a href="rkhs.html#cb408-97" aria-hidden="true" tabindex="-1"></a>beta.hat<span class="fl">.0</span> <span class="ot">&lt;-</span> opt.mod<span class="sc">$</span>gamma.hat[<span class="dv">1</span>]<span class="co">#intercept</span></span>
-<span id="cb408-98"><a href="rkhs.html#cb408-98" aria-hidden="true" tabindex="-1"></a>beta.hat <span class="ot">&lt;-</span> gamma.hat[<span class="dv">2</span><span class="sc">:</span><span class="dv">21</span>,] <span class="sc">%*%</span> X <span class="co">#slope and noise term coefficients</span></span>
-<span id="cb408-99"><a href="rkhs.html#cb408-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb408-100"><a href="rkhs.html#cb408-100" aria-hidden="true" tabindex="-1"></a><span class="do">#### Fitted Line Plot for Cubic Smoothing Spline ####</span></span>
-<span id="cb408-101"><a href="rkhs.html#cb408-101" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x[,<span class="dv">1</span>],y,<span class="at">xlab=</span><span class="st">&quot;x&quot;</span>,<span class="at">ylab=</span><span class="st">&quot;response&quot;</span>,<span class="at">main=</span><span class="st">&quot;Cubic Smoothing Spline&quot;</span>) ;</span>
-<span id="cb408-102"><a href="rkhs.html#cb408-102" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x[,<span class="dv">1</span>],opt.mod<span class="sc">$</span>f.hat,<span class="at">type=</span><span class="st">&quot;l&quot;</span>,<span class="at">lty=</span><span class="dv">1</span>,<span class="at">lwd=</span><span class="dv">2</span>,<span class="at">col=</span><span class="st">&quot;blue&quot;</span>) ;</span></code></pre></div>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="rkhs.html#cb396-1" aria-hidden="true" tabindex="-1"></a><span class="do">###### Data ########</span></span>
+<span id="cb396-2"><a href="rkhs.html#cb396-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb396-3"><a href="rkhs.html#cb396-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb396-4"><a href="rkhs.html#cb396-4" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
+<span id="cb396-5"><a href="rkhs.html#cb396-5" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
+<span id="cb396-6"><a href="rkhs.html#cb396-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(x1, x2), <span class="at">ncol =</span> <span class="dv">2</span>) <span class="co"># design matrix</span></span>
+<span id="cb396-7"><a href="rkhs.html#cb396-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
+<span id="cb396-8"><a href="rkhs.html#cb396-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-9"><a href="rkhs.html#cb396-9" aria-hidden="true" tabindex="-1"></a><span class="do">##### function to find the inverse of a matrix ####</span></span>
+<span id="cb396-10"><a href="rkhs.html#cb396-10" aria-hidden="true" tabindex="-1"></a>my.inv <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">eps =</span> <span class="fl">1e-12</span>) {</span>
+<span id="cb396-11"><a href="rkhs.html#cb396-11" aria-hidden="true" tabindex="-1"></a>  eig.X <span class="ot">&lt;-</span> <span class="fu">eigen</span>(X, <span class="at">symmetric =</span> T)</span>
+<span id="cb396-12"><a href="rkhs.html#cb396-12" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">&lt;-</span> eig.X[[<span class="dv">2</span>]] </span>
+<span id="cb396-13"><a href="rkhs.html#cb396-13" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> eig.X[[<span class="dv">1</span>]] </span>
+<span id="cb396-14"><a href="rkhs.html#cb396-14" aria-hidden="true" tabindex="-1"></a>  ind <span class="ot">&lt;-</span> lambda <span class="sc">&gt;</span> eps</span>
+<span id="cb396-15"><a href="rkhs.html#cb396-15" aria-hidden="true" tabindex="-1"></a>  lambda[ind] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> lambda[ind] </span>
+<span id="cb396-16"><a href="rkhs.html#cb396-16" aria-hidden="true" tabindex="-1"></a>  lambda[<span class="sc">!</span>ind] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb396-17"><a href="rkhs.html#cb396-17" aria-hidden="true" tabindex="-1"></a>  ans <span class="ot">&lt;-</span> P <span class="sc">%*%</span> <span class="fu">diag</span>(lambda, <span class="at">nrow =</span> <span class="fu">length</span>(lambda)) <span class="sc">%*%</span> <span class="fu">t</span>(P)</span>
+<span id="cb396-18"><a href="rkhs.html#cb396-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ans)</span>
+<span id="cb396-19"><a href="rkhs.html#cb396-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb396-20"><a href="rkhs.html#cb396-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-21"><a href="rkhs.html#cb396-21" aria-hidden="true" tabindex="-1"></a><span class="do">###### Reproducing Kernel #########</span></span>
+<span id="cb396-22"><a href="rkhs.html#cb396-22" aria-hidden="true" tabindex="-1"></a>rk <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
+<span id="cb396-23"><a href="rkhs.html#cb396-23" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">length</span>(s)</span>
+<span id="cb396-24"><a href="rkhs.html#cb396-24" aria-hidden="true" tabindex="-1"></a>  rk <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb396-25"><a href="rkhs.html#cb396-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>p) {</span>
+<span id="cb396-26"><a href="rkhs.html#cb396-26" aria-hidden="true" tabindex="-1"></a>    rk <span class="ot">&lt;-</span> s[i] <span class="sc">*</span> t[i] <span class="sc">+</span> rk</span>
+<span id="cb396-27"><a href="rkhs.html#cb396-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb396-28"><a href="rkhs.html#cb396-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((rk))</span>
+<span id="cb396-29"><a href="rkhs.html#cb396-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb396-30"><a href="rkhs.html#cb396-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-31"><a href="rkhs.html#cb396-31" aria-hidden="true" tabindex="-1"></a><span class="do">##### Gram matrix #######</span></span>
+<span id="cb396-32"><a href="rkhs.html#cb396-32" aria-hidden="true" tabindex="-1"></a>get.gramm <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb396-33"><a href="rkhs.html#cb396-33" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>]</span>
+<span id="cb396-34"><a href="rkhs.html#cb396-34" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span></span>
+<span id="cb396-35"><a href="rkhs.html#cb396-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">matrix</span>(<span class="dv">0</span>, n, n) <span class="co">#initializes Gramm array #i=index for rows</span></span>
+<span id="cb396-36"><a href="rkhs.html#cb396-36" aria-hidden="true" tabindex="-1"></a>  <span class="co">#j=index for columns Gramm&lt;-as.matrix(Gramm) # Gramm matrix</span></span>
+<span id="cb396-37"><a href="rkhs.html#cb396-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb396-38"><a href="rkhs.html#cb396-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb396-39"><a href="rkhs.html#cb396-39" aria-hidden="true" tabindex="-1"></a>      Gramm[i, j] <span class="ot">&lt;-</span> <span class="fu">rk</span>(X[i,], X[j,])</span>
+<span id="cb396-40"><a href="rkhs.html#cb396-40" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb396-41"><a href="rkhs.html#cb396-41" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb396-42"><a href="rkhs.html#cb396-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Gramm)</span>
+<span id="cb396-43"><a href="rkhs.html#cb396-43" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb396-44"><a href="rkhs.html#cb396-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-45"><a href="rkhs.html#cb396-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-46"><a href="rkhs.html#cb396-46" aria-hidden="true" tabindex="-1"></a>ridge.regression <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
+<span id="cb396-47"><a href="rkhs.html#cb396-47" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">get.gramm</span>(X) <span class="co">#Gramm matrix (nxn)</span></span>
+<span id="cb396-48"><a href="rkhs.html#cb396-48" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>] <span class="co"># n=length of y</span></span>
+<span id="cb396-49"><a href="rkhs.html#cb396-49" aria-hidden="true" tabindex="-1"></a>  J <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n, <span class="dv">1</span>) <span class="co"># vector of ones dim</span></span>
+<span id="cb396-50"><a href="rkhs.html#cb396-50" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">&lt;-</span> <span class="fu">cbind</span>(J, Gramm) <span class="co"># design matrix</span></span>
+<span id="cb396-51"><a href="rkhs.html#cb396-51" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># dimension of the null space of the penalty</span></span>
+<span id="cb396-52"><a href="rkhs.html#cb396-52" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n <span class="sc">+</span> m, n <span class="sc">+</span> m) <span class="co">#initialize S</span></span>
+<span id="cb396-53"><a href="rkhs.html#cb396-53" aria-hidden="true" tabindex="-1"></a>  S[(m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m), (m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m)] <span class="ot">&lt;-</span> Gramm <span class="co">#non-zero part of S</span></span>
+<span id="cb396-54"><a href="rkhs.html#cb396-54" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">&lt;-</span> (<span class="fu">t</span>(Q) <span class="sc">%*%</span> Q <span class="sc">+</span> lambda <span class="sc">*</span> S)</span>
+<span id="cb396-55"><a href="rkhs.html#cb396-55" aria-hidden="true" tabindex="-1"></a>  M.inv <span class="ot">&lt;-</span> <span class="fu">my.inv</span>(M) <span class="co"># inverse of M</span></span>
+<span id="cb396-56"><a href="rkhs.html#cb396-56" aria-hidden="true" tabindex="-1"></a>  gamma.hat <span class="ot">&lt;-</span> <span class="fu">crossprod</span>(M.inv, <span class="fu">crossprod</span>(Q, y))</span>
+<span id="cb396-57"><a href="rkhs.html#cb396-57" aria-hidden="true" tabindex="-1"></a>  f.hat <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> gamma.hat</span>
+<span id="cb396-58"><a href="rkhs.html#cb396-58" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> M.inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
+<span id="cb396-59"><a href="rkhs.html#cb396-59" aria-hidden="true" tabindex="-1"></a>  tr.A <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A)) <span class="co">#trace of hat matrix</span></span>
+<span id="cb396-60"><a href="rkhs.html#cb396-60" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">&lt;-</span> <span class="fu">t</span>(y <span class="sc">-</span> f.hat) <span class="sc">%*%</span> (y <span class="sc">-</span> f.hat) <span class="co">#residual sum of squares</span></span>
+<span id="cb396-61"><a href="rkhs.html#cb396-61" aria-hidden="true" tabindex="-1"></a>  gcv <span class="ot">&lt;-</span> n <span class="sc">*</span> rss <span class="sc">/</span> (n <span class="sc">-</span> tr.A) <span class="sc">^</span> <span class="dv">2</span> <span class="co">#obtain GCV score</span></span>
+<span id="cb396-62"><a href="rkhs.html#cb396-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb396-63"><a href="rkhs.html#cb396-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">f.hat =</span> f.hat,</span>
+<span id="cb396-64"><a href="rkhs.html#cb396-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma.hat =</span> gamma.hat,</span>
+<span id="cb396-65"><a href="rkhs.html#cb396-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
+<span id="cb396-66"><a href="rkhs.html#cb396-66" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb396-67"><a href="rkhs.html#cb396-67" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb396-68"><a href="rkhs.html#cb396-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-69"><a href="rkhs.html#cb396-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-70"><a href="rkhs.html#cb396-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot of GCV</span></span>
+<span id="cb396-71"><a href="rkhs.html#cb396-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-72"><a href="rkhs.html#cb396-72" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fl">1e-8</span></span>
+<span id="cb396-73"><a href="rkhs.html#cb396-73" aria-hidden="true" tabindex="-1"></a>V <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">40</span>)</span>
+<span id="cb396-74"><a href="rkhs.html#cb396-74" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>) {</span>
+<span id="cb396-75"><a href="rkhs.html#cb396-75" aria-hidden="true" tabindex="-1"></a>  V[i] <span class="ot">&lt;-</span> <span class="fu">ridge.regression</span>(X, y, lambda)<span class="sc">$</span>gcv <span class="co">#obtain GCV score</span></span>
+<span id="cb396-76"><a href="rkhs.html#cb396-76" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> lambda <span class="sc">*</span> <span class="fl">1.5</span> <span class="co">#increase lambda</span></span>
+<span id="cb396-77"><a href="rkhs.html#cb396-77" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb396-78"><a href="rkhs.html#cb396-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-79"><a href="rkhs.html#cb396-79" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>) </span>
+<span id="cb396-80"><a href="rkhs.html#cb396-80" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb396-81"><a href="rkhs.html#cb396-81" aria-hidden="true" tabindex="-1"></a>  <span class="fl">1.5</span> <span class="sc">^</span> (index <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fl">1e-8</span>,</span>
+<span id="cb396-82"><a href="rkhs.html#cb396-82" aria-hidden="true" tabindex="-1"></a>  V,</span>
+<span id="cb396-83"><a href="rkhs.html#cb396-83" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
+<span id="cb396-84"><a href="rkhs.html#cb396-84" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;GCV</span></span>
+<span id="cb396-85"><a href="rkhs.html#cb396-85" aria-hidden="true" tabindex="-1"></a><span class="st">  score&quot;</span>,</span>
+<span id="cb396-86"><a href="rkhs.html#cb396-86" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb396-87"><a href="rkhs.html#cb396-87" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;lambda&quot;</span>,</span>
+<span id="cb396-88"><a href="rkhs.html#cb396-88" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;GCV&quot;</span></span>
+<span id="cb396-89"><a href="rkhs.html#cb396-89" aria-hidden="true" tabindex="-1"></a>) <span class="co"># plot score</span></span>
+<span id="cb396-90"><a href="rkhs.html#cb396-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-91"><a href="rkhs.html#cb396-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-92"><a href="rkhs.html#cb396-92" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>)[V <span class="sc">==</span> <span class="fu">min</span>(V)] <span class="co"># extract index of min(V)</span></span>
+<span id="cb396-93"><a href="rkhs.html#cb396-93" aria-hidden="true" tabindex="-1"></a>opt.mod <span class="ot">&lt;-</span> <span class="fu">ridge.regression</span>(X, y, <span class="fl">1.5</span> <span class="sc">^</span> (i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fl">1e-8</span>) <span class="co">#fit optimal model</span></span>
+<span id="cb396-94"><a href="rkhs.html#cb396-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-95"><a href="rkhs.html#cb396-95" aria-hidden="true" tabindex="-1"></a><span class="do">### finding beta.0, beta.1 and beta.2 ##########</span></span>
+<span id="cb396-96"><a href="rkhs.html#cb396-96" aria-hidden="true" tabindex="-1"></a>gamma.hat <span class="ot">&lt;-</span> opt.mod<span class="sc">$</span>gamma.hat</span>
+<span id="cb396-97"><a href="rkhs.html#cb396-97" aria-hidden="true" tabindex="-1"></a>beta.hat<span class="fl">.0</span> <span class="ot">&lt;-</span> opt.mod<span class="sc">$</span>gamma.hat[<span class="dv">1</span>]<span class="co">#intercept</span></span>
+<span id="cb396-98"><a href="rkhs.html#cb396-98" aria-hidden="true" tabindex="-1"></a>beta.hat <span class="ot">&lt;-</span> gamma.hat[<span class="dv">2</span><span class="sc">:</span><span class="dv">21</span>,] <span class="sc">%*%</span> X <span class="co">#slope and noise term coefficients</span></span>
+<span id="cb396-99"><a href="rkhs.html#cb396-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-100"><a href="rkhs.html#cb396-100" aria-hidden="true" tabindex="-1"></a><span class="do">#### Fitted Line Plot for Cubic Smoothing Spline ####</span></span>
+<span id="cb396-101"><a href="rkhs.html#cb396-101" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x[,<span class="dv">1</span>],y,<span class="at">xlab=</span><span class="st">&quot;x&quot;</span>,<span class="at">ylab=</span><span class="st">&quot;response&quot;</span>,<span class="at">main=</span><span class="st">&quot;Cubic Smoothing Spline&quot;</span>) ;</span>
+<span id="cb396-102"><a href="rkhs.html#cb396-102" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x[,<span class="dv">1</span>],opt.mod<span class="sc">$</span>f.hat,<span class="at">type=</span><span class="st">&quot;l&quot;</span>,<span class="at">lty=</span><span class="dv">1</span>,<span class="at">lwd=</span><span class="dv">2</span>,<span class="at">col=</span><span class="st">&quot;blue&quot;</span>) ;</span></code></pre></div>
 </div>
 <div id="a.2" class="section level4">
 <h4>A.2</h4>
@@ -1167,100 +1210,100 @@ Now we have to find an optimal lambda using GCV…</p>
 framework we discussed in Section 4.3. We also provide a graph with our
 estimation along with the true function and data.</p>
 </blockquote>
-<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb409-1"><a href="rkhs.html#cb409-1" aria-hidden="true" tabindex="-1"></a><span class="do">###### Data ######## </span></span>
-<span id="cb409-2"><a href="rkhs.html#cb409-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>) </span>
-<span id="cb409-3"><a href="rkhs.html#cb409-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
-<span id="cb409-4"><a href="rkhs.html#cb409-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n), nrow, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
-<span id="cb409-5"><a href="rkhs.html#cb409-5" aria-hidden="true" tabindex="-1"></a>x.star <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">sort</span>(x), nrow, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="co"># sorted x, used by plot</span></span>
-<span id="cb409-6"><a href="rkhs.html#cb409-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> x.star) <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.2</span>)</span>
-<span id="cb409-7"><a href="rkhs.html#cb409-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-8"><a href="rkhs.html#cb409-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-9"><a href="rkhs.html#cb409-9" aria-hidden="true" tabindex="-1"></a><span class="do">#### Reproducing Kernel for &lt;f,g&gt;=int_0^1 f’’(x)g’’(x)dx #####</span></span>
-<span id="cb409-10"><a href="rkhs.html#cb409-10" aria-hidden="true" tabindex="-1"></a>rk<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
-<span id="cb409-11"><a href="rkhs.html#cb409-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((<span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">min</span>(s, t) <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">*</span> (<span class="fu">max</span>(s, t) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="dv">6</span>) <span class="sc">*</span> (<span class="fu">min</span>(s, t)) <span class="sc">^</span> <span class="dv">3</span>)</span>
-<span id="cb409-12"><a href="rkhs.html#cb409-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb409-13"><a href="rkhs.html#cb409-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-14"><a href="rkhs.html#cb409-14" aria-hidden="true" tabindex="-1"></a>get.gramm<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
-<span id="cb409-15"><a href="rkhs.html#cb409-15" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>]</span>
-<span id="cb409-16"><a href="rkhs.html#cb409-16" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n, n) <span class="co">#initializes Gramm array</span></span>
-<span id="cb409-17"><a href="rkhs.html#cb409-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#i=index for rows</span></span>
-<span id="cb409-18"><a href="rkhs.html#cb409-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#j=index for columns</span></span>
-<span id="cb409-19"><a href="rkhs.html#cb409-19" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(Gramm) <span class="co"># Gramm matrix</span></span>
-<span id="cb409-20"><a href="rkhs.html#cb409-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb409-21"><a href="rkhs.html#cb409-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb409-22"><a href="rkhs.html#cb409-22" aria-hidden="true" tabindex="-1"></a>      Gramm[i, j] <span class="ot">&lt;-</span> <span class="fu">rk.1</span>(X[i, ], X[j, ])</span>
-<span id="cb409-23"><a href="rkhs.html#cb409-23" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb409-24"><a href="rkhs.html#cb409-24" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb409-25"><a href="rkhs.html#cb409-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Gramm)</span>
-<span id="cb409-26"><a href="rkhs.html#cb409-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb409-27"><a href="rkhs.html#cb409-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-28"><a href="rkhs.html#cb409-28" aria-hidden="true" tabindex="-1"></a>smoothing.spline <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
-<span id="cb409-29"><a href="rkhs.html#cb409-29" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">get.gramm.1</span>(X) <span class="co">#Gramm matrix (nxn)</span></span>
-<span id="cb409-30"><a href="rkhs.html#cb409-30" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>] <span class="co"># n=length of y</span></span>
-<span id="cb409-31"><a href="rkhs.html#cb409-31" aria-hidden="true" tabindex="-1"></a>  J <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n, <span class="dv">1</span>) <span class="co"># vector of ones dim</span></span>
-<span id="cb409-32"><a href="rkhs.html#cb409-32" aria-hidden="true" tabindex="-1"></a>  T <span class="ot">&lt;-</span> <span class="fu">cbind</span>(J, X) <span class="co"># matrix with a basis for the null space of the penalty</span></span>
-<span id="cb409-33"><a href="rkhs.html#cb409-33" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">&lt;-</span> <span class="fu">cbind</span>(T, Gramm) <span class="co"># design matrix</span></span>
-<span id="cb409-34"><a href="rkhs.html#cb409-34" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">dim</span>(T)[<span class="dv">2</span>] <span class="co"># dimension of the null space of the penalty</span></span>
-<span id="cb409-35"><a href="rkhs.html#cb409-35" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n <span class="sc">+</span> m, n <span class="sc">+</span> m) <span class="co">#initialize S</span></span>
-<span id="cb409-36"><a href="rkhs.html#cb409-36" aria-hidden="true" tabindex="-1"></a>  S[(m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m), (m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m)] <span class="ot">&lt;-</span> Gramm <span class="co">#non-zero part of S</span></span>
-<span id="cb409-37"><a href="rkhs.html#cb409-37" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">&lt;-</span> (<span class="fu">t</span>(Q) <span class="sc">%*%</span> Q <span class="sc">+</span> lambda <span class="sc">*</span> S)</span>
-<span id="cb409-38"><a href="rkhs.html#cb409-38" aria-hidden="true" tabindex="-1"></a>  M.inv <span class="ot">&lt;-</span> <span class="fu">my.inv</span>(M) <span class="co"># inverse of M</span></span>
-<span id="cb409-39"><a href="rkhs.html#cb409-39" aria-hidden="true" tabindex="-1"></a>  gamma.hat <span class="ot">&lt;-</span> <span class="fu">crossprod</span>(M.inv, <span class="fu">crossprod</span>(Q, y))</span>
-<span id="cb409-40"><a href="rkhs.html#cb409-40" aria-hidden="true" tabindex="-1"></a>  f.hat <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> gamma.hat</span>
-<span id="cb409-41"><a href="rkhs.html#cb409-41" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> M.inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
-<span id="cb409-42"><a href="rkhs.html#cb409-42" aria-hidden="true" tabindex="-1"></a>  tr.A <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A)) <span class="co">#trace of hat matrix</span></span>
-<span id="cb409-43"><a href="rkhs.html#cb409-43" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">&lt;-</span> <span class="fu">t</span>(y <span class="sc">-</span> f.hat) <span class="sc">%*%</span> (y <span class="sc">-</span> f.hat) <span class="co">#residual sum of squares</span></span>
-<span id="cb409-44"><a href="rkhs.html#cb409-44" aria-hidden="true" tabindex="-1"></a>  gcv <span class="ot">&lt;-</span> n <span class="sc">*</span> rss <span class="sc">/</span> (n <span class="sc">-</span> tr.A) <span class="sc">^</span> <span class="dv">2</span> <span class="co">#obtain GCV score</span></span>
-<span id="cb409-45"><a href="rkhs.html#cb409-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
-<span id="cb409-46"><a href="rkhs.html#cb409-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">f.hat =</span> f.hat,</span>
-<span id="cb409-47"><a href="rkhs.html#cb409-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma.hat =</span> gamma.hat,</span>
-<span id="cb409-48"><a href="rkhs.html#cb409-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
-<span id="cb409-49"><a href="rkhs.html#cb409-49" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb409-50"><a href="rkhs.html#cb409-50" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb409-51"><a href="rkhs.html#cb409-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-52"><a href="rkhs.html#cb409-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-53"><a href="rkhs.html#cb409-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-54"><a href="rkhs.html#cb409-54" aria-hidden="true" tabindex="-1"></a><span class="do">### Now we have to find an optimal lambda using GCV...</span></span>
-<span id="cb409-55"><a href="rkhs.html#cb409-55" aria-hidden="true" tabindex="-1"></a><span class="do">### Plot of GCV</span></span>
-<span id="cb409-56"><a href="rkhs.html#cb409-56" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fl">1e-8</span> V <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">60</span>) <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>) {</span>
-<span id="cb409-57"><a href="rkhs.html#cb409-57" aria-hidden="true" tabindex="-1"></a>  V[i] <span class="ot">&lt;-</span> <span class="fu">smoothing.spline</span>(x.star, y, lambda)<span class="sc">$</span>gcv <span class="co">#obtain GCV score</span></span>
-<span id="cb409-58"><a href="rkhs.html#cb409-58" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> lambda <span class="sc">*</span> <span class="fl">1.5</span> <span class="co">#increase lambda</span></span>
-<span id="cb409-59"><a href="rkhs.html#cb409-59" aria-hidden="true" tabindex="-1"></a>} </span>
-<span id="cb409-60"><a href="rkhs.html#cb409-60" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>,</span>
-<span id="cb409-61"><a href="rkhs.html#cb409-61" aria-hidden="true" tabindex="-1"></a>     V,</span>
-<span id="cb409-62"><a href="rkhs.html#cb409-62" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
-<span id="cb409-63"><a href="rkhs.html#cb409-63" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;GCV score&quot;</span>,</span>
-<span id="cb409-64"><a href="rkhs.html#cb409-64" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;i&quot;</span>) <span class="co"># plot score</span></span>
-<span id="cb409-65"><a href="rkhs.html#cb409-65" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>)[V <span class="sc">==</span> <span class="fu">min</span>(V)] <span class="co"># extract index of min(V)</span></span>
-<span id="cb409-66"><a href="rkhs.html#cb409-66" aria-hidden="true" tabindex="-1"></a>spline_model <span class="ot">&lt;-</span> <span class="fu">smoothing.spline</span>(x.star, y, <span class="fl">1.5</span> <span class="sc">^</span> (i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fl">1e-8</span>) <span class="co">#fit optimal</span></span>
-<span id="cb409-67"><a href="rkhs.html#cb409-67" aria-hidden="true" tabindex="-1"></a>model</span>
-<span id="cb409-68"><a href="rkhs.html#cb409-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb409-69"><a href="rkhs.html#cb409-69" aria-hidden="true" tabindex="-1"></a><span class="co">#Graph (Cubic Spline)</span></span>
-<span id="cb409-70"><a href="rkhs.html#cb409-70" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb409-71"><a href="rkhs.html#cb409-71" aria-hidden="true" tabindex="-1"></a>  x.star,</span>
-<span id="cb409-72"><a href="rkhs.html#cb409-72" aria-hidden="true" tabindex="-1"></a>  spline_model<span class="sc">$</span>f.hat,</span>
-<span id="cb409-73"><a href="rkhs.html#cb409-73" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
-<span id="cb409-74"><a href="rkhs.html#cb409-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">lty =</span> <span class="dv">2</span>,</span>
-<span id="cb409-75"><a href="rkhs.html#cb409-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">2</span>,</span>
-<span id="cb409-76"><a href="rkhs.html#cb409-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
-<span id="cb409-77"><a href="rkhs.html#cb409-77" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;x&quot;</span>,</span>
-<span id="cb409-78"><a href="rkhs.html#cb409-78" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">1.5</span>),</span>
-<span id="cb409-79"><a href="rkhs.html#cb409-79" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>),</span>
-<span id="cb409-80"><a href="rkhs.html#cb409-80" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;response&quot;</span>,</span>
-<span id="cb409-81"><a href="rkhs.html#cb409-81" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Cubic Spline&quot;</span></span>
-<span id="cb409-82"><a href="rkhs.html#cb409-82" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb409-83"><a href="rkhs.html#cb409-83" aria-hidden="true" tabindex="-1"></a><span class="co">#predictions</span></span>
-<span id="cb409-84"><a href="rkhs.html#cb409-84" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x.star, <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> x.star), <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">2</span>) <span class="co">#true</span></span>
-<span id="cb409-85"><a href="rkhs.html#cb409-85" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
-<span id="cb409-86"><a href="rkhs.html#cb409-86" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">0.1</span>,</span>
-<span id="cb409-87"><a href="rkhs.html#cb409-87" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">1.5</span>,</span>
-<span id="cb409-88"><a href="rkhs.html#cb409-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;predictions&quot;</span>, <span class="st">&quot;true&quot;</span>),</span>
-<span id="cb409-89"><a href="rkhs.html#cb409-89" aria-hidden="true" tabindex="-1"></a>  <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>),</span>
-<span id="cb409-90"><a href="rkhs.html#cb409-90" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>,</span>
-<span id="cb409-91"><a href="rkhs.html#cb409-91" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>),</span>
-<span id="cb409-92"><a href="rkhs.html#cb409-92" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;black&quot;</span>)</span>
-<span id="cb409-93"><a href="rkhs.html#cb409-93" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb409-94"><a href="rkhs.html#cb409-94" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(x.star, y)</span></code></pre></div>
+<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb397-1"><a href="rkhs.html#cb397-1" aria-hidden="true" tabindex="-1"></a><span class="do">###### Data ######## </span></span>
+<span id="cb397-2"><a href="rkhs.html#cb397-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>) </span>
+<span id="cb397-3"><a href="rkhs.html#cb397-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb397-4"><a href="rkhs.html#cb397-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n), nrow, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb397-5"><a href="rkhs.html#cb397-5" aria-hidden="true" tabindex="-1"></a>x.star <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">sort</span>(x), nrow, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="co"># sorted x, used by plot</span></span>
+<span id="cb397-6"><a href="rkhs.html#cb397-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> x.star) <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.2</span>)</span>
+<span id="cb397-7"><a href="rkhs.html#cb397-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-8"><a href="rkhs.html#cb397-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-9"><a href="rkhs.html#cb397-9" aria-hidden="true" tabindex="-1"></a><span class="do">#### Reproducing Kernel for &lt;f,g&gt;=int_0^1 f’’(x)g’’(x)dx #####</span></span>
+<span id="cb397-10"><a href="rkhs.html#cb397-10" aria-hidden="true" tabindex="-1"></a>rk<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(s, t) {</span>
+<span id="cb397-11"><a href="rkhs.html#cb397-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((<span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">min</span>(s, t) <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">*</span> (<span class="fu">max</span>(s, t) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="dv">6</span>) <span class="sc">*</span> (<span class="fu">min</span>(s, t)) <span class="sc">^</span> <span class="dv">3</span>)</span>
+<span id="cb397-12"><a href="rkhs.html#cb397-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb397-13"><a href="rkhs.html#cb397-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-14"><a href="rkhs.html#cb397-14" aria-hidden="true" tabindex="-1"></a>get.gramm<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb397-15"><a href="rkhs.html#cb397-15" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>]</span>
+<span id="cb397-16"><a href="rkhs.html#cb397-16" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n, n) <span class="co">#initializes Gramm array</span></span>
+<span id="cb397-17"><a href="rkhs.html#cb397-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#i=index for rows</span></span>
+<span id="cb397-18"><a href="rkhs.html#cb397-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#j=index for columns</span></span>
+<span id="cb397-19"><a href="rkhs.html#cb397-19" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(Gramm) <span class="co"># Gramm matrix</span></span>
+<span id="cb397-20"><a href="rkhs.html#cb397-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb397-21"><a href="rkhs.html#cb397-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb397-22"><a href="rkhs.html#cb397-22" aria-hidden="true" tabindex="-1"></a>      Gramm[i, j] <span class="ot">&lt;-</span> <span class="fu">rk.1</span>(X[i, ], X[j, ])</span>
+<span id="cb397-23"><a href="rkhs.html#cb397-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb397-24"><a href="rkhs.html#cb397-24" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb397-25"><a href="rkhs.html#cb397-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Gramm)</span>
+<span id="cb397-26"><a href="rkhs.html#cb397-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb397-27"><a href="rkhs.html#cb397-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-28"><a href="rkhs.html#cb397-28" aria-hidden="true" tabindex="-1"></a>smoothing.spline <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
+<span id="cb397-29"><a href="rkhs.html#cb397-29" aria-hidden="true" tabindex="-1"></a>  Gramm <span class="ot">&lt;-</span> <span class="fu">get.gramm.1</span>(X) <span class="co">#Gramm matrix (nxn)</span></span>
+<span id="cb397-30"><a href="rkhs.html#cb397-30" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">dim</span>(X)[<span class="dv">1</span>] <span class="co"># n=length of y</span></span>
+<span id="cb397-31"><a href="rkhs.html#cb397-31" aria-hidden="true" tabindex="-1"></a>  J <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n, <span class="dv">1</span>) <span class="co"># vector of ones dim</span></span>
+<span id="cb397-32"><a href="rkhs.html#cb397-32" aria-hidden="true" tabindex="-1"></a>  T <span class="ot">&lt;-</span> <span class="fu">cbind</span>(J, X) <span class="co"># matrix with a basis for the null space of the penalty</span></span>
+<span id="cb397-33"><a href="rkhs.html#cb397-33" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">&lt;-</span> <span class="fu">cbind</span>(T, Gramm) <span class="co"># design matrix</span></span>
+<span id="cb397-34"><a href="rkhs.html#cb397-34" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">dim</span>(T)[<span class="dv">2</span>] <span class="co"># dimension of the null space of the penalty</span></span>
+<span id="cb397-35"><a href="rkhs.html#cb397-35" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n <span class="sc">+</span> m, n <span class="sc">+</span> m) <span class="co">#initialize S</span></span>
+<span id="cb397-36"><a href="rkhs.html#cb397-36" aria-hidden="true" tabindex="-1"></a>  S[(m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m), (m <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">+</span> m)] <span class="ot">&lt;-</span> Gramm <span class="co">#non-zero part of S</span></span>
+<span id="cb397-37"><a href="rkhs.html#cb397-37" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">&lt;-</span> (<span class="fu">t</span>(Q) <span class="sc">%*%</span> Q <span class="sc">+</span> lambda <span class="sc">*</span> S)</span>
+<span id="cb397-38"><a href="rkhs.html#cb397-38" aria-hidden="true" tabindex="-1"></a>  M.inv <span class="ot">&lt;-</span> <span class="fu">my.inv</span>(M) <span class="co"># inverse of M</span></span>
+<span id="cb397-39"><a href="rkhs.html#cb397-39" aria-hidden="true" tabindex="-1"></a>  gamma.hat <span class="ot">&lt;-</span> <span class="fu">crossprod</span>(M.inv, <span class="fu">crossprod</span>(Q, y))</span>
+<span id="cb397-40"><a href="rkhs.html#cb397-40" aria-hidden="true" tabindex="-1"></a>  f.hat <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> gamma.hat</span>
+<span id="cb397-41"><a href="rkhs.html#cb397-41" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> Q <span class="sc">%*%</span> M.inv <span class="sc">%*%</span> <span class="fu">t</span>(Q)</span>
+<span id="cb397-42"><a href="rkhs.html#cb397-42" aria-hidden="true" tabindex="-1"></a>  tr.A <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(A)) <span class="co">#trace of hat matrix</span></span>
+<span id="cb397-43"><a href="rkhs.html#cb397-43" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">&lt;-</span> <span class="fu">t</span>(y <span class="sc">-</span> f.hat) <span class="sc">%*%</span> (y <span class="sc">-</span> f.hat) <span class="co">#residual sum of squares</span></span>
+<span id="cb397-44"><a href="rkhs.html#cb397-44" aria-hidden="true" tabindex="-1"></a>  gcv <span class="ot">&lt;-</span> n <span class="sc">*</span> rss <span class="sc">/</span> (n <span class="sc">-</span> tr.A) <span class="sc">^</span> <span class="dv">2</span> <span class="co">#obtain GCV score</span></span>
+<span id="cb397-45"><a href="rkhs.html#cb397-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb397-46"><a href="rkhs.html#cb397-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">f.hat =</span> f.hat,</span>
+<span id="cb397-47"><a href="rkhs.html#cb397-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma.hat =</span> gamma.hat,</span>
+<span id="cb397-48"><a href="rkhs.html#cb397-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">gcv =</span> gcv</span>
+<span id="cb397-49"><a href="rkhs.html#cb397-49" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb397-50"><a href="rkhs.html#cb397-50" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb397-51"><a href="rkhs.html#cb397-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-52"><a href="rkhs.html#cb397-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-53"><a href="rkhs.html#cb397-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-54"><a href="rkhs.html#cb397-54" aria-hidden="true" tabindex="-1"></a><span class="do">### Now we have to find an optimal lambda using GCV...</span></span>
+<span id="cb397-55"><a href="rkhs.html#cb397-55" aria-hidden="true" tabindex="-1"></a><span class="do">### Plot of GCV</span></span>
+<span id="cb397-56"><a href="rkhs.html#cb397-56" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fl">1e-8</span> V <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">60</span>) <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>) {</span>
+<span id="cb397-57"><a href="rkhs.html#cb397-57" aria-hidden="true" tabindex="-1"></a>  V[i] <span class="ot">&lt;-</span> <span class="fu">smoothing.spline</span>(x.star, y, lambda)<span class="sc">$</span>gcv <span class="co">#obtain GCV score</span></span>
+<span id="cb397-58"><a href="rkhs.html#cb397-58" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> lambda <span class="sc">*</span> <span class="fl">1.5</span> <span class="co">#increase lambda</span></span>
+<span id="cb397-59"><a href="rkhs.html#cb397-59" aria-hidden="true" tabindex="-1"></a>} </span>
+<span id="cb397-60"><a href="rkhs.html#cb397-60" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>,</span>
+<span id="cb397-61"><a href="rkhs.html#cb397-61" aria-hidden="true" tabindex="-1"></a>     V,</span>
+<span id="cb397-62"><a href="rkhs.html#cb397-62" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
+<span id="cb397-63"><a href="rkhs.html#cb397-63" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;GCV score&quot;</span>,</span>
+<span id="cb397-64"><a href="rkhs.html#cb397-64" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;i&quot;</span>) <span class="co"># plot score</span></span>
+<span id="cb397-65"><a href="rkhs.html#cb397-65" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>)[V <span class="sc">==</span> <span class="fu">min</span>(V)] <span class="co"># extract index of min(V)</span></span>
+<span id="cb397-66"><a href="rkhs.html#cb397-66" aria-hidden="true" tabindex="-1"></a>fit_rk <span class="ot">&lt;-</span> <span class="fu">smoothing.spline</span>(x.star, y, <span class="fl">1.5</span> <span class="sc">^</span> (i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fl">1e-8</span>) <span class="co">#fit optimal</span></span>
+<span id="cb397-67"><a href="rkhs.html#cb397-67" aria-hidden="true" tabindex="-1"></a>model</span>
+<span id="cb397-68"><a href="rkhs.html#cb397-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-69"><a href="rkhs.html#cb397-69" aria-hidden="true" tabindex="-1"></a><span class="co">#Graph (Cubic Spline)</span></span>
+<span id="cb397-70"><a href="rkhs.html#cb397-70" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb397-71"><a href="rkhs.html#cb397-71" aria-hidden="true" tabindex="-1"></a>  x.star,</span>
+<span id="cb397-72"><a href="rkhs.html#cb397-72" aria-hidden="true" tabindex="-1"></a>  fit_rk<span class="sc">$</span>f.hat,</span>
+<span id="cb397-73"><a href="rkhs.html#cb397-73" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
+<span id="cb397-74"><a href="rkhs.html#cb397-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb397-75"><a href="rkhs.html#cb397-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb397-76"><a href="rkhs.html#cb397-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb397-77"><a href="rkhs.html#cb397-77" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;x&quot;</span>,</span>
+<span id="cb397-78"><a href="rkhs.html#cb397-78" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">1.5</span>),</span>
+<span id="cb397-79"><a href="rkhs.html#cb397-79" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>),</span>
+<span id="cb397-80"><a href="rkhs.html#cb397-80" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;response&quot;</span>,</span>
+<span id="cb397-81"><a href="rkhs.html#cb397-81" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Cubic Spline&quot;</span></span>
+<span id="cb397-82"><a href="rkhs.html#cb397-82" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb397-83"><a href="rkhs.html#cb397-83" aria-hidden="true" tabindex="-1"></a><span class="co">#predictions</span></span>
+<span id="cb397-84"><a href="rkhs.html#cb397-84" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x.star, <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> x.star), <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">2</span>) <span class="co">#true</span></span>
+<span id="cb397-85"><a href="rkhs.html#cb397-85" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb397-86"><a href="rkhs.html#cb397-86" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">0.1</span>,</span>
+<span id="cb397-87"><a href="rkhs.html#cb397-87" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">1.5</span>,</span>
+<span id="cb397-88"><a href="rkhs.html#cb397-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;predictions&quot;</span>, <span class="st">&quot;true&quot;</span>),</span>
+<span id="cb397-89"><a href="rkhs.html#cb397-89" aria-hidden="true" tabindex="-1"></a>  <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb397-90"><a href="rkhs.html#cb397-90" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb397-91"><a href="rkhs.html#cb397-91" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb397-92"><a href="rkhs.html#cb397-92" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;black&quot;</span>)</span>
+<span id="cb397-93"><a href="rkhs.html#cb397-93" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb397-94"><a href="rkhs.html#cb397-94" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(x.star, y)</span></code></pre></div>
 
 </div>
 </div>

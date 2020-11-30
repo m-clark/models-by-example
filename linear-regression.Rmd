@@ -16,12 +16,14 @@ predictive/'algorithmic' approaches e.g. in machine learning and elsewhere.  You
 
 ## Data Setup
 
+We will simulate some data to make our results known and easier to manipulate.
+
 ```{r lm-setup}
 library(tidyverse)
 
 set.seed(123)  # ensures replication
 
-# predictors and response
+# predictors and target
 N = 100 # sample size
 k = 2   # number of desired predictors
 X = matrix(rnorm(N * k), ncol = k)  
@@ -39,7 +41,7 @@ A maximum likelihood approach.
 lm_ml <- function(par, X, y) {
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
-  # y: response
+  # y: target
   
   # setup
   beta   = par[-1]                             # coefficients
@@ -70,7 +72,7 @@ lm_ls <- function(par, X, y) {
   # arguments- 
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
-  # y: response
+  # y: target
   
   # setup
   beta = par                                   # coefficients
@@ -102,7 +104,7 @@ required for the LS approach as it is the objective function.
 init = c(1, rep(0, ncol(X)))
 names(init) = c('sigma2', 'intercept', 'b1', 'b2')
 
-optlmML = optim(
+fit_ML = optim(
   par = init,
   fn  = lm_ml,
   X   = X,
@@ -110,7 +112,7 @@ optlmML = optim(
   control = list(reltol = 1e-8)
 )
 
-optlmLS = optim(
+fit_LS = optim(
   par = init[-1],
   fn  = lm_ls,
   X   = X,
@@ -118,9 +120,8 @@ optlmLS = optim(
   control = list(reltol = 1e-8)
 )
 
-pars_ml = optlmML$par
-pars_LS = c(sigma2 = optlmLS$value / (N - k - 1), optlmLS$par)  # calculate sigma2 and add
-
+pars_ML = fit_ML$par
+pars_LS = c(sigma2 = fit_LS$value / (N-k-1), fit_LS$par)  # calculate sigma2 and add
 ```
 
 ##  Comparison
@@ -128,11 +129,11 @@ pars_LS = c(sigma2 = optlmLS$value / (N - k - 1), optlmLS$par)  # calculate sigm
 Compare to `lm` which uses QR decomposition.
 
 ```{r lm}
-modlm = lm(y ~ ., dfXy)
+fit_lm = lm(y ~ ., dfXy)
 ```
 
 
-Example of QR.
+Example of QR.  Not shown.
 
 ```{r QR}
 # QRX = qr(X)
@@ -142,27 +143,26 @@ Example of QR.
 # alternate: qr.coef(QRX, y)
 ```
 
-```{r lm-compare}
-round(
-  rbind(
-    pars_ml,
-    pars_LS,
-    modlm = c(summary(modlm)$sigma^2, coef(modlm))), 
-  digits = 3
-)
+```{r lm-compare, echo=FALSE}
+rbind(
+    fit_ML = pars_ML,
+    fit_LS = pars_LS,
+    fit_lm = c(summary(fit_lm)$sigma^2, coef(fit_lm))
+) %>% 
+  kable_df()
 ```
 
 
 The slight difference in sigma is roughly dividing by N vs. N-k-1 in the
 traditional least squares approach. It diminishes with increasing N as both tend
-toward whatever `sd^2` you specify when creating the `y` response above.
+toward whatever `sd^2` you specify when creating the `y` target above.
 
 Compare to <span class="func" style = "">glm</span>, which by default assumes gaussian family with identity link
 and uses `lm.fit`.
 
 ```{r glm-compare}
-modglm = glm(y ~ ., data = dfXy)
-summary(modglm)
+fit_glm = glm(y ~ ., data = dfXy)
+summary(fit_glm)
 ```
 
 Via normal equations.
@@ -174,11 +174,11 @@ coefs = solve(t(X) %*% X) %*% t(X) %*% y  # coefficients
 
 Compare.
 
-```{r lm-compare2}
+```{r lm-compare2, results='hold'}
 sqrt(crossprod(y - X %*% coefs) / (N - k - 1))
-summary(modlm)$sigma
-sqrt(modglm$deviance / modglm$df.residual) 
-c(sqrt(pars_ml[1]), sqrt(pars_LS[1]))
+summary(fit_lm)$sigma
+sqrt(fit_glm$deviance / fit_glm$df.residual) 
+c(sqrt(pars_ML[1]), sqrt(pars_LS[1]))
 
 
 # rerun by adding 3-4 zeros to the N

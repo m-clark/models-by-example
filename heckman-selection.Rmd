@@ -27,8 +27,8 @@ library(tidyverse)
 set.seed(123456)
 
 N = 10000
-educ = sample(1:16, N, replace = T)
-age  = sample(18:64, N, replace = T)
+educ = sample(1:16, N, replace = TRUE)
+age  = sample(18:64, N, replace = TRUE)
 
 covmat = matrix(c(.46^2, .25*.46, .25*.46, 1), ncol = 2)
 errors = mvtnorm::rmvnorm(N, sigma = covmat)

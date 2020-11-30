@@ -796,85 +796,85 @@ and comparison to <span class="pack" style="">pscl</span> package output. Also i
 <div id="data-setup-12" class="section level3">
 <h3>Data Setup</h3>
 <p>Get the data.</p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="zi.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb148-2"><a href="zi.html#cb148-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb148-3"><a href="zi.html#cb148-3" aria-hidden="true" tabindex="-1"></a>fish <span class="ot">=</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;http://www.stata-press.com/data/r11/fish.dta&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="zi.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb139-2"><a href="zi.html#cb139-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-3"><a href="zi.html#cb139-3" aria-hidden="true" tabindex="-1"></a>fish <span class="ot">=</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;http://www.stata-press.com/data/r11/fish.dta&quot;</span>)</span></code></pre></div>
 </div>
 <div id="function-11" class="section level3">
 <h3>Function</h3>
 <p>The log likelihood function.</p>
-<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="zi.html#cb149-1" aria-hidden="true" tabindex="-1"></a>zip_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, par) {</span>
-<span id="cb149-2"><a href="zi.html#cb149-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments are response y, predictor matrix X, and parameter named starting points of &#39;logit&#39; and &#39;pois&#39;</span></span>
-<span id="cb149-3"><a href="zi.html#cb149-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb149-4"><a href="zi.html#cb149-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract parameters</span></span>
-<span id="cb149-5"><a href="zi.html#cb149-5" aria-hidden="true" tabindex="-1"></a>  logitpars <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;logit&#39;</span>, <span class="fu">names</span>(par))]   </span>
-<span id="cb149-6"><a href="zi.html#cb149-6" aria-hidden="true" tabindex="-1"></a>  poispars  <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;pois&#39;</span>, <span class="fu">names</span>(par))]     </span>
-<span id="cb149-7"><a href="zi.html#cb149-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb149-8"><a href="zi.html#cb149-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Logit part; in this function Xlogit = Xpois but one could split X argument into Xlogi and Xpois for example</span></span>
-<span id="cb149-9"><a href="zi.html#cb149-9" aria-hidden="true" tabindex="-1"></a>  Xlogit  <span class="ot">=</span> X</span>
-<span id="cb149-10"><a href="zi.html#cb149-10" aria-hidden="true" tabindex="-1"></a>  LPlogit <span class="ot">=</span> Xlogit <span class="sc">%*%</span> logitpars</span>
-<span id="cb149-11"><a href="zi.html#cb149-11" aria-hidden="true" tabindex="-1"></a>  logi0   <span class="ot">=</span> <span class="fu">plogis</span>(LPlogit)  <span class="co"># alternative 1/(1+exp(-LPlogit))</span></span>
-<span id="cb149-12"><a href="zi.html#cb149-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb149-13"><a href="zi.html#cb149-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Poisson part</span></span>
-<span id="cb149-14"><a href="zi.html#cb149-14" aria-hidden="true" tabindex="-1"></a>  Xpois  <span class="ot">=</span> X</span>
-<span id="cb149-15"><a href="zi.html#cb149-15" aria-hidden="true" tabindex="-1"></a>  mupois <span class="ot">=</span> <span class="fu">exp</span>(Xpois <span class="sc">%*%</span> poispars)</span>
-<span id="cb149-16"><a href="zi.html#cb149-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb149-17"><a href="zi.html#cb149-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LLs</span></span>
-<span id="cb149-18"><a href="zi.html#cb149-18" aria-hidden="true" tabindex="-1"></a>  logliklogit <span class="ot">=</span> <span class="fu">log</span>( logi0 <span class="sc">+</span> <span class="fu">exp</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">-</span> mupois) )</span>
-<span id="cb149-19"><a href="zi.html#cb149-19" aria-hidden="true" tabindex="-1"></a>  loglikpois  <span class="ot">=</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">+</span> <span class="fu">dpois</span>(y, <span class="at">lambda =</span> mupois, <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb149-20"><a href="zi.html#cb149-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb149-21"><a href="zi.html#cb149-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Hilbe formulation</span></span>
-<span id="cb149-22"><a href="zi.html#cb149-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># logliklogit = log(logi0 + (1 - logi0)*exp(- mupois) )</span></span>
-<span id="cb149-23"><a href="zi.html#cb149-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># loglikpois = log(1-logi0) -mupois + log(mupois)*y     #not necessary: - log(gamma(y+1))</span></span>
-<span id="cb149-24"><a href="zi.html#cb149-24" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb149-25"><a href="zi.html#cb149-25" aria-hidden="true" tabindex="-1"></a>  y0 <span class="ot">=</span> y <span class="sc">==</span> <span class="dv">0</span>  <span class="co"># 0 values</span></span>
-<span id="cb149-26"><a href="zi.html#cb149-26" aria-hidden="true" tabindex="-1"></a>  yc <span class="ot">=</span> y <span class="sc">&gt;</span> <span class="dv">0</span>   <span class="co"># Count part</span></span>
-<span id="cb149-27"><a href="zi.html#cb149-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb149-28"><a href="zi.html#cb149-28" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(logliklogit[y0]) <span class="sc">+</span> <span class="fu">sum</span>(loglikpois[yc])</span>
-<span id="cb149-29"><a href="zi.html#cb149-29" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>loglik</span>
-<span id="cb149-30"><a href="zi.html#cb149-30" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="zi.html#cb140-1" aria-hidden="true" tabindex="-1"></a>zip_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, par) {</span>
+<span id="cb140-2"><a href="zi.html#cb140-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments are response y, predictor matrix X, and parameter named starting points of &#39;logit&#39; and &#39;pois&#39;</span></span>
+<span id="cb140-3"><a href="zi.html#cb140-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb140-4"><a href="zi.html#cb140-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract parameters</span></span>
+<span id="cb140-5"><a href="zi.html#cb140-5" aria-hidden="true" tabindex="-1"></a>  logitpars <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;logit&#39;</span>, <span class="fu">names</span>(par))]   </span>
+<span id="cb140-6"><a href="zi.html#cb140-6" aria-hidden="true" tabindex="-1"></a>  poispars  <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;pois&#39;</span>, <span class="fu">names</span>(par))]     </span>
+<span id="cb140-7"><a href="zi.html#cb140-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb140-8"><a href="zi.html#cb140-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Logit part; in this function Xlogit = Xpois but one could split X argument into Xlogi and Xpois for example</span></span>
+<span id="cb140-9"><a href="zi.html#cb140-9" aria-hidden="true" tabindex="-1"></a>  Xlogit  <span class="ot">=</span> X</span>
+<span id="cb140-10"><a href="zi.html#cb140-10" aria-hidden="true" tabindex="-1"></a>  LPlogit <span class="ot">=</span> Xlogit <span class="sc">%*%</span> logitpars</span>
+<span id="cb140-11"><a href="zi.html#cb140-11" aria-hidden="true" tabindex="-1"></a>  logi0   <span class="ot">=</span> <span class="fu">plogis</span>(LPlogit)  <span class="co"># alternative 1/(1+exp(-LPlogit))</span></span>
+<span id="cb140-12"><a href="zi.html#cb140-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb140-13"><a href="zi.html#cb140-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Poisson part</span></span>
+<span id="cb140-14"><a href="zi.html#cb140-14" aria-hidden="true" tabindex="-1"></a>  Xpois  <span class="ot">=</span> X</span>
+<span id="cb140-15"><a href="zi.html#cb140-15" aria-hidden="true" tabindex="-1"></a>  mupois <span class="ot">=</span> <span class="fu">exp</span>(Xpois <span class="sc">%*%</span> poispars)</span>
+<span id="cb140-16"><a href="zi.html#cb140-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb140-17"><a href="zi.html#cb140-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LLs</span></span>
+<span id="cb140-18"><a href="zi.html#cb140-18" aria-hidden="true" tabindex="-1"></a>  logliklogit <span class="ot">=</span> <span class="fu">log</span>( logi0 <span class="sc">+</span> <span class="fu">exp</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">-</span> mupois) )</span>
+<span id="cb140-19"><a href="zi.html#cb140-19" aria-hidden="true" tabindex="-1"></a>  loglikpois  <span class="ot">=</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">+</span> <span class="fu">dpois</span>(y, <span class="at">lambda =</span> mupois, <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb140-20"><a href="zi.html#cb140-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb140-21"><a href="zi.html#cb140-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Hilbe formulation</span></span>
+<span id="cb140-22"><a href="zi.html#cb140-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># logliklogit = log(logi0 + (1 - logi0)*exp(- mupois) )</span></span>
+<span id="cb140-23"><a href="zi.html#cb140-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># loglikpois = log(1-logi0) -mupois + log(mupois)*y     #not necessary: - log(gamma(y+1))</span></span>
+<span id="cb140-24"><a href="zi.html#cb140-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb140-25"><a href="zi.html#cb140-25" aria-hidden="true" tabindex="-1"></a>  y0 <span class="ot">=</span> y <span class="sc">==</span> <span class="dv">0</span>  <span class="co"># 0 values</span></span>
+<span id="cb140-26"><a href="zi.html#cb140-26" aria-hidden="true" tabindex="-1"></a>  yc <span class="ot">=</span> y <span class="sc">&gt;</span> <span class="dv">0</span>   <span class="co"># Count part</span></span>
+<span id="cb140-27"><a href="zi.html#cb140-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb140-28"><a href="zi.html#cb140-28" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(logliklogit[y0]) <span class="sc">+</span> <span class="fu">sum</span>(loglikpois[yc])</span>
+<span id="cb140-29"><a href="zi.html#cb140-29" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>loglik</span>
+<span id="cb140-30"><a href="zi.html#cb140-30" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-12" class="section level3">
 <h3>Estimation</h3>
 <p>Get starting values or simply do zeros.</p>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="zi.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for zip: need &#39;logit&#39;, &#39;pois&#39;</span></span>
-<span id="cb150-2"><a href="zi.html#cb150-2" aria-hidden="true" tabindex="-1"></a>initial_model <span class="ot">=</span> <span class="fu">glm</span>(</span>
-<span id="cb150-3"><a href="zi.html#cb150-3" aria-hidden="true" tabindex="-1"></a>  count <span class="sc">~</span> persons <span class="sc">+</span> livebait,</span>
-<span id="cb150-4"><a href="zi.html#cb150-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fish,</span>
-<span id="cb150-5"><a href="zi.html#cb150-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb150-6"><a href="zi.html#cb150-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb150-7"><a href="zi.html#cb150-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;poisson&quot;</span></span>
-<span id="cb150-8"><a href="zi.html#cb150-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb150-9"><a href="zi.html#cb150-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb150-10"><a href="zi.html#cb150-10" aria-hidden="true" tabindex="-1"></a><span class="co"># starts = c(logit = coef(initial_model), pois = coef(initial_model))  </span></span>
-<span id="cb150-11"><a href="zi.html#cb150-11" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>))</span>
-<span id="cb150-12"><a href="zi.html#cb150-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb150-13"><a href="zi.html#cb150-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(starts) <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">&#39;pois.&#39;</span>, <span class="fu">names</span>(<span class="fu">coef</span>(initial_model))),</span>
-<span id="cb150-14"><a href="zi.html#cb150-14" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">paste0</span>(<span class="st">&#39;logit.&#39;</span>, <span class="fu">names</span>(<span class="fu">coef</span>(initial_model))))</span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="zi.html#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for zip: need &#39;logit&#39;, &#39;pois&#39;</span></span>
+<span id="cb141-2"><a href="zi.html#cb141-2" aria-hidden="true" tabindex="-1"></a>initial_model <span class="ot">=</span> <span class="fu">glm</span>(</span>
+<span id="cb141-3"><a href="zi.html#cb141-3" aria-hidden="true" tabindex="-1"></a>  count <span class="sc">~</span> persons <span class="sc">+</span> livebait,</span>
+<span id="cb141-4"><a href="zi.html#cb141-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fish,</span>
+<span id="cb141-5"><a href="zi.html#cb141-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb141-6"><a href="zi.html#cb141-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb141-7"><a href="zi.html#cb141-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;poisson&quot;</span></span>
+<span id="cb141-8"><a href="zi.html#cb141-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb141-9"><a href="zi.html#cb141-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-10"><a href="zi.html#cb141-10" aria-hidden="true" tabindex="-1"></a><span class="co"># starts = c(logit = coef(initial_model), pois = coef(initial_model))  </span></span>
+<span id="cb141-11"><a href="zi.html#cb141-11" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>))</span>
+<span id="cb141-12"><a href="zi.html#cb141-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-13"><a href="zi.html#cb141-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(starts) <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">&#39;pois.&#39;</span>, <span class="fu">names</span>(<span class="fu">coef</span>(initial_model))),</span>
+<span id="cb141-14"><a href="zi.html#cb141-14" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">paste0</span>(<span class="st">&#39;logit.&#39;</span>, <span class="fu">names</span>(<span class="fu">coef</span>(initial_model))))</span></code></pre></div>
 <p>Estimate with <span class="func" style="">optim</span>.</p>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="zi.html#cb151-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb151-2"><a href="zi.html#cb151-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> starts ,</span>
-<span id="cb151-3"><a href="zi.html#cb151-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> zip_ll,</span>
-<span id="cb151-4"><a href="zi.html#cb151-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> initial_model<span class="sc">$</span>x,</span>
-<span id="cb151-5"><a href="zi.html#cb151-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> initial_model<span class="sc">$</span>y,</span>
-<span id="cb151-6"><a href="zi.html#cb151-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
-<span id="cb151-7"><a href="zi.html#cb151-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">5000</span>, <span class="at">reltol =</span> <span class="fl">1e-12</span>),</span>
-<span id="cb151-8"><a href="zi.html#cb151-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span></span>
-<span id="cb151-9"><a href="zi.html#cb151-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb151-10"><a href="zi.html#cb151-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb151-11"><a href="zi.html#cb151-11" aria-hidden="true" tabindex="-1"></a><span class="co"># fit</span></span></code></pre></div>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="zi.html#cb142-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb142-2"><a href="zi.html#cb142-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> starts ,</span>
+<span id="cb142-3"><a href="zi.html#cb142-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> zip_ll,</span>
+<span id="cb142-4"><a href="zi.html#cb142-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> initial_model<span class="sc">$</span>x,</span>
+<span id="cb142-5"><a href="zi.html#cb142-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> initial_model<span class="sc">$</span>y,</span>
+<span id="cb142-6"><a href="zi.html#cb142-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb142-7"><a href="zi.html#cb142-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">5000</span>, <span class="at">reltol =</span> <span class="fl">1e-12</span>),</span>
+<span id="cb142-8"><a href="zi.html#cb142-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span></span>
+<span id="cb142-9"><a href="zi.html#cb142-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb142-10"><a href="zi.html#cb142-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb142-11"><a href="zi.html#cb142-11" aria-hidden="true" tabindex="-1"></a><span class="co"># fit</span></span></code></pre></div>
 </div>
 <div id="comparison-13" class="section level3">
 <h3>Comparison</h3>
 <p>Extract for clean display.</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="zi.html#cb152-1" aria-hidden="true" tabindex="-1"></a>B  <span class="ot">=</span> fit<span class="sc">$</span>par</span>
-<span id="cb152-2"><a href="zi.html#cb152-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">solve</span>((fit<span class="sc">$</span>hessian))))</span>
-<span id="cb152-3"><a href="zi.html#cb152-3" aria-hidden="true" tabindex="-1"></a>Z  <span class="ot">=</span> B<span class="sc">/</span>se</span>
-<span id="cb152-4"><a href="zi.html#cb152-4" aria-hidden="true" tabindex="-1"></a>p  <span class="ot">=</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(Z), <span class="at">lower =</span> <span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="zi.html#cb143-1" aria-hidden="true" tabindex="-1"></a>B  <span class="ot">=</span> fit<span class="sc">$</span>par</span>
+<span id="cb143-2"><a href="zi.html#cb143-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">solve</span>((fit<span class="sc">$</span>hessian))))</span>
+<span id="cb143-3"><a href="zi.html#cb143-3" aria-hidden="true" tabindex="-1"></a>Z  <span class="ot">=</span> B<span class="sc">/</span>se</span>
+<span id="cb143-4"><a href="zi.html#cb143-4" aria-hidden="true" tabindex="-1"></a>p  <span class="ot">=</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(Z), <span class="at">lower =</span> <span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span></code></pre></div>
 <p>Results from <span class="pack" style="">pscl</span>.</p>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="zi.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl)</span>
-<span id="cb153-2"><a href="zi.html#cb153-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb153-3"><a href="zi.html#cb153-3" aria-hidden="true" tabindex="-1"></a>fit_pscl <span class="ot">=</span> <span class="fu">zeroinfl</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">dist =</span> <span class="st">&quot;poisson&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="zi.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl)</span>
+<span id="cb144-2"><a href="zi.html#cb144-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb144-3"><a href="zi.html#cb144-3" aria-hidden="true" tabindex="-1"></a>fit_pscl <span class="ot">=</span> <span class="fu">zeroinfl</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">dist =</span> <span class="st">&quot;poisson&quot;</span>) </span></code></pre></div>
 <p>Compare.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1147,94 +1147,96 @@ logit.livebait
 <h2>Negative Binomial</h2>
 <div id="function-12" class="section level3">
 <h3>Function</h3>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="zi.html#cb154-1" aria-hidden="true" tabindex="-1"></a>zinb_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, par) {</span>
-<span id="cb154-2"><a href="zi.html#cb154-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments are response y, predictor matrix X, and parameter named starting points of &#39;logit&#39;, &#39;negbin&#39;, and &#39;theta&#39;</span></span>
-<span id="cb154-3"><a href="zi.html#cb154-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-4"><a href="zi.html#cb154-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract parameters</span></span>
-<span id="cb154-5"><a href="zi.html#cb154-5" aria-hidden="true" tabindex="-1"></a>  logitpars  <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;logit&#39;</span>, <span class="fu">names</span>(par))]</span>
-<span id="cb154-6"><a href="zi.html#cb154-6" aria-hidden="true" tabindex="-1"></a>  negbinpars <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;negbin&#39;</span>, <span class="fu">names</span>(par))]</span>
-<span id="cb154-7"><a href="zi.html#cb154-7" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">=</span> <span class="fu">exp</span>(par[<span class="fu">grep</span>(<span class="st">&#39;theta&#39;</span>, <span class="fu">names</span>(par))])</span>
-<span id="cb154-8"><a href="zi.html#cb154-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-9"><a href="zi.html#cb154-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Logit part; in this function Xlogit = Xnegbin but one could split X argument into Xlogit and Xnegbin for example</span></span>
-<span id="cb154-10"><a href="zi.html#cb154-10" aria-hidden="true" tabindex="-1"></a>  Xlogit  <span class="ot">=</span> X</span>
-<span id="cb154-11"><a href="zi.html#cb154-11" aria-hidden="true" tabindex="-1"></a>  LPlogit <span class="ot">=</span> Xlogit <span class="sc">%*%</span> logitpars</span>
-<span id="cb154-12"><a href="zi.html#cb154-12" aria-hidden="true" tabindex="-1"></a>  logi0   <span class="ot">=</span> <span class="fu">plogis</span>(LPlogit) </span>
-<span id="cb154-13"><a href="zi.html#cb154-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-14"><a href="zi.html#cb154-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Negbin part</span></span>
-<span id="cb154-15"><a href="zi.html#cb154-15" aria-hidden="true" tabindex="-1"></a>  Xnegbin <span class="ot">=</span> X</span>
-<span id="cb154-16"><a href="zi.html#cb154-16" aria-hidden="true" tabindex="-1"></a>  munb <span class="ot">=</span> <span class="fu">exp</span>(Xnegbin <span class="sc">%*%</span> negbinpars)</span>
-<span id="cb154-17"><a href="zi.html#cb154-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-18"><a href="zi.html#cb154-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LLs</span></span>
-<span id="cb154-19"><a href="zi.html#cb154-19" aria-hidden="true" tabindex="-1"></a>  logliklogit  <span class="ot">=</span> </span>
-<span id="cb154-20"><a href="zi.html#cb154-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>( </span>
-<span id="cb154-21"><a href="zi.html#cb154-21" aria-hidden="true" tabindex="-1"></a>      logi0 <span class="sc">+</span> <span class="fu">exp</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">+</span> <span class="fu">suppressWarnings</span>(<span class="fu">dnbinom</span>(<span class="dv">0</span>, </span>
-<span id="cb154-22"><a href="zi.html#cb154-22" aria-hidden="true" tabindex="-1"></a>                                                            <span class="at">size =</span> theta, </span>
-<span id="cb154-23"><a href="zi.html#cb154-23" aria-hidden="true" tabindex="-1"></a>                                                            <span class="at">mu   =</span> munb, </span>
-<span id="cb154-24"><a href="zi.html#cb154-24" aria-hidden="true" tabindex="-1"></a>                                                            <span class="at">log  =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb154-25"><a href="zi.html#cb154-25" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb154-26"><a href="zi.html#cb154-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-27"><a href="zi.html#cb154-27" aria-hidden="true" tabindex="-1"></a>  logliknegbin <span class="ot">=</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">+</span> <span class="fu">suppressWarnings</span>(<span class="fu">dnbinom</span>(y, </span>
-<span id="cb154-28"><a href="zi.html#cb154-28" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">size =</span> theta, </span>
-<span id="cb154-29"><a href="zi.html#cb154-29" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">mu   =</span> munb, </span>
-<span id="cb154-30"><a href="zi.html#cb154-30" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">log  =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb154-31"><a href="zi.html#cb154-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-32"><a href="zi.html#cb154-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Hilbe formulation</span></span>
-<span id="cb154-33"><a href="zi.html#cb154-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theta part </span></span>
-<span id="cb154-34"><a href="zi.html#cb154-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># alpha = 1/theta  </span></span>
-<span id="cb154-35"><a href="zi.html#cb154-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># m = 1/alpha</span></span>
-<span id="cb154-36"><a href="zi.html#cb154-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># p = 1/(1 + alpha*munb)</span></span>
-<span id="cb154-37"><a href="zi.html#cb154-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-38"><a href="zi.html#cb154-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># logliklogit = log( logi0 + (1 - logi0)*(p^m) )</span></span>
-<span id="cb154-39"><a href="zi.html#cb154-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># logliknegbin = log(1-logi0) + log(gamma(m+y)) - log(gamma(m)) + m*log(p) + y*log(1-p)   # gamma(y+1) not needed</span></span>
-<span id="cb154-40"><a href="zi.html#cb154-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-41"><a href="zi.html#cb154-41" aria-hidden="true" tabindex="-1"></a>  y0 <span class="ot">=</span> y <span class="sc">==</span> <span class="dv">0</span>   <span class="co"># 0 values</span></span>
-<span id="cb154-42"><a href="zi.html#cb154-42" aria-hidden="true" tabindex="-1"></a>  yc <span class="ot">=</span> y <span class="sc">&gt;</span> <span class="dv">0</span>    <span class="co"># Count part</span></span>
-<span id="cb154-43"><a href="zi.html#cb154-43" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb154-44"><a href="zi.html#cb154-44" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(logliklogit[y0]) <span class="sc">+</span> <span class="fu">sum</span>(logliknegbin[yc])</span>
-<span id="cb154-45"><a href="zi.html#cb154-45" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>loglik</span>
-<span id="cb154-46"><a href="zi.html#cb154-46" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="zi.html#cb145-1" aria-hidden="true" tabindex="-1"></a>zinb_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, par) {</span>
+<span id="cb145-2"><a href="zi.html#cb145-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments are response y, predictor matrix X, and parameter named starting points of &#39;logit&#39;, &#39;negbin&#39;, and &#39;theta&#39;</span></span>
+<span id="cb145-3"><a href="zi.html#cb145-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-4"><a href="zi.html#cb145-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract parameters</span></span>
+<span id="cb145-5"><a href="zi.html#cb145-5" aria-hidden="true" tabindex="-1"></a>  logitpars  <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;logit&#39;</span>, <span class="fu">names</span>(par))]</span>
+<span id="cb145-6"><a href="zi.html#cb145-6" aria-hidden="true" tabindex="-1"></a>  negbinpars <span class="ot">=</span> par[<span class="fu">grep</span>(<span class="st">&#39;negbin&#39;</span>, <span class="fu">names</span>(par))]</span>
+<span id="cb145-7"><a href="zi.html#cb145-7" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">=</span> <span class="fu">exp</span>(par[<span class="fu">grep</span>(<span class="st">&#39;theta&#39;</span>, <span class="fu">names</span>(par))])</span>
+<span id="cb145-8"><a href="zi.html#cb145-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-9"><a href="zi.html#cb145-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Logit part; in this function Xlogit = Xnegbin but one could split X argument into Xlogit and Xnegbin for example</span></span>
+<span id="cb145-10"><a href="zi.html#cb145-10" aria-hidden="true" tabindex="-1"></a>  Xlogit  <span class="ot">=</span> X</span>
+<span id="cb145-11"><a href="zi.html#cb145-11" aria-hidden="true" tabindex="-1"></a>  LPlogit <span class="ot">=</span> Xlogit <span class="sc">%*%</span> logitpars</span>
+<span id="cb145-12"><a href="zi.html#cb145-12" aria-hidden="true" tabindex="-1"></a>  logi0   <span class="ot">=</span> <span class="fu">plogis</span>(LPlogit) </span>
+<span id="cb145-13"><a href="zi.html#cb145-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-14"><a href="zi.html#cb145-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Negbin part</span></span>
+<span id="cb145-15"><a href="zi.html#cb145-15" aria-hidden="true" tabindex="-1"></a>  Xnegbin <span class="ot">=</span> X</span>
+<span id="cb145-16"><a href="zi.html#cb145-16" aria-hidden="true" tabindex="-1"></a>  munb <span class="ot">=</span> <span class="fu">exp</span>(Xnegbin <span class="sc">%*%</span> negbinpars)</span>
+<span id="cb145-17"><a href="zi.html#cb145-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-18"><a href="zi.html#cb145-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LLs</span></span>
+<span id="cb145-19"><a href="zi.html#cb145-19" aria-hidden="true" tabindex="-1"></a>  logliklogit  <span class="ot">=</span> </span>
+<span id="cb145-20"><a href="zi.html#cb145-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>( </span>
+<span id="cb145-21"><a href="zi.html#cb145-21" aria-hidden="true" tabindex="-1"></a>      logi0 <span class="sc">+</span> </span>
+<span id="cb145-22"><a href="zi.html#cb145-22" aria-hidden="true" tabindex="-1"></a>        <span class="fu">exp</span>(</span>
+<span id="cb145-23"><a href="zi.html#cb145-23" aria-hidden="true" tabindex="-1"></a>          <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">+</span> </span>
+<span id="cb145-24"><a href="zi.html#cb145-24" aria-hidden="true" tabindex="-1"></a>            <span class="fu">suppressWarnings</span>(<span class="fu">dnbinom</span>(<span class="dv">0</span>, <span class="at">size =</span> theta, <span class="at">mu   =</span> munb, <span class="at">log  =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb145-25"><a href="zi.html#cb145-25" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb145-26"><a href="zi.html#cb145-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb145-27"><a href="zi.html#cb145-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-28"><a href="zi.html#cb145-28" aria-hidden="true" tabindex="-1"></a>  logliknegbin <span class="ot">=</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> logi0) <span class="sc">+</span> </span>
+<span id="cb145-29"><a href="zi.html#cb145-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressWarnings</span>(<span class="fu">dnbinom</span>(y, </span>
+<span id="cb145-30"><a href="zi.html#cb145-30" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> theta, </span>
+<span id="cb145-31"><a href="zi.html#cb145-31" aria-hidden="true" tabindex="-1"></a>                             <span class="at">mu   =</span> munb, </span>
+<span id="cb145-32"><a href="zi.html#cb145-32" aria-hidden="true" tabindex="-1"></a>                             <span class="at">log  =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb145-33"><a href="zi.html#cb145-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-34"><a href="zi.html#cb145-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Hilbe formulation</span></span>
+<span id="cb145-35"><a href="zi.html#cb145-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theta part </span></span>
+<span id="cb145-36"><a href="zi.html#cb145-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># alpha = 1/theta  </span></span>
+<span id="cb145-37"><a href="zi.html#cb145-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># m = 1/alpha</span></span>
+<span id="cb145-38"><a href="zi.html#cb145-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># p = 1/(1 + alpha*munb)</span></span>
+<span id="cb145-39"><a href="zi.html#cb145-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-40"><a href="zi.html#cb145-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># logliklogit = log( logi0 + (1 - logi0)*(p^m) )</span></span>
+<span id="cb145-41"><a href="zi.html#cb145-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># logliknegbin = log(1-logi0) + log(gamma(m+y)) - log(gamma(m)) + m*log(p) + y*log(1-p)   # gamma(y+1) not needed</span></span>
+<span id="cb145-42"><a href="zi.html#cb145-42" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-43"><a href="zi.html#cb145-43" aria-hidden="true" tabindex="-1"></a>  y0 <span class="ot">=</span> y <span class="sc">==</span> <span class="dv">0</span>   <span class="co"># 0 values</span></span>
+<span id="cb145-44"><a href="zi.html#cb145-44" aria-hidden="true" tabindex="-1"></a>  yc <span class="ot">=</span> y <span class="sc">&gt;</span> <span class="dv">0</span>    <span class="co"># Count part</span></span>
+<span id="cb145-45"><a href="zi.html#cb145-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb145-46"><a href="zi.html#cb145-46" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(logliklogit[y0]) <span class="sc">+</span> <span class="fu">sum</span>(logliknegbin[yc])</span>
+<span id="cb145-47"><a href="zi.html#cb145-47" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>loglik</span>
+<span id="cb145-48"><a href="zi.html#cb145-48" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-13" class="section level3">
 <h3>Estimation</h3>
 <p>Get starting values or simply do zeros.</p>
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="zi.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for zinb: &#39;logit&#39;, &#39;negbin&#39;, &#39;theta&#39;</span></span>
-<span id="cb155-2"><a href="zi.html#cb155-2" aria-hidden="true" tabindex="-1"></a>initial_model <span class="ot">=</span> <span class="fu">model.matrix</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish) <span class="co"># to get X matrix</span></span>
-<span id="cb155-3"><a href="zi.html#cb155-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb155-4"><a href="zi.html#cb155-4" aria-hidden="true" tabindex="-1"></a>startlogi  <span class="ot">=</span> <span class="fu">glm</span>(count <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
-<span id="cb155-5"><a href="zi.html#cb155-5" aria-hidden="true" tabindex="-1"></a>startcount <span class="ot">=</span> <span class="fu">glm</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>)</span>
-<span id="cb155-6"><a href="zi.html#cb155-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb155-7"><a href="zi.html#cb155-7" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb155-8"><a href="zi.html#cb155-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">negbin =</span> <span class="fu">coef</span>(startcount),</span>
-<span id="cb155-9"><a href="zi.html#cb155-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">logit =</span> <span class="fu">coef</span>(startlogi),</span>
-<span id="cb155-10"><a href="zi.html#cb155-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta =</span> <span class="dv">1</span></span>
-<span id="cb155-11"><a href="zi.html#cb155-11" aria-hidden="true" tabindex="-1"></a>)  </span>
-<span id="cb155-12"><a href="zi.html#cb155-12" aria-hidden="true" tabindex="-1"></a><span class="co"># starts = c(negbin = rep(0, 3),</span></span>
-<span id="cb155-13"><a href="zi.html#cb155-13" aria-hidden="true" tabindex="-1"></a><span class="co">#            logit = rep(0, 3),</span></span>
-<span id="cb155-14"><a href="zi.html#cb155-14" aria-hidden="true" tabindex="-1"></a><span class="co">#            theta = log(1))</span></span></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="zi.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for zinb: &#39;logit&#39;, &#39;negbin&#39;, &#39;theta&#39;</span></span>
+<span id="cb146-2"><a href="zi.html#cb146-2" aria-hidden="true" tabindex="-1"></a>initial_model <span class="ot">=</span> <span class="fu">model.matrix</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish) <span class="co"># to get X matrix</span></span>
+<span id="cb146-3"><a href="zi.html#cb146-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb146-4"><a href="zi.html#cb146-4" aria-hidden="true" tabindex="-1"></a>startlogi  <span class="ot">=</span> <span class="fu">glm</span>(count <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb146-5"><a href="zi.html#cb146-5" aria-hidden="true" tabindex="-1"></a>startcount <span class="ot">=</span> <span class="fu">glm</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>)</span>
+<span id="cb146-6"><a href="zi.html#cb146-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb146-7"><a href="zi.html#cb146-7" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb146-8"><a href="zi.html#cb146-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">negbin =</span> <span class="fu">coef</span>(startcount),</span>
+<span id="cb146-9"><a href="zi.html#cb146-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">logit =</span> <span class="fu">coef</span>(startlogi),</span>
+<span id="cb146-10"><a href="zi.html#cb146-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta =</span> <span class="dv">1</span></span>
+<span id="cb146-11"><a href="zi.html#cb146-11" aria-hidden="true" tabindex="-1"></a>)  </span>
+<span id="cb146-12"><a href="zi.html#cb146-12" aria-hidden="true" tabindex="-1"></a><span class="co"># starts = c(negbin = rep(0, 3),</span></span>
+<span id="cb146-13"><a href="zi.html#cb146-13" aria-hidden="true" tabindex="-1"></a><span class="co">#            logit = rep(0, 3),</span></span>
+<span id="cb146-14"><a href="zi.html#cb146-14" aria-hidden="true" tabindex="-1"></a><span class="co">#            theta = log(1))</span></span></code></pre></div>
 <p>Estimate with <span class="func" style="">optim</span>.</p>
-<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="zi.html#cb156-1" aria-hidden="true" tabindex="-1"></a>fit_nb <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb156-2"><a href="zi.html#cb156-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> starts ,</span>
-<span id="cb156-3"><a href="zi.html#cb156-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> zinb_ll,</span>
-<span id="cb156-4"><a href="zi.html#cb156-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> initial_model,</span>
-<span id="cb156-5"><a href="zi.html#cb156-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> fish<span class="sc">$</span>count,</span>
-<span id="cb156-6"><a href="zi.html#cb156-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
-<span id="cb156-7"><a href="zi.html#cb156-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">5000</span>, <span class="at">reltol =</span> <span class="fl">1e-12</span>),</span>
-<span id="cb156-8"><a href="zi.html#cb156-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span></span>
-<span id="cb156-9"><a href="zi.html#cb156-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb156-10"><a href="zi.html#cb156-10" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_nb</span></span></code></pre></div>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="zi.html#cb147-1" aria-hidden="true" tabindex="-1"></a>fit_nb <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb147-2"><a href="zi.html#cb147-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> starts ,</span>
+<span id="cb147-3"><a href="zi.html#cb147-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> zinb_ll,</span>
+<span id="cb147-4"><a href="zi.html#cb147-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> initial_model,</span>
+<span id="cb147-5"><a href="zi.html#cb147-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> fish<span class="sc">$</span>count,</span>
+<span id="cb147-6"><a href="zi.html#cb147-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb147-7"><a href="zi.html#cb147-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">5000</span>, <span class="at">reltol =</span> <span class="fl">1e-12</span>),</span>
+<span id="cb147-8"><a href="zi.html#cb147-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span></span>
+<span id="cb147-9"><a href="zi.html#cb147-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb147-10"><a href="zi.html#cb147-10" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_nb</span></span></code></pre></div>
 </div>
 <div id="comparison-14" class="section level3">
 <h3>Comparison</h3>
 <p>Extract for clean display.</p>
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="zi.html#cb157-1" aria-hidden="true" tabindex="-1"></a>B  <span class="ot">=</span> fit_nb<span class="sc">$</span>par</span>
-<span id="cb157-2"><a href="zi.html#cb157-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">solve</span>((fit_nb<span class="sc">$</span>hessian))))</span>
-<span id="cb157-3"><a href="zi.html#cb157-3" aria-hidden="true" tabindex="-1"></a>Z  <span class="ot">=</span> B<span class="sc">/</span>se</span>
-<span id="cb157-4"><a href="zi.html#cb157-4" aria-hidden="true" tabindex="-1"></a>p  <span class="ot">=</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(Z), <span class="at">lower =</span> <span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="zi.html#cb148-1" aria-hidden="true" tabindex="-1"></a>B  <span class="ot">=</span> fit_nb<span class="sc">$</span>par</span>
+<span id="cb148-2"><a href="zi.html#cb148-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">solve</span>((fit_nb<span class="sc">$</span>hessian))))</span>
+<span id="cb148-3"><a href="zi.html#cb148-3" aria-hidden="true" tabindex="-1"></a>Z  <span class="ot">=</span> B<span class="sc">/</span>se</span>
+<span id="cb148-4"><a href="zi.html#cb148-4" aria-hidden="true" tabindex="-1"></a>p  <span class="ot">=</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(Z), <span class="at">lower =</span> <span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span></code></pre></div>
 <p>Results from <span class="pack" style="">pscl</span>.</p>
-<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="zi.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pscl results</span></span>
-<span id="cb158-2"><a href="zi.html#cb158-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl)</span>
-<span id="cb158-3"><a href="zi.html#cb158-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-4"><a href="zi.html#cb158-4" aria-hidden="true" tabindex="-1"></a>fit_pscl <span class="ot">=</span> <span class="fu">zeroinfl</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">dist =</span> <span class="st">&quot;negbin&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="zi.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pscl results</span></span>
+<span id="cb149-2"><a href="zi.html#cb149-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl)</span>
+<span id="cb149-3"><a href="zi.html#cb149-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb149-4"><a href="zi.html#cb149-4" aria-hidden="true" tabindex="-1"></a>fit_pscl <span class="ot">=</span> <span class="fu">zeroinfl</span>(count <span class="sc">~</span> persons <span class="sc">+</span> livebait, <span class="at">data =</span> fish, <span class="at">dist =</span> <span class="st">&quot;negbin&quot;</span>)</span></code></pre></div>
 <p>Compare.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1554,45 +1556,45 @@ theta
 <li><strong>phd</strong>: prestige of Ph.D. department</li>
 <li><strong>ment</strong>: count of articles produced by Ph.D. mentor during last 3 years</li>
 </ul>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="zi.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;bioChemists&quot;</span>, <span class="at">package =</span> <span class="st">&quot;pscl&quot;</span>)</span>
-<span id="cb159-2"><a href="zi.html#cb159-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-3"><a href="zi.html#cb159-3" aria-hidden="true" tabindex="-1"></a>initial_model   <span class="ot">=</span> <span class="fu">model.matrix</span>(art <span class="sc">~</span> fem <span class="sc">+</span> mar <span class="sc">+</span> kid5 <span class="sc">+</span> phd <span class="sc">+</span> ment, <span class="at">data =</span> bioChemists) <span class="co"># to get X matrix</span></span>
-<span id="cb159-4"><a href="zi.html#cb159-4" aria-hidden="true" tabindex="-1"></a>startlogi  <span class="ot">=</span> <span class="fu">glm</span>(art<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> fem <span class="sc">+</span> mar <span class="sc">+</span> kid5 <span class="sc">+</span> phd <span class="sc">+</span> ment, <span class="at">data =</span> bioChemists, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
-<span id="cb159-5"><a href="zi.html#cb159-5" aria-hidden="true" tabindex="-1"></a>startcount <span class="ot">=</span> <span class="fu">glm</span>(art <span class="sc">~</span> fem <span class="sc">+</span> mar <span class="sc">+</span> kid5 <span class="sc">+</span> phd <span class="sc">+</span> ment, <span class="at">data =</span> bioChemists, <span class="at">family =</span> <span class="st">&quot;quasipoisson&quot;</span>)</span>
-<span id="cb159-6"><a href="zi.html#cb159-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-7"><a href="zi.html#cb159-7" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb159-8"><a href="zi.html#cb159-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">negbin =</span> <span class="fu">coef</span>(startcount),</span>
-<span id="cb159-9"><a href="zi.html#cb159-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">logit  =</span> <span class="fu">coef</span>(startlogi),</span>
-<span id="cb159-10"><a href="zi.html#cb159-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta  =</span> <span class="fu">summary</span>(startcount)<span class="sc">$</span>dispersion</span>
-<span id="cb159-11"><a href="zi.html#cb159-11" aria-hidden="true" tabindex="-1"></a>)  </span>
-<span id="cb159-12"><a href="zi.html#cb159-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-13"><a href="zi.html#cb159-13" aria-hidden="true" tabindex="-1"></a><span class="co"># starts = c(negbin = rep(0, 6),</span></span>
-<span id="cb159-14"><a href="zi.html#cb159-14" aria-hidden="true" tabindex="-1"></a><span class="co">#            logit = rep(0, 6),</span></span>
-<span id="cb159-15"><a href="zi.html#cb159-15" aria-hidden="true" tabindex="-1"></a><span class="co">#            theta = 1)</span></span>
-<span id="cb159-16"><a href="zi.html#cb159-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-17"><a href="zi.html#cb159-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-18"><a href="zi.html#cb159-18" aria-hidden="true" tabindex="-1"></a>fit_nb_pub <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb159-19"><a href="zi.html#cb159-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> starts ,</span>
-<span id="cb159-20"><a href="zi.html#cb159-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> zinb_ll,</span>
-<span id="cb159-21"><a href="zi.html#cb159-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> initial_model,</span>
-<span id="cb159-22"><a href="zi.html#cb159-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> bioChemists<span class="sc">$</span>art,</span>
-<span id="cb159-23"><a href="zi.html#cb159-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
-<span id="cb159-24"><a href="zi.html#cb159-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">5000</span>, <span class="at">reltol =</span> <span class="fl">1e-12</span>),</span>
-<span id="cb159-25"><a href="zi.html#cb159-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span></span>
-<span id="cb159-26"><a href="zi.html#cb159-26" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb159-27"><a href="zi.html#cb159-27" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_nb_pub</span></span>
-<span id="cb159-28"><a href="zi.html#cb159-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-29"><a href="zi.html#cb159-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-30"><a href="zi.html#cb159-30" aria-hidden="true" tabindex="-1"></a>B  <span class="ot">=</span> fit_nb_pub<span class="sc">$</span>par</span>
-<span id="cb159-31"><a href="zi.html#cb159-31" aria-hidden="true" tabindex="-1"></a>se <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">solve</span>((fit_nb_pub<span class="sc">$</span>hessian))))</span>
-<span id="cb159-32"><a href="zi.html#cb159-32" aria-hidden="true" tabindex="-1"></a>Z  <span class="ot">=</span> B<span class="sc">/</span>se</span>
-<span id="cb159-33"><a href="zi.html#cb159-33" aria-hidden="true" tabindex="-1"></a>p  <span class="ot">=</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(Z), <span class="at">lower =</span> <span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span>
-<span id="cb159-34"><a href="zi.html#cb159-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-35"><a href="zi.html#cb159-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-36"><a href="zi.html#cb159-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl)</span>
-<span id="cb159-37"><a href="zi.html#cb159-37" aria-hidden="true" tabindex="-1"></a>fit_pscl <span class="ot">=</span> <span class="fu">zeroinfl</span>(art <span class="sc">~</span> . <span class="sc">|</span> ., <span class="at">data =</span> bioChemists, <span class="at">dist =</span> <span class="st">&quot;negbin&quot;</span>)</span>
-<span id="cb159-38"><a href="zi.html#cb159-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-39"><a href="zi.html#cb159-39" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_pscl)<span class="sc">$</span>coefficients</span></code></pre></div>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="zi.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;bioChemists&quot;</span>, <span class="at">package =</span> <span class="st">&quot;pscl&quot;</span>)</span>
+<span id="cb150-2"><a href="zi.html#cb150-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-3"><a href="zi.html#cb150-3" aria-hidden="true" tabindex="-1"></a>initial_model   <span class="ot">=</span> <span class="fu">model.matrix</span>(art <span class="sc">~</span> fem <span class="sc">+</span> mar <span class="sc">+</span> kid5 <span class="sc">+</span> phd <span class="sc">+</span> ment, <span class="at">data =</span> bioChemists) <span class="co"># to get X matrix</span></span>
+<span id="cb150-4"><a href="zi.html#cb150-4" aria-hidden="true" tabindex="-1"></a>startlogi  <span class="ot">=</span> <span class="fu">glm</span>(art<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> fem <span class="sc">+</span> mar <span class="sc">+</span> kid5 <span class="sc">+</span> phd <span class="sc">+</span> ment, <span class="at">data =</span> bioChemists, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb150-5"><a href="zi.html#cb150-5" aria-hidden="true" tabindex="-1"></a>startcount <span class="ot">=</span> <span class="fu">glm</span>(art <span class="sc">~</span> fem <span class="sc">+</span> mar <span class="sc">+</span> kid5 <span class="sc">+</span> phd <span class="sc">+</span> ment, <span class="at">data =</span> bioChemists, <span class="at">family =</span> <span class="st">&quot;quasipoisson&quot;</span>)</span>
+<span id="cb150-6"><a href="zi.html#cb150-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-7"><a href="zi.html#cb150-7" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb150-8"><a href="zi.html#cb150-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">negbin =</span> <span class="fu">coef</span>(startcount),</span>
+<span id="cb150-9"><a href="zi.html#cb150-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">logit  =</span> <span class="fu">coef</span>(startlogi),</span>
+<span id="cb150-10"><a href="zi.html#cb150-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta  =</span> <span class="fu">summary</span>(startcount)<span class="sc">$</span>dispersion</span>
+<span id="cb150-11"><a href="zi.html#cb150-11" aria-hidden="true" tabindex="-1"></a>)  </span>
+<span id="cb150-12"><a href="zi.html#cb150-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-13"><a href="zi.html#cb150-13" aria-hidden="true" tabindex="-1"></a><span class="co"># starts = c(negbin = rep(0, 6),</span></span>
+<span id="cb150-14"><a href="zi.html#cb150-14" aria-hidden="true" tabindex="-1"></a><span class="co">#            logit = rep(0, 6),</span></span>
+<span id="cb150-15"><a href="zi.html#cb150-15" aria-hidden="true" tabindex="-1"></a><span class="co">#            theta = 1)</span></span>
+<span id="cb150-16"><a href="zi.html#cb150-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-17"><a href="zi.html#cb150-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-18"><a href="zi.html#cb150-18" aria-hidden="true" tabindex="-1"></a>fit_nb_pub <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb150-19"><a href="zi.html#cb150-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> starts ,</span>
+<span id="cb150-20"><a href="zi.html#cb150-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> zinb_ll,</span>
+<span id="cb150-21"><a href="zi.html#cb150-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> initial_model,</span>
+<span id="cb150-22"><a href="zi.html#cb150-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> bioChemists<span class="sc">$</span>art,</span>
+<span id="cb150-23"><a href="zi.html#cb150-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb150-24"><a href="zi.html#cb150-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">5000</span>, <span class="at">reltol =</span> <span class="fl">1e-12</span>),</span>
+<span id="cb150-25"><a href="zi.html#cb150-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span></span>
+<span id="cb150-26"><a href="zi.html#cb150-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb150-27"><a href="zi.html#cb150-27" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_nb_pub</span></span>
+<span id="cb150-28"><a href="zi.html#cb150-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-29"><a href="zi.html#cb150-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-30"><a href="zi.html#cb150-30" aria-hidden="true" tabindex="-1"></a>B  <span class="ot">=</span> fit_nb_pub<span class="sc">$</span>par</span>
+<span id="cb150-31"><a href="zi.html#cb150-31" aria-hidden="true" tabindex="-1"></a>se <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">solve</span>((fit_nb_pub<span class="sc">$</span>hessian))))</span>
+<span id="cb150-32"><a href="zi.html#cb150-32" aria-hidden="true" tabindex="-1"></a>Z  <span class="ot">=</span> B<span class="sc">/</span>se</span>
+<span id="cb150-33"><a href="zi.html#cb150-33" aria-hidden="true" tabindex="-1"></a>p  <span class="ot">=</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(Z), <span class="at">lower =</span> <span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span>
+<span id="cb150-34"><a href="zi.html#cb150-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-35"><a href="zi.html#cb150-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-36"><a href="zi.html#cb150-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl)</span>
+<span id="cb150-37"><a href="zi.html#cb150-37" aria-hidden="true" tabindex="-1"></a>fit_pscl <span class="ot">=</span> <span class="fu">zeroinfl</span>(art <span class="sc">~</span> . <span class="sc">|</span> ., <span class="at">data =</span> bioChemists, <span class="at">dist =</span> <span class="st">&quot;negbin&quot;</span>)</span>
+<span id="cb150-38"><a href="zi.html#cb150-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb150-39"><a href="zi.html#cb150-39" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_pscl)<span class="sc">$</span>coefficients</span></code></pre></div>
 <pre><code>$count
                  Estimate  Std. Error     z value     Pr(&gt;|z|)
 (Intercept)  0.4167465901 0.143596450  2.90220678 3.705439e-03
@@ -1611,7 +1613,7 @@ marMarried  -1.49943716  0.9386562 -1.5974296 0.110169987
 kid5         0.62840922  0.4427746  1.4192531 0.155825245
 phd         -0.03773288  0.3080059 -0.1225070 0.902497523
 ment        -0.88227364  0.3162186 -2.7900755 0.005269575</code></pre>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="zi.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">data.frame</span>(B, se, Z, p), <span class="dv">4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="zi.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">data.frame</span>(B, se, Z, p), <span class="dv">4</span>)</span></code></pre></div>
 <pre><code>                         B     se       Z      p
 negbin.(Intercept)  0.4167 0.1436  2.9021 0.0037
 negbin.femWomen    -0.1955 0.0756 -2.5863 0.0097

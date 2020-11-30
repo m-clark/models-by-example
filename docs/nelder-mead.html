@@ -825,144 +825,144 @@ loop indefinitely.</li>
 <li><code>verbose</code> Print iterations?</li>
 </ul>
 <p>This function returns the best parameter array and best score.</p>
-<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="nelder-mead.html#cb675-1" aria-hidden="true" tabindex="-1"></a>nelder_mead <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb675-2"><a href="nelder-mead.html#cb675-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
-<span id="cb675-3"><a href="nelder-mead.html#cb675-3" aria-hidden="true" tabindex="-1"></a>  x_start,</span>
-<span id="cb675-4"><a href="nelder-mead.html#cb675-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">step =</span> <span class="fl">0.1</span>,</span>
-<span id="cb675-5"><a href="nelder-mead.html#cb675-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr  =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb675-6"><a href="nelder-mead.html#cb675-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improv_break =</span> <span class="dv">10</span>,</span>
-<span id="cb675-7"><a href="nelder-mead.html#cb675-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">0</span>,</span>
-<span id="cb675-8"><a href="nelder-mead.html#cb675-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha    =</span> <span class="dv">1</span>,</span>
-<span id="cb675-9"><a href="nelder-mead.html#cb675-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma    =</span> <span class="dv">2</span>,</span>
-<span id="cb675-10"><a href="nelder-mead.html#cb675-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho      =</span> <span class="fl">0.5</span>,</span>
-<span id="cb675-11"><a href="nelder-mead.html#cb675-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma    =</span> <span class="fl">0.5</span>,</span>
-<span id="cb675-12"><a href="nelder-mead.html#cb675-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose  =</span> <span class="cn">FALSE</span></span>
-<span id="cb675-13"><a href="nelder-mead.html#cb675-13" aria-hidden="true" tabindex="-1"></a>  ) {</span>
-<span id="cb675-14"><a href="nelder-mead.html#cb675-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># init</span></span>
-<span id="cb675-15"><a href="nelder-mead.html#cb675-15" aria-hidden="true" tabindex="-1"></a>  dim <span class="ot">=</span> <span class="fu">length</span>(x_start)</span>
-<span id="cb675-16"><a href="nelder-mead.html#cb675-16" aria-hidden="true" tabindex="-1"></a>  prev_best <span class="ot">=</span> <span class="fu">f</span>(x_start)</span>
-<span id="cb675-17"><a href="nelder-mead.html#cb675-17" aria-hidden="true" tabindex="-1"></a>  no_improv <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb675-18"><a href="nelder-mead.html#cb675-18" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">x_start =</span> x_start, <span class="at">prev_best =</span> prev_best))</span>
-<span id="cb675-19"><a href="nelder-mead.html#cb675-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb675-20"><a href="nelder-mead.html#cb675-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb675-21"><a href="nelder-mead.html#cb675-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>dim) {</span>
-<span id="cb675-22"><a href="nelder-mead.html#cb675-22" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> x_start</span>
-<span id="cb675-23"><a href="nelder-mead.html#cb675-23" aria-hidden="true" tabindex="-1"></a>    x[i]  <span class="ot">=</span> x[i] <span class="sc">+</span> step</span>
-<span id="cb675-24"><a href="nelder-mead.html#cb675-24" aria-hidden="true" tabindex="-1"></a>    score <span class="ot">=</span> <span class="fu">f</span>(x)</span>
-<span id="cb675-25"><a href="nelder-mead.html#cb675-25" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">=</span> <span class="fu">append</span>(res, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">x_start =</span> x, <span class="at">prev_best =</span> score)))</span>
-<span id="cb675-26"><a href="nelder-mead.html#cb675-26" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb675-27"><a href="nelder-mead.html#cb675-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb675-28"><a href="nelder-mead.html#cb675-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simplex iter</span></span>
-<span id="cb675-29"><a href="nelder-mead.html#cb675-29" aria-hidden="true" tabindex="-1"></a>  iters <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb675-30"><a href="nelder-mead.html#cb675-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb675-31"><a href="nelder-mead.html#cb675-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (<span class="cn">TRUE</span>) {</span>
-<span id="cb675-32"><a href="nelder-mead.html#cb675-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># order</span></span>
-<span id="cb675-33"><a href="nelder-mead.html#cb675-33" aria-hidden="true" tabindex="-1"></a>    idx  <span class="ot">=</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="dv">2</span>)</span>
-<span id="cb675-34"><a href="nelder-mead.html#cb675-34" aria-hidden="true" tabindex="-1"></a>    res  <span class="ot">=</span> res[<span class="fu">order</span>(idx)]   <span class="co"># ascending order</span></span>
-<span id="cb675-35"><a href="nelder-mead.html#cb675-35" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">=</span> res[[<span class="dv">1</span>]][[<span class="dv">2</span>]]</span>
-<span id="cb675-36"><a href="nelder-mead.html#cb675-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb675-37"><a href="nelder-mead.html#cb675-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after max_iter</span></span>
-<span id="cb675-38"><a href="nelder-mead.html#cb675-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (max_iter <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> iters <span class="sc">&gt;=</span> max_iter) <span class="fu">return</span>(res[[<span class="dv">1</span>]])</span>
-<span id="cb675-39"><a href="nelder-mead.html#cb675-39" aria-hidden="true" tabindex="-1"></a>    iters <span class="ot">=</span> iters <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb675-40"><a href="nelder-mead.html#cb675-40" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb675-41"><a href="nelder-mead.html#cb675-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after no_improv_break iterations with no improvement</span></span>
-<span id="cb675-42"><a href="nelder-mead.html#cb675-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose) <span class="fu">message</span>(<span class="fu">paste</span>(<span class="st">&#39;...best so far:&#39;</span>, best))</span>
-<span id="cb675-43"><a href="nelder-mead.html#cb675-43" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb675-44"><a href="nelder-mead.html#cb675-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (best <span class="sc">&lt;</span> (prev_best <span class="sc">-</span> no_improve_thr)) {</span>
-<span id="cb675-45"><a href="nelder-mead.html#cb675-45" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb675-46"><a href="nelder-mead.html#cb675-46" aria-hidden="true" tabindex="-1"></a>      prev_best <span class="ot">=</span> best</span>
-<span id="cb675-47"><a href="nelder-mead.html#cb675-47" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb675-48"><a href="nelder-mead.html#cb675-48" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> no_improv <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb675-49"><a href="nelder-mead.html#cb675-49" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb675-50"><a href="nelder-mead.html#cb675-50" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb675-51"><a href="nelder-mead.html#cb675-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (no_improv <span class="sc">&gt;=</span> no_improv_break) <span class="fu">return</span>(res[[<span class="dv">1</span>]])</span>
-<span id="cb675-52"><a href="nelder-mead.html#cb675-52" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb675-53"><a href="nelder-mead.html#cb675-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># centroid</span></span>
-<span id="cb675-54"><a href="nelder-mead.html#cb675-54" aria-hidden="true" tabindex="-1"></a>    x0 <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, dim)</span>
-<span id="cb675-55"><a href="nelder-mead.html#cb675-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (tup <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(res)<span class="sc">-</span><span class="dv">1</span>)) {</span>
-<span id="cb675-56"><a href="nelder-mead.html#cb675-56" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>dim) {</span>
-<span id="cb675-57"><a href="nelder-mead.html#cb675-57" aria-hidden="true" tabindex="-1"></a>        x0[i] <span class="ot">=</span> x0[i] <span class="sc">+</span> res[[tup]][[<span class="dv">1</span>]][i] <span class="sc">/</span> (<span class="fu">length</span>(res)<span class="sc">-</span><span class="dv">1</span>)</span>
-<span id="cb675-58"><a href="nelder-mead.html#cb675-58" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb675-59"><a href="nelder-mead.html#cb675-59" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb675-60"><a href="nelder-mead.html#cb675-60" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb675-61"><a href="nelder-mead.html#cb675-61" aria-hidden="true" tabindex="-1"></a>   <span class="co"># reflection</span></span>
-<span id="cb675-62"><a href="nelder-mead.html#cb675-62" aria-hidden="true" tabindex="-1"></a>   xr <span class="ot">=</span> x0 <span class="sc">+</span> alpha <span class="sc">*</span> (x0 <span class="sc">-</span> res[[<span class="fu">length</span>(res)]][[<span class="dv">1</span>]])</span>
-<span id="cb675-63"><a href="nelder-mead.html#cb675-63" aria-hidden="true" tabindex="-1"></a>   rscore <span class="ot">=</span> <span class="fu">f</span>(xr)</span>
-<span id="cb675-64"><a href="nelder-mead.html#cb675-64" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (res[[<span class="dv">1</span>]][[<span class="dv">2</span>]] <span class="sc">&lt;=</span> rscore <span class="sc">&amp;</span> </span>
-<span id="cb675-65"><a href="nelder-mead.html#cb675-65" aria-hidden="true" tabindex="-1"></a>       rscore <span class="sc">&lt;</span> res[[<span class="fu">length</span>(res)<span class="sc">-</span><span class="dv">1</span>]][[<span class="dv">2</span>]]) {</span>
-<span id="cb675-66"><a href="nelder-mead.html#cb675-66" aria-hidden="true" tabindex="-1"></a>     res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xr, rscore)</span>
-<span id="cb675-67"><a href="nelder-mead.html#cb675-67" aria-hidden="true" tabindex="-1"></a>     <span class="cf">next</span></span>
-<span id="cb675-68"><a href="nelder-mead.html#cb675-68" aria-hidden="true" tabindex="-1"></a>   }</span>
-<span id="cb675-69"><a href="nelder-mead.html#cb675-69" aria-hidden="true" tabindex="-1"></a>     </span>
-<span id="cb675-70"><a href="nelder-mead.html#cb675-70" aria-hidden="true" tabindex="-1"></a>   <span class="co"># expansion</span></span>
-<span id="cb675-71"><a href="nelder-mead.html#cb675-71" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (rscore <span class="sc">&lt;</span> res[[<span class="dv">1</span>]][[<span class="dv">2</span>]]) {</span>
-<span id="cb675-72"><a href="nelder-mead.html#cb675-72" aria-hidden="true" tabindex="-1"></a>     <span class="co"># xe = x0 + gamma*(x0 - res[[length(res)]][[1]])   # issue with this</span></span>
-<span id="cb675-73"><a href="nelder-mead.html#cb675-73" aria-hidden="true" tabindex="-1"></a>     xe <span class="ot">=</span> x0 <span class="sc">+</span> gamma <span class="sc">*</span> (xr <span class="sc">-</span> x0)   </span>
-<span id="cb675-74"><a href="nelder-mead.html#cb675-74" aria-hidden="true" tabindex="-1"></a>     escore <span class="ot">=</span> <span class="fu">f</span>(xe)</span>
-<span id="cb675-75"><a href="nelder-mead.html#cb675-75" aria-hidden="true" tabindex="-1"></a>     <span class="cf">if</span> (escore <span class="sc">&lt;</span> rscore) {</span>
-<span id="cb675-76"><a href="nelder-mead.html#cb675-76" aria-hidden="true" tabindex="-1"></a>       res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xe, escore)</span>
-<span id="cb675-77"><a href="nelder-mead.html#cb675-77" aria-hidden="true" tabindex="-1"></a>       <span class="cf">next</span></span>
-<span id="cb675-78"><a href="nelder-mead.html#cb675-78" aria-hidden="true" tabindex="-1"></a>     } <span class="cf">else</span> {</span>
-<span id="cb675-79"><a href="nelder-mead.html#cb675-79" aria-hidden="true" tabindex="-1"></a>       res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xr, rscore)</span>
-<span id="cb675-80"><a href="nelder-mead.html#cb675-80" aria-hidden="true" tabindex="-1"></a>       <span class="cf">next</span></span>
-<span id="cb675-81"><a href="nelder-mead.html#cb675-81" aria-hidden="true" tabindex="-1"></a>     }</span>
-<span id="cb675-82"><a href="nelder-mead.html#cb675-82" aria-hidden="true" tabindex="-1"></a>   }</span>
-<span id="cb675-83"><a href="nelder-mead.html#cb675-83" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb675-84"><a href="nelder-mead.html#cb675-84" aria-hidden="true" tabindex="-1"></a>   <span class="co"># contraction</span></span>
-<span id="cb675-85"><a href="nelder-mead.html#cb675-85" aria-hidden="true" tabindex="-1"></a>   <span class="co"># xc = x0 + rho*(x0 - res[[length(res)]][[1]])  # issue with wiki consistency for rho values (and optim)</span></span>
-<span id="cb675-86"><a href="nelder-mead.html#cb675-86" aria-hidden="true" tabindex="-1"></a>   xc <span class="ot">=</span> x0 <span class="sc">+</span> rho <span class="sc">*</span> (res[[<span class="fu">length</span>(res)]][[<span class="dv">1</span>]] <span class="sc">-</span> x0)</span>
-<span id="cb675-87"><a href="nelder-mead.html#cb675-87" aria-hidden="true" tabindex="-1"></a>   cscore <span class="ot">=</span> <span class="fu">f</span>(xc)</span>
-<span id="cb675-88"><a href="nelder-mead.html#cb675-88" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (cscore <span class="sc">&lt;</span> res[[<span class="fu">length</span>(res)]][[<span class="dv">2</span>]]) {</span>
-<span id="cb675-89"><a href="nelder-mead.html#cb675-89" aria-hidden="true" tabindex="-1"></a>     res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xc, cscore)</span>
-<span id="cb675-90"><a href="nelder-mead.html#cb675-90" aria-hidden="true" tabindex="-1"></a>     <span class="cf">next</span></span>
-<span id="cb675-91"><a href="nelder-mead.html#cb675-91" aria-hidden="true" tabindex="-1"></a>   }</span>
-<span id="cb675-92"><a href="nelder-mead.html#cb675-92" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb675-93"><a href="nelder-mead.html#cb675-93" aria-hidden="true" tabindex="-1"></a>   <span class="co"># reduction</span></span>
-<span id="cb675-94"><a href="nelder-mead.html#cb675-94" aria-hidden="true" tabindex="-1"></a>   x1   <span class="ot">=</span> res[[<span class="dv">1</span>]][[<span class="dv">1</span>]]</span>
-<span id="cb675-95"><a href="nelder-mead.html#cb675-95" aria-hidden="true" tabindex="-1"></a>   nres <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb675-96"><a href="nelder-mead.html#cb675-96" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span> (tup <span class="cf">in</span> res) {</span>
-<span id="cb675-97"><a href="nelder-mead.html#cb675-97" aria-hidden="true" tabindex="-1"></a>     redx  <span class="ot">=</span> x1 <span class="sc">+</span> sigma <span class="sc">*</span> (tup[[<span class="dv">1</span>]] <span class="sc">-</span> x1)</span>
-<span id="cb675-98"><a href="nelder-mead.html#cb675-98" aria-hidden="true" tabindex="-1"></a>     score <span class="ot">=</span> <span class="fu">f</span>(redx)</span>
-<span id="cb675-99"><a href="nelder-mead.html#cb675-99" aria-hidden="true" tabindex="-1"></a>     nres  <span class="ot">=</span> <span class="fu">append</span>(nres, <span class="fu">list</span>(<span class="fu">list</span>(redx, score)))</span>
-<span id="cb675-100"><a href="nelder-mead.html#cb675-100" aria-hidden="true" tabindex="-1"></a>   }</span>
-<span id="cb675-101"><a href="nelder-mead.html#cb675-101" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb675-102"><a href="nelder-mead.html#cb675-102" aria-hidden="true" tabindex="-1"></a>   res <span class="ot">=</span> nres</span>
-<span id="cb675-103"><a href="nelder-mead.html#cb675-103" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb675-104"><a href="nelder-mead.html#cb675-104" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb675-105"><a href="nelder-mead.html#cb675-105" aria-hidden="true" tabindex="-1"></a>  res</span>
-<span id="cb675-106"><a href="nelder-mead.html#cb675-106" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="nelder-mead.html#cb663-1" aria-hidden="true" tabindex="-1"></a>nelder_mead <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb663-2"><a href="nelder-mead.html#cb663-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
+<span id="cb663-3"><a href="nelder-mead.html#cb663-3" aria-hidden="true" tabindex="-1"></a>  x_start,</span>
+<span id="cb663-4"><a href="nelder-mead.html#cb663-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">step =</span> <span class="fl">0.1</span>,</span>
+<span id="cb663-5"><a href="nelder-mead.html#cb663-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb663-6"><a href="nelder-mead.html#cb663-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improv_break =</span> <span class="dv">10</span>,</span>
+<span id="cb663-7"><a href="nelder-mead.html#cb663-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">0</span>,</span>
+<span id="cb663-8"><a href="nelder-mead.html#cb663-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha    =</span> <span class="dv">1</span>,</span>
+<span id="cb663-9"><a href="nelder-mead.html#cb663-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma    =</span> <span class="dv">2</span>,</span>
+<span id="cb663-10"><a href="nelder-mead.html#cb663-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho      =</span> <span class="fl">0.5</span>,</span>
+<span id="cb663-11"><a href="nelder-mead.html#cb663-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma    =</span> <span class="fl">0.5</span>,</span>
+<span id="cb663-12"><a href="nelder-mead.html#cb663-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose  =</span> <span class="cn">FALSE</span></span>
+<span id="cb663-13"><a href="nelder-mead.html#cb663-13" aria-hidden="true" tabindex="-1"></a>  ) {</span>
+<span id="cb663-14"><a href="nelder-mead.html#cb663-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># init</span></span>
+<span id="cb663-15"><a href="nelder-mead.html#cb663-15" aria-hidden="true" tabindex="-1"></a>  dim <span class="ot">=</span> <span class="fu">length</span>(x_start)</span>
+<span id="cb663-16"><a href="nelder-mead.html#cb663-16" aria-hidden="true" tabindex="-1"></a>  prev_best <span class="ot">=</span> <span class="fu">f</span>(x_start)</span>
+<span id="cb663-17"><a href="nelder-mead.html#cb663-17" aria-hidden="true" tabindex="-1"></a>  no_improv <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb663-18"><a href="nelder-mead.html#cb663-18" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">x_start =</span> x_start, <span class="at">prev_best =</span> prev_best))</span>
+<span id="cb663-19"><a href="nelder-mead.html#cb663-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb663-20"><a href="nelder-mead.html#cb663-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb663-21"><a href="nelder-mead.html#cb663-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>dim) {</span>
+<span id="cb663-22"><a href="nelder-mead.html#cb663-22" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> x_start</span>
+<span id="cb663-23"><a href="nelder-mead.html#cb663-23" aria-hidden="true" tabindex="-1"></a>    x[i]  <span class="ot">=</span> x[i] <span class="sc">+</span> step</span>
+<span id="cb663-24"><a href="nelder-mead.html#cb663-24" aria-hidden="true" tabindex="-1"></a>    score <span class="ot">=</span> <span class="fu">f</span>(x)</span>
+<span id="cb663-25"><a href="nelder-mead.html#cb663-25" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">=</span> <span class="fu">append</span>(res, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">x_start =</span> x, <span class="at">prev_best =</span> score)))</span>
+<span id="cb663-26"><a href="nelder-mead.html#cb663-26" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb663-27"><a href="nelder-mead.html#cb663-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb663-28"><a href="nelder-mead.html#cb663-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simplex iter</span></span>
+<span id="cb663-29"><a href="nelder-mead.html#cb663-29" aria-hidden="true" tabindex="-1"></a>  iters <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb663-30"><a href="nelder-mead.html#cb663-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb663-31"><a href="nelder-mead.html#cb663-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (<span class="cn">TRUE</span>) {</span>
+<span id="cb663-32"><a href="nelder-mead.html#cb663-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># order</span></span>
+<span id="cb663-33"><a href="nelder-mead.html#cb663-33" aria-hidden="true" tabindex="-1"></a>    idx  <span class="ot">=</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="dv">2</span>)</span>
+<span id="cb663-34"><a href="nelder-mead.html#cb663-34" aria-hidden="true" tabindex="-1"></a>    res  <span class="ot">=</span> res[<span class="fu">order</span>(idx)]   <span class="co"># ascending order</span></span>
+<span id="cb663-35"><a href="nelder-mead.html#cb663-35" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">=</span> res[[<span class="dv">1</span>]][[<span class="dv">2</span>]]</span>
+<span id="cb663-36"><a href="nelder-mead.html#cb663-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb663-37"><a href="nelder-mead.html#cb663-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after max_iter</span></span>
+<span id="cb663-38"><a href="nelder-mead.html#cb663-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (max_iter <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> iters <span class="sc">&gt;=</span> max_iter) <span class="fu">return</span>(res[[<span class="dv">1</span>]])</span>
+<span id="cb663-39"><a href="nelder-mead.html#cb663-39" aria-hidden="true" tabindex="-1"></a>    iters <span class="ot">=</span> iters <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb663-40"><a href="nelder-mead.html#cb663-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb663-41"><a href="nelder-mead.html#cb663-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after no_improv_break iterations with no improvement</span></span>
+<span id="cb663-42"><a href="nelder-mead.html#cb663-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose) <span class="fu">message</span>(<span class="fu">paste</span>(<span class="st">&#39;...best so far:&#39;</span>, best))</span>
+<span id="cb663-43"><a href="nelder-mead.html#cb663-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb663-44"><a href="nelder-mead.html#cb663-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (best <span class="sc">&lt;</span> (prev_best <span class="sc">-</span> no_improve_thr)) {</span>
+<span id="cb663-45"><a href="nelder-mead.html#cb663-45" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb663-46"><a href="nelder-mead.html#cb663-46" aria-hidden="true" tabindex="-1"></a>      prev_best <span class="ot">=</span> best</span>
+<span id="cb663-47"><a href="nelder-mead.html#cb663-47" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb663-48"><a href="nelder-mead.html#cb663-48" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> no_improv <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb663-49"><a href="nelder-mead.html#cb663-49" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb663-50"><a href="nelder-mead.html#cb663-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb663-51"><a href="nelder-mead.html#cb663-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (no_improv <span class="sc">&gt;=</span> no_improv_break) <span class="fu">return</span>(res[[<span class="dv">1</span>]])</span>
+<span id="cb663-52"><a href="nelder-mead.html#cb663-52" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb663-53"><a href="nelder-mead.html#cb663-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># centroid</span></span>
+<span id="cb663-54"><a href="nelder-mead.html#cb663-54" aria-hidden="true" tabindex="-1"></a>    x0 <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, dim)</span>
+<span id="cb663-55"><a href="nelder-mead.html#cb663-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (tup <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(res)<span class="sc">-</span><span class="dv">1</span>)) {</span>
+<span id="cb663-56"><a href="nelder-mead.html#cb663-56" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>dim) {</span>
+<span id="cb663-57"><a href="nelder-mead.html#cb663-57" aria-hidden="true" tabindex="-1"></a>        x0[i] <span class="ot">=</span> x0[i] <span class="sc">+</span> res[[tup]][[<span class="dv">1</span>]][i] <span class="sc">/</span> (<span class="fu">length</span>(res)<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb663-58"><a href="nelder-mead.html#cb663-58" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb663-59"><a href="nelder-mead.html#cb663-59" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb663-60"><a href="nelder-mead.html#cb663-60" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb663-61"><a href="nelder-mead.html#cb663-61" aria-hidden="true" tabindex="-1"></a>   <span class="co"># reflection</span></span>
+<span id="cb663-62"><a href="nelder-mead.html#cb663-62" aria-hidden="true" tabindex="-1"></a>   xr <span class="ot">=</span> x0 <span class="sc">+</span> alpha <span class="sc">*</span> (x0 <span class="sc">-</span> res[[<span class="fu">length</span>(res)]][[<span class="dv">1</span>]])</span>
+<span id="cb663-63"><a href="nelder-mead.html#cb663-63" aria-hidden="true" tabindex="-1"></a>   rscore <span class="ot">=</span> <span class="fu">f</span>(xr)</span>
+<span id="cb663-64"><a href="nelder-mead.html#cb663-64" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (res[[<span class="dv">1</span>]][[<span class="dv">2</span>]] <span class="sc">&lt;=</span> rscore <span class="sc">&amp;</span> </span>
+<span id="cb663-65"><a href="nelder-mead.html#cb663-65" aria-hidden="true" tabindex="-1"></a>       rscore <span class="sc">&lt;</span> res[[<span class="fu">length</span>(res)<span class="sc">-</span><span class="dv">1</span>]][[<span class="dv">2</span>]]) {</span>
+<span id="cb663-66"><a href="nelder-mead.html#cb663-66" aria-hidden="true" tabindex="-1"></a>     res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xr, rscore)</span>
+<span id="cb663-67"><a href="nelder-mead.html#cb663-67" aria-hidden="true" tabindex="-1"></a>     <span class="cf">next</span></span>
+<span id="cb663-68"><a href="nelder-mead.html#cb663-68" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb663-69"><a href="nelder-mead.html#cb663-69" aria-hidden="true" tabindex="-1"></a>     </span>
+<span id="cb663-70"><a href="nelder-mead.html#cb663-70" aria-hidden="true" tabindex="-1"></a>   <span class="co"># expansion</span></span>
+<span id="cb663-71"><a href="nelder-mead.html#cb663-71" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (rscore <span class="sc">&lt;</span> res[[<span class="dv">1</span>]][[<span class="dv">2</span>]]) {</span>
+<span id="cb663-72"><a href="nelder-mead.html#cb663-72" aria-hidden="true" tabindex="-1"></a>     <span class="co"># xe = x0 + gamma*(x0 - res[[length(res)]][[1]])   # issue with this</span></span>
+<span id="cb663-73"><a href="nelder-mead.html#cb663-73" aria-hidden="true" tabindex="-1"></a>     xe <span class="ot">=</span> x0 <span class="sc">+</span> gamma <span class="sc">*</span> (xr <span class="sc">-</span> x0)   </span>
+<span id="cb663-74"><a href="nelder-mead.html#cb663-74" aria-hidden="true" tabindex="-1"></a>     escore <span class="ot">=</span> <span class="fu">f</span>(xe)</span>
+<span id="cb663-75"><a href="nelder-mead.html#cb663-75" aria-hidden="true" tabindex="-1"></a>     <span class="cf">if</span> (escore <span class="sc">&lt;</span> rscore) {</span>
+<span id="cb663-76"><a href="nelder-mead.html#cb663-76" aria-hidden="true" tabindex="-1"></a>       res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xe, escore)</span>
+<span id="cb663-77"><a href="nelder-mead.html#cb663-77" aria-hidden="true" tabindex="-1"></a>       <span class="cf">next</span></span>
+<span id="cb663-78"><a href="nelder-mead.html#cb663-78" aria-hidden="true" tabindex="-1"></a>     } <span class="cf">else</span> {</span>
+<span id="cb663-79"><a href="nelder-mead.html#cb663-79" aria-hidden="true" tabindex="-1"></a>       res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xr, rscore)</span>
+<span id="cb663-80"><a href="nelder-mead.html#cb663-80" aria-hidden="true" tabindex="-1"></a>       <span class="cf">next</span></span>
+<span id="cb663-81"><a href="nelder-mead.html#cb663-81" aria-hidden="true" tabindex="-1"></a>     }</span>
+<span id="cb663-82"><a href="nelder-mead.html#cb663-82" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb663-83"><a href="nelder-mead.html#cb663-83" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb663-84"><a href="nelder-mead.html#cb663-84" aria-hidden="true" tabindex="-1"></a>   <span class="co"># contraction</span></span>
+<span id="cb663-85"><a href="nelder-mead.html#cb663-85" aria-hidden="true" tabindex="-1"></a>   <span class="co"># xc = x0 + rho*(x0 - res[[length(res)]][[1]])  # issue with wiki consistency for rho values (and optim)</span></span>
+<span id="cb663-86"><a href="nelder-mead.html#cb663-86" aria-hidden="true" tabindex="-1"></a>   xc <span class="ot">=</span> x0 <span class="sc">+</span> rho <span class="sc">*</span> (res[[<span class="fu">length</span>(res)]][[<span class="dv">1</span>]] <span class="sc">-</span> x0)</span>
+<span id="cb663-87"><a href="nelder-mead.html#cb663-87" aria-hidden="true" tabindex="-1"></a>   cscore <span class="ot">=</span> <span class="fu">f</span>(xc)</span>
+<span id="cb663-88"><a href="nelder-mead.html#cb663-88" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (cscore <span class="sc">&lt;</span> res[[<span class="fu">length</span>(res)]][[<span class="dv">2</span>]]) {</span>
+<span id="cb663-89"><a href="nelder-mead.html#cb663-89" aria-hidden="true" tabindex="-1"></a>     res[[<span class="fu">length</span>(res)]] <span class="ot">=</span> <span class="fu">list</span>(xc, cscore)</span>
+<span id="cb663-90"><a href="nelder-mead.html#cb663-90" aria-hidden="true" tabindex="-1"></a>     <span class="cf">next</span></span>
+<span id="cb663-91"><a href="nelder-mead.html#cb663-91" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb663-92"><a href="nelder-mead.html#cb663-92" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb663-93"><a href="nelder-mead.html#cb663-93" aria-hidden="true" tabindex="-1"></a>   <span class="co"># reduction</span></span>
+<span id="cb663-94"><a href="nelder-mead.html#cb663-94" aria-hidden="true" tabindex="-1"></a>   x1   <span class="ot">=</span> res[[<span class="dv">1</span>]][[<span class="dv">1</span>]]</span>
+<span id="cb663-95"><a href="nelder-mead.html#cb663-95" aria-hidden="true" tabindex="-1"></a>   nres <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb663-96"><a href="nelder-mead.html#cb663-96" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span> (tup <span class="cf">in</span> res) {</span>
+<span id="cb663-97"><a href="nelder-mead.html#cb663-97" aria-hidden="true" tabindex="-1"></a>     redx  <span class="ot">=</span> x1 <span class="sc">+</span> sigma <span class="sc">*</span> (tup[[<span class="dv">1</span>]] <span class="sc">-</span> x1)</span>
+<span id="cb663-98"><a href="nelder-mead.html#cb663-98" aria-hidden="true" tabindex="-1"></a>     score <span class="ot">=</span> <span class="fu">f</span>(redx)</span>
+<span id="cb663-99"><a href="nelder-mead.html#cb663-99" aria-hidden="true" tabindex="-1"></a>     nres  <span class="ot">=</span> <span class="fu">append</span>(nres, <span class="fu">list</span>(<span class="fu">list</span>(redx, score)))</span>
+<span id="cb663-100"><a href="nelder-mead.html#cb663-100" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb663-101"><a href="nelder-mead.html#cb663-101" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb663-102"><a href="nelder-mead.html#cb663-102" aria-hidden="true" tabindex="-1"></a>   res <span class="ot">=</span> nres</span>
+<span id="cb663-103"><a href="nelder-mead.html#cb663-103" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb663-104"><a href="nelder-mead.html#cb663-104" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb663-105"><a href="nelder-mead.html#cb663-105" aria-hidden="true" tabindex="-1"></a>  res</span>
+<span id="cb663-106"><a href="nelder-mead.html#cb663-106" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="example-5" class="section level3">
 <h3>Example</h3>
 <p>The function to minimize.</p>
-<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="nelder-mead.html#cb676-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
-<span id="cb676-2"><a href="nelder-mead.html#cb676-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sin</span>(x[<span class="dv">1</span>]) <span class="sc">*</span> <span class="fu">cos</span>(x[<span class="dv">2</span>]) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> (<span class="fu">abs</span>(x[<span class="dv">3</span>]) <span class="sc">+</span> <span class="dv">1</span>))</span>
-<span id="cb676-3"><a href="nelder-mead.html#cb676-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="nelder-mead.html#cb664-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
+<span id="cb664-2"><a href="nelder-mead.html#cb664-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sin</span>(x[<span class="dv">1</span>]) <span class="sc">*</span> <span class="fu">cos</span>(x[<span class="dv">2</span>]) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> (<span class="fu">abs</span>(x[<span class="dv">3</span>]) <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb664-3"><a href="nelder-mead.html#cb664-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Estimate.</p>
-<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="nelder-mead.html#cb677-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nelder_mead</span>(</span>
-<span id="cb677-2"><a href="nelder-mead.html#cb677-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
-<span id="cb677-3"><a href="nelder-mead.html#cb677-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
-<span id="cb677-4"><a href="nelder-mead.html#cb677-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">1000</span>, </span>
-<span id="cb677-5"><a href="nelder-mead.html#cb677-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span></span>
-<span id="cb677-6"><a href="nelder-mead.html#cb677-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="nelder-mead.html#cb665-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nelder_mead</span>(</span>
+<span id="cb665-2"><a href="nelder-mead.html#cb665-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
+<span id="cb665-3"><a href="nelder-mead.html#cb665-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb665-4"><a href="nelder-mead.html#cb665-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">1000</span>, </span>
+<span id="cb665-5"><a href="nelder-mead.html#cb665-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span></span>
+<span id="cb665-6"><a href="nelder-mead.html#cb665-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>[[1]]
 [1] -1.570797e+00 -2.235577e-07  1.637460e-14
 
 [[2]]
 [1] -1</code></pre>
 <p>Compare to <span class="pack" style="">optimx</span>. You may see warnings.</p>
-<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="nelder-mead.html#cb679-1" aria-hidden="true" tabindex="-1"></a>optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
-<span id="cb679-2"><a href="nelder-mead.html#cb679-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
-<span id="cb679-3"><a href="nelder-mead.html#cb679-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f,</span>
-<span id="cb679-4"><a href="nelder-mead.html#cb679-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;Nelder-Mead&quot;</span>,</span>
-<span id="cb679-5"><a href="nelder-mead.html#cb679-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
-<span id="cb679-6"><a href="nelder-mead.html#cb679-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
-<span id="cb679-7"><a href="nelder-mead.html#cb679-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma  =</span> <span class="dv">2</span>,</span>
-<span id="cb679-8"><a href="nelder-mead.html#cb679-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta   =</span> <span class="fl">0.5</span>,</span>
-<span id="cb679-9"><a href="nelder-mead.html#cb679-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">1000</span>,</span>
-<span id="cb679-10"><a href="nelder-mead.html#cb679-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
-<span id="cb679-11"><a href="nelder-mead.html#cb679-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb679-12"><a href="nelder-mead.html#cb679-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="nelder-mead.html#cb667-1" aria-hidden="true" tabindex="-1"></a>optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
+<span id="cb667-2"><a href="nelder-mead.html#cb667-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb667-3"><a href="nelder-mead.html#cb667-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f,</span>
+<span id="cb667-4"><a href="nelder-mead.html#cb667-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;Nelder-Mead&quot;</span>,</span>
+<span id="cb667-5"><a href="nelder-mead.html#cb667-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
+<span id="cb667-6"><a href="nelder-mead.html#cb667-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
+<span id="cb667-7"><a href="nelder-mead.html#cb667-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma  =</span> <span class="dv">2</span>,</span>
+<span id="cb667-8"><a href="nelder-mead.html#cb667-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta   =</span> <span class="fl">0.5</span>,</span>
+<span id="cb667-9"><a href="nelder-mead.html#cb667-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">1000</span>,</span>
+<span id="cb667-10"><a href="nelder-mead.html#cb667-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb667-11"><a href="nelder-mead.html#cb667-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb667-12"><a href="nelder-mead.html#cb667-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>                   p1           p2           p3 value fevals gevals niter convcode kkt1 kkt2 xtime
 Nelder-Mead -1.570796 1.394018e-08 1.088215e-16    -1    861     NA    NA        0 TRUE TRUE     0</code></pre>
 </div>
@@ -972,43 +972,43 @@ Nelder-Mead -1.570796 1.394018e-08 1.088215e-16    -1    861     NA    NA       
 provide an example for that case.</p>
 <div id="data-setup-39" class="section level4">
 <h4>Data Setup</h4>
-<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb681-1"><a href="nelder-mead.html#cb681-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb681-2"><a href="nelder-mead.html#cb681-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb681-3"><a href="nelder-mead.html#cb681-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb681-4"><a href="nelder-mead.html#cb681-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb681-5"><a href="nelder-mead.html#cb681-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">500</span></span>
-<span id="cb681-6"><a href="nelder-mead.html#cb681-6" aria-hidden="true" tabindex="-1"></a>n_preds <span class="ot">=</span> <span class="dv">5</span>  <span class="co"># number of predictors</span></span>
-<span id="cb681-7"><a href="nelder-mead.html#cb681-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> n_preds), <span class="at">ncol =</span> n_preds))</span>
-<span id="cb681-8"><a href="nelder-mead.html#cb681-8" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fu">runif</span>(<span class="fu">ncol</span>(X), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb681-9"><a href="nelder-mead.html#cb681-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> X <span class="sc">%*%</span> beta <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(X))</span></code></pre></div>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="nelder-mead.html#cb669-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb669-2"><a href="nelder-mead.html#cb669-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb669-3"><a href="nelder-mead.html#cb669-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb669-4"><a href="nelder-mead.html#cb669-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb669-5"><a href="nelder-mead.html#cb669-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb669-6"><a href="nelder-mead.html#cb669-6" aria-hidden="true" tabindex="-1"></a>n_preds <span class="ot">=</span> <span class="dv">5</span>  <span class="co"># number of predictors</span></span>
+<span id="cb669-7"><a href="nelder-mead.html#cb669-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> n_preds), <span class="at">ncol =</span> n_preds))</span>
+<span id="cb669-8"><a href="nelder-mead.html#cb669-8" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fu">runif</span>(<span class="fu">ncol</span>(X), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb669-9"><a href="nelder-mead.html#cb669-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> X <span class="sc">%*%</span> beta <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(X))</span></code></pre></div>
 <p>Least squares loss function to minimize.</p>
-<div class="sourceCode" id="cb682"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb682-1"><a href="nelder-mead.html#cb682-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(b) {</span>
-<span id="cb682-2"><a href="nelder-mead.html#cb682-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> b)[,<span class="dv">1</span>]  <span class="co"># if using optimx need scalar</span></span>
-<span id="cb682-3"><a href="nelder-mead.html#cb682-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb683"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb683-1"><a href="nelder-mead.html#cb683-1" aria-hidden="true" tabindex="-1"></a>fit_nm <span class="ot">=</span> <span class="fu">nelder_mead</span>(</span>
-<span id="cb683-2"><a href="nelder-mead.html#cb683-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
-<span id="cb683-3"><a href="nelder-mead.html#cb683-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)), </span>
-<span id="cb683-4"><a href="nelder-mead.html#cb683-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">2000</span>,</span>
-<span id="cb683-5"><a href="nelder-mead.html#cb683-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb683-6"><a href="nelder-mead.html#cb683-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb683-7"><a href="nelder-mead.html#cb683-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="nelder-mead.html#cb670-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(b) {</span>
+<span id="cb670-2"><a href="nelder-mead.html#cb670-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> b)[,<span class="dv">1</span>]  <span class="co"># if using optimx need scalar</span></span>
+<span id="cb670-3"><a href="nelder-mead.html#cb670-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="nelder-mead.html#cb671-1" aria-hidden="true" tabindex="-1"></a>fit_nm <span class="ot">=</span> <span class="fu">nelder_mead</span>(</span>
+<span id="cb671-2"><a href="nelder-mead.html#cb671-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
+<span id="cb671-3"><a href="nelder-mead.html#cb671-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)), </span>
+<span id="cb671-4"><a href="nelder-mead.html#cb671-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">2000</span>,</span>
+<span id="cb671-5"><a href="nelder-mead.html#cb671-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb671-6"><a href="nelder-mead.html#cb671-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb671-7"><a href="nelder-mead.html#cb671-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="comparison-42" class="section level4">
 <h4>Comparison</h4>
 <p>Compare to <span class="pack" style="">optimx</span>.</p>
-<div class="sourceCode" id="cb684"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb684-1"><a href="nelder-mead.html#cb684-1" aria-hidden="true" tabindex="-1"></a>fit_nm_optimx <span class="ot">=</span> optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
-<span id="cb684-2"><a href="nelder-mead.html#cb684-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)),</span>
-<span id="cb684-3"><a href="nelder-mead.html#cb684-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f,  <span class="co"># model function</span></span>
-<span id="cb684-4"><a href="nelder-mead.html#cb684-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;Nelder-Mead&#39;</span>,</span>
-<span id="cb684-5"><a href="nelder-mead.html#cb684-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
-<span id="cb684-6"><a href="nelder-mead.html#cb684-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>,</span>
-<span id="cb684-7"><a href="nelder-mead.html#cb684-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma =</span> <span class="dv">2</span>,</span>
-<span id="cb684-8"><a href="nelder-mead.html#cb684-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta  =</span> <span class="fl">0.5</span>,</span>
-<span id="cb684-9"><a href="nelder-mead.html#cb684-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#rho</span></span>
-<span id="cb684-10"><a href="nelder-mead.html#cb684-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">2000</span>,</span>
-<span id="cb684-11"><a href="nelder-mead.html#cb684-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
-<span id="cb684-12"><a href="nelder-mead.html#cb684-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb684-13"><a href="nelder-mead.html#cb684-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="nelder-mead.html#cb672-1" aria-hidden="true" tabindex="-1"></a>fit_nm_optimx <span class="ot">=</span> optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
+<span id="cb672-2"><a href="nelder-mead.html#cb672-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)),</span>
+<span id="cb672-3"><a href="nelder-mead.html#cb672-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f,  <span class="co"># model function</span></span>
+<span id="cb672-4"><a href="nelder-mead.html#cb672-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method  =</span> <span class="st">&#39;Nelder-Mead&#39;</span>,</span>
+<span id="cb672-5"><a href="nelder-mead.html#cb672-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
+<span id="cb672-6"><a href="nelder-mead.html#cb672-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>,</span>
+<span id="cb672-7"><a href="nelder-mead.html#cb672-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma =</span> <span class="dv">2</span>,</span>
+<span id="cb672-8"><a href="nelder-mead.html#cb672-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta  =</span> <span class="fl">0.5</span>,</span>
+<span id="cb672-9"><a href="nelder-mead.html#cb672-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#rho</span></span>
+<span id="cb672-10"><a href="nelder-mead.html#cb672-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">2000</span>,</span>
+<span id="cb672-11"><a href="nelder-mead.html#cb672-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb672-12"><a href="nelder-mead.html#cb672-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb672-13"><a href="nelder-mead.html#cb672-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>We’ll add base R <span class="func" style="">lm</span> estimates.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1125,177 +1125,177 @@ lm
 <div id="second-version" class="section level2">
 <h2>Second Version</h2>
 <p>This is a more natural R approach in my opinion.</p>
-<div class="sourceCode" id="cb685"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb685-1"><a href="nelder-mead.html#cb685-1" aria-hidden="true" tabindex="-1"></a>nelder_mead2 <span class="ot">=</span> <span class="cf">function</span>(</span>
-<span id="cb685-2"><a href="nelder-mead.html#cb685-2" aria-hidden="true" tabindex="-1"></a>  f,</span>
-<span id="cb685-3"><a href="nelder-mead.html#cb685-3" aria-hidden="true" tabindex="-1"></a>  x_start,</span>
-<span id="cb685-4"><a href="nelder-mead.html#cb685-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">step =</span> <span class="fl">0.1</span>,</span>
-<span id="cb685-5"><a href="nelder-mead.html#cb685-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr  =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb685-6"><a href="nelder-mead.html#cb685-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improv_break =</span> <span class="dv">10</span>,</span>
-<span id="cb685-7"><a href="nelder-mead.html#cb685-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">0</span>,</span>
-<span id="cb685-8"><a href="nelder-mead.html#cb685-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha    =</span> <span class="dv">1</span>,</span>
-<span id="cb685-9"><a href="nelder-mead.html#cb685-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma    =</span> <span class="dv">2</span>,</span>
-<span id="cb685-10"><a href="nelder-mead.html#cb685-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho      =</span> <span class="fl">0.5</span>,</span>
-<span id="cb685-11"><a href="nelder-mead.html#cb685-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma    =</span> <span class="fl">0.5</span>,</span>
-<span id="cb685-12"><a href="nelder-mead.html#cb685-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose  =</span> <span class="cn">FALSE</span></span>
-<span id="cb685-13"><a href="nelder-mead.html#cb685-13" aria-hidden="true" tabindex="-1"></a>) {</span>
-<span id="cb685-14"><a href="nelder-mead.html#cb685-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb685-15"><a href="nelder-mead.html#cb685-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># init</span></span>
-<span id="cb685-16"><a href="nelder-mead.html#cb685-16" aria-hidden="true" tabindex="-1"></a>  npar <span class="ot">=</span> <span class="fu">length</span>(x_start)</span>
-<span id="cb685-17"><a href="nelder-mead.html#cb685-17" aria-hidden="true" tabindex="-1"></a>  nc <span class="ot">=</span> npar <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb685-18"><a href="nelder-mead.html#cb685-18" aria-hidden="true" tabindex="-1"></a>  prev_best <span class="ot">=</span> <span class="fu">f</span>(x_start)</span>
-<span id="cb685-19"><a href="nelder-mead.html#cb685-19" aria-hidden="true" tabindex="-1"></a>  no_improv <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb685-20"><a href="nelder-mead.html#cb685-20" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(x_start, prev_best), <span class="at">ncol =</span> nc)</span>
-<span id="cb685-21"><a href="nelder-mead.html#cb685-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(res) <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste</span>(<span class="st">&#39;par&#39;</span>, <span class="dv">1</span><span class="sc">:</span>npar, <span class="at">sep =</span> <span class="st">&#39;_&#39;</span>), <span class="st">&#39;score&#39;</span>)</span>
-<span id="cb685-22"><a href="nelder-mead.html#cb685-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb685-23"><a href="nelder-mead.html#cb685-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>npar) {</span>
-<span id="cb685-24"><a href="nelder-mead.html#cb685-24" aria-hidden="true" tabindex="-1"></a>    x     <span class="ot">=</span> x_start</span>
-<span id="cb685-25"><a href="nelder-mead.html#cb685-25" aria-hidden="true" tabindex="-1"></a>    x[i]  <span class="ot">=</span> x[i] <span class="sc">+</span> step</span>
-<span id="cb685-26"><a href="nelder-mead.html#cb685-26" aria-hidden="true" tabindex="-1"></a>    score <span class="ot">=</span> <span class="fu">f</span>(x)</span>
-<span id="cb685-27"><a href="nelder-mead.html#cb685-27" aria-hidden="true" tabindex="-1"></a>    res   <span class="ot">=</span> <span class="fu">rbind</span>(res, <span class="fu">c</span>(x, score))</span>
-<span id="cb685-28"><a href="nelder-mead.html#cb685-28" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb685-29"><a href="nelder-mead.html#cb685-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb685-30"><a href="nelder-mead.html#cb685-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simplex iter</span></span>
-<span id="cb685-31"><a href="nelder-mead.html#cb685-31" aria-hidden="true" tabindex="-1"></a>  iters <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb685-32"><a href="nelder-mead.html#cb685-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb685-33"><a href="nelder-mead.html#cb685-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (<span class="cn">TRUE</span>) {</span>
-<span id="cb685-34"><a href="nelder-mead.html#cb685-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># order</span></span>
-<span id="cb685-35"><a href="nelder-mead.html#cb685-35" aria-hidden="true" tabindex="-1"></a>    res  <span class="ot">=</span> res[<span class="fu">order</span>(res[, nc]), ]   <span class="co"># ascending order</span></span>
-<span id="cb685-36"><a href="nelder-mead.html#cb685-36" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">=</span> res[<span class="dv">1</span>, nc]</span>
-<span id="cb685-37"><a href="nelder-mead.html#cb685-37" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-38"><a href="nelder-mead.html#cb685-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after max_iter</span></span>
-<span id="cb685-39"><a href="nelder-mead.html#cb685-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (max_iter <span class="sc">&amp;</span> iters <span class="sc">&gt;=</span> max_iter) <span class="fu">return</span>(res[<span class="dv">1</span>, ])</span>
-<span id="cb685-40"><a href="nelder-mead.html#cb685-40" aria-hidden="true" tabindex="-1"></a>    iters <span class="ot">=</span> iters <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb685-41"><a href="nelder-mead.html#cb685-41" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-42"><a href="nelder-mead.html#cb685-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after no_improv_break iterations with no improvement</span></span>
-<span id="cb685-43"><a href="nelder-mead.html#cb685-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose) <span class="fu">message</span>(<span class="fu">paste</span>(<span class="st">&#39;...best so far:&#39;</span>, best))</span>
-<span id="cb685-44"><a href="nelder-mead.html#cb685-44" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-45"><a href="nelder-mead.html#cb685-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (best <span class="sc">&lt;</span> (prev_best <span class="sc">-</span> no_improve_thr)) {</span>
-<span id="cb685-46"><a href="nelder-mead.html#cb685-46" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb685-47"><a href="nelder-mead.html#cb685-47" aria-hidden="true" tabindex="-1"></a>      prev_best <span class="ot">=</span> best</span>
-<span id="cb685-48"><a href="nelder-mead.html#cb685-48" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb685-49"><a href="nelder-mead.html#cb685-49" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> no_improv <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb685-50"><a href="nelder-mead.html#cb685-50" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb685-51"><a href="nelder-mead.html#cb685-51" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-52"><a href="nelder-mead.html#cb685-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (no_improv <span class="sc">&gt;=</span> no_improv_break)</span>
-<span id="cb685-53"><a href="nelder-mead.html#cb685-53" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(res[<span class="dv">1</span>, ])</span>
-<span id="cb685-54"><a href="nelder-mead.html#cb685-54" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-55"><a href="nelder-mead.html#cb685-55" aria-hidden="true" tabindex="-1"></a>    nr <span class="ot">=</span> <span class="fu">nrow</span>(res)</span>
-<span id="cb685-56"><a href="nelder-mead.html#cb685-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-57"><a href="nelder-mead.html#cb685-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># centroid: more efficient than previous double loop</span></span>
-<span id="cb685-58"><a href="nelder-mead.html#cb685-58" aria-hidden="true" tabindex="-1"></a>    x0 <span class="ot">=</span> <span class="fu">colMeans</span>(res[(<span class="dv">1</span><span class="sc">:</span>npar), <span class="sc">-</span>nc])</span>
-<span id="cb685-59"><a href="nelder-mead.html#cb685-59" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-60"><a href="nelder-mead.html#cb685-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># reflection</span></span>
-<span id="cb685-61"><a href="nelder-mead.html#cb685-61" aria-hidden="true" tabindex="-1"></a>    xr <span class="ot">=</span> x0 <span class="sc">+</span> alpha <span class="sc">*</span> (x0 <span class="sc">-</span> res[nr, <span class="sc">-</span>nc])</span>
-<span id="cb685-62"><a href="nelder-mead.html#cb685-62" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-63"><a href="nelder-mead.html#cb685-63" aria-hidden="true" tabindex="-1"></a>    rscore <span class="ot">=</span> <span class="fu">f</span>(xr)</span>
-<span id="cb685-64"><a href="nelder-mead.html#cb685-64" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-65"><a href="nelder-mead.html#cb685-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (res[<span class="dv">1</span>, <span class="st">&#39;score&#39;</span>] <span class="sc">&lt;=</span> rscore <span class="sc">&amp;</span> rscore <span class="sc">&lt;</span> res[npar, <span class="st">&#39;score&#39;</span>]) {</span>
-<span id="cb685-66"><a href="nelder-mead.html#cb685-66" aria-hidden="true" tabindex="-1"></a>      res[nr,] <span class="ot">=</span> <span class="fu">c</span>(xr, rscore)</span>
-<span id="cb685-67"><a href="nelder-mead.html#cb685-67" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
-<span id="cb685-68"><a href="nelder-mead.html#cb685-68" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb685-69"><a href="nelder-mead.html#cb685-69" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-70"><a href="nelder-mead.html#cb685-70" aria-hidden="true" tabindex="-1"></a>    <span class="co"># expansion</span></span>
-<span id="cb685-71"><a href="nelder-mead.html#cb685-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (rscore <span class="sc">&lt;</span> res[<span class="dv">1</span>, <span class="st">&#39;score&#39;</span>]) {</span>
-<span id="cb685-72"><a href="nelder-mead.html#cb685-72" aria-hidden="true" tabindex="-1"></a>      xe <span class="ot">=</span> x0 <span class="sc">+</span> gamma <span class="sc">*</span> (xr <span class="sc">-</span> x0)</span>
-<span id="cb685-73"><a href="nelder-mead.html#cb685-73" aria-hidden="true" tabindex="-1"></a>      escore <span class="ot">=</span> <span class="fu">f</span>(xe)</span>
-<span id="cb685-74"><a href="nelder-mead.html#cb685-74" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (escore <span class="sc">&lt;</span> rscore) {</span>
-<span id="cb685-75"><a href="nelder-mead.html#cb685-75" aria-hidden="true" tabindex="-1"></a>        res[nr, ] <span class="ot">=</span> <span class="fu">c</span>(xe, escore)</span>
-<span id="cb685-76"><a href="nelder-mead.html#cb685-76" aria-hidden="true" tabindex="-1"></a>        <span class="cf">next</span></span>
-<span id="cb685-77"><a href="nelder-mead.html#cb685-77" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
-<span id="cb685-78"><a href="nelder-mead.html#cb685-78" aria-hidden="true" tabindex="-1"></a>        res[nr, ] <span class="ot">=</span> <span class="fu">c</span>(xr, rscore)</span>
-<span id="cb685-79"><a href="nelder-mead.html#cb685-79" aria-hidden="true" tabindex="-1"></a>        <span class="cf">next</span></span>
-<span id="cb685-80"><a href="nelder-mead.html#cb685-80" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb685-81"><a href="nelder-mead.html#cb685-81" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb685-82"><a href="nelder-mead.html#cb685-82" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-83"><a href="nelder-mead.html#cb685-83" aria-hidden="true" tabindex="-1"></a>    <span class="co"># contraction</span></span>
-<span id="cb685-84"><a href="nelder-mead.html#cb685-84" aria-hidden="true" tabindex="-1"></a>    xc <span class="ot">=</span> x0 <span class="sc">+</span> rho <span class="sc">*</span> (res[nr, <span class="sc">-</span>nc] <span class="sc">-</span> x0)</span>
-<span id="cb685-85"><a href="nelder-mead.html#cb685-85" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-86"><a href="nelder-mead.html#cb685-86" aria-hidden="true" tabindex="-1"></a>    cscore <span class="ot">=</span> <span class="fu">f</span>(xc)</span>
-<span id="cb685-87"><a href="nelder-mead.html#cb685-87" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-88"><a href="nelder-mead.html#cb685-88" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (cscore <span class="sc">&lt;</span> res[nr, <span class="st">&#39;score&#39;</span>]) {</span>
-<span id="cb685-89"><a href="nelder-mead.html#cb685-89" aria-hidden="true" tabindex="-1"></a>      res[nr,] <span class="ot">=</span> <span class="fu">c</span>(xc, cscore)</span>
-<span id="cb685-90"><a href="nelder-mead.html#cb685-90" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
-<span id="cb685-91"><a href="nelder-mead.html#cb685-91" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb685-92"><a href="nelder-mead.html#cb685-92" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-93"><a href="nelder-mead.html#cb685-93" aria-hidden="true" tabindex="-1"></a>    <span class="co"># reduction</span></span>
-<span id="cb685-94"><a href="nelder-mead.html#cb685-94" aria-hidden="true" tabindex="-1"></a>    x1 <span class="ot">=</span> res[<span class="dv">1</span>, <span class="sc">-</span>nc]</span>
-<span id="cb685-95"><a href="nelder-mead.html#cb685-95" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-96"><a href="nelder-mead.html#cb685-96" aria-hidden="true" tabindex="-1"></a>    nres <span class="ot">=</span> res</span>
-<span id="cb685-97"><a href="nelder-mead.html#cb685-97" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-98"><a href="nelder-mead.html#cb685-98" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nr) {</span>
-<span id="cb685-99"><a href="nelder-mead.html#cb685-99" aria-hidden="true" tabindex="-1"></a>      redx  <span class="ot">=</span> x1 <span class="sc">+</span> sigma <span class="sc">*</span> (res[i, <span class="sc">-</span>nc] <span class="sc">-</span> x1)</span>
-<span id="cb685-100"><a href="nelder-mead.html#cb685-100" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">=</span> <span class="fu">f</span>(redx)</span>
-<span id="cb685-101"><a href="nelder-mead.html#cb685-101" aria-hidden="true" tabindex="-1"></a>      nres[i, ] <span class="ot">=</span> <span class="fu">c</span>(redx, score)</span>
-<span id="cb685-102"><a href="nelder-mead.html#cb685-102" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb685-103"><a href="nelder-mead.html#cb685-103" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb685-104"><a href="nelder-mead.html#cb685-104" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">=</span> nres</span>
-<span id="cb685-105"><a href="nelder-mead.html#cb685-105" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb685-106"><a href="nelder-mead.html#cb685-106" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="nelder-mead.html#cb673-1" aria-hidden="true" tabindex="-1"></a>nelder_mead2 <span class="ot">=</span> <span class="cf">function</span>(</span>
+<span id="cb673-2"><a href="nelder-mead.html#cb673-2" aria-hidden="true" tabindex="-1"></a>  f,</span>
+<span id="cb673-3"><a href="nelder-mead.html#cb673-3" aria-hidden="true" tabindex="-1"></a>  x_start,</span>
+<span id="cb673-4"><a href="nelder-mead.html#cb673-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">step =</span> <span class="fl">0.1</span>,</span>
+<span id="cb673-5"><a href="nelder-mead.html#cb673-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb673-6"><a href="nelder-mead.html#cb673-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improv_break =</span> <span class="dv">10</span>,</span>
+<span id="cb673-7"><a href="nelder-mead.html#cb673-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">0</span>,</span>
+<span id="cb673-8"><a href="nelder-mead.html#cb673-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha    =</span> <span class="dv">1</span>,</span>
+<span id="cb673-9"><a href="nelder-mead.html#cb673-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma    =</span> <span class="dv">2</span>,</span>
+<span id="cb673-10"><a href="nelder-mead.html#cb673-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho      =</span> <span class="fl">0.5</span>,</span>
+<span id="cb673-11"><a href="nelder-mead.html#cb673-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma    =</span> <span class="fl">0.5</span>,</span>
+<span id="cb673-12"><a href="nelder-mead.html#cb673-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose  =</span> <span class="cn">FALSE</span></span>
+<span id="cb673-13"><a href="nelder-mead.html#cb673-13" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb673-14"><a href="nelder-mead.html#cb673-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb673-15"><a href="nelder-mead.html#cb673-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># init</span></span>
+<span id="cb673-16"><a href="nelder-mead.html#cb673-16" aria-hidden="true" tabindex="-1"></a>  npar <span class="ot">=</span> <span class="fu">length</span>(x_start)</span>
+<span id="cb673-17"><a href="nelder-mead.html#cb673-17" aria-hidden="true" tabindex="-1"></a>  nc <span class="ot">=</span> npar <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb673-18"><a href="nelder-mead.html#cb673-18" aria-hidden="true" tabindex="-1"></a>  prev_best <span class="ot">=</span> <span class="fu">f</span>(x_start)</span>
+<span id="cb673-19"><a href="nelder-mead.html#cb673-19" aria-hidden="true" tabindex="-1"></a>  no_improv <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb673-20"><a href="nelder-mead.html#cb673-20" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(x_start, prev_best), <span class="at">ncol =</span> nc)</span>
+<span id="cb673-21"><a href="nelder-mead.html#cb673-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(res) <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste</span>(<span class="st">&#39;par&#39;</span>, <span class="dv">1</span><span class="sc">:</span>npar, <span class="at">sep =</span> <span class="st">&#39;_&#39;</span>), <span class="st">&#39;score&#39;</span>)</span>
+<span id="cb673-22"><a href="nelder-mead.html#cb673-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb673-23"><a href="nelder-mead.html#cb673-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>npar) {</span>
+<span id="cb673-24"><a href="nelder-mead.html#cb673-24" aria-hidden="true" tabindex="-1"></a>    x     <span class="ot">=</span> x_start</span>
+<span id="cb673-25"><a href="nelder-mead.html#cb673-25" aria-hidden="true" tabindex="-1"></a>    x[i]  <span class="ot">=</span> x[i] <span class="sc">+</span> step</span>
+<span id="cb673-26"><a href="nelder-mead.html#cb673-26" aria-hidden="true" tabindex="-1"></a>    score <span class="ot">=</span> <span class="fu">f</span>(x)</span>
+<span id="cb673-27"><a href="nelder-mead.html#cb673-27" aria-hidden="true" tabindex="-1"></a>    res   <span class="ot">=</span> <span class="fu">rbind</span>(res, <span class="fu">c</span>(x, score))</span>
+<span id="cb673-28"><a href="nelder-mead.html#cb673-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb673-29"><a href="nelder-mead.html#cb673-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb673-30"><a href="nelder-mead.html#cb673-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simplex iter</span></span>
+<span id="cb673-31"><a href="nelder-mead.html#cb673-31" aria-hidden="true" tabindex="-1"></a>  iters <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb673-32"><a href="nelder-mead.html#cb673-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb673-33"><a href="nelder-mead.html#cb673-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (<span class="cn">TRUE</span>) {</span>
+<span id="cb673-34"><a href="nelder-mead.html#cb673-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># order</span></span>
+<span id="cb673-35"><a href="nelder-mead.html#cb673-35" aria-hidden="true" tabindex="-1"></a>    res  <span class="ot">=</span> res[<span class="fu">order</span>(res[, nc]), ]   <span class="co"># ascending order</span></span>
+<span id="cb673-36"><a href="nelder-mead.html#cb673-36" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">=</span> res[<span class="dv">1</span>, nc]</span>
+<span id="cb673-37"><a href="nelder-mead.html#cb673-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-38"><a href="nelder-mead.html#cb673-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after max_iter</span></span>
+<span id="cb673-39"><a href="nelder-mead.html#cb673-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (max_iter <span class="sc">&amp;</span> iters <span class="sc">&gt;=</span> max_iter) <span class="fu">return</span>(res[<span class="dv">1</span>, ])</span>
+<span id="cb673-40"><a href="nelder-mead.html#cb673-40" aria-hidden="true" tabindex="-1"></a>    iters <span class="ot">=</span> iters <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb673-41"><a href="nelder-mead.html#cb673-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-42"><a href="nelder-mead.html#cb673-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># break after no_improv_break iterations with no improvement</span></span>
+<span id="cb673-43"><a href="nelder-mead.html#cb673-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (verbose) <span class="fu">message</span>(<span class="fu">paste</span>(<span class="st">&#39;...best so far:&#39;</span>, best))</span>
+<span id="cb673-44"><a href="nelder-mead.html#cb673-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-45"><a href="nelder-mead.html#cb673-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (best <span class="sc">&lt;</span> (prev_best <span class="sc">-</span> no_improve_thr)) {</span>
+<span id="cb673-46"><a href="nelder-mead.html#cb673-46" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb673-47"><a href="nelder-mead.html#cb673-47" aria-hidden="true" tabindex="-1"></a>      prev_best <span class="ot">=</span> best</span>
+<span id="cb673-48"><a href="nelder-mead.html#cb673-48" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb673-49"><a href="nelder-mead.html#cb673-49" aria-hidden="true" tabindex="-1"></a>      no_improv <span class="ot">=</span> no_improv <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb673-50"><a href="nelder-mead.html#cb673-50" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb673-51"><a href="nelder-mead.html#cb673-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-52"><a href="nelder-mead.html#cb673-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (no_improv <span class="sc">&gt;=</span> no_improv_break)</span>
+<span id="cb673-53"><a href="nelder-mead.html#cb673-53" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(res[<span class="dv">1</span>, ])</span>
+<span id="cb673-54"><a href="nelder-mead.html#cb673-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-55"><a href="nelder-mead.html#cb673-55" aria-hidden="true" tabindex="-1"></a>    nr <span class="ot">=</span> <span class="fu">nrow</span>(res)</span>
+<span id="cb673-56"><a href="nelder-mead.html#cb673-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-57"><a href="nelder-mead.html#cb673-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># centroid: more efficient than previous double loop</span></span>
+<span id="cb673-58"><a href="nelder-mead.html#cb673-58" aria-hidden="true" tabindex="-1"></a>    x0 <span class="ot">=</span> <span class="fu">colMeans</span>(res[(<span class="dv">1</span><span class="sc">:</span>npar), <span class="sc">-</span>nc])</span>
+<span id="cb673-59"><a href="nelder-mead.html#cb673-59" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-60"><a href="nelder-mead.html#cb673-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># reflection</span></span>
+<span id="cb673-61"><a href="nelder-mead.html#cb673-61" aria-hidden="true" tabindex="-1"></a>    xr <span class="ot">=</span> x0 <span class="sc">+</span> alpha <span class="sc">*</span> (x0 <span class="sc">-</span> res[nr, <span class="sc">-</span>nc])</span>
+<span id="cb673-62"><a href="nelder-mead.html#cb673-62" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-63"><a href="nelder-mead.html#cb673-63" aria-hidden="true" tabindex="-1"></a>    rscore <span class="ot">=</span> <span class="fu">f</span>(xr)</span>
+<span id="cb673-64"><a href="nelder-mead.html#cb673-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-65"><a href="nelder-mead.html#cb673-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (res[<span class="dv">1</span>, <span class="st">&#39;score&#39;</span>] <span class="sc">&lt;=</span> rscore <span class="sc">&amp;</span> rscore <span class="sc">&lt;</span> res[npar, <span class="st">&#39;score&#39;</span>]) {</span>
+<span id="cb673-66"><a href="nelder-mead.html#cb673-66" aria-hidden="true" tabindex="-1"></a>      res[nr,] <span class="ot">=</span> <span class="fu">c</span>(xr, rscore)</span>
+<span id="cb673-67"><a href="nelder-mead.html#cb673-67" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
+<span id="cb673-68"><a href="nelder-mead.html#cb673-68" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb673-69"><a href="nelder-mead.html#cb673-69" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-70"><a href="nelder-mead.html#cb673-70" aria-hidden="true" tabindex="-1"></a>    <span class="co"># expansion</span></span>
+<span id="cb673-71"><a href="nelder-mead.html#cb673-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (rscore <span class="sc">&lt;</span> res[<span class="dv">1</span>, <span class="st">&#39;score&#39;</span>]) {</span>
+<span id="cb673-72"><a href="nelder-mead.html#cb673-72" aria-hidden="true" tabindex="-1"></a>      xe <span class="ot">=</span> x0 <span class="sc">+</span> gamma <span class="sc">*</span> (xr <span class="sc">-</span> x0)</span>
+<span id="cb673-73"><a href="nelder-mead.html#cb673-73" aria-hidden="true" tabindex="-1"></a>      escore <span class="ot">=</span> <span class="fu">f</span>(xe)</span>
+<span id="cb673-74"><a href="nelder-mead.html#cb673-74" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (escore <span class="sc">&lt;</span> rscore) {</span>
+<span id="cb673-75"><a href="nelder-mead.html#cb673-75" aria-hidden="true" tabindex="-1"></a>        res[nr, ] <span class="ot">=</span> <span class="fu">c</span>(xe, escore)</span>
+<span id="cb673-76"><a href="nelder-mead.html#cb673-76" aria-hidden="true" tabindex="-1"></a>        <span class="cf">next</span></span>
+<span id="cb673-77"><a href="nelder-mead.html#cb673-77" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb673-78"><a href="nelder-mead.html#cb673-78" aria-hidden="true" tabindex="-1"></a>        res[nr, ] <span class="ot">=</span> <span class="fu">c</span>(xr, rscore)</span>
+<span id="cb673-79"><a href="nelder-mead.html#cb673-79" aria-hidden="true" tabindex="-1"></a>        <span class="cf">next</span></span>
+<span id="cb673-80"><a href="nelder-mead.html#cb673-80" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb673-81"><a href="nelder-mead.html#cb673-81" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb673-82"><a href="nelder-mead.html#cb673-82" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-83"><a href="nelder-mead.html#cb673-83" aria-hidden="true" tabindex="-1"></a>    <span class="co"># contraction</span></span>
+<span id="cb673-84"><a href="nelder-mead.html#cb673-84" aria-hidden="true" tabindex="-1"></a>    xc <span class="ot">=</span> x0 <span class="sc">+</span> rho <span class="sc">*</span> (res[nr, <span class="sc">-</span>nc] <span class="sc">-</span> x0)</span>
+<span id="cb673-85"><a href="nelder-mead.html#cb673-85" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-86"><a href="nelder-mead.html#cb673-86" aria-hidden="true" tabindex="-1"></a>    cscore <span class="ot">=</span> <span class="fu">f</span>(xc)</span>
+<span id="cb673-87"><a href="nelder-mead.html#cb673-87" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-88"><a href="nelder-mead.html#cb673-88" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (cscore <span class="sc">&lt;</span> res[nr, <span class="st">&#39;score&#39;</span>]) {</span>
+<span id="cb673-89"><a href="nelder-mead.html#cb673-89" aria-hidden="true" tabindex="-1"></a>      res[nr,] <span class="ot">=</span> <span class="fu">c</span>(xc, cscore)</span>
+<span id="cb673-90"><a href="nelder-mead.html#cb673-90" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
+<span id="cb673-91"><a href="nelder-mead.html#cb673-91" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb673-92"><a href="nelder-mead.html#cb673-92" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-93"><a href="nelder-mead.html#cb673-93" aria-hidden="true" tabindex="-1"></a>    <span class="co"># reduction</span></span>
+<span id="cb673-94"><a href="nelder-mead.html#cb673-94" aria-hidden="true" tabindex="-1"></a>    x1 <span class="ot">=</span> res[<span class="dv">1</span>, <span class="sc">-</span>nc]</span>
+<span id="cb673-95"><a href="nelder-mead.html#cb673-95" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-96"><a href="nelder-mead.html#cb673-96" aria-hidden="true" tabindex="-1"></a>    nres <span class="ot">=</span> res</span>
+<span id="cb673-97"><a href="nelder-mead.html#cb673-97" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-98"><a href="nelder-mead.html#cb673-98" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nr) {</span>
+<span id="cb673-99"><a href="nelder-mead.html#cb673-99" aria-hidden="true" tabindex="-1"></a>      redx  <span class="ot">=</span> x1 <span class="sc">+</span> sigma <span class="sc">*</span> (res[i, <span class="sc">-</span>nc] <span class="sc">-</span> x1)</span>
+<span id="cb673-100"><a href="nelder-mead.html#cb673-100" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">=</span> <span class="fu">f</span>(redx)</span>
+<span id="cb673-101"><a href="nelder-mead.html#cb673-101" aria-hidden="true" tabindex="-1"></a>      nres[i, ] <span class="ot">=</span> <span class="fu">c</span>(redx, score)</span>
+<span id="cb673-102"><a href="nelder-mead.html#cb673-102" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb673-103"><a href="nelder-mead.html#cb673-103" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb673-104"><a href="nelder-mead.html#cb673-104" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">=</span> nres</span>
+<span id="cb673-105"><a href="nelder-mead.html#cb673-105" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb673-106"><a href="nelder-mead.html#cb673-106" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <div id="example-6" class="section level3">
 <h3>Example</h3>
 <p>The function to minimize.</p>
-<div class="sourceCode" id="cb686"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb686-1"><a href="nelder-mead.html#cb686-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
-<span id="cb686-2"><a href="nelder-mead.html#cb686-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sin</span>(x[<span class="dv">1</span>]) <span class="sc">*</span> <span class="fu">cos</span>(x[<span class="dv">2</span>]) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> (<span class="fu">abs</span>(x[<span class="dv">3</span>]) <span class="sc">+</span> <span class="dv">1</span>))</span>
-<span id="cb686-3"><a href="nelder-mead.html#cb686-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb687"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb687-1"><a href="nelder-mead.html#cb687-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nelder_mead2</span>(</span>
-<span id="cb687-2"><a href="nelder-mead.html#cb687-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
-<span id="cb687-3"><a href="nelder-mead.html#cb687-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
-<span id="cb687-4"><a href="nelder-mead.html#cb687-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">1000</span>, </span>
-<span id="cb687-5"><a href="nelder-mead.html#cb687-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span></span>
-<span id="cb687-6"><a href="nelder-mead.html#cb687-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="nelder-mead.html#cb674-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
+<span id="cb674-2"><a href="nelder-mead.html#cb674-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sin</span>(x[<span class="dv">1</span>]) <span class="sc">*</span> <span class="fu">cos</span>(x[<span class="dv">2</span>]) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> (<span class="fu">abs</span>(x[<span class="dv">3</span>]) <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb674-3"><a href="nelder-mead.html#cb674-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="nelder-mead.html#cb675-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nelder_mead2</span>(</span>
+<span id="cb675-2"><a href="nelder-mead.html#cb675-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
+<span id="cb675-3"><a href="nelder-mead.html#cb675-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb675-4"><a href="nelder-mead.html#cb675-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">1000</span>, </span>
+<span id="cb675-5"><a href="nelder-mead.html#cb675-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span></span>
+<span id="cb675-6"><a href="nelder-mead.html#cb675-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>        par_1         par_2         par_3         score 
 -1.570797e+00 -2.235577e-07  1.622809e-14 -1.000000e+00 </code></pre>
-<div class="sourceCode" id="cb689"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb689-1"><a href="nelder-mead.html#cb689-1" aria-hidden="true" tabindex="-1"></a>optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
-<span id="cb689-2"><a href="nelder-mead.html#cb689-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
-<span id="cb689-3"><a href="nelder-mead.html#cb689-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f, </span>
-<span id="cb689-4"><a href="nelder-mead.html#cb689-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method   =</span> <span class="st">&quot;Nelder-Mead&quot;</span>,</span>
-<span id="cb689-5"><a href="nelder-mead.html#cb689-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control  =</span> <span class="fu">list</span>(</span>
-<span id="cb689-6"><a href="nelder-mead.html#cb689-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
-<span id="cb689-7"><a href="nelder-mead.html#cb689-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma  =</span> <span class="dv">2</span>,</span>
-<span id="cb689-8"><a href="nelder-mead.html#cb689-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta   =</span> <span class="fl">0.5</span>,</span>
-<span id="cb689-9"><a href="nelder-mead.html#cb689-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">1000</span>,</span>
-<span id="cb689-10"><a href="nelder-mead.html#cb689-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
-<span id="cb689-11"><a href="nelder-mead.html#cb689-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb689-12"><a href="nelder-mead.html#cb689-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="nelder-mead.html#cb677-1" aria-hidden="true" tabindex="-1"></a>optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
+<span id="cb677-2"><a href="nelder-mead.html#cb677-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb677-3"><a href="nelder-mead.html#cb677-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f, </span>
+<span id="cb677-4"><a href="nelder-mead.html#cb677-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method   =</span> <span class="st">&quot;Nelder-Mead&quot;</span>,</span>
+<span id="cb677-5"><a href="nelder-mead.html#cb677-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control  =</span> <span class="fu">list</span>(</span>
+<span id="cb677-6"><a href="nelder-mead.html#cb677-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
+<span id="cb677-7"><a href="nelder-mead.html#cb677-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma  =</span> <span class="dv">2</span>,</span>
+<span id="cb677-8"><a href="nelder-mead.html#cb677-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta   =</span> <span class="fl">0.5</span>,</span>
+<span id="cb677-9"><a href="nelder-mead.html#cb677-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">1000</span>,</span>
+<span id="cb677-10"><a href="nelder-mead.html#cb677-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb677-11"><a href="nelder-mead.html#cb677-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb677-12"><a href="nelder-mead.html#cb677-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>                   p1           p2           p3 value fevals gevals niter convcode kkt1 kkt2 xtime
 Nelder-Mead -1.570796 1.394018e-08 1.088215e-16    -1    861     NA    NA        0 TRUE TRUE 0.001</code></pre>
 </div>
 <div id="a-regression-model-1" class="section level3">
 <h3>A Regression Model</h3>
-<div class="sourceCode" id="cb691"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb691-1"><a href="nelder-mead.html#cb691-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb691-2"><a href="nelder-mead.html#cb691-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb691-3"><a href="nelder-mead.html#cb691-3" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">500</span></span>
-<span id="cb691-4"><a href="nelder-mead.html#cb691-4" aria-hidden="true" tabindex="-1"></a>n_preds <span class="ot">=</span> <span class="dv">5</span></span>
-<span id="cb691-5"><a href="nelder-mead.html#cb691-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> n_preds), <span class="at">ncol =</span> n_preds))</span>
-<span id="cb691-6"><a href="nelder-mead.html#cb691-6" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fu">runif</span>(<span class="fu">ncol</span>(X), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb691-7"><a href="nelder-mead.html#cb691-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> X <span class="sc">%*%</span> beta <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(X))</span></code></pre></div>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="nelder-mead.html#cb679-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb679-2"><a href="nelder-mead.html#cb679-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb679-3"><a href="nelder-mead.html#cb679-3" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb679-4"><a href="nelder-mead.html#cb679-4" aria-hidden="true" tabindex="-1"></a>n_preds <span class="ot">=</span> <span class="dv">5</span></span>
+<span id="cb679-5"><a href="nelder-mead.html#cb679-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> n_preds), <span class="at">ncol =</span> n_preds))</span>
+<span id="cb679-6"><a href="nelder-mead.html#cb679-6" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fu">runif</span>(<span class="fu">ncol</span>(X), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb679-7"><a href="nelder-mead.html#cb679-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> X <span class="sc">%*%</span> beta <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(X))</span></code></pre></div>
 <p>Least squares loss function to minimize.</p>
-<div class="sourceCode" id="cb692"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb692-1"><a href="nelder-mead.html#cb692-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(b) {</span>
-<span id="cb692-2"><a href="nelder-mead.html#cb692-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> b)[,<span class="dv">1</span>]  <span class="co"># if using optimx need scalar</span></span>
-<span id="cb692-3"><a href="nelder-mead.html#cb692-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb693"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb693-1"><a href="nelder-mead.html#cb693-1" aria-hidden="true" tabindex="-1"></a>fit_nm <span class="ot">=</span> <span class="fu">nelder_mead2</span>(</span>
-<span id="cb693-2"><a href="nelder-mead.html#cb693-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
-<span id="cb693-3"><a href="nelder-mead.html#cb693-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)),</span>
-<span id="cb693-4"><a href="nelder-mead.html#cb693-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">2000</span>,</span>
-<span id="cb693-5"><a href="nelder-mead.html#cb693-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span></span>
-<span id="cb693-6"><a href="nelder-mead.html#cb693-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb680"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb680-1"><a href="nelder-mead.html#cb680-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="cf">function</span>(b) {</span>
+<span id="cb680-2"><a href="nelder-mead.html#cb680-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> b)[,<span class="dv">1</span>]  <span class="co"># if using optimx need scalar</span></span>
+<span id="cb680-3"><a href="nelder-mead.html#cb680-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb681-1"><a href="nelder-mead.html#cb681-1" aria-hidden="true" tabindex="-1"></a>fit_nm <span class="ot">=</span> <span class="fu">nelder_mead2</span>(</span>
+<span id="cb681-2"><a href="nelder-mead.html#cb681-2" aria-hidden="true" tabindex="-1"></a>  f, </span>
+<span id="cb681-3"><a href="nelder-mead.html#cb681-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)),</span>
+<span id="cb681-4"><a href="nelder-mead.html#cb681-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_iter =</span> <span class="dv">2000</span>,</span>
+<span id="cb681-5"><a href="nelder-mead.html#cb681-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_improve_thr =</span> <span class="fl">1e-12</span></span>
+<span id="cb681-6"><a href="nelder-mead.html#cb681-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <div id="comparison-43" class="section level4">
 <h4>Comparison</h4>
 <p>Compare to <span class="pack" style="">optimx</span> and <span class="func" style="">lm</span> as before.</p>
-<div class="sourceCode" id="cb694"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb694-1"><a href="nelder-mead.html#cb694-1" aria-hidden="true" tabindex="-1"></a>fit_nm_optimx <span class="ot">=</span> optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
-<span id="cb694-2"><a href="nelder-mead.html#cb694-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)),</span>
-<span id="cb694-3"><a href="nelder-mead.html#cb694-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f,</span>
-<span id="cb694-4"><a href="nelder-mead.html#cb694-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method   =</span> <span class="st">&#39;Nelder-Mead&#39;</span>,</span>
-<span id="cb694-5"><a href="nelder-mead.html#cb694-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control  =</span> <span class="fu">list</span>(</span>
-<span id="cb694-6"><a href="nelder-mead.html#cb694-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
-<span id="cb694-7"><a href="nelder-mead.html#cb694-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma  =</span> <span class="dv">2</span>,</span>
-<span id="cb694-8"><a href="nelder-mead.html#cb694-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta   =</span> <span class="fl">0.5</span>,</span>
-<span id="cb694-9"><a href="nelder-mead.html#cb694-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">2000</span>,</span>
-<span id="cb694-10"><a href="nelder-mead.html#cb694-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
-<span id="cb694-11"><a href="nelder-mead.html#cb694-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb694-12"><a href="nelder-mead.html#cb694-12" aria-hidden="true" tabindex="-1"></a>)[<span class="dv">1</span><span class="sc">:</span>(n_preds <span class="sc">+</span> <span class="dv">1</span>)]</span>
-<span id="cb694-13"><a href="nelder-mead.html#cb694-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb694-14"><a href="nelder-mead.html#cb694-14" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">=</span> <span class="fu">lm.fit</span>(X, y)<span class="sc">$</span>coef</span></code></pre></div>
+<div class="sourceCode" id="cb682"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb682-1"><a href="nelder-mead.html#cb682-1" aria-hidden="true" tabindex="-1"></a>fit_nm_optimx <span class="ot">=</span> optimx<span class="sc">::</span><span class="fu">optimx</span>(</span>
+<span id="cb682-2"><a href="nelder-mead.html#cb682-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">ncol</span>(X)),</span>
+<span id="cb682-3"><a href="nelder-mead.html#cb682-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> f,</span>
+<span id="cb682-4"><a href="nelder-mead.html#cb682-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method   =</span> <span class="st">&#39;Nelder-Mead&#39;</span>,</span>
+<span id="cb682-5"><a href="nelder-mead.html#cb682-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">control  =</span> <span class="fu">list</span>(</span>
+<span id="cb682-6"><a href="nelder-mead.html#cb682-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha  =</span> <span class="dv">1</span>,</span>
+<span id="cb682-7"><a href="nelder-mead.html#cb682-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma  =</span> <span class="dv">2</span>,</span>
+<span id="cb682-8"><a href="nelder-mead.html#cb682-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta   =</span> <span class="fl">0.5</span>,</span>
+<span id="cb682-9"><a href="nelder-mead.html#cb682-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit  =</span> <span class="dv">2000</span>,</span>
+<span id="cb682-10"><a href="nelder-mead.html#cb682-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol =</span> <span class="fl">1e-12</span></span>
+<span id="cb682-11"><a href="nelder-mead.html#cb682-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb682-12"><a href="nelder-mead.html#cb682-12" aria-hidden="true" tabindex="-1"></a>)[<span class="dv">1</span><span class="sc">:</span>(n_preds <span class="sc">+</span> <span class="dv">1</span>)]</span>
+<span id="cb682-13"><a href="nelder-mead.html#cb682-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb682-14"><a href="nelder-mead.html#cb682-14" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">=</span> <span class="fu">lm.fit</span>(X, y)<span class="sc">$</span>coef</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

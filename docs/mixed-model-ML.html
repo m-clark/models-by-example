@@ -797,77 +797,77 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>For this we’ll use the <span class="objclass" style="">sleepstudy</span> data from the <span class="pack" style="">lme4</span> package. The data has reaction times for 18 individuals over 10 days each (see the help file for the <span class="objclass" style="">sleepstudy</span> object for more details).</p>
 <div id="data-setup-4" class="section level3">
 <h3>Data Setup</h3>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="mixed-model-ML.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb52-2"><a href="mixed-model-ML.html#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-3"><a href="mixed-model-ML.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sleepstudy, <span class="at">package =</span> <span class="st">&#39;lme4&#39;</span>)</span>
-<span id="cb52-4"><a href="mixed-model-ML.html#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="mixed-model-ML.html#cb52-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>Days, sleepstudy)</span>
-<span id="cb52-6"><a href="mixed-model-ML.html#cb52-6" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">model.matrix</span>(<span class="sc">~</span><span class="fu">factor</span>(sleepstudy<span class="sc">$</span>Subject) <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb52-7"><a href="mixed-model-ML.html#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-8"><a href="mixed-model-ML.html#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Z) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&#39;Subject_&#39;</span>, <span class="fu">unique</span>(sleepstudy<span class="sc">$</span>Subject))  <span class="co"># for cleaner presentation later</span></span>
-<span id="cb52-9"><a href="mixed-model-ML.html#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(Z) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&#39;Subject_&#39;</span>, sleepstudy<span class="sc">$</span>Subject)</span>
-<span id="cb52-10"><a href="mixed-model-ML.html#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-11"><a href="mixed-model-ML.html#cb52-11" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> sleepstudy<span class="sc">$</span>Reaction</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="mixed-model-ML.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb42-2"><a href="mixed-model-ML.html#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="mixed-model-ML.html#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sleepstudy, <span class="at">package =</span> <span class="st">&#39;lme4&#39;</span>)</span>
+<span id="cb42-4"><a href="mixed-model-ML.html#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="mixed-model-ML.html#cb42-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>Days, sleepstudy)</span>
+<span id="cb42-6"><a href="mixed-model-ML.html#cb42-6" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">model.matrix</span>(<span class="sc">~</span><span class="fu">factor</span>(sleepstudy<span class="sc">$</span>Subject) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb42-7"><a href="mixed-model-ML.html#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="mixed-model-ML.html#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Z) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&#39;Subject_&#39;</span>, <span class="fu">unique</span>(sleepstudy<span class="sc">$</span>Subject))  <span class="co"># for cleaner presentation later</span></span>
+<span id="cb42-9"><a href="mixed-model-ML.html#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(Z) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&#39;Subject_&#39;</span>, sleepstudy<span class="sc">$</span>Subject)</span>
+<span id="cb42-10"><a href="mixed-model-ML.html#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="mixed-model-ML.html#cb42-11" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> sleepstudy<span class="sc">$</span>Reaction</span></code></pre></div>
 </div>
 <div id="function-2" class="section level3">
 <h3>Function</h3>
 <p>The following is based on the code in Wood (6.2.2), with a couple modifications for consistent nomenclature and presentation. We use <span class="func">optim</span> and a minimizing function, in this case the negative log likelihood, to estimate the parameters of interest, collectively <span class="math inline">\(\theta\)</span>, in the code below. The (square root of the) variances will be estimated on the log scale. In Wood, he simply extracts the ‘fixed effects’ for the intercept and days effects using <code>lm</code> (6.2.3), and we’ll do the same.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="mixed-model-ML.html#cb53-1" aria-hidden="true" tabindex="-1"></a>ll_mixed <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, Z, theta) {</span>
-<span id="cb53-2"><a href="mixed-model-ML.html#cb53-2" aria-hidden="true" tabindex="-1"></a>  tau   <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">1</span>])</span>
-<span id="cb53-3"><a href="mixed-model-ML.html#cb53-3" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">2</span>])</span>
-<span id="cb53-4"><a href="mixed-model-ML.html#cb53-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
-<span id="cb53-5"><a href="mixed-model-ML.html#cb53-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-6"><a href="mixed-model-ML.html#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># evaluate covariance matrix for y</span></span>
-<span id="cb53-7"><a href="mixed-model-ML.html#cb53-7" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">=</span> <span class="fu">tcrossprod</span>(Z)<span class="sc">*</span>tau<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">diag</span>(n)<span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb53-8"><a href="mixed-model-ML.html#cb53-8" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">chol</span>(e)  <span class="co"># L&#39;L = e</span></span>
-<span id="cb53-9"><a href="mixed-model-ML.html#cb53-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-10"><a href="mixed-model-ML.html#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># transform dependent linear model to independent</span></span>
-<span id="cb53-11"><a href="mixed-model-ML.html#cb53-11" aria-hidden="true" tabindex="-1"></a>  y  <span class="ot">=</span> <span class="fu">backsolve</span>(L, y, <span class="at">transpose =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb53-12"><a href="mixed-model-ML.html#cb53-12" aria-hidden="true" tabindex="-1"></a>  X  <span class="ot">=</span> <span class="fu">backsolve</span>(L, X, <span class="at">transpose =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb53-13"><a href="mixed-model-ML.html#cb53-13" aria-hidden="true" tabindex="-1"></a>  b  <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y<span class="sc">~</span>X<span class="dv">-1</span>))</span>
-<span id="cb53-14"><a href="mixed-model-ML.html#cb53-14" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> b</span>
-<span id="cb53-15"><a href="mixed-model-ML.html#cb53-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-16"><a href="mixed-model-ML.html#cb53-16" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="sc">-</span>n<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">diag</span>(L))) <span class="sc">-</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> LP)<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb53-17"><a href="mixed-model-ML.html#cb53-17" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
-<span id="cb53-18"><a href="mixed-model-ML.html#cb53-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="mixed-model-ML.html#cb43-1" aria-hidden="true" tabindex="-1"></a>mixed_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, Z, theta) {</span>
+<span id="cb43-2"><a href="mixed-model-ML.html#cb43-2" aria-hidden="true" tabindex="-1"></a>  tau   <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">1</span>])</span>
+<span id="cb43-3"><a href="mixed-model-ML.html#cb43-3" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">2</span>])</span>
+<span id="cb43-4"><a href="mixed-model-ML.html#cb43-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
+<span id="cb43-5"><a href="mixed-model-ML.html#cb43-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb43-6"><a href="mixed-model-ML.html#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># evaluate covariance matrix for y</span></span>
+<span id="cb43-7"><a href="mixed-model-ML.html#cb43-7" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">=</span> <span class="fu">tcrossprod</span>(Z)<span class="sc">*</span>tau<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">diag</span>(n)<span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb43-8"><a href="mixed-model-ML.html#cb43-8" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">chol</span>(e)  <span class="co"># L&#39;L = e</span></span>
+<span id="cb43-9"><a href="mixed-model-ML.html#cb43-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb43-10"><a href="mixed-model-ML.html#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># transform dependent linear model to independent</span></span>
+<span id="cb43-11"><a href="mixed-model-ML.html#cb43-11" aria-hidden="true" tabindex="-1"></a>  y  <span class="ot">=</span> <span class="fu">backsolve</span>(L, y, <span class="at">transpose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-12"><a href="mixed-model-ML.html#cb43-12" aria-hidden="true" tabindex="-1"></a>  X  <span class="ot">=</span> <span class="fu">backsolve</span>(L, X, <span class="at">transpose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-13"><a href="mixed-model-ML.html#cb43-13" aria-hidden="true" tabindex="-1"></a>  b  <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y<span class="sc">~</span>X<span class="dv">-1</span>))</span>
+<span id="cb43-14"><a href="mixed-model-ML.html#cb43-14" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> b</span>
+<span id="cb43-15"><a href="mixed-model-ML.html#cb43-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb43-16"><a href="mixed-model-ML.html#cb43-16" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="sc">-</span>n<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">diag</span>(L))) <span class="sc">-</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> LP)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb43-17"><a href="mixed-model-ML.html#cb43-17" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
+<span id="cb43-18"><a href="mixed-model-ML.html#cb43-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here is an alternative function using a multivariate normal approach that doesn’t use the transformation to independent, and might provide additional perspective.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="mixed-model-ML.html#cb54-1" aria-hidden="true" tabindex="-1"></a>ll_mixed_mv <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, Z, theta) {</span>
-<span id="cb54-2"><a href="mixed-model-ML.html#cb54-2" aria-hidden="true" tabindex="-1"></a>  tau   <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">1</span>])</span>
-<span id="cb54-3"><a href="mixed-model-ML.html#cb54-3" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">2</span>])</span>
-<span id="cb54-4"><a href="mixed-model-ML.html#cb54-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
-<span id="cb54-5"><a href="mixed-model-ML.html#cb54-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb54-6"><a href="mixed-model-ML.html#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># evaluate covariance matrix for y</span></span>
-<span id="cb54-7"><a href="mixed-model-ML.html#cb54-7" aria-hidden="true" tabindex="-1"></a>  e  <span class="ot">=</span> <span class="fu">tcrossprod</span>(Z)<span class="sc">*</span>tau<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">diag</span>(n)<span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb54-8"><a href="mixed-model-ML.html#cb54-8" aria-hidden="true" tabindex="-1"></a>  b  <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm.fit</span>(X, y))</span>
-<span id="cb54-9"><a href="mixed-model-ML.html#cb54-9" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> X <span class="sc">%*%</span> b</span>
-<span id="cb54-10"><a href="mixed-model-ML.html#cb54-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-11"><a href="mixed-model-ML.html#cb54-11" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> mvtnorm<span class="sc">::</span><span class="fu">dmvnorm</span>(y, mu, e, <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb54-12"><a href="mixed-model-ML.html#cb54-12" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
-<span id="cb54-13"><a href="mixed-model-ML.html#cb54-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="mixed-model-ML.html#cb44-1" aria-hidden="true" tabindex="-1"></a>mixed_ll_mv <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, Z, theta) {</span>
+<span id="cb44-2"><a href="mixed-model-ML.html#cb44-2" aria-hidden="true" tabindex="-1"></a>  tau   <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">1</span>])</span>
+<span id="cb44-3"><a href="mixed-model-ML.html#cb44-3" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <span class="fu">exp</span>(theta[<span class="dv">2</span>])</span>
+<span id="cb44-4"><a href="mixed-model-ML.html#cb44-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
+<span id="cb44-5"><a href="mixed-model-ML.html#cb44-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb44-6"><a href="mixed-model-ML.html#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># evaluate covariance matrix for y</span></span>
+<span id="cb44-7"><a href="mixed-model-ML.html#cb44-7" aria-hidden="true" tabindex="-1"></a>  e  <span class="ot">=</span> <span class="fu">tcrossprod</span>(Z)<span class="sc">*</span>tau<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">diag</span>(n)<span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb44-8"><a href="mixed-model-ML.html#cb44-8" aria-hidden="true" tabindex="-1"></a>  b  <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm.fit</span>(X, y))</span>
+<span id="cb44-9"><a href="mixed-model-ML.html#cb44-9" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> X <span class="sc">%*%</span> b</span>
+<span id="cb44-10"><a href="mixed-model-ML.html#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="mixed-model-ML.html#cb44-11" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> mvtnorm<span class="sc">::</span><span class="fu">dmvnorm</span>(y, mu, e, <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb44-12"><a href="mixed-model-ML.html#cb44-12" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>ll</span>
+<span id="cb44-13"><a href="mixed-model-ML.html#cb44-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-4" class="section level3">
 <h3>Estimation</h3>
 <p>Now we’re ready to use the <span class="func">optim</span> function for estimation. A slight change to tolerance is included to get closer estimates to <span class="pack">lme4</span>, which we will compare shortly.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="mixed-model-ML.html#cb55-1" aria-hidden="true" tabindex="-1"></a>paramInit <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb55-2"><a href="mixed-model-ML.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(paramInit) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;tau&#39;</span>, <span class="st">&#39;sigma&#39;</span>)</span>
-<span id="cb55-3"><a href="mixed-model-ML.html#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-4"><a href="mixed-model-ML.html#cb55-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb55-5"><a href="mixed-model-ML.html#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> ll_mixed,</span>
-<span id="cb55-6"><a href="mixed-model-ML.html#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb55-7"><a href="mixed-model-ML.html#cb55-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb55-8"><a href="mixed-model-ML.html#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z   =</span> Z,</span>
-<span id="cb55-9"><a href="mixed-model-ML.html#cb55-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> paramInit,</span>
-<span id="cb55-10"><a href="mixed-model-ML.html#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-10</span>)</span>
-<span id="cb55-11"><a href="mixed-model-ML.html#cb55-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb55-12"><a href="mixed-model-ML.html#cb55-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-13"><a href="mixed-model-ML.html#cb55-13" aria-hidden="true" tabindex="-1"></a>fit_mv <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb55-14"><a href="mixed-model-ML.html#cb55-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> ll_mixed_mv,</span>
-<span id="cb55-15"><a href="mixed-model-ML.html#cb55-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb55-16"><a href="mixed-model-ML.html#cb55-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb55-17"><a href="mixed-model-ML.html#cb55-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z   =</span> Z,</span>
-<span id="cb55-18"><a href="mixed-model-ML.html#cb55-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> paramInit,</span>
-<span id="cb55-19"><a href="mixed-model-ML.html#cb55-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-10</span>)</span>
-<span id="cb55-20"><a href="mixed-model-ML.html#cb55-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="mixed-model-ML.html#cb45-1" aria-hidden="true" tabindex="-1"></a>param_init <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb45-2"><a href="mixed-model-ML.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(param_init) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;tau&#39;</span>, <span class="st">&#39;sigma&#39;</span>)</span>
+<span id="cb45-3"><a href="mixed-model-ML.html#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="mixed-model-ML.html#cb45-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb45-5"><a href="mixed-model-ML.html#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> mixed_ll,</span>
+<span id="cb45-6"><a href="mixed-model-ML.html#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb45-7"><a href="mixed-model-ML.html#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb45-8"><a href="mixed-model-ML.html#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z   =</span> Z,</span>
+<span id="cb45-9"><a href="mixed-model-ML.html#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> param_init,</span>
+<span id="cb45-10"><a href="mixed-model-ML.html#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-10</span>)</span>
+<span id="cb45-11"><a href="mixed-model-ML.html#cb45-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-12"><a href="mixed-model-ML.html#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="mixed-model-ML.html#cb45-13" aria-hidden="true" tabindex="-1"></a>fit_mv <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb45-14"><a href="mixed-model-ML.html#cb45-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> mixed_ll_mv,</span>
+<span id="cb45-15"><a href="mixed-model-ML.html#cb45-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb45-16"><a href="mixed-model-ML.html#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb45-17"><a href="mixed-model-ML.html#cb45-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z   =</span> Z,</span>
+<span id="cb45-18"><a href="mixed-model-ML.html#cb45-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> param_init,</span>
+<span id="cb45-19"><a href="mixed-model-ML.html#cb45-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-10</span>)</span>
+<span id="cb45-20"><a href="mixed-model-ML.html#cb45-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -894,7 +894,7 @@ XDays
 <tbody>
 <tr>
 <td style="text-align:left;">
-ll_mixed
+mixed_ll
 </td>
 <td style="text-align:right;">
 36.016
@@ -914,7 +914,7 @@ ll_mixed
 </tr>
 <tr>
 <td style="text-align:left;">
-ll_mixed_mv
+mixed_ll_mv
 </td>
 <td style="text-align:right;">
 36.016
@@ -935,11 +935,11 @@ ll_mixed_mv
 </tbody>
 </table>
 <p>As we can see, both formulations produce identical results. We can now compare those results to the <span class="pack" style="">lme4</span> output for the same model, and see that we’re getting what we should.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="mixed-model-ML.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb56-2"><a href="mixed-model-ML.html#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-3"><a href="mixed-model-ML.html#cb56-3" aria-hidden="true" tabindex="-1"></a>fit_mer <span class="ot">=</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Subject), sleepstudy, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb56-4"><a href="mixed-model-ML.html#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-5"><a href="mixed-model-ML.html#cb56-5" aria-hidden="true" tabindex="-1"></a>fit_mer</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="mixed-model-ML.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb46-2"><a href="mixed-model-ML.html#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="mixed-model-ML.html#cb46-3" aria-hidden="true" tabindex="-1"></a>fit_mer <span class="ot">=</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Subject), sleepstudy, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb46-4"><a href="mixed-model-ML.html#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="mixed-model-ML.html#cb46-5" aria-hidden="true" tabindex="-1"></a>fit_mer</span></code></pre></div>
 <pre><code>Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
 Formula: Reaction ~ Days + (1 | Subject)
    Data: sleepstudy
@@ -954,18 +954,12 @@ Fixed Effects:
 (Intercept)         Days  
      251.41        10.47  </code></pre>
 <p>We can also predict the random effects (Wood, 6.2.4), sometimes called BLUPs (Best Linear Unbiased Predictions) and after doing so again compare the results to the <span class="pack" style="">lme4</span> estimates.</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="mixed-model-ML.html#cb58-1" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">=</span> <span class="fu">exp</span>(fit<span class="sc">$</span>par)[<span class="dv">1</span>]</span>
-<span id="cb58-2"><a href="mixed-model-ML.html#cb58-2" aria-hidden="true" tabindex="-1"></a>tausq   <span class="ot">=</span> tau<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb58-3"><a href="mixed-model-ML.html#cb58-3" aria-hidden="true" tabindex="-1"></a>sigma   <span class="ot">=</span> <span class="fu">exp</span>(fit<span class="sc">$</span>par)[<span class="dv">2</span>]</span>
-<span id="cb58-4"><a href="mixed-model-ML.html#cb58-4" aria-hidden="true" tabindex="-1"></a>sigmasq <span class="ot">=</span> sigma<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb58-5"><a href="mixed-model-ML.html#cb58-5" aria-hidden="true" tabindex="-1"></a>Sigma   <span class="ot">=</span> <span class="fu">tcrossprod</span>(Z)<span class="sc">*</span>tausq<span class="sc">/</span>sigmasq <span class="sc">+</span> <span class="fu">diag</span>(<span class="fu">length</span>(y))</span>
-<span id="cb58-6"><a href="mixed-model-ML.html#cb58-6" aria-hidden="true" tabindex="-1"></a>ranef_est <span class="ot">=</span> tausq <span class="sc">*</span> <span class="fu">t</span>(Z) <span class="sc">%*%</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> <span class="fu">resid</span>(<span class="fu">lm</span>(y <span class="sc">~</span> X <span class="sc">-</span> <span class="dv">1</span>))<span class="sc">/</span>sigmasq</span>
-<span id="cb58-7"><a href="mixed-model-ML.html#cb58-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-8"><a href="mixed-model-ML.html#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb58-9"><a href="mixed-model-ML.html#cb58-9" aria-hidden="true" tabindex="-1"></a>  ranef_est, </span>
-<span id="cb58-10"><a href="mixed-model-ML.html#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">lme4 =</span> <span class="fu">ranef</span>(fit_mer)<span class="sc">$</span>Subject[[<span class="dv">1</span>]]</span>
-<span id="cb58-11"><a href="mixed-model-ML.html#cb58-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb58-12"><a href="mixed-model-ML.html#cb58-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_df</span>(<span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="mixed-model-ML.html#cb48-1" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">=</span> <span class="fu">exp</span>(fit<span class="sc">$</span>par)[<span class="dv">1</span>]</span>
+<span id="cb48-2"><a href="mixed-model-ML.html#cb48-2" aria-hidden="true" tabindex="-1"></a>tausq   <span class="ot">=</span> tau<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb48-3"><a href="mixed-model-ML.html#cb48-3" aria-hidden="true" tabindex="-1"></a>sigma   <span class="ot">=</span> <span class="fu">exp</span>(fit<span class="sc">$</span>par)[<span class="dv">2</span>]</span>
+<span id="cb48-4"><a href="mixed-model-ML.html#cb48-4" aria-hidden="true" tabindex="-1"></a>sigmasq <span class="ot">=</span> sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb48-5"><a href="mixed-model-ML.html#cb48-5" aria-hidden="true" tabindex="-1"></a>Sigma   <span class="ot">=</span> <span class="fu">tcrossprod</span>(Z)<span class="sc">*</span>tausq<span class="sc">/</span>sigmasq <span class="sc">+</span> <span class="fu">diag</span>(<span class="fu">length</span>(y))</span>
+<span id="cb48-6"><a href="mixed-model-ML.html#cb48-6" aria-hidden="true" tabindex="-1"></a>ranef_est <span class="ot">=</span> tausq <span class="sc">*</span> <span class="fu">t</span>(Z) <span class="sc">%*%</span> <span class="fu">solve</span>(Sigma) <span class="sc">%*%</span> <span class="fu">resid</span>(<span class="fu">lm</span>(y <span class="sc">~</span> X <span class="sc">-</span> <span class="dv">1</span>))<span class="sc">/</span>sigmasq</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

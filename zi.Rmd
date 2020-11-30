@@ -172,16 +172,18 @@ zinb_ll <- function(y, X, par) {
   # LLs
   logliklogit  = 
     log( 
-      logi0 + exp(log(1 - logi0) + suppressWarnings(dnbinom(0, 
-                                                            size = theta, 
-                                                            mu   = munb, 
-                                                            log  = TRUE)))
+      logi0 + 
+        exp(
+          log(1 - logi0) + 
+            suppressWarnings(dnbinom(0, size = theta, mu   = munb, log  = TRUE))
+        )
     )
   
-  logliknegbin = log(1 - logi0) + suppressWarnings(dnbinom(y, 
-                                                           size = theta, 
-                                                           mu   = munb, 
-                                                           log  = TRUE))
+  logliknegbin = log(1 - logi0) + 
+    suppressWarnings(dnbinom(y, 
+                             size = theta, 
+                             mu   = munb, 
+                             log  = TRUE))
   
   # Hilbe formulation
   # theta part 

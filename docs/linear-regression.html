@@ -798,11 +798,12 @@ confined to the standard regression setting, but is widely used in more
 predictive/‘algorithmic’ approaches e.g. in machine learning and elsewhere. You can find a <a href="supplemental.html#python-linreg">Python version of the code in the supplemental section</a>.</p>
 <div id="data-setup" class="section level2">
 <h2>Data Setup</h2>
+<p>We will simulate some data to make our results known and easier to manipulate.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="linear-regression.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="linear-regression.html#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="linear-regression.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># ensures replication</span></span>
 <span id="cb1-4"><a href="linear-regression.html#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="linear-regression.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># predictors and response</span></span>
+<span id="cb1-5"><a href="linear-regression.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># predictors and target</span></span>
 <span id="cb1-6"><a href="linear-regression.html#cb1-6" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">100</span> <span class="co"># sample size</span></span>
 <span id="cb1-7"><a href="linear-regression.html#cb1-7" aria-hidden="true" tabindex="-1"></a>k <span class="ot">=</span> <span class="dv">2</span>   <span class="co"># number of desired predictors</span></span>
 <span id="cb1-8"><a href="linear-regression.html#cb1-8" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> k), <span class="at">ncol =</span> k)  </span>
@@ -816,7 +817,7 @@ predictive/‘algorithmic’ approaches e.g. in machine learning and elsewhere.
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="linear-regression.html#cb2-1" aria-hidden="true" tabindex="-1"></a>lm_ml <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y) {</span>
 <span id="cb2-2"><a href="linear-regression.html#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
 <span id="cb2-3"><a href="linear-regression.html#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
-<span id="cb2-4"><a href="linear-regression.html#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
+<span id="cb2-4"><a href="linear-regression.html#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: target</span></span>
 <span id="cb2-5"><a href="linear-regression.html#cb2-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb2-6"><a href="linear-regression.html#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
 <span id="cb2-7"><a href="linear-regression.html#cb2-7" aria-hidden="true" tabindex="-1"></a>  beta   <span class="ot">=</span> par[<span class="sc">-</span><span class="dv">1</span>]                             <span class="co"># coefficients</span></span>
@@ -840,7 +841,7 @@ predictive/‘algorithmic’ approaches e.g. in machine learning and elsewhere.
 <span id="cb3-2"><a href="linear-regression.html#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments- </span></span>
 <span id="cb3-3"><a href="linear-regression.html#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
 <span id="cb3-4"><a href="linear-regression.html#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
-<span id="cb3-5"><a href="linear-regression.html#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
+<span id="cb3-5"><a href="linear-regression.html#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: target</span></span>
 <span id="cb3-6"><a href="linear-regression.html#cb3-6" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb3-7"><a href="linear-regression.html#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
 <span id="cb3-8"><a href="linear-regression.html#cb3-8" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par                                   <span class="co"># coefficients</span></span>
@@ -863,7 +864,7 @@ required for the LS approach as it is the objective function.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="linear-regression.html#cb5-1" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X)))</span>
 <span id="cb5-2"><a href="linear-regression.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(init) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;sigma2&#39;</span>, <span class="st">&#39;intercept&#39;</span>, <span class="st">&#39;b1&#39;</span>, <span class="st">&#39;b2&#39;</span>)</span>
 <span id="cb5-3"><a href="linear-regression.html#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="linear-regression.html#cb5-4" aria-hidden="true" tabindex="-1"></a>optlmML <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb5-4"><a href="linear-regression.html#cb5-4" aria-hidden="true" tabindex="-1"></a>fit_ML <span class="ot">=</span> <span class="fu">optim</span>(</span>
 <span id="cb5-5"><a href="linear-regression.html#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
 <span id="cb5-6"><a href="linear-regression.html#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> lm_ml,</span>
 <span id="cb5-7"><a href="linear-regression.html#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
@@ -871,7 +872,7 @@ required for the LS approach as it is the objective function.</p>
 <span id="cb5-9"><a href="linear-regression.html#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-8</span>)</span>
 <span id="cb5-10"><a href="linear-regression.html#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-11"><a href="linear-regression.html#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="linear-regression.html#cb5-12" aria-hidden="true" tabindex="-1"></a>optlmLS <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb5-12"><a href="linear-regression.html#cb5-12" aria-hidden="true" tabindex="-1"></a>fit_LS <span class="ot">=</span> <span class="fu">optim</span>(</span>
 <span id="cb5-13"><a href="linear-regression.html#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init[<span class="sc">-</span><span class="dv">1</span>],</span>
 <span id="cb5-14"><a href="linear-regression.html#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> lm_ls,</span>
 <span id="cb5-15"><a href="linear-regression.html#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
@@ -879,37 +880,99 @@ required for the LS approach as it is the objective function.</p>
 <span id="cb5-17"><a href="linear-regression.html#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-8</span>)</span>
 <span id="cb5-18"><a href="linear-regression.html#cb5-18" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-19"><a href="linear-regression.html#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-20"><a href="linear-regression.html#cb5-20" aria-hidden="true" tabindex="-1"></a>pars_ml <span class="ot">=</span> optlmML<span class="sc">$</span>par</span>
-<span id="cb5-21"><a href="linear-regression.html#cb5-21" aria-hidden="true" tabindex="-1"></a>pars_LS <span class="ot">=</span> <span class="fu">c</span>(<span class="at">sigma2 =</span> optlmLS<span class="sc">$</span>value <span class="sc">/</span> (N <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>), optlmLS<span class="sc">$</span>par)  <span class="co"># calculate sigma2 and add</span></span></code></pre></div>
+<span id="cb5-20"><a href="linear-regression.html#cb5-20" aria-hidden="true" tabindex="-1"></a>pars_ML <span class="ot">=</span> fit_ML<span class="sc">$</span>par</span>
+<span id="cb5-21"><a href="linear-regression.html#cb5-21" aria-hidden="true" tabindex="-1"></a>pars_LS <span class="ot">=</span> <span class="fu">c</span>(<span class="at">sigma2 =</span> fit_LS<span class="sc">$</span>value <span class="sc">/</span> (N<span class="sc">-</span>k<span class="dv">-1</span>), fit_LS<span class="sc">$</span>par)  <span class="co"># calculate sigma2 and add</span></span></code></pre></div>
 </div>
 <div id="comparison" class="section level2">
 <h2>Comparison</h2>
 <p>Compare to <code>lm</code> which uses QR decomposition.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="linear-regression.html#cb6-1" aria-hidden="true" tabindex="-1"></a>modlm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., dfXy)</span></code></pre></div>
-<p>Example of QR.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="linear-regression.html#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., dfXy)</span></code></pre></div>
+<p>Example of QR. Not shown.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="linear-regression.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># QRX = qr(X)</span></span>
 <span id="cb7-2"><a href="linear-regression.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Q = qr.Q(QRX)</span></span>
 <span id="cb7-3"><a href="linear-regression.html#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># R = qr.R(QRX)</span></span>
 <span id="cb7-4"><a href="linear-regression.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Bhat = solve(R) %*% crossprod(Q, y)</span></span>
 <span id="cb7-5"><a href="linear-regression.html#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># alternate: qr.coef(QRX, y)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="linear-regression.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(</span>
-<span id="cb8-2"><a href="linear-regression.html#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbind</span>(</span>
-<span id="cb8-3"><a href="linear-regression.html#cb8-3" aria-hidden="true" tabindex="-1"></a>    pars_ml,</span>
-<span id="cb8-4"><a href="linear-regression.html#cb8-4" aria-hidden="true" tabindex="-1"></a>    pars_LS,</span>
-<span id="cb8-5"><a href="linear-regression.html#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">modlm =</span> <span class="fu">c</span>(<span class="fu">summary</span>(modlm)<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span>, <span class="fu">coef</span>(modlm))), </span>
-<span id="cb8-6"><a href="linear-regression.html#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span></span>
-<span id="cb8-7"><a href="linear-regression.html#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>        sigma2 intercept    b1    b2
-pars_ml  0.219    -0.432 0.133 0.112
-pars_LS  0.226    -0.432 0.133 0.112
-modlm    0.226    -0.432 0.133 0.112</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+sigma2
+</th>
+<th style="text-align:right;">
+intercept
+</th>
+<th style="text-align:right;">
+b1
+</th>
+<th style="text-align:right;">
+b2
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+fit_ML
+</td>
+<td style="text-align:right;">
+0.219
+</td>
+<td style="text-align:right;">
+-0.432
+</td>
+<td style="text-align:right;">
+0.133
+</td>
+<td style="text-align:right;">
+0.112
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fit_LS
+</td>
+<td style="text-align:right;">
+0.226
+</td>
+<td style="text-align:right;">
+-0.432
+</td>
+<td style="text-align:right;">
+0.133
+</td>
+<td style="text-align:right;">
+0.112
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fit_lm
+</td>
+<td style="text-align:right;">
+0.226
+</td>
+<td style="text-align:right;">
+-0.432
+</td>
+<td style="text-align:right;">
+0.133
+</td>
+<td style="text-align:right;">
+0.112
+</td>
+</tr>
+</tbody>
+</table>
 <p>The slight difference in sigma is roughly dividing by N vs. N-k-1 in the
 traditional least squares approach. It diminishes with increasing N as both tend
-toward whatever <code>sd^2</code> you specify when creating the <code>y</code> response above.</p>
+toward whatever <code>sd^2</code> you specify when creating the <code>y</code> target above.</p>
 <p>Compare to <span class="func" style="">glm</span>, which by default assumes gaussian family with identity link
 and uses <code>lm.fit</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="linear-regression.html#cb10-1" aria-hidden="true" tabindex="-1"></a>modglm <span class="ot">=</span> <span class="fu">glm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> dfXy)</span>
-<span id="cb10-2"><a href="linear-regression.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modglm)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="linear-regression.html#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">=</span> <span class="fu">glm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> dfXy)</span>
+<span id="cb8-2"><a href="linear-regression.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_glm)</span></code></pre></div>
 <pre><code>
 Call:
 glm(formula = y ~ ., data = dfXy)
@@ -934,19 +997,21 @@ AIC: 140.13
 
 Number of Fisher Scoring iterations: 2</code></pre>
 <p>Via normal equations.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="linear-regression.html#cb12-1" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y  <span class="co"># coefficients</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="linear-regression.html#cb10-1" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">=</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y  <span class="co"># coefficients</span></span></code></pre></div>
 <p>Compare.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="linear-regression.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> coefs) <span class="sc">/</span> (N <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="linear-regression.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">crossprod</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> coefs) <span class="sc">/</span> (N <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb11-2"><a href="linear-regression.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_lm)<span class="sc">$</span>sigma</span>
+<span id="cb11-3"><a href="linear-regression.html#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(fit_glm<span class="sc">$</span>deviance <span class="sc">/</span> fit_glm<span class="sc">$</span>df.residual) </span>
+<span id="cb11-4"><a href="linear-regression.html#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">sqrt</span>(pars_ML[<span class="dv">1</span>]), <span class="fu">sqrt</span>(pars_LS[<span class="dv">1</span>]))</span>
+<span id="cb11-5"><a href="linear-regression.html#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="linear-regression.html#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="linear-regression.html#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># rerun by adding 3-4 zeros to the N</span></span></code></pre></div>
 <pre><code>          [,1]
-[1,] 0.4756489</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="linear-regression.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modlm)<span class="sc">$</span>sigma</span></code></pre></div>
-<pre><code>[1] 0.4756489</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="linear-regression.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(modglm<span class="sc">$</span>deviance <span class="sc">/</span> modglm<span class="sc">$</span>df.residual) </span></code></pre></div>
-<pre><code>[1] 0.4756489</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="linear-regression.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">sqrt</span>(pars_ml[<span class="dv">1</span>]), <span class="fu">sqrt</span>(pars_LS[<span class="dv">1</span>]))</span></code></pre></div>
-<pre><code>   sigma2    sigma2 
+[1,] 0.4756489
+[1] 0.4756489
+[1] 0.4756489
+   sigma2    sigma2 
 0.4684616 0.4756490 </code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="linear-regression.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rerun by adding 3-4 zeros to the N</span></span></code></pre></div>
 </div>
 <div id="source" class="section level2">
 <h2>Source</h2>

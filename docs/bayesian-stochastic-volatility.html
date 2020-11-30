@@ -805,19 +805,19 @@ I originally played with it).</p>
 <h2>Data Setup</h2>
 <p>The data regards inflation based on the U.S. consumer price index (<code>inflation = 400*log(cpi_t/cpi_{t-1}</code>), from the second quarter of 1947 to the second quarter
 of 2011 (from Statistical Computation and Modeling 2014, chap 11).</p>
-<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="bayesian-stochastic-volatility.html#cb576-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb576-2"><a href="bayesian-stochastic-volatility.html#cb576-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb576-3"><a href="bayesian-stochastic-volatility.html#cb576-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">read_csv</span>(</span>
-<span id="cb576-4"><a href="bayesian-stochastic-volatility.html#cb576-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;https://raw.githubusercontent.com/m-clark/Datasets/master/us%20cpi/USCPI.csv&#39;</span>,</span>
-<span id="cb576-5"><a href="bayesian-stochastic-volatility.html#cb576-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="st">&#39;inflation&#39;</span></span>
-<span id="cb576-6"><a href="bayesian-stochastic-volatility.html#cb576-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb576-7"><a href="bayesian-stochastic-volatility.html#cb576-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb576-8"><a href="bayesian-stochastic-volatility.html#cb576-8" aria-hidden="true" tabindex="-1"></a>inflation <span class="ot">=</span> <span class="fu">pull</span>(d, inflation)</span>
-<span id="cb576-9"><a href="bayesian-stochastic-volatility.html#cb576-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb576-10"><a href="bayesian-stochastic-volatility.html#cb576-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(inflation)</span></code></pre></div>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="bayesian-stochastic-volatility.html#cb564-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb564-2"><a href="bayesian-stochastic-volatility.html#cb564-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb564-3"><a href="bayesian-stochastic-volatility.html#cb564-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">read_csv</span>(</span>
+<span id="cb564-4"><a href="bayesian-stochastic-volatility.html#cb564-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;https://raw.githubusercontent.com/m-clark/Datasets/master/us%20cpi/USCPI.csv&#39;</span>,</span>
+<span id="cb564-5"><a href="bayesian-stochastic-volatility.html#cb564-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="st">&#39;inflation&#39;</span></span>
+<span id="cb564-6"><a href="bayesian-stochastic-volatility.html#cb564-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb564-7"><a href="bayesian-stochastic-volatility.html#cb564-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb564-8"><a href="bayesian-stochastic-volatility.html#cb564-8" aria-hidden="true" tabindex="-1"></a>inflation <span class="ot">=</span> <span class="fu">pull</span>(d, inflation)</span>
+<span id="cb564-9"><a href="bayesian-stochastic-volatility.html#cb564-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb564-10"><a href="bayesian-stochastic-volatility.html#cb564-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(inflation)</span></code></pre></div>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  -9.557   1.843   3.248   3.634   4.819  15.931 </code></pre>
-<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="bayesian-stochastic-volatility.html#cb578-1" aria-hidden="true" tabindex="-1"></a>inflation_cen <span class="ot">=</span> <span class="fu">scale</span>(inflation, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="bayesian-stochastic-volatility.html#cb566-1" aria-hidden="true" tabindex="-1"></a>inflation_cen <span class="ot">=</span> <span class="fu">scale</span>(inflation, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 </div>
 <div id="model-code-8" class="section level2">
 <h2>Model Code</h2>
@@ -896,26 +896,26 @@ generated quantities{
 <div id="estimation-30" class="section level2">
 <h2>Estimation</h2>
 <p>We can use <code>c()</code> to get rid of matrix format, or specify as matrix instead of vector in model code.</p>
-<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="bayesian-stochastic-volatility.html#cb581-1" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">=</span> <span class="fu">list</span>(<span class="at">N_t =</span> <span class="fu">length</span>(inflation_cen), <span class="at">y =</span> <span class="fu">c</span>(inflation_cen))</span>
-<span id="cb581-2"><a href="bayesian-stochastic-volatility.html#cb581-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb581-3"><a href="bayesian-stochastic-volatility.html#cb581-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb581-4"><a href="bayesian-stochastic-volatility.html#cb581-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb581-5"><a href="bayesian-stochastic-volatility.html#cb581-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb581-6"><a href="bayesian-stochastic-volatility.html#cb581-6" aria-hidden="true" tabindex="-1"></a>  bayes_sv,</span>
-<span id="cb581-7"><a href="bayesian-stochastic-volatility.html#cb581-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> stan_data,</span>
-<span id="cb581-8"><a href="bayesian-stochastic-volatility.html#cb581-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb581-9"><a href="bayesian-stochastic-volatility.html#cb581-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span></span>
-<span id="cb581-10"><a href="bayesian-stochastic-volatility.html#cb581-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="bayesian-stochastic-volatility.html#cb569-1" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">=</span> <span class="fu">list</span>(<span class="at">N_t =</span> <span class="fu">length</span>(inflation_cen), <span class="at">y =</span> <span class="fu">c</span>(inflation_cen))</span>
+<span id="cb569-2"><a href="bayesian-stochastic-volatility.html#cb569-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb569-3"><a href="bayesian-stochastic-volatility.html#cb569-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb569-4"><a href="bayesian-stochastic-volatility.html#cb569-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb569-5"><a href="bayesian-stochastic-volatility.html#cb569-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
+<span id="cb569-6"><a href="bayesian-stochastic-volatility.html#cb569-6" aria-hidden="true" tabindex="-1"></a>  bayes_sv,</span>
+<span id="cb569-7"><a href="bayesian-stochastic-volatility.html#cb569-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> stan_data,</span>
+<span id="cb569-8"><a href="bayesian-stochastic-volatility.html#cb569-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb569-9"><a href="bayesian-stochastic-volatility.html#cb569-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span></span>
+<span id="cb569-10"><a href="bayesian-stochastic-volatility.html#cb569-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
 <p>Explore the results.</p>
-<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="bayesian-stochastic-volatility.html#cb582-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb582-2"><a href="bayesian-stochastic-volatility.html#cb582-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb582-3"><a href="bayesian-stochastic-volatility.html#cb582-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb582-4"><a href="bayesian-stochastic-volatility.html#cb582-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;mu&#39;</span>, <span class="st">&#39;phi&#39;</span>, <span class="st">&#39;sigma&#39;</span>),</span>
-<span id="cb582-5"><a href="bayesian-stochastic-volatility.html#cb582-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
-<span id="cb582-6"><a href="bayesian-stochastic-volatility.html#cb582-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="bayesian-stochastic-volatility.html#cb570-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb570-2"><a href="bayesian-stochastic-volatility.html#cb570-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
+<span id="cb570-3"><a href="bayesian-stochastic-volatility.html#cb570-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb570-4"><a href="bayesian-stochastic-volatility.html#cb570-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;mu&#39;</span>, <span class="st">&#39;phi&#39;</span>, <span class="st">&#39;sigma&#39;</span>),</span>
+<span id="cb570-5"><a href="bayesian-stochastic-volatility.html#cb570-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, .<span class="dv">975</span>)</span>
+<span id="cb570-6"><a href="bayesian-stochastic-volatility.html#cb570-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Inference for Stan model: c65225b34c51f358116525cb9ba6c87c.
 4 chains, each with iter=2000; warmup=1000; thin=4; 
 post-warmup draws per chain=250, total post-warmup draws=1000.
@@ -933,20 +933,20 @@ convergence, Rhat=1).</code></pre>
 <div id="visualization-3" class="section level2">
 <h2>Visualization</h2>
 <p>With the necessary components in place, we can visualize our predictions. Compare to fig. 11.1 in the text.</p>
-<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="bayesian-stochastic-volatility.html#cb584-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create y_rep &#39;by-hand&#39;</span></span>
-<span id="cb584-2"><a href="bayesian-stochastic-volatility.html#cb584-2" aria-hidden="true" tabindex="-1"></a>h <span class="ot">=</span> <span class="fu">extract</span>(fit, <span class="st">&#39;h&#39;</span>)<span class="sc">$</span>h</span>
-<span id="cb584-3"><a href="bayesian-stochastic-volatility.html#cb584-3" aria-hidden="true" tabindex="-1"></a><span class="co"># y_rep = apply(h, 1, function(h) rnorm(length(inflation), 0, exp(h / 2)))</span></span>
-<span id="cb584-4"><a href="bayesian-stochastic-volatility.html#cb584-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb584-5"><a href="bayesian-stochastic-volatility.html#cb584-5" aria-hidden="true" tabindex="-1"></a><span class="co"># or just extract</span></span>
-<span id="cb584-6"><a href="bayesian-stochastic-volatility.html#cb584-6" aria-hidden="true" tabindex="-1"></a>y_rep <span class="ot">=</span> <span class="fu">extract</span>(fit, <span class="st">&#39;y_rep&#39;</span>)<span class="sc">$</span>y_rep</span>
-<span id="cb584-7"><a href="bayesian-stochastic-volatility.html#cb584-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb584-8"><a href="bayesian-stochastic-volatility.html#cb584-8" aria-hidden="true" tabindex="-1"></a>h <span class="ot">=</span> <span class="fu">colMeans</span>(h)</span>
-<span id="cb584-9"><a href="bayesian-stochastic-volatility.html#cb584-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb584-10"><a href="bayesian-stochastic-volatility.html#cb584-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb584-11"><a href="bayesian-stochastic-volatility.html#cb584-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb584-12"><a href="bayesian-stochastic-volatility.html#cb584-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb584-13"><a href="bayesian-stochastic-volatility.html#cb584-13" aria-hidden="true" tabindex="-1"></a>series <span class="ot">=</span> <span class="fu">ymd</span>(<span class="fu">paste0</span>(<span class="fu">rep</span>(<span class="dv">1947</span><span class="sc">:</span><span class="dv">2014</span>, <span class="at">e =</span> <span class="dv">4</span>), <span class="st">&#39;-&#39;</span>, <span class="fu">c</span>(<span class="st">&#39;01&#39;</span>, <span class="st">&#39;04&#39;</span>, <span class="st">&#39;07&#39;</span>, <span class="st">&#39;10&#39;</span>), <span class="st">&#39;-&#39;</span>, <span class="st">&#39;01&#39;</span>))</span>
-<span id="cb584-14"><a href="bayesian-stochastic-volatility.html#cb584-14" aria-hidden="true" tabindex="-1"></a>seriestext <span class="ot">=</span> series[<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(inflation)]</span></code></pre></div>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="bayesian-stochastic-volatility.html#cb572-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create y_rep &#39;by-hand&#39;</span></span>
+<span id="cb572-2"><a href="bayesian-stochastic-volatility.html#cb572-2" aria-hidden="true" tabindex="-1"></a>h <span class="ot">=</span> <span class="fu">extract</span>(fit, <span class="st">&#39;h&#39;</span>)<span class="sc">$</span>h</span>
+<span id="cb572-3"><a href="bayesian-stochastic-volatility.html#cb572-3" aria-hidden="true" tabindex="-1"></a><span class="co"># y_rep = apply(h, 1, function(h) rnorm(length(inflation), 0, exp(h / 2)))</span></span>
+<span id="cb572-4"><a href="bayesian-stochastic-volatility.html#cb572-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb572-5"><a href="bayesian-stochastic-volatility.html#cb572-5" aria-hidden="true" tabindex="-1"></a><span class="co"># or just extract</span></span>
+<span id="cb572-6"><a href="bayesian-stochastic-volatility.html#cb572-6" aria-hidden="true" tabindex="-1"></a>y_rep <span class="ot">=</span> <span class="fu">extract</span>(fit, <span class="st">&#39;y_rep&#39;</span>)<span class="sc">$</span>y_rep</span>
+<span id="cb572-7"><a href="bayesian-stochastic-volatility.html#cb572-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb572-8"><a href="bayesian-stochastic-volatility.html#cb572-8" aria-hidden="true" tabindex="-1"></a>h <span class="ot">=</span> <span class="fu">colMeans</span>(h)</span>
+<span id="cb572-9"><a href="bayesian-stochastic-volatility.html#cb572-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb572-10"><a href="bayesian-stochastic-volatility.html#cb572-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb572-11"><a href="bayesian-stochastic-volatility.html#cb572-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb572-12"><a href="bayesian-stochastic-volatility.html#cb572-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb572-13"><a href="bayesian-stochastic-volatility.html#cb572-13" aria-hidden="true" tabindex="-1"></a>series <span class="ot">=</span> <span class="fu">ymd</span>(<span class="fu">paste0</span>(<span class="fu">rep</span>(<span class="dv">1947</span><span class="sc">:</span><span class="dv">2014</span>, <span class="at">e =</span> <span class="dv">4</span>), <span class="st">&#39;-&#39;</span>, <span class="fu">c</span>(<span class="st">&#39;01&#39;</span>, <span class="st">&#39;04&#39;</span>, <span class="st">&#39;07&#39;</span>, <span class="st">&#39;10&#39;</span>), <span class="st">&#39;-&#39;</span>, <span class="st">&#39;01&#39;</span>))</span>
+<span id="cb572-14"><a href="bayesian-stochastic-volatility.html#cb572-14" aria-hidden="true" tabindex="-1"></a>seriestext <span class="ot">=</span> series[<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(inflation)]</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/bayes-sv-vis2-1.svg" width="75%" style="display: block; margin: auto;" /><img src="model-demos_files/figure-html/bayes-sv-vis2-2.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="source-33" class="section level2">

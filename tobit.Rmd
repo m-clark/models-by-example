@@ -74,7 +74,7 @@ tobit_ll <- function(par, X, y, ul = -Inf, ll = Inf) {
 Estimate via <span class="func" style = "">optim</span>.
 
 ```{r tobit-estimate}
-res = optim(
+fit_tobit = optim(
   par = init,
   tobit_ll,
   y  = acad_apt$apt,
@@ -105,22 +105,29 @@ Compare to <span class="pack" style = "">AER</span> package tobit function.
 ```{r tobit-compare-aer}
 library(survival)
 
-aer_mod = AER::tobit(
+fit_aer = AER::tobit(
   apt ~ read + math + prog,
   data = acad_apt,
   left = -Inf,
   right = 800
 )
+```
 
+
+```{r tobit-compare-aer-show, echo=FALSE}
 rbind(
-  tobit = c(
-    res$par[1:5],
-    sigma   = exp(res$par[6]),
-    logLike = -res$value
+  fit_tobit = c(
+    fit_tobit$par[1:5],
+    sigma   = exp(fit_tobit$par[6]),
+    logLike = -fit_tobit$value
   ),
-  AER = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod))
+  AER = c(coef(fit_aer), fit_aer$scale, logLik(fit_aer))
 ) %>% 
   kable_df()
+```
+
+
+```{r tobit-compare-aer}
 ```
 
 
@@ -135,24 +142,23 @@ we'll reverse the indicator used in the tobit function for <span class="func"
 style = "">survreg</span>.
 
 ```{r tobit-surv}
-surv_mod = survreg(Surv(apt, apt < 800, type = 'right') ~ read + math + prog,
+fit_surv = survreg(Surv(apt, apt < 800, type = 'right') ~ read + math + prog,
                    data = acad_apt,
                    dist = 'gaussian')
 ```
-
 
 
 Compare all results.
 
 ```{r tobit-compare-surv, echo=FALSE}
 rbind(
-  tobit_ll = c(
-    res$par[1:5],
-    sigma = exp(res$par[6]),
-    logLike = -res$value
+  fit_tobit = c(
+    fit_tobit$par[1:5],
+    sigma = exp(fit_tobit$par[6]),
+    logLike = -fit_tobit$value
   ),
-  AER      = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod)),
-  survival = c(coef(surv_mod), surv_mod$scale, logLik(surv_mod))
+  AER      = c(coef(fit_aer), fit_aer$scale, logLik(fit_aer)),
+  survival = c(coef(fit_surv), fit_surv$scale, logLik(fit_surv))
 ) %>% 
   kable_df()
 ```
@@ -174,7 +180,7 @@ acad_apt = acad_apt %>%
 Estimate and use <span class="pack" style = "">AER</span> for comparison.
 
 ```{r tobit-ll-est}
-res = optim(
+fit_tobit = optim(
   par = init,
   tobit_ll,
   y  = acad_apt$apt2,
@@ -184,7 +190,7 @@ res = optim(
   control = list(maxit = 2000, reltol = 1e-15)
 )
 
-aer_mod = AER::tobit(apt2 ~ read + math + prog,
+fit_aer = AER::tobit(apt2 ~ read + math + prog,
                      data = acad_apt,
                      left = 400)
 ```
@@ -194,12 +200,12 @@ aer_mod = AER::tobit(apt2 ~ read + math + prog,
 
 ```{r tobit-ll-compare, echo=FALSE}
 rbind(
-  tobit_ll = c(
-    res$par[1:5],
-    sigma   = exp(res$par[6]),
-    logLike = -res$value
+  fit_tobit = c(
+    fit_tobit$par[1:5],
+    sigma   = exp(fit_tobit$par[6]),
+    logLike = -fit_tobit$value
   ),
-  AER = c(coef(aer_mod), aer_mod$scale, logLik(aer_mod))
+  AER = c(coef(fit_aer), fit_aer$scale, logLik(fit_aer))
 ) %>% 
   kable_df()
 ```

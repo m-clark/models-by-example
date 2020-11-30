@@ -798,106 +798,157 @@ predictive/‘algorithmic’ approaches e.g. in machine learning and elsewhere.
 <p>This follows the <a href="supplemental.html#python-linreg">linear regression model</a> approach.</p>
 <div id="data-setup-1" class="section level2">
 <h2>Data Setup</h2>
-<p>Predictors and target.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="logistic-regression.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb22-2"><a href="logistic-regression.html#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="logistic-regression.html#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1235</span>)  <span class="co"># ensures replication</span></span>
-<span id="cb22-4"><a href="logistic-regression.html#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="logistic-regression.html#cb22-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">10000</span> <span class="co"># sample size</span></span>
-<span id="cb22-6"><a href="logistic-regression.html#cb22-6" aria-hidden="true" tabindex="-1"></a>k <span class="ot">=</span> <span class="dv">2</span>     <span class="co"># number of desired predictors</span></span>
-<span id="cb22-7"><a href="logistic-regression.html#cb22-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> k), <span class="at">ncol =</span> k)</span>
-<span id="cb22-8"><a href="logistic-regression.html#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="logistic-regression.html#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># the linear predictor</span></span>
-<span id="cb22-10"><a href="logistic-regression.html#cb22-10" aria-hidden="true" tabindex="-1"></a>lp <span class="ot">=</span> <span class="sc">-</span>.<span class="dv">5</span> <span class="sc">+</span> .<span class="dv">2</span> <span class="sc">*</span> X[, <span class="dv">1</span>] <span class="sc">+</span> .<span class="dv">1</span> <span class="sc">*</span> X[, <span class="dv">2</span>] <span class="co"># increasing N will get estimated values closer to these</span></span>
-<span id="cb22-11"><a href="logistic-regression.html#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-12"><a href="logistic-regression.html#cb22-12" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(lp))</span>
-<span id="cb22-13"><a href="logistic-regression.html#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-14"><a href="logistic-regression.html#cb22-14" aria-hidden="true" tabindex="-1"></a>dfXy <span class="ot">=</span> <span class="fu">data.frame</span>(X, y)</span></code></pre></div>
+<p>Predictors and target. This follows the same approach as the linear regression example, but now draws the target variable from the binomial distribution with <code>size = 1</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="logistic-regression.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb13-2"><a href="logistic-regression.html#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="logistic-regression.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1235</span>)  <span class="co"># ensures replication</span></span>
+<span id="cb13-4"><a href="logistic-regression.html#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="logistic-regression.html#cb13-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">10000</span> <span class="co"># sample size</span></span>
+<span id="cb13-6"><a href="logistic-regression.html#cb13-6" aria-hidden="true" tabindex="-1"></a>k <span class="ot">=</span> <span class="dv">2</span>     <span class="co"># number of desired predictors</span></span>
+<span id="cb13-7"><a href="logistic-regression.html#cb13-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(N <span class="sc">*</span> k), <span class="at">ncol =</span> k)</span>
+<span id="cb13-8"><a href="logistic-regression.html#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="logistic-regression.html#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># the linear predictor</span></span>
+<span id="cb13-10"><a href="logistic-regression.html#cb13-10" aria-hidden="true" tabindex="-1"></a>lp <span class="ot">=</span> <span class="sc">-</span>.<span class="dv">5</span> <span class="sc">+</span> .<span class="dv">2</span><span class="sc">*</span>X[, <span class="dv">1</span>] <span class="sc">+</span> .<span class="dv">5</span><span class="sc">*</span>X[, <span class="dv">2</span>] <span class="co"># increasing N will get estimated values closer to these</span></span>
+<span id="cb13-11"><a href="logistic-regression.html#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="logistic-regression.html#cb13-12" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(lp))</span>
+<span id="cb13-13"><a href="logistic-regression.html#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="logistic-regression.html#cb13-14" aria-hidden="true" tabindex="-1"></a>dfXy <span class="ot">=</span> <span class="fu">data.frame</span>(X, y)</span></code></pre></div>
 </div>
 <div id="functions-1" class="section level2">
 <h2>Functions</h2>
 <p>A maximum likelihood approach.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="logistic-regression.html#cb23-1" aria-hidden="true" tabindex="-1"></a>logreg_ML <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y) {</span>
-<span id="cb23-2"><a href="logistic-regression.html#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments- </span></span>
-<span id="cb23-3"><a href="logistic-regression.html#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
-<span id="cb23-4"><a href="logistic-regression.html#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
-<span id="cb23-5"><a href="logistic-regression.html#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
-<span id="cb23-6"><a href="logistic-regression.html#cb23-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-7"><a href="logistic-regression.html#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
-<span id="cb23-8"><a href="logistic-regression.html#cb23-8" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par                                <span class="co"># coefficients</span></span>
-<span id="cb23-9"><a href="logistic-regression.html#cb23-9" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb23-10"><a href="logistic-regression.html#cb23-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-11"><a href="logistic-regression.html#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
-<span id="cb23-12"><a href="logistic-regression.html#cb23-12" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                           <span class="co"># linear predictor</span></span>
-<span id="cb23-13"><a href="logistic-regression.html#cb23-13" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> <span class="fu">plogis</span>(LP)                           <span class="co"># logit link</span></span>
-<span id="cb23-14"><a href="logistic-regression.html#cb23-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-15"><a href="logistic-regression.html#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate likelihood</span></span>
-<span id="cb23-16"><a href="logistic-regression.html#cb23-16" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">dbinom</span>(y, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> mu, <span class="at">log =</span> <span class="cn">TRUE</span>)         <span class="co"># log likelihood</span></span>
-<span id="cb23-17"><a href="logistic-regression.html#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   L =  y*log(mu) + (1 - y)*log(1-mu)    # alternate log likelihood form</span></span>
-<span id="cb23-18"><a href="logistic-regression.html#cb23-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-19"><a href="logistic-regression.html#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(L)                                   <span class="co"># optim by default is minimization, and we want to maximize the likelihood </span></span>
-<span id="cb23-20"><a href="logistic-regression.html#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (see also fnscale in optim.control)</span></span>
-<span id="cb23-21"><a href="logistic-regression.html#cb23-21" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="logistic-regression.html#cb14-1" aria-hidden="true" tabindex="-1"></a>logreg_ML <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y) {</span>
+<span id="cb14-2"><a href="logistic-regression.html#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Arguments</span></span>
+<span id="cb14-3"><a href="logistic-regression.html#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
+<span id="cb14-4"><a href="logistic-regression.html#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
+<span id="cb14-5"><a href="logistic-regression.html#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: target</span></span>
+<span id="cb14-6"><a href="logistic-regression.html#cb14-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-7"><a href="logistic-regression.html#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
+<span id="cb14-8"><a href="logistic-regression.html#cb14-8" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par                                <span class="co"># coefficients</span></span>
+<span id="cb14-9"><a href="logistic-regression.html#cb14-9" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb14-10"><a href="logistic-regression.html#cb14-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-11"><a href="logistic-regression.html#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb14-12"><a href="logistic-regression.html#cb14-12" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                           <span class="co"># linear predictor</span></span>
+<span id="cb14-13"><a href="logistic-regression.html#cb14-13" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> <span class="fu">plogis</span>(LP)                           <span class="co"># logit link</span></span>
+<span id="cb14-14"><a href="logistic-regression.html#cb14-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-15"><a href="logistic-regression.html#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate likelihood</span></span>
+<span id="cb14-16"><a href="logistic-regression.html#cb14-16" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">dbinom</span>(y, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> mu, <span class="at">log =</span> <span class="cn">TRUE</span>)         <span class="co"># log likelihood</span></span>
+<span id="cb14-17"><a href="logistic-regression.html#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   L =  y*log(mu) + (1 - y)*log(1-mu)    # alternate log likelihood form</span></span>
+<span id="cb14-18"><a href="logistic-regression.html#cb14-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-19"><a href="logistic-regression.html#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(L)                                   <span class="co"># optim by default is minimization, and we want to maximize the likelihood </span></span>
+<span id="cb14-20"><a href="logistic-regression.html#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (see also fnscale in optim.control)</span></span>
+<span id="cb14-21"><a href="logistic-regression.html#cb14-21" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Another approach via exponential loss function.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="logistic-regression.html#cb24-1" aria-hidden="true" tabindex="-1"></a>logreg_exp <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y) {</span>
-<span id="cb24-2"><a href="logistic-regression.html#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arguments- </span></span>
-<span id="cb24-3"><a href="logistic-regression.html#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
-<span id="cb24-4"><a href="logistic-regression.html#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
-<span id="cb24-5"><a href="logistic-regression.html#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: response</span></span>
-<span id="cb24-6"><a href="logistic-regression.html#cb24-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb24-7"><a href="logistic-regression.html#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
-<span id="cb24-8"><a href="logistic-regression.html#cb24-8" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par                                   <span class="co"># coefficients</span></span>
-<span id="cb24-9"><a href="logistic-regression.html#cb24-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb24-10"><a href="logistic-regression.html#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
-<span id="cb24-11"><a href="logistic-regression.html#cb24-11" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                              <span class="co"># linear predictor</span></span>
-<span id="cb24-12"><a href="logistic-regression.html#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="logistic-regression.html#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate exponential loss function (convert y to -1:1 from 0:1)</span></span>
-<span id="cb24-14"><a href="logistic-regression.html#cb24-14" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fu">ifelse</span>(y, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> .<span class="dv">5</span> <span class="sc">*</span> LP))</span>
-<span id="cb24-15"><a href="logistic-regression.html#cb24-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="logistic-regression.html#cb15-1" aria-hidden="true" tabindex="-1"></a>logreg_exp <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y) {</span>
+<span id="cb15-2"><a href="logistic-regression.html#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Arguments</span></span>
+<span id="cb15-3"><a href="logistic-regression.html#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># par: parameters to be estimated</span></span>
+<span id="cb15-4"><a href="logistic-regression.html#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: predictor matrix with intercept column</span></span>
+<span id="cb15-5"><a href="logistic-regression.html#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: target</span></span>
+<span id="cb15-6"><a href="logistic-regression.html#cb15-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-7"><a href="logistic-regression.html#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># setup</span></span>
+<span id="cb15-8"><a href="logistic-regression.html#cb15-8" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par                                   <span class="co"># coefficients</span></span>
+<span id="cb15-9"><a href="logistic-regression.html#cb15-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-10"><a href="logistic-regression.html#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb15-11"><a href="logistic-regression.html#cb15-11" aria-hidden="true" tabindex="-1"></a>  LP <span class="ot">=</span> X <span class="sc">%*%</span> beta                              <span class="co"># linear predictor</span></span>
+<span id="cb15-12"><a href="logistic-regression.html#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="logistic-regression.html#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate exponential loss function (convert y to -1:1 from 0:1)</span></span>
+<span id="cb15-14"><a href="logistic-regression.html#cb15-14" aria-hidden="true" tabindex="-1"></a>  L <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fu">ifelse</span>(y, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> .<span class="dv">5</span> <span class="sc">*</span> LP))</span>
+<span id="cb15-15"><a href="logistic-regression.html#cb15-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-1" class="section level2">
 <h2>Estimation</h2>
 <p>Setup for use with <span class="func" style="">optim</span>.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="logistic-regression.html#cb25-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)</span>
-<span id="cb25-2"><a href="logistic-regression.html#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="logistic-regression.html#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># initial values</span></span>
-<span id="cb25-4"><a href="logistic-regression.html#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="logistic-regression.html#cb25-5" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
-<span id="cb25-6"><a href="logistic-regression.html#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(init) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;intercept&#39;</span>, <span class="st">&#39;b1&#39;</span>, <span class="st">&#39;b2&#39;</span>)</span>
-<span id="cb25-7"><a href="logistic-regression.html#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-8"><a href="logistic-regression.html#cb25-8" aria-hidden="true" tabindex="-1"></a>optlmML <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb25-9"><a href="logistic-regression.html#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
-<span id="cb25-10"><a href="logistic-regression.html#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> logreg_ML,</span>
-<span id="cb25-11"><a href="logistic-regression.html#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb25-12"><a href="logistic-regression.html#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb25-13"><a href="logistic-regression.html#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-8</span>)</span>
-<span id="cb25-14"><a href="logistic-regression.html#cb25-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-15"><a href="logistic-regression.html#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-16"><a href="logistic-regression.html#cb25-16" aria-hidden="true" tabindex="-1"></a>optglmClass <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb25-17"><a href="logistic-regression.html#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
-<span id="cb25-18"><a href="logistic-regression.html#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> logreg_exp,</span>
-<span id="cb25-19"><a href="logistic-regression.html#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb25-20"><a href="logistic-regression.html#cb25-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y, </span>
-<span id="cb25-21"><a href="logistic-regression.html#cb25-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-15</span>)</span>
-<span id="cb25-22"><a href="logistic-regression.html#cb25-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-23"><a href="logistic-regression.html#cb25-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-24"><a href="logistic-regression.html#cb25-24" aria-hidden="true" tabindex="-1"></a>pars_ML  <span class="ot">=</span> optlmML<span class="sc">$</span>par</span>
-<span id="cb25-25"><a href="logistic-regression.html#cb25-25" aria-hidden="true" tabindex="-1"></a>pars_exp <span class="ot">=</span> optglmClass<span class="sc">$</span>par</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="logistic-regression.html#cb16-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, X)</span>
+<span id="cb16-2"><a href="logistic-regression.html#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="logistic-regression.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># initial values</span></span>
+<span id="cb16-4"><a href="logistic-regression.html#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="logistic-regression.html#cb16-5" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
+<span id="cb16-6"><a href="logistic-regression.html#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(init) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&#39;intercept&#39;</span>, <span class="st">&#39;b1&#39;</span>, <span class="st">&#39;b2&#39;</span>)</span>
+<span id="cb16-7"><a href="logistic-regression.html#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="logistic-regression.html#cb16-8" aria-hidden="true" tabindex="-1"></a>fit_ML <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb16-9"><a href="logistic-regression.html#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
+<span id="cb16-10"><a href="logistic-regression.html#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> logreg_ML,</span>
+<span id="cb16-11"><a href="logistic-regression.html#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb16-12"><a href="logistic-regression.html#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb16-13"><a href="logistic-regression.html#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-8</span>)</span>
+<span id="cb16-14"><a href="logistic-regression.html#cb16-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-15"><a href="logistic-regression.html#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="logistic-regression.html#cb16-16" aria-hidden="true" tabindex="-1"></a>fit_exp <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb16-17"><a href="logistic-regression.html#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> init,</span>
+<span id="cb16-18"><a href="logistic-regression.html#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn  =</span> logreg_exp,</span>
+<span id="cb16-19"><a href="logistic-regression.html#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb16-20"><a href="logistic-regression.html#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y, </span>
+<span id="cb16-21"><a href="logistic-regression.html#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reltol =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb16-22"><a href="logistic-regression.html#cb16-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-23"><a href="logistic-regression.html#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-24"><a href="logistic-regression.html#cb16-24" aria-hidden="true" tabindex="-1"></a>pars_ML  <span class="ot">=</span> fit_ML<span class="sc">$</span>par</span>
+<span id="cb16-25"><a href="logistic-regression.html#cb16-25" aria-hidden="true" tabindex="-1"></a>pars_exp <span class="ot">=</span> fit_exp<span class="sc">$</span>par</span></code></pre></div>
 </div>
 <div id="comparison-1" class="section level2">
 <h2>Comparison</h2>
 <p>Compare to <code>glm</code>.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="logistic-regression.html#cb26-1" aria-hidden="true" tabindex="-1"></a>modglm <span class="ot">=</span> <span class="fu">glm</span>(y <span class="sc">~</span> ., dfXy, <span class="at">family =</span> binomial)</span>
-<span id="cb26-2"><a href="logistic-regression.html#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="logistic-regression.html#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(</span>
-<span id="cb26-4"><a href="logistic-regression.html#cb26-4" aria-hidden="true" tabindex="-1"></a>  pars_ML,</span>
-<span id="cb26-5"><a href="logistic-regression.html#cb26-5" aria-hidden="true" tabindex="-1"></a>  pars_exp,</span>
-<span id="cb26-6"><a href="logistic-regression.html#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars_GLM =</span> <span class="fu">coef</span>(modglm)</span>
-<span id="cb26-7"><a href="logistic-regression.html#cb26-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>          intercept        b1         b2
-pars_ML  -0.5117658 0.2378927 0.08019841
-pars_exp -0.5114284 0.2368478 0.07907056
-pars_GLM -0.5117321 0.2378743 0.08032617</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="logistic-regression.html#cb17-1" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">=</span> <span class="fu">glm</span>(y <span class="sc">~</span> ., dfXy, <span class="at">family =</span> binomial)</span></code></pre></div>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+intercept
+</th>
+<th style="text-align:right;">
+b1
+</th>
+<th style="text-align:right;">
+b2
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+fit_ml
+</td>
+<td style="text-align:right;">
+-0.504
+</td>
+<td style="text-align:right;">
+0.248
+</td>
+<td style="text-align:right;">
+0.503
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fit_exp
+</td>
+<td style="text-align:right;">
+-0.503
+</td>
+<td style="text-align:right;">
+0.245
+</td>
+<td style="text-align:right;">
+0.501
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fit_glm
+</td>
+<td style="text-align:right;">
+-0.504
+</td>
+<td style="text-align:right;">
+0.248
+</td>
+<td style="text-align:right;">
+0.503
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="source-1" class="section level2">
 <h2>Source</h2>

@@ -795,11 +795,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3>Data Setup</h3>
 <p>This data set has the responses of 316 participants on 24 items of a questionnaire on verbal
 aggression. Other covariates are also provided. For simplicity I will focus on the four ‘DoShout’ items.</p>
-<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="bayesian-irt.html#cb528-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb528-2"><a href="bayesian-irt.html#cb528-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb528-3"><a href="bayesian-irt.html#cb528-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;VerbAgg&quot;</span>, <span class="at">package =</span> <span class="st">&quot;lme4&quot;</span>)</span>
-<span id="cb528-4"><a href="bayesian-irt.html#cb528-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb528-5"><a href="bayesian-irt.html#cb528-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(VerbAgg)</span></code></pre></div>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="bayesian-irt.html#cb516-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb516-2"><a href="bayesian-irt.html#cb516-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb516-3"><a href="bayesian-irt.html#cb516-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;VerbAgg&quot;</span>, <span class="at">package =</span> <span class="st">&quot;lme4&quot;</span>)</span>
+<span id="cb516-4"><a href="bayesian-irt.html#cb516-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb516-5"><a href="bayesian-irt.html#cb516-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(VerbAgg)</span></code></pre></div>
 <pre><code>Rows: 7,584
 Columns: 9
 $ Anger  &lt;int&gt; 20, 11, 17, 21, 17, 21, 39, 21, 24, 16, 15, 18, 36, 22, 16, 18, 23, 16, 21, 25, 22, 15, 26, 13, 33, 17, 17, 22, 21, 17, 19, 18, 33, 19, 25, 17, 12, 14, 25, 22, 20, 25, 12, 16, 23, 19, 22, 15, 25, 35, 24…
@@ -811,11 +811,11 @@ $ btype  &lt;fct&gt; curse, curse, curse, curse, curse, curse, curse, curse, cur
 $ situ   &lt;fct&gt; other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other, other,…
 $ mode   &lt;fct&gt; want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want, want…
 $ r2     &lt;fct&gt; N, N, Y, Y, Y, Y, Y, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, Y, Y, Y, Y, Y, N, N, Y, Y, Y, Y, Y, Y, N, Y, Y, Y, N, N, N, N, Y, N, Y, N, N, Y, Y, N, N, Y, N, N, Y, Y, N, Y, Y, Y, N, N, Y, Y, Y, Y, Y, N, Y, Y…</code></pre>
-<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="bayesian-irt.html#cb530-1" aria-hidden="true" tabindex="-1"></a>verbagg_items <span class="ot">=</span> VerbAgg <span class="sc">%&gt;%</span> </span>
-<span id="cb530-2"><a href="bayesian-irt.html#cb530-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(btype <span class="sc">==</span> <span class="st">&#39;shout&#39;</span>, situ <span class="sc">==</span> <span class="st">&#39;self&#39;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb530-3"><a href="bayesian-irt.html#cb530-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, item, r2)</span>
-<span id="cb530-4"><a href="bayesian-irt.html#cb530-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb530-5"><a href="bayesian-irt.html#cb530-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(verbagg_items)</span></code></pre></div>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="bayesian-irt.html#cb518-1" aria-hidden="true" tabindex="-1"></a>verbagg_items <span class="ot">=</span> VerbAgg <span class="sc">%&gt;%</span> </span>
+<span id="cb518-2"><a href="bayesian-irt.html#cb518-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(btype <span class="sc">==</span> <span class="st">&#39;shout&#39;</span>, situ <span class="sc">==</span> <span class="st">&#39;self&#39;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb518-3"><a href="bayesian-irt.html#cb518-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, item, r2)</span>
+<span id="cb518-4"><a href="bayesian-irt.html#cb518-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb518-5"><a href="bayesian-irt.html#cb518-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(verbagg_items)</span></code></pre></div>
 <pre><code>  id        item r2
 1  1 S3WantShout  Y
 2  2 S3WantShout  N
@@ -823,10 +823,10 @@ $ r2     &lt;fct&gt; N, N, Y, Y, Y, Y, Y, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, Y,
 4  4 S3WantShout  N
 5  5 S3WantShout  N
 6  6 S3WantShout  Y</code></pre>
-<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="bayesian-irt.html#cb532-1" aria-hidden="true" tabindex="-1"></a>verbagg_items_wide <span class="ot">=</span> verbagg_items <span class="sc">%&gt;%</span> </span>
-<span id="cb532-2"><a href="bayesian-irt.html#cb532-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> id, <span class="at">names_from =</span> item, <span class="at">names_prefix =</span> <span class="st">&#39;item_&#39;</span>, <span class="at">values_from =</span> r2)</span>
-<span id="cb532-3"><a href="bayesian-irt.html#cb532-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb532-4"><a href="bayesian-irt.html#cb532-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(verbagg_items_wide)</span></code></pre></div>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="bayesian-irt.html#cb520-1" aria-hidden="true" tabindex="-1"></a>verbagg_items_wide <span class="ot">=</span> verbagg_items <span class="sc">%&gt;%</span> </span>
+<span id="cb520-2"><a href="bayesian-irt.html#cb520-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> id, <span class="at">names_from =</span> item, <span class="at">names_prefix =</span> <span class="st">&#39;item_&#39;</span>, <span class="at">values_from =</span> r2)</span>
+<span id="cb520-3"><a href="bayesian-irt.html#cb520-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb520-4"><a href="bayesian-irt.html#cb520-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(verbagg_items_wide)</span></code></pre></div>
 <pre><code># A tibble: 6 x 5
   id    item_S3WantShout item_S4WantShout item_S3DoShout item_S4DoShout
   &lt;fct&gt; &lt;fct&gt;            &lt;fct&gt;            &lt;fct&gt;          &lt;fct&gt;         
@@ -881,57 +881,57 @@ model {
 <div id="estimation-27" class="section level3">
 <h3>Estimation</h3>
 <p>First we create a Stan-friendly data list and then estimate the model. The following assumes a character string or file (<code>bayes_irt1_model</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="bayesian-irt.html#cb535-1" aria-hidden="true" tabindex="-1"></a>verbagg_items_wide_mat <span class="ot">=</span> <span class="fu">apply</span>(</span>
-<span id="cb535-2"><a href="bayesian-irt.html#cb535-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(verbagg_items_wide[, <span class="sc">-</span><span class="dv">1</span>]) <span class="sc">==</span> <span class="st">&#39;Y&#39;</span>,</span>
-<span id="cb535-3"><a href="bayesian-irt.html#cb535-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>,</span>
-<span id="cb535-4"><a href="bayesian-irt.html#cb535-4" aria-hidden="true" tabindex="-1"></a>  as.integer</span>
-<span id="cb535-5"><a href="bayesian-irt.html#cb535-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb535-6"><a href="bayesian-irt.html#cb535-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb535-7"><a href="bayesian-irt.html#cb535-7" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">=</span> </span>
-<span id="cb535-8"><a href="bayesian-irt.html#cb535-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb535-9"><a href="bayesian-irt.html#cb535-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">N =</span> <span class="fu">nrow</span>(verbagg_items_wide_mat),</span>
-<span id="cb535-10"><a href="bayesian-irt.html#cb535-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">J =</span> <span class="fu">ncol</span>(verbagg_items_wide_mat),</span>
-<span id="cb535-11"><a href="bayesian-irt.html#cb535-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> verbagg_items_wide_mat</span>
-<span id="cb535-12"><a href="bayesian-irt.html#cb535-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb535-13"><a href="bayesian-irt.html#cb535-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb535-14"><a href="bayesian-irt.html#cb535-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb535-15"><a href="bayesian-irt.html#cb535-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb535-16"><a href="bayesian-irt.html#cb535-16" aria-hidden="true" tabindex="-1"></a>fit_1pm <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb535-17"><a href="bayesian-irt.html#cb535-17" aria-hidden="true" tabindex="-1"></a>  bayes_irt1_model,</span>
-<span id="cb535-18"><a href="bayesian-irt.html#cb535-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
-<span id="cb535-19"><a href="bayesian-irt.html#cb535-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">4</span></span>
-<span id="cb535-20"><a href="bayesian-irt.html#cb535-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb523-1"><a href="bayesian-irt.html#cb523-1" aria-hidden="true" tabindex="-1"></a>verbagg_items_wide_mat <span class="ot">=</span> <span class="fu">apply</span>(</span>
+<span id="cb523-2"><a href="bayesian-irt.html#cb523-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(verbagg_items_wide[, <span class="sc">-</span><span class="dv">1</span>]) <span class="sc">==</span> <span class="st">&#39;Y&#39;</span>,</span>
+<span id="cb523-3"><a href="bayesian-irt.html#cb523-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>,</span>
+<span id="cb523-4"><a href="bayesian-irt.html#cb523-4" aria-hidden="true" tabindex="-1"></a>  as.integer</span>
+<span id="cb523-5"><a href="bayesian-irt.html#cb523-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb523-6"><a href="bayesian-irt.html#cb523-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb523-7"><a href="bayesian-irt.html#cb523-7" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">=</span> </span>
+<span id="cb523-8"><a href="bayesian-irt.html#cb523-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb523-9"><a href="bayesian-irt.html#cb523-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">N =</span> <span class="fu">nrow</span>(verbagg_items_wide_mat),</span>
+<span id="cb523-10"><a href="bayesian-irt.html#cb523-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">J =</span> <span class="fu">ncol</span>(verbagg_items_wide_mat),</span>
+<span id="cb523-11"><a href="bayesian-irt.html#cb523-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> verbagg_items_wide_mat</span>
+<span id="cb523-12"><a href="bayesian-irt.html#cb523-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb523-13"><a href="bayesian-irt.html#cb523-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb523-14"><a href="bayesian-irt.html#cb523-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb523-15"><a href="bayesian-irt.html#cb523-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb523-16"><a href="bayesian-irt.html#cb523-16" aria-hidden="true" tabindex="-1"></a>fit_1pm <span class="ot">=</span> <span class="fu">sampling</span>(</span>
+<span id="cb523-17"><a href="bayesian-irt.html#cb523-17" aria-hidden="true" tabindex="-1"></a>  bayes_irt1_model,</span>
+<span id="cb523-18"><a href="bayesian-irt.html#cb523-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
+<span id="cb523-19"><a href="bayesian-irt.html#cb523-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">4</span></span>
+<span id="cb523-20"><a href="bayesian-irt.html#cb523-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="comparison-32" class="section level3">
 <h3>Comparison</h3>
 <p>Now we compare to <span class="pack" style="">brms</span>. I use the <a href="https://arxiv.org/abs/1905.09501">author’s article</a> as a guide for this model, and note again that it is following the second parameterization depicted above.</p>
-<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="bayesian-irt.html#cb536-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb536-2"><a href="bayesian-irt.html#cb536-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb536-3"><a href="bayesian-irt.html#cb536-3" aria-hidden="true" tabindex="-1"></a><span class="co"># half normal for variance parameter, full for coefficients</span></span>
-<span id="cb536-4"><a href="bayesian-irt.html#cb536-4" aria-hidden="true" tabindex="-1"></a>prior_1pm <span class="ot">&lt;-</span></span>
-<span id="cb536-5"><a href="bayesian-irt.html#cb536-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;id&quot;</span>) <span class="sc">+</span></span>
-<span id="cb536-6"><a href="bayesian-irt.html#cb536-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb536-7"><a href="bayesian-irt.html#cb536-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb536-8"><a href="bayesian-irt.html#cb536-8" aria-hidden="true" tabindex="-1"></a>brms_1pm <span class="ot">=</span> <span class="fu">brm</span>(</span>
-<span id="cb536-9"><a href="bayesian-irt.html#cb536-9" aria-hidden="true" tabindex="-1"></a>  r2 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> item <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb536-10"><a href="bayesian-irt.html#cb536-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data   =</span> verbagg_items,</span>
-<span id="cb536-11"><a href="bayesian-irt.html#cb536-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> bernoulli,</span>
-<span id="cb536-12"><a href="bayesian-irt.html#cb536-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior  =</span> prior_1pm,</span>
-<span id="cb536-13"><a href="bayesian-irt.html#cb536-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin   =</span> <span class="dv">4</span>,</span>
-<span id="cb536-14"><a href="bayesian-irt.html#cb536-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores  =</span> <span class="dv">4</span></span>
-<span id="cb536-15"><a href="bayesian-irt.html#cb536-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="bayesian-irt.html#cb524-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb524-2"><a href="bayesian-irt.html#cb524-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb524-3"><a href="bayesian-irt.html#cb524-3" aria-hidden="true" tabindex="-1"></a><span class="co"># half normal for variance parameter, full for coefficients</span></span>
+<span id="cb524-4"><a href="bayesian-irt.html#cb524-4" aria-hidden="true" tabindex="-1"></a>prior_1pm <span class="ot">&lt;-</span></span>
+<span id="cb524-5"><a href="bayesian-irt.html#cb524-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;id&quot;</span>) <span class="sc">+</span></span>
+<span id="cb524-6"><a href="bayesian-irt.html#cb524-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb524-7"><a href="bayesian-irt.html#cb524-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb524-8"><a href="bayesian-irt.html#cb524-8" aria-hidden="true" tabindex="-1"></a>brms_1pm <span class="ot">=</span> <span class="fu">brm</span>(</span>
+<span id="cb524-9"><a href="bayesian-irt.html#cb524-9" aria-hidden="true" tabindex="-1"></a>  r2 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> item <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
+<span id="cb524-10"><a href="bayesian-irt.html#cb524-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data   =</span> verbagg_items,</span>
+<span id="cb524-11"><a href="bayesian-irt.html#cb524-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> bernoulli,</span>
+<span id="cb524-12"><a href="bayesian-irt.html#cb524-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior  =</span> prior_1pm,</span>
+<span id="cb524-13"><a href="bayesian-irt.html#cb524-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin   =</span> <span class="dv">4</span>,</span>
+<span id="cb524-14"><a href="bayesian-irt.html#cb524-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores  =</span> <span class="dv">4</span></span>
+<span id="cb524-15"><a href="bayesian-irt.html#cb524-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>If you want to compare to standard IRT in either parameterization, you can use
 the <span class="pack" style="">ltm</span> package.</p>
-<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="bayesian-irt.html#cb537-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ltm)</span>
-<span id="cb537-2"><a href="bayesian-irt.html#cb537-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb537-3"><a href="bayesian-irt.html#cb537-3" aria-hidden="true" tabindex="-1"></a>irt_rasch_par1 <span class="ot">=</span> <span class="fu">rasch</span>(verbagg_items_wide_mat, <span class="at">IRT.param =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb537-4"><a href="bayesian-irt.html#cb537-4" aria-hidden="true" tabindex="-1"></a>irt_rasch_par2 <span class="ot">=</span> <span class="fu">rasch</span>(verbagg_items_wide_mat, <span class="at">IRT.param =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="bayesian-irt.html#cb538-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb538-2"><a href="bayesian-irt.html#cb538-2" aria-hidden="true" tabindex="-1"></a>  fit_1pm,</span>
-<span id="cb538-3"><a href="bayesian-irt.html#cb538-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb538-4"><a href="bayesian-irt.html#cb538-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>),</span>
-<span id="cb538-5"><a href="bayesian-irt.html#cb538-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>)</span>
-<span id="cb538-6"><a href="bayesian-irt.html#cb538-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb525-1"><a href="bayesian-irt.html#cb525-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ltm)</span>
+<span id="cb525-2"><a href="bayesian-irt.html#cb525-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb525-3"><a href="bayesian-irt.html#cb525-3" aria-hidden="true" tabindex="-1"></a>irt_rasch_par1 <span class="ot">=</span> <span class="fu">rasch</span>(verbagg_items_wide_mat, <span class="at">IRT.param =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb525-4"><a href="bayesian-irt.html#cb525-4" aria-hidden="true" tabindex="-1"></a>irt_rasch_par2 <span class="ot">=</span> <span class="fu">rasch</span>(verbagg_items_wide_mat, <span class="at">IRT.param =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="bayesian-irt.html#cb526-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb526-2"><a href="bayesian-irt.html#cb526-2" aria-hidden="true" tabindex="-1"></a>  fit_1pm,</span>
+<span id="cb526-3"><a href="bayesian-irt.html#cb526-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb526-4"><a href="bayesian-irt.html#cb526-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>),</span>
+<span id="cb526-5"><a href="bayesian-irt.html#cb526-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb526-6"><a href="bayesian-irt.html#cb526-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Inference for Stan model: 0715d0cee215483765f01043abb55ea9.
 4 chains, each with iter=2000; warmup=1000; thin=4; 
 post-warmup draws per chain=250, total post-warmup draws=1000.
@@ -947,7 +947,7 @@ Samples were drawn using NUTS(diag_e) at Wed Nov 25 17:39:05 2020.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
-<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="bayesian-irt.html#cb540-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(brms_1pm)</span></code></pre></div>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="bayesian-irt.html#cb528-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(brms_1pm)</span></code></pre></div>
 <pre><code> Family: bernoulli 
   Links: mu = logit 
 Formula: r2 ~ 0 + item + (1 | id) 
@@ -970,9 +970,9 @@ itemS4DoShout      -2.35      0.25    -2.86    -1.90 1.00      812      852
 Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
-<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="bayesian-irt.html#cb542-1" aria-hidden="true" tabindex="-1"></a>brms_diff <span class="ot">=</span> <span class="fu">fixef</span>(brms_1pm)[,<span class="st">&#39;Estimate&#39;</span>]</span>
-<span id="cb542-2"><a href="bayesian-irt.html#cb542-2" aria-hidden="true" tabindex="-1"></a>brms_discrim <span class="ot">=</span> <span class="fu">VarCorr</span>(brms_1pm)<span class="sc">$</span>id<span class="sc">$</span>sd[<span class="dv">1</span>]</span>
-<span id="cb542-3"><a href="bayesian-irt.html#cb542-3" aria-hidden="true" tabindex="-1"></a>fit_params <span class="ot">=</span> <span class="fu">summary</span>(fit_1pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>))<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="bayesian-irt.html#cb530-1" aria-hidden="true" tabindex="-1"></a>brms_diff <span class="ot">=</span> <span class="fu">fixef</span>(brms_1pm)[,<span class="st">&#39;Estimate&#39;</span>]</span>
+<span id="cb530-2"><a href="bayesian-irt.html#cb530-2" aria-hidden="true" tabindex="-1"></a>brms_discrim <span class="ot">=</span> <span class="fu">VarCorr</span>(brms_1pm)<span class="sc">$</span>id<span class="sc">$</span>sd[<span class="dv">1</span>]</span>
+<span id="cb530-3"><a href="bayesian-irt.html#cb530-3" aria-hidden="true" tabindex="-1"></a>fit_params <span class="ot">=</span> <span class="fu">summary</span>(fit_1pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>))<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span></code></pre></div>
 <p>After extracting, we can show either parameterization for either model. For example, <span class="pack" style="">brms</span> item difficulties = our model <code>-discrim*difficulties</code>.</p>
 <pre><code># A tibble: 5 x 5
   parma         model  brms model_par2 brms_par1
@@ -1022,55 +1022,55 @@ model {
 <div id="estimation-28" class="section level3">
 <h3>Estimation</h3>
 <p>First, our custom Stan model. The following assumes a character string or file (<code>bayes_irt2_model</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="bayesian-irt.html#cb545-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb545-2"><a href="bayesian-irt.html#cb545-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb545-3"><a href="bayesian-irt.html#cb545-3" aria-hidden="true" tabindex="-1"></a>fit_2pm <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb545-4"><a href="bayesian-irt.html#cb545-4" aria-hidden="true" tabindex="-1"></a>  bayes_irt2_model,</span>
-<span id="cb545-5"><a href="bayesian-irt.html#cb545-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
-<span id="cb545-6"><a href="bayesian-irt.html#cb545-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">4</span>,</span>
-<span id="cb545-7"><a href="bayesian-irt.html#cb545-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">4000</span>,</span>
-<span id="cb545-8"><a href="bayesian-irt.html#cb545-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup =</span> <span class="dv">3000</span>,</span>
-<span id="cb545-9"><a href="bayesian-irt.html#cb545-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb545-10"><a href="bayesian-irt.html#cb545-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>)</span>
-<span id="cb545-11"><a href="bayesian-irt.html#cb545-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="bayesian-irt.html#cb533-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb533-2"><a href="bayesian-irt.html#cb533-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb533-3"><a href="bayesian-irt.html#cb533-3" aria-hidden="true" tabindex="-1"></a>fit_2pm <span class="ot">=</span> <span class="fu">sampling</span>(</span>
+<span id="cb533-4"><a href="bayesian-irt.html#cb533-4" aria-hidden="true" tabindex="-1"></a>  bayes_irt2_model,</span>
+<span id="cb533-5"><a href="bayesian-irt.html#cb533-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
+<span id="cb533-6"><a href="bayesian-irt.html#cb533-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">4</span>,</span>
+<span id="cb533-7"><a href="bayesian-irt.html#cb533-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">4000</span>,</span>
+<span id="cb533-8"><a href="bayesian-irt.html#cb533-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup =</span> <span class="dv">3000</span>,</span>
+<span id="cb533-9"><a href="bayesian-irt.html#cb533-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb533-10"><a href="bayesian-irt.html#cb533-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>)</span>
+<span id="cb533-11"><a href="bayesian-irt.html#cb533-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="comparison-33" class="section level3">
 <h3>Comparison</h3>
 <p>Now we compare to <span class="pack" style="">brms</span>. I use the <a href="https://arxiv.org/abs/1905.09501">author’s article</a> as a guide for this model, and note that it is following the second parameterization. Took a little over 30 seconds on my machine, though of course you may experience differently.</p>
-<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="bayesian-irt.html#cb546-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb546-2"><a href="bayesian-irt.html#cb546-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb546-3"><a href="bayesian-irt.html#cb546-3" aria-hidden="true" tabindex="-1"></a><span class="co"># half normal for variance parameter, full for coefficients</span></span>
-<span id="cb546-4"><a href="bayesian-irt.html#cb546-4" aria-hidden="true" tabindex="-1"></a>prior_2pm <span class="ot">&lt;-</span></span>
-<span id="cb546-5"><a href="bayesian-irt.html#cb546-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 5)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>,                  <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
-<span id="cb546-6"><a href="bayesian-irt.html#cb546-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 5)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>,                  <span class="at">nlpar =</span> <span class="st">&quot;logdiscr&quot;</span>) <span class="sc">+</span></span>
-<span id="cb546-7"><a href="bayesian-irt.html#cb546-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;constant(1)&quot;</span>,  <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;id&quot;</span>,   <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
-<span id="cb546-8"><a href="bayesian-irt.html#cb546-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;item&quot;</span>, <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
-<span id="cb546-9"><a href="bayesian-irt.html#cb546-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;item&quot;</span>, <span class="at">nlpar =</span> <span class="st">&quot;logdiscr&quot;</span>)</span>
-<span id="cb546-10"><a href="bayesian-irt.html#cb546-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb546-11"><a href="bayesian-irt.html#cb546-11" aria-hidden="true" tabindex="-1"></a>formula_2pm <span class="ot">=</span> <span class="fu">bf</span>(</span>
-<span id="cb546-12"><a href="bayesian-irt.html#cb546-12" aria-hidden="true" tabindex="-1"></a>  r2 <span class="sc">~</span> <span class="fu">exp</span>(logdiscr) <span class="sc">*</span> Z,</span>
-<span id="cb546-13"><a href="bayesian-irt.html#cb546-13" aria-hidden="true" tabindex="-1"></a>  Z  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span>i<span class="sc">|</span> item)  <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
-<span id="cb546-14"><a href="bayesian-irt.html#cb546-14" aria-hidden="true" tabindex="-1"></a>  logdiscr <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span>i<span class="sc">|</span> item),</span>
-<span id="cb546-15"><a href="bayesian-irt.html#cb546-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">nl =</span> <span class="cn">TRUE</span></span>
-<span id="cb546-16"><a href="bayesian-irt.html#cb546-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb546-17"><a href="bayesian-irt.html#cb546-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb546-18"><a href="bayesian-irt.html#cb546-18" aria-hidden="true" tabindex="-1"></a>brms_2pm <span class="ot">=</span> <span class="fu">brm</span>(</span>
-<span id="cb546-19"><a href="bayesian-irt.html#cb546-19" aria-hidden="true" tabindex="-1"></a>  formula_2pm,</span>
-<span id="cb546-20"><a href="bayesian-irt.html#cb546-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> verbagg_items,</span>
-<span id="cb546-21"><a href="bayesian-irt.html#cb546-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">family  =</span> bernoulli,</span>
-<span id="cb546-22"><a href="bayesian-irt.html#cb546-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior   =</span> prior_2pm,</span>
-<span id="cb546-23"><a href="bayesian-irt.html#cb546-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin    =</span> <span class="dv">4</span>,</span>
-<span id="cb546-24"><a href="bayesian-irt.html#cb546-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter    =</span> <span class="dv">4000</span>,</span>
-<span id="cb546-25"><a href="bayesian-irt.html#cb546-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup  =</span> <span class="dv">3000</span>,</span>
-<span id="cb546-26"><a href="bayesian-irt.html#cb546-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores   =</span> <span class="dv">4</span>,</span>
-<span id="cb546-27"><a href="bayesian-irt.html#cb546-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>, <span class="at">max_treedepth =</span> <span class="dv">15</span>)</span>
-<span id="cb546-28"><a href="bayesian-irt.html#cb546-28" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="bayesian-irt.html#cb547-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb547-2"><a href="bayesian-irt.html#cb547-2" aria-hidden="true" tabindex="-1"></a>  fit_2pm,</span>
-<span id="cb547-3"><a href="bayesian-irt.html#cb547-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb547-4"><a href="bayesian-irt.html#cb547-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>),</span>
-<span id="cb547-5"><a href="bayesian-irt.html#cb547-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>)</span>
-<span id="cb547-6"><a href="bayesian-irt.html#cb547-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="bayesian-irt.html#cb534-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb534-2"><a href="bayesian-irt.html#cb534-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb534-3"><a href="bayesian-irt.html#cb534-3" aria-hidden="true" tabindex="-1"></a><span class="co"># half normal for variance parameter, full for coefficients</span></span>
+<span id="cb534-4"><a href="bayesian-irt.html#cb534-4" aria-hidden="true" tabindex="-1"></a>prior_2pm <span class="ot">&lt;-</span></span>
+<span id="cb534-5"><a href="bayesian-irt.html#cb534-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 5)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>,                  <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
+<span id="cb534-6"><a href="bayesian-irt.html#cb534-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 5)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;b&quot;</span>,                  <span class="at">nlpar =</span> <span class="st">&quot;logdiscr&quot;</span>) <span class="sc">+</span></span>
+<span id="cb534-7"><a href="bayesian-irt.html#cb534-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;constant(1)&quot;</span>,  <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;id&quot;</span>,   <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
+<span id="cb534-8"><a href="bayesian-irt.html#cb534-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;item&quot;</span>, <span class="at">nlpar =</span> <span class="st">&quot;Z&quot;</span>) <span class="sc">+</span></span>
+<span id="cb534-9"><a href="bayesian-irt.html#cb534-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="st">&quot;normal(0, 3)&quot;</span>, <span class="at">class =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">group =</span> <span class="st">&quot;item&quot;</span>, <span class="at">nlpar =</span> <span class="st">&quot;logdiscr&quot;</span>)</span>
+<span id="cb534-10"><a href="bayesian-irt.html#cb534-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb534-11"><a href="bayesian-irt.html#cb534-11" aria-hidden="true" tabindex="-1"></a>formula_2pm <span class="ot">=</span> <span class="fu">bf</span>(</span>
+<span id="cb534-12"><a href="bayesian-irt.html#cb534-12" aria-hidden="true" tabindex="-1"></a>  r2 <span class="sc">~</span> <span class="fu">exp</span>(logdiscr) <span class="sc">*</span> Z,</span>
+<span id="cb534-13"><a href="bayesian-irt.html#cb534-13" aria-hidden="true" tabindex="-1"></a>  Z  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span>i<span class="sc">|</span> item)  <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id),</span>
+<span id="cb534-14"><a href="bayesian-irt.html#cb534-14" aria-hidden="true" tabindex="-1"></a>  logdiscr <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span>i<span class="sc">|</span> item),</span>
+<span id="cb534-15"><a href="bayesian-irt.html#cb534-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">nl =</span> <span class="cn">TRUE</span></span>
+<span id="cb534-16"><a href="bayesian-irt.html#cb534-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb534-17"><a href="bayesian-irt.html#cb534-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb534-18"><a href="bayesian-irt.html#cb534-18" aria-hidden="true" tabindex="-1"></a>brms_2pm <span class="ot">=</span> <span class="fu">brm</span>(</span>
+<span id="cb534-19"><a href="bayesian-irt.html#cb534-19" aria-hidden="true" tabindex="-1"></a>  formula_2pm,</span>
+<span id="cb534-20"><a href="bayesian-irt.html#cb534-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> verbagg_items,</span>
+<span id="cb534-21"><a href="bayesian-irt.html#cb534-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">family  =</span> bernoulli,</span>
+<span id="cb534-22"><a href="bayesian-irt.html#cb534-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior   =</span> prior_2pm,</span>
+<span id="cb534-23"><a href="bayesian-irt.html#cb534-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin    =</span> <span class="dv">4</span>,</span>
+<span id="cb534-24"><a href="bayesian-irt.html#cb534-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter    =</span> <span class="dv">4000</span>,</span>
+<span id="cb534-25"><a href="bayesian-irt.html#cb534-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup  =</span> <span class="dv">3000</span>,</span>
+<span id="cb534-26"><a href="bayesian-irt.html#cb534-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores   =</span> <span class="dv">4</span>,</span>
+<span id="cb534-27"><a href="bayesian-irt.html#cb534-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>, <span class="at">max_treedepth =</span> <span class="dv">15</span>)</span>
+<span id="cb534-28"><a href="bayesian-irt.html#cb534-28" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="bayesian-irt.html#cb535-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb535-2"><a href="bayesian-irt.html#cb535-2" aria-hidden="true" tabindex="-1"></a>  fit_2pm,</span>
+<span id="cb535-3"><a href="bayesian-irt.html#cb535-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb535-4"><a href="bayesian-irt.html#cb535-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">par    =</span> <span class="fu">c</span>(<span class="st">&#39;discrim&#39;</span>, <span class="st">&#39;difficulty&#39;</span>),</span>
+<span id="cb535-5"><a href="bayesian-irt.html#cb535-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb535-6"><a href="bayesian-irt.html#cb535-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Inference for Stan model: 503e7ed2dc96cbd6b316fe17abc2a86f.
 4 chains, each with iter=4000; warmup=3000; thin=4; 
 post-warmup draws per chain=250, total post-warmup draws=1000.
@@ -1089,7 +1089,7 @@ Samples were drawn using NUTS(diag_e) at Wed Nov 25 17:40:25 2020.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
-<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="bayesian-irt.html#cb549-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(brms_2pm)</span></code></pre></div>
+<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="bayesian-irt.html#cb537-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(brms_2pm)</span></code></pre></div>
 <pre><code> Family: bernoulli 
   Links: mu = logit 
 Formula: r2 ~ exp(logdiscr) * Z 
@@ -1118,11 +1118,11 @@ logdiscr_Intercept     0.66      0.56    -0.36     2.04 1.00      896      654
 Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
-<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="bayesian-irt.html#cb551-1" aria-hidden="true" tabindex="-1"></a>brms_diff    <span class="ot">=</span> <span class="fu">coef</span>(brms_2pm)<span class="sc">$</span>item[,,<span class="st">&#39;Z_Intercept&#39;</span>][,<span class="st">&#39;Estimate&#39;</span>]</span>
-<span id="cb551-2"><a href="bayesian-irt.html#cb551-2" aria-hidden="true" tabindex="-1"></a>brms_discrim <span class="ot">=</span> <span class="fu">exp</span>(<span class="fu">coef</span>(brms_2pm)<span class="sc">$</span>item[,,<span class="st">&#39;logdiscr_Intercept&#39;</span>][,<span class="st">&#39;Estimate&#39;</span>])</span>
-<span id="cb551-3"><a href="bayesian-irt.html#cb551-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb551-4"><a href="bayesian-irt.html#cb551-4" aria-hidden="true" tabindex="-1"></a>fit_diff    <span class="ot">=</span> <span class="fu">summary</span>(fit_2pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="st">&#39;difficulty&#39;</span>)<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span>
-<span id="cb551-5"><a href="bayesian-irt.html#cb551-5" aria-hidden="true" tabindex="-1"></a>fit_discrim <span class="ot">=</span> <span class="fu">summary</span>(fit_2pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="st">&#39;discrim&#39;</span>)<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb539-1"><a href="bayesian-irt.html#cb539-1" aria-hidden="true" tabindex="-1"></a>brms_diff    <span class="ot">=</span> <span class="fu">coef</span>(brms_2pm)<span class="sc">$</span>item[,,<span class="st">&#39;Z_Intercept&#39;</span>][,<span class="st">&#39;Estimate&#39;</span>]</span>
+<span id="cb539-2"><a href="bayesian-irt.html#cb539-2" aria-hidden="true" tabindex="-1"></a>brms_discrim <span class="ot">=</span> <span class="fu">exp</span>(<span class="fu">coef</span>(brms_2pm)<span class="sc">$</span>item[,,<span class="st">&#39;logdiscr_Intercept&#39;</span>][,<span class="st">&#39;Estimate&#39;</span>])</span>
+<span id="cb539-3"><a href="bayesian-irt.html#cb539-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb539-4"><a href="bayesian-irt.html#cb539-4" aria-hidden="true" tabindex="-1"></a>fit_diff    <span class="ot">=</span> <span class="fu">summary</span>(fit_2pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="st">&#39;difficulty&#39;</span>)<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span>
+<span id="cb539-5"><a href="bayesian-irt.html#cb539-5" aria-hidden="true" tabindex="-1"></a>fit_discrim <span class="ot">=</span> <span class="fu">summary</span>(fit_2pm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">par =</span> <span class="st">&#39;discrim&#39;</span>)<span class="sc">$</span>summary[,<span class="st">&#39;mean&#39;</span>]</span></code></pre></div>
 <pre><code># A tibble: 8 x 3
   parma         model   brms
   &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt;
@@ -1135,13 +1135,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 7 difficulty[3] 2.20  -1.98 
 8 difficulty[4] 1.03  -1.09 </code></pre>
 <p>Here is the non-Bayesian demo if interested.</p>
-<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="bayesian-irt.html#cb553-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ltm)</span>
-<span id="cb553-2"><a href="bayesian-irt.html#cb553-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb553-3"><a href="bayesian-irt.html#cb553-3" aria-hidden="true" tabindex="-1"></a>irt_2pm_par1 <span class="ot">=</span> <span class="fu">ltm</span>(verbagg_items_wide_mat <span class="sc">~</span> z1, <span class="at">IRT.param =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb553-4"><a href="bayesian-irt.html#cb553-4" aria-hidden="true" tabindex="-1"></a>irt_2pm_par2 <span class="ot">=</span> <span class="fu">ltm</span>(verbagg_items_wide_mat <span class="sc">~</span> z1, <span class="at">IRT.param =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb553-5"><a href="bayesian-irt.html#cb553-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb553-6"><a href="bayesian-irt.html#cb553-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(irt_2pm_par1)</span>
-<span id="cb553-7"><a href="bayesian-irt.html#cb553-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(irt_2pm_par2)</span></code></pre></div>
+<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb541-1"><a href="bayesian-irt.html#cb541-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ltm)</span>
+<span id="cb541-2"><a href="bayesian-irt.html#cb541-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb541-3"><a href="bayesian-irt.html#cb541-3" aria-hidden="true" tabindex="-1"></a>irt_2pm_par1 <span class="ot">=</span> <span class="fu">ltm</span>(verbagg_items_wide_mat <span class="sc">~</span> z1, <span class="at">IRT.param =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb541-4"><a href="bayesian-irt.html#cb541-4" aria-hidden="true" tabindex="-1"></a>irt_2pm_par2 <span class="ot">=</span> <span class="fu">ltm</span>(verbagg_items_wide_mat <span class="sc">~</span> z1, <span class="at">IRT.param =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb541-5"><a href="bayesian-irt.html#cb541-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb541-6"><a href="bayesian-irt.html#cb541-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(irt_2pm_par1)</span>
+<span id="cb541-7"><a href="bayesian-irt.html#cb541-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(irt_2pm_par2)</span></code></pre></div>
 </div>
 </div>
 <div id="three-parameter-irt" class="section level2">

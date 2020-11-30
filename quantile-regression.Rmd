@@ -57,7 +57,7 @@ qs = c(.05, .1, .25, .5, .75, .9, .95)
 
 fit_rq = coef(rq(foodexp ~ income, tau = qs, data = engel))
 
-fit = map_df(qs, function(tau)
+fit_qreg = map_df(qs, function(tau)
   data.frame(t(
     optim(
       par = c(intercept = 0, income = 0),
@@ -75,10 +75,10 @@ fit = map_df(qs, function(tau)
 Compare results.
 
 ```{r qr-compare, echo =FALSE}
-rbind(fit_rq, t(fit)) %>% 
+rbind(fit_rq, t(fit_qreg)) %>% 
   as.data.frame() %>% 
   rownames_to_column('coef') %>% 
-  mutate(` ` = rep(c('fit_rq', 'fit_est'), each = 2)) %>% 
+  mutate(` ` = rep(c('fit_rq', 'fit_qreg'), each = 2)) %>% 
   select(` `, everything()) %>% 
   kable_df()
 ```
@@ -99,7 +99,7 @@ engel %>%
     slope = income,
     color = group
   ),
-  data = data.frame(fit, group = factor(qs))) +
+  data = data.frame(fit_qreg, group = factor(qs))) +
   scico::scale_color_scico_d(palette = 'vik')
 ```
 

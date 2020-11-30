@@ -633,7 +633,7 @@ fit_nn = nn_3(
 
 Let's rerun at `alpha = 10`.
 
-```{r nn-r-3-best, message = TRUE}
+```{r nn-r-3-best, message = TRUE, results='hold'}
 set.seed(1)
 
 fit_nn = nn_3(

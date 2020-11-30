@@ -800,15 +800,15 @@ choices: general program, vocational program, and academic program. We will be
 interested in their choice, using their writing score as a proxy for scholastic
 ability and their socioeconomic status, a categorical variable of low, middle,
 and high values.</p>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="multinomial.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
-<span id="cb168-2"><a href="multinomial.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb168-3"><a href="multinomial.html#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
-<span id="cb168-4"><a href="multinomial.html#cb168-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-5"><a href="multinomial.html#cb168-5" aria-hidden="true" tabindex="-1"></a>program <span class="ot">=</span> <span class="fu">read_dta</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/data/hsbdemo.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb168-6"><a href="multinomial.html#cb168-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_factor</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb168-7"><a href="multinomial.html#cb168-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prog =</span> <span class="fu">relevel</span>(prog, <span class="at">ref =</span> <span class="st">&quot;academic&quot;</span>))</span>
-<span id="cb168-8"><a href="multinomial.html#cb168-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-9"><a href="multinomial.html#cb168-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(program[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="multinomial.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb159-2"><a href="multinomial.html#cb159-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb159-3"><a href="multinomial.html#cb159-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb159-4"><a href="multinomial.html#cb159-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb159-5"><a href="multinomial.html#cb159-5" aria-hidden="true" tabindex="-1"></a>program <span class="ot">=</span> <span class="fu">read_dta</span>(<span class="st">&quot;https://stats.idre.ucla.edu/stat/data/hsbdemo.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb159-6"><a href="multinomial.html#cb159-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_factor</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb159-7"><a href="multinomial.html#cb159-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prog =</span> <span class="fu">relevel</span>(prog, <span class="at">ref =</span> <span class="st">&quot;academic&quot;</span>))</span>
+<span id="cb159-8"><a href="multinomial.html#cb159-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb159-9"><a href="multinomial.html#cb159-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(program[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
 <pre><code># A tibble: 6 x 5
      id female ses    schtyp prog    
   &lt;dbl&gt; &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;   
@@ -818,17 +818,17 @@ and high values.</p>
 4    67 male   low    public vocation
 5   153 male   middle public vocation
 6    51 female high   public general </code></pre>
-<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="multinomial.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to long form for mlogit</span></span>
-<span id="cb170-2"><a href="multinomial.html#cb170-2" aria-hidden="true" tabindex="-1"></a>programLong <span class="ot">=</span> program <span class="sc">%&gt;%</span></span>
-<span id="cb170-3"><a href="multinomial.html#cb170-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, prog, ses, write) <span class="sc">%&gt;%</span></span>
-<span id="cb170-4"><a href="multinomial.html#cb170-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mlogit.data</span>(</span>
-<span id="cb170-5"><a href="multinomial.html#cb170-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ,</span>
-<span id="cb170-6"><a href="multinomial.html#cb170-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="st">&#39;wide&#39;</span>,</span>
-<span id="cb170-7"><a href="multinomial.html#cb170-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">choice =</span> <span class="st">&#39;prog&#39;</span>,</span>
-<span id="cb170-8"><a href="multinomial.html#cb170-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">id.var =</span> <span class="st">&#39;id&#39;</span></span>
-<span id="cb170-9"><a href="multinomial.html#cb170-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb170-10"><a href="multinomial.html#cb170-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb170-11"><a href="multinomial.html#cb170-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(programLong)</span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="multinomial.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to long form for mlogit</span></span>
+<span id="cb161-2"><a href="multinomial.html#cb161-2" aria-hidden="true" tabindex="-1"></a>program_long <span class="ot">=</span> program <span class="sc">%&gt;%</span></span>
+<span id="cb161-3"><a href="multinomial.html#cb161-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, prog, ses, write) <span class="sc">%&gt;%</span></span>
+<span id="cb161-4"><a href="multinomial.html#cb161-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mlogit.data</span>(</span>
+<span id="cb161-5"><a href="multinomial.html#cb161-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ,</span>
+<span id="cb161-6"><a href="multinomial.html#cb161-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="st">&#39;wide&#39;</span>,</span>
+<span id="cb161-7"><a href="multinomial.html#cb161-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">choice =</span> <span class="st">&#39;prog&#39;</span>,</span>
+<span id="cb161-8"><a href="multinomial.html#cb161-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">id.var =</span> <span class="st">&#39;id&#39;</span></span>
+<span id="cb161-9"><a href="multinomial.html#cb161-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb161-10"><a href="multinomial.html#cb161-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb161-11"><a href="multinomial.html#cb161-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(program_long)</span></code></pre></div>
 <pre><code>~~~~~~~
  first 10 observations out of 600 
 ~~~~~~~
@@ -858,54 +858,54 @@ and high values.</p>
 10   30  4 academic
 indexes:  1, 1, 2 </code></pre>
 <p>We go ahead and run a model via <span class="func" style="">mlogit</span> for later comparison.</p>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="multinomial.html#cb172-1" aria-hidden="true" tabindex="-1"></a>fit_mlogit   <span class="ot">=</span> <span class="fu">mlogit</span>(prog <span class="sc">~</span> <span class="dv">1</span><span class="sc">|</span> write <span class="sc">+</span> ses, <span class="at">data =</span> programLong)</span>
-<span id="cb172-2"><a href="multinomial.html#cb172-2" aria-hidden="true" tabindex="-1"></a>mlogit_coefs <span class="ot">=</span> <span class="fu">coef</span>(fit_mlogit)[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">4</span>)]  <span class="co"># reorder</span></span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="multinomial.html#cb163-1" aria-hidden="true" tabindex="-1"></a>fit_mlogit   <span class="ot">=</span> <span class="fu">mlogit</span>(prog <span class="sc">~</span> <span class="dv">1</span><span class="sc">|</span> write <span class="sc">+</span> ses, <span class="at">data =</span> program_long)</span>
+<span id="cb163-2"><a href="multinomial.html#cb163-2" aria-hidden="true" tabindex="-1"></a>mlogit_coefs <span class="ot">=</span> <span class="fu">coef</span>(fit_mlogit)[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">4</span>)]  <span class="co"># reorder</span></span></code></pre></div>
 </div>
 <div id="function-13" class="section level3">
 <h3>Function</h3>
 <p>Multinomial model via maximum likelihood</p>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="multinomial.html#cb173-1" aria-hidden="true" tabindex="-1"></a>multinom_ml <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y) {</span>
-<span id="cb173-2"><a href="multinomial.html#cb173-2" aria-hidden="true" tabindex="-1"></a>  levs <span class="ot">=</span> <span class="fu">levels</span>(y)</span>
-<span id="cb173-3"><a href="multinomial.html#cb173-3" aria-hidden="true" tabindex="-1"></a>  ref  <span class="ot">=</span> levs[<span class="dv">1</span>]                <span class="co"># reference level (category label 1)</span></span>
-<span id="cb173-4"><a href="multinomial.html#cb173-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb173-5"><a href="multinomial.html#cb173-5" aria-hidden="true" tabindex="-1"></a>  y0 <span class="ot">=</span> y <span class="sc">==</span> ref</span>
-<span id="cb173-6"><a href="multinomial.html#cb173-6" aria-hidden="true" tabindex="-1"></a>  y1 <span class="ot">=</span> y <span class="sc">==</span> levs[<span class="dv">2</span>]             <span class="co"># category 2</span></span>
-<span id="cb173-7"><a href="multinomial.html#cb173-7" aria-hidden="true" tabindex="-1"></a>  y2 <span class="ot">=</span> y <span class="sc">==</span> levs[<span class="dv">3</span>]             <span class="co"># category 3</span></span>
-<span id="cb173-8"><a href="multinomial.html#cb173-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb173-9"><a href="multinomial.html#cb173-9" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> <span class="fu">matrix</span>(par, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb173-10"><a href="multinomial.html#cb173-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb173-11"><a href="multinomial.html#cb173-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># more like mnlogit package depiction in its function</span></span>
-<span id="cb173-12"><a href="multinomial.html#cb173-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># V1 = X %*% beta[ ,1]</span></span>
-<span id="cb173-13"><a href="multinomial.html#cb173-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># V2 = X %*% beta[ ,2]</span></span>
-<span id="cb173-14"><a href="multinomial.html#cb173-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ll = sum(-log(1 + exp(V1) + exp(V2))) + sum(V1[y1], V2[y2])</span></span>
-<span id="cb173-15"><a href="multinomial.html#cb173-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb173-16"><a href="multinomial.html#cb173-16" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">=</span> X <span class="sc">%*%</span> beta                           <span class="co"># a vectorized approach</span></span>
-<span id="cb173-17"><a href="multinomial.html#cb173-17" aria-hidden="true" tabindex="-1"></a>  baseProbVec <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">rowSums</span>(<span class="fu">exp</span>(V)))  <span class="co"># reference group probabilities</span></span>
-<span id="cb173-18"><a href="multinomial.html#cb173-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb173-19"><a href="multinomial.html#cb173-19" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">log</span>(baseProbVec))  <span class="sc">+</span> <span class="fu">crossprod</span>(<span class="fu">c</span>(V), <span class="fu">c</span>(y1, y2))</span>
-<span id="cb173-20"><a href="multinomial.html#cb173-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb173-21"><a href="multinomial.html#cb173-21" aria-hidden="true" tabindex="-1"></a>  loglik</span>
-<span id="cb173-22"><a href="multinomial.html#cb173-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="multinomial.html#cb174-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb174-2"><a href="multinomial.html#cb174-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="dv">8</span>,<span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">1</span>),</span>
-<span id="cb174-3"><a href="multinomial.html#cb174-3" aria-hidden="true" tabindex="-1"></a>  multinom_ml,</span>
-<span id="cb174-4"><a href="multinomial.html#cb174-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> <span class="fu">model.matrix</span>(prog <span class="sc">~</span> ses <span class="sc">+</span> write, <span class="at">data =</span> program),</span>
-<span id="cb174-5"><a href="multinomial.html#cb174-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> program<span class="sc">$</span>prog,</span>
-<span id="cb174-6"><a href="multinomial.html#cb174-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
-<span id="cb174-7"><a href="multinomial.html#cb174-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit   =</span> <span class="dv">1000</span>,</span>
-<span id="cb174-8"><a href="multinomial.html#cb174-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol  =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb174-9"><a href="multinomial.html#cb174-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ndeps   =</span> <span class="fu">rep</span>(<span class="fl">1e-8</span>, <span class="dv">8</span>),</span>
-<span id="cb174-10"><a href="multinomial.html#cb174-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace   =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb174-11"><a href="multinomial.html#cb174-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
-<span id="cb174-12"><a href="multinomial.html#cb174-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">type    =</span> <span class="dv">3</span></span>
-<span id="cb174-13"><a href="multinomial.html#cb174-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb174-14"><a href="multinomial.html#cb174-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&#39;BFGS&#39;</span></span>
-<span id="cb174-15"><a href="multinomial.html#cb174-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="multinomial.html#cb164-1" aria-hidden="true" tabindex="-1"></a>multinom_ml <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, y) {</span>
+<span id="cb164-2"><a href="multinomial.html#cb164-2" aria-hidden="true" tabindex="-1"></a>  levs <span class="ot">=</span> <span class="fu">levels</span>(y)</span>
+<span id="cb164-3"><a href="multinomial.html#cb164-3" aria-hidden="true" tabindex="-1"></a>  ref  <span class="ot">=</span> levs[<span class="dv">1</span>]                <span class="co"># reference level (category label 1)</span></span>
+<span id="cb164-4"><a href="multinomial.html#cb164-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb164-5"><a href="multinomial.html#cb164-5" aria-hidden="true" tabindex="-1"></a>  y0 <span class="ot">=</span> y <span class="sc">==</span> ref</span>
+<span id="cb164-6"><a href="multinomial.html#cb164-6" aria-hidden="true" tabindex="-1"></a>  y1 <span class="ot">=</span> y <span class="sc">==</span> levs[<span class="dv">2</span>]             <span class="co"># category 2</span></span>
+<span id="cb164-7"><a href="multinomial.html#cb164-7" aria-hidden="true" tabindex="-1"></a>  y2 <span class="ot">=</span> y <span class="sc">==</span> levs[<span class="dv">3</span>]             <span class="co"># category 3</span></span>
+<span id="cb164-8"><a href="multinomial.html#cb164-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb164-9"><a href="multinomial.html#cb164-9" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> <span class="fu">matrix</span>(par, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb164-10"><a href="multinomial.html#cb164-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb164-11"><a href="multinomial.html#cb164-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># more like mnlogit package depiction in its function</span></span>
+<span id="cb164-12"><a href="multinomial.html#cb164-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># V1 = X %*% beta[ ,1]</span></span>
+<span id="cb164-13"><a href="multinomial.html#cb164-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># V2 = X %*% beta[ ,2]</span></span>
+<span id="cb164-14"><a href="multinomial.html#cb164-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ll = sum(-log(1 + exp(V1) + exp(V2))) + sum(V1[y1], V2[y2])</span></span>
+<span id="cb164-15"><a href="multinomial.html#cb164-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb164-16"><a href="multinomial.html#cb164-16" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">=</span> X <span class="sc">%*%</span> beta                           <span class="co"># a vectorized approach</span></span>
+<span id="cb164-17"><a href="multinomial.html#cb164-17" aria-hidden="true" tabindex="-1"></a>  baseProbVec <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">rowSums</span>(<span class="fu">exp</span>(V)))  <span class="co"># reference group probabilities</span></span>
+<span id="cb164-18"><a href="multinomial.html#cb164-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb164-19"><a href="multinomial.html#cb164-19" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">log</span>(baseProbVec))  <span class="sc">+</span> <span class="fu">crossprod</span>(<span class="fu">c</span>(V), <span class="fu">c</span>(y1, y2))</span>
+<span id="cb164-20"><a href="multinomial.html#cb164-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb164-21"><a href="multinomial.html#cb164-21" aria-hidden="true" tabindex="-1"></a>  loglik</span>
+<span id="cb164-22"><a href="multinomial.html#cb164-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="multinomial.html#cb165-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb165-2"><a href="multinomial.html#cb165-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="dv">8</span>,<span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">1</span>),</span>
+<span id="cb165-3"><a href="multinomial.html#cb165-3" aria-hidden="true" tabindex="-1"></a>  multinom_ml,</span>
+<span id="cb165-4"><a href="multinomial.html#cb165-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> <span class="fu">model.matrix</span>(prog <span class="sc">~</span> ses <span class="sc">+</span> write, <span class="at">data =</span> program),</span>
+<span id="cb165-5"><a href="multinomial.html#cb165-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> program<span class="sc">$</span>prog,</span>
+<span id="cb165-6"><a href="multinomial.html#cb165-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
+<span id="cb165-7"><a href="multinomial.html#cb165-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit   =</span> <span class="dv">1000</span>,</span>
+<span id="cb165-8"><a href="multinomial.html#cb165-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb165-9"><a href="multinomial.html#cb165-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ndeps   =</span> <span class="fu">rep</span>(<span class="fl">1e-8</span>, <span class="dv">8</span>),</span>
+<span id="cb165-10"><a href="multinomial.html#cb165-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace   =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb165-11"><a href="multinomial.html#cb165-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb165-12"><a href="multinomial.html#cb165-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">type    =</span> <span class="dv">3</span></span>
+<span id="cb165-13"><a href="multinomial.html#cb165-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb165-14"><a href="multinomial.html#cb165-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&#39;BFGS&#39;</span></span>
+<span id="cb165-15"><a href="multinomial.html#cb165-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>initial  value 638.963532 
 iter  10 value 180.008322
 final  value 179.981726 
 converged</code></pre>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="multinomial.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit$par</span></span></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="multinomial.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit$par</span></span></code></pre></div>
 </div>
 <div id="comparison-16" class="section level3">
 <h3>Comparison</h3>
@@ -1015,29 +1015,26 @@ write:vocation
 </tbody>
 </table>
 <p>The following uses <span class="func" style="">dmultinom</span> for the likelihood, similar to other modeling demonstrations in this document.</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="multinomial.html#cb177-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(prog <span class="sc">~</span> ses <span class="sc">+</span> write, <span class="at">data =</span> program)</span>
-<span id="cb177-2"><a href="multinomial.html#cb177-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> program<span class="sc">$</span>prog</span>
-<span id="cb177-3"><a href="multinomial.html#cb177-3" aria-hidden="true" tabindex="-1"></a>pars <span class="ot">=</span> <span class="fu">matrix</span>(fit<span class="sc">$</span>par, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb177-4"><a href="multinomial.html#cb177-4" aria-hidden="true" tabindex="-1"></a>V <span class="ot">=</span> X <span class="sc">%*%</span> pars</span>
-<span id="cb177-5"><a href="multinomial.html#cb177-5" aria-hidden="true" tabindex="-1"></a>acadprob   <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span><span class="sc">+</span><span class="fu">rowSums</span>(<span class="fu">exp</span>(V)))</span>
-<span id="cb177-6"><a href="multinomial.html#cb177-6" aria-hidden="true" tabindex="-1"></a>fitnonacad <span class="ot">=</span> <span class="fu">exp</span>(V) <span class="sc">*</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(acadprob, <span class="dv">2</span>), <span class="at">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb177-7"><a href="multinomial.html#cb177-7" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">=</span> <span class="fu">cbind</span>(acadprob, fitnonacad)</span>
-<span id="cb177-8"><a href="multinomial.html#cb177-8" aria-hidden="true" tabindex="-1"></a>yind <span class="ot">=</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> prog, <span class="at">data =</span> program)</span></code></pre></div>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="multinomial.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="co"># because dmultinom can&#39;t take matrix for prob</span></span>
-<span id="cb178-2"><a href="multinomial.html#cb178-2" aria-hidden="true" tabindex="-1"></a>ll <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb178-3"><a href="multinomial.html#cb178-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb178-4"><a href="multinomial.html#cb178-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">200</span>){</span>
-<span id="cb178-5"><a href="multinomial.html#cb178-5" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> ll <span class="sc">+</span> <span class="fu">dmultinom</span>(yind[i, ],</span>
-<span id="cb178-6"><a href="multinomial.html#cb178-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">size =</span> <span class="dv">1</span>,</span>
-<span id="cb178-7"><a href="multinomial.html#cb178-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> fits[i, ],</span>
-<span id="cb178-8"><a href="multinomial.html#cb178-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">log  =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb178-9"><a href="multinomial.html#cb178-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb178-10"><a href="multinomial.html#cb178-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb178-11"><a href="multinomial.html#cb178-11" aria-hidden="true" tabindex="-1"></a>ll</span></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="multinomial.html#cb168-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(prog <span class="sc">~</span> ses <span class="sc">+</span> write, <span class="at">data =</span> program)</span>
+<span id="cb168-2"><a href="multinomial.html#cb168-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> program<span class="sc">$</span>prog</span>
+<span id="cb168-3"><a href="multinomial.html#cb168-3" aria-hidden="true" tabindex="-1"></a>pars <span class="ot">=</span> <span class="fu">matrix</span>(fit<span class="sc">$</span>par, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb168-4"><a href="multinomial.html#cb168-4" aria-hidden="true" tabindex="-1"></a>V <span class="ot">=</span> X <span class="sc">%*%</span> pars</span>
+<span id="cb168-5"><a href="multinomial.html#cb168-5" aria-hidden="true" tabindex="-1"></a>acadprob   <span class="ot">=</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span><span class="sc">+</span><span class="fu">rowSums</span>(<span class="fu">exp</span>(V)))</span>
+<span id="cb168-6"><a href="multinomial.html#cb168-6" aria-hidden="true" tabindex="-1"></a>fitnonacad <span class="ot">=</span> <span class="fu">exp</span>(V) <span class="sc">*</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(acadprob, <span class="dv">2</span>), <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb168-7"><a href="multinomial.html#cb168-7" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">=</span> <span class="fu">cbind</span>(acadprob, fitnonacad)</span>
+<span id="cb168-8"><a href="multinomial.html#cb168-8" aria-hidden="true" tabindex="-1"></a>yind <span class="ot">=</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> prog, <span class="at">data =</span> program)</span></code></pre></div>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="multinomial.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="co"># because dmultinom can&#39;t take matrix for prob</span></span>
+<span id="cb169-2"><a href="multinomial.html#cb169-2" aria-hidden="true" tabindex="-1"></a>ll <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb169-3"><a href="multinomial.html#cb169-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb169-4"><a href="multinomial.html#cb169-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">200</span>){</span>
+<span id="cb169-5"><a href="multinomial.html#cb169-5" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> ll <span class="sc">+</span> <span class="fu">dmultinom</span>(yind[i, ], <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> fits[i, ], <span class="at">log  =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb169-6"><a href="multinomial.html#cb169-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb169-7"><a href="multinomial.html#cb169-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb169-8"><a href="multinomial.html#cb169-8" aria-hidden="true" tabindex="-1"></a>ll</span></code></pre></div>
 <pre><code>[1] -179.9817</code></pre>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="multinomial.html#cb180-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>value</span></code></pre></div>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="multinomial.html#cb171-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>value</span></code></pre></div>
 <pre><code>[1] -179.9817</code></pre>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="multinomial.html#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logLik</span>(fit_mlogit)</span></code></pre></div>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="multinomial.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logLik</span>(fit_mlogit)</span></code></pre></div>
 <pre><code>&#39;log Lik.&#39; -179.9817 (df=8)</code></pre>
 </div>
 </div>
@@ -1049,10 +1046,10 @@ alternative invariant (<code>Z</code>) <code>income</code> is individual/alterna
 and <code>catch</code> is alternative specific (<code>Y</code>).</p>
 <p>We can use the <code>fish</code> data from the <span class="pack" style="">mnlogit</span>
 package.</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="multinomial.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mnlogit)</span>
-<span id="cb184-2"><a href="multinomial.html#cb184-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb184-3"><a href="multinomial.html#cb184-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Fish)</span>
-<span id="cb184-4"><a href="multinomial.html#cb184-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Fish)</span></code></pre></div>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="multinomial.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mnlogit)  <span class="co"># note we are now using mnlogit</span></span>
+<span id="cb175-2"><a href="multinomial.html#cb175-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb175-3"><a href="multinomial.html#cb175-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Fish)</span>
+<span id="cb175-4"><a href="multinomial.html#cb175-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Fish)</span></code></pre></div>
 <pre><code>           mode   income     alt   price  catch chid
 1.beach   FALSE 7083.332   beach 157.930 0.0678    1
 1.boat    FALSE 7083.332    boat 157.930 0.2601    1
@@ -1060,65 +1057,65 @@ package.</p>
 1.pier    FALSE 7083.332    pier 157.930 0.0503    1
 2.beach   FALSE 1250.000   beach  15.114 0.1049    2
 2.boat    FALSE 1250.000    boat  10.534 0.1574    2</code></pre>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="multinomial.html#cb186-1" aria-hidden="true" tabindex="-1"></a>fm  <span class="ot">=</span> <span class="fu">formula</span>(mode <span class="sc">~</span> price <span class="sc">|</span> income <span class="sc">|</span> catch)</span>
-<span id="cb186-2"><a href="multinomial.html#cb186-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb186-3"><a href="multinomial.html#cb186-3" aria-hidden="true" tabindex="-1"></a>fit_mnlogit <span class="ot">=</span> <span class="fu">mnlogit</span>(fm, Fish)</span>
-<span id="cb186-4"><a href="multinomial.html#cb186-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_mnlogit = mlogit(fm, Fish)</span></span>
-<span id="cb186-5"><a href="multinomial.html#cb186-5" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_mnlogit)</span></span></code></pre></div>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="multinomial.html#cb177-1" aria-hidden="true" tabindex="-1"></a>fm  <span class="ot">=</span> <span class="fu">formula</span>(mode <span class="sc">~</span> price <span class="sc">|</span> income <span class="sc">|</span> catch)</span>
+<span id="cb177-2"><a href="multinomial.html#cb177-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb177-3"><a href="multinomial.html#cb177-3" aria-hidden="true" tabindex="-1"></a>fit_mnlogit <span class="ot">=</span> <span class="fu">mnlogit</span>(fm, Fish)</span>
+<span id="cb177-4"><a href="multinomial.html#cb177-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fit_mnlogit = mlogit(fm, Fish)</span></span>
+<span id="cb177-5"><a href="multinomial.html#cb177-5" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(fit_mnlogit)</span></span></code></pre></div>
 <p>The likelihood function.</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="multinomial.html#cb187-1" aria-hidden="true" tabindex="-1"></a>multinom_ml <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, Y, Z, respVec, choice) {</span>
-<span id="cb187-2"><a href="multinomial.html#cb187-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb187-3"><a href="multinomial.html#cb187-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args-</span></span>
-<span id="cb187-4"><a href="multinomial.html#cb187-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X dim nrow(Fish)/K x p + 1 (intercept)</span></span>
-<span id="cb187-5"><a href="multinomial.html#cb187-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Z, Y nrow(N); Y has alt specific coefs; then for Z ref group dropped so nrow = nrow*(K-1)/K</span></span>
-<span id="cb187-6"><a href="multinomial.html#cb187-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for ll everything through previous X the same</span></span>
-<span id="cb187-7"><a href="multinomial.html#cb187-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># then calc probmat for Y and Z, add to X probmat, and add to base</span></span>
-<span id="cb187-8"><a href="multinomial.html#cb187-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-9"><a href="multinomial.html#cb187-9" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sum</span>(choice)</span>
-<span id="cb187-10"><a href="multinomial.html#cb187-10" aria-hidden="true" tabindex="-1"></a>  K <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(respVec))</span>
-<span id="cb187-11"><a href="multinomial.html#cb187-11" aria-hidden="true" tabindex="-1"></a>  levs <span class="ot">=</span> <span class="fu">levels</span>(respVec)</span>
-<span id="cb187-12"><a href="multinomial.html#cb187-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-13"><a href="multinomial.html#cb187-13" aria-hidden="true" tabindex="-1"></a>  xpar <span class="ot">=</span> <span class="fu">matrix</span>(par[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>],  <span class="at">ncol =</span> K<span class="dv">-1</span>)</span>
-<span id="cb187-14"><a href="multinomial.html#cb187-14" aria-hidden="true" tabindex="-1"></a>  ypar <span class="ot">=</span> <span class="fu">matrix</span>(par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>], <span class="at">ncol =</span> K)</span>
-<span id="cb187-15"><a href="multinomial.html#cb187-15" aria-hidden="true" tabindex="-1"></a>  zpar <span class="ot">=</span> <span class="fu">matrix</span>(par[<span class="fu">length</span>(par)], <span class="at">ncol =</span> <span class="dv">1</span>)</span>
-<span id="cb187-16"><a href="multinomial.html#cb187-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-17"><a href="multinomial.html#cb187-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calc X</span></span>
-<span id="cb187-18"><a href="multinomial.html#cb187-18" aria-hidden="true" tabindex="-1"></a>  Vx  <span class="ot">=</span> X <span class="sc">%*%</span> xpar</span>
-<span id="cb187-19"><a href="multinomial.html#cb187-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-20"><a href="multinomial.html#cb187-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calc Y (mnlogit finds N x 1 results by going through 1:N, N+1:N*2 etc; then</span></span>
-<span id="cb187-21"><a href="multinomial.html#cb187-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># makes 1 vector, then subtracts the first 1:N from whole vector, then makes</span></span>
-<span id="cb187-22"><a href="multinomial.html#cb187-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Nxk-1 matrix with N+1:end values (as 1:N are just zero)); creating the</span></span>
-<span id="cb187-23"><a href="multinomial.html#cb187-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># vector and rebuilding the matrix is unnecessary though</span></span>
-<span id="cb187-24"><a href="multinomial.html#cb187-24" aria-hidden="true" tabindex="-1"></a>  Vy <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>K, <span class="cf">function</span>(alt) </span>
-<span id="cb187-25"><a href="multinomial.html#cb187-25" aria-hidden="true" tabindex="-1"></a>    Y[respVec <span class="sc">==</span> levs[alt], , <span class="at">drop =</span> <span class="cn">FALSE</span>] <span class="sc">%*%</span> ypar[alt])</span>
-<span id="cb187-26"><a href="multinomial.html#cb187-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-27"><a href="multinomial.html#cb187-27" aria-hidden="true" tabindex="-1"></a>  Vy <span class="ot">=</span> Vy[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">-</span> Vy[,<span class="dv">1</span>]</span>
-<span id="cb187-28"><a href="multinomial.html#cb187-28" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-29"><a href="multinomial.html#cb187-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calc Z</span></span>
-<span id="cb187-30"><a href="multinomial.html#cb187-30" aria-hidden="true" tabindex="-1"></a>  Vz <span class="ot">=</span> Z <span class="sc">%*%</span> zpar</span>
-<span id="cb187-31"><a href="multinomial.html#cb187-31" aria-hidden="true" tabindex="-1"></a>  Vz <span class="ot">=</span> <span class="fu">matrix</span>(Vz, <span class="at">ncol =</span> <span class="dv">3</span>)</span>
-<span id="cb187-32"><a href="multinomial.html#cb187-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-33"><a href="multinomial.html#cb187-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># all Vs must fit into N x K -1 matrix where N is nobs (i.e. individuals)</span></span>
-<span id="cb187-34"><a href="multinomial.html#cb187-34" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">=</span> Vx <span class="sc">+</span> Vy <span class="sc">+</span> Vz</span>
-<span id="cb187-35"><a href="multinomial.html#cb187-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-36"><a href="multinomial.html#cb187-36" aria-hidden="true" tabindex="-1"></a>  ll0 <span class="ot">=</span> <span class="fu">crossprod</span>(<span class="fu">c</span>(V), choice[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>N)])</span>
-<span id="cb187-37"><a href="multinomial.html#cb187-37" aria-hidden="true" tabindex="-1"></a>  baseProbVec <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">rowSums</span>(<span class="fu">exp</span>(V)))</span>
-<span id="cb187-38"><a href="multinomial.html#cb187-38" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">log</span>(baseProbVec)) <span class="sc">+</span> ll0</span>
-<span id="cb187-39"><a href="multinomial.html#cb187-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-40"><a href="multinomial.html#cb187-40" aria-hidden="true" tabindex="-1"></a>  loglik</span>
-<span id="cb187-41"><a href="multinomial.html#cb187-41" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb187-42"><a href="multinomial.html#cb187-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># note fitted values via</span></span>
-<span id="cb187-43"><a href="multinomial.html#cb187-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fitnonref = exp(V) * matrix(rep(baseProbVec, K-1), ncol = K-1)</span></span>
-<span id="cb187-44"><a href="multinomial.html#cb187-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fitref = 1-rowSums(fitnonref)</span></span>
-<span id="cb187-45"><a href="multinomial.html#cb187-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fits = cbind(fitref, fitnonref)</span></span>
-<span id="cb187-46"><a href="multinomial.html#cb187-46" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="multinomial.html#cb188-1" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">11</span>, <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">1</span>)</span>
-<span id="cb188-2"><a href="multinomial.html#cb188-2" aria-hidden="true" tabindex="-1"></a>mdat  <span class="ot">=</span> <span class="fu">mnlogit</span>(fm, Fish)<span class="sc">$</span>model  <span class="co"># this data already ordered!</span></span></code></pre></div>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="multinomial.html#cb178-1" aria-hidden="true" tabindex="-1"></a>multinom_ml <span class="ot">&lt;-</span> <span class="cf">function</span>(par, X, Y, Z, respVec, choice) {</span>
+<span id="cb178-2"><a href="multinomial.html#cb178-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb178-3"><a href="multinomial.html#cb178-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args-</span></span>
+<span id="cb178-4"><a href="multinomial.html#cb178-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X dim nrow(Fish)/K x p + 1 (intercept)</span></span>
+<span id="cb178-5"><a href="multinomial.html#cb178-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Z, Y nrow(N); Y has alt specific coefs; then for Z ref group dropped so nrow = nrow*(K-1)/K</span></span>
+<span id="cb178-6"><a href="multinomial.html#cb178-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for ll everything through previous X the same</span></span>
+<span id="cb178-7"><a href="multinomial.html#cb178-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># then calc probmat for Y and Z, add to X probmat, and add to base</span></span>
+<span id="cb178-8"><a href="multinomial.html#cb178-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-9"><a href="multinomial.html#cb178-9" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sum</span>(choice)</span>
+<span id="cb178-10"><a href="multinomial.html#cb178-10" aria-hidden="true" tabindex="-1"></a>  K <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(respVec))</span>
+<span id="cb178-11"><a href="multinomial.html#cb178-11" aria-hidden="true" tabindex="-1"></a>  levs <span class="ot">=</span> <span class="fu">levels</span>(respVec)</span>
+<span id="cb178-12"><a href="multinomial.html#cb178-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-13"><a href="multinomial.html#cb178-13" aria-hidden="true" tabindex="-1"></a>  xpar <span class="ot">=</span> <span class="fu">matrix</span>(par[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>],  <span class="at">ncol =</span> K<span class="dv">-1</span>)</span>
+<span id="cb178-14"><a href="multinomial.html#cb178-14" aria-hidden="true" tabindex="-1"></a>  ypar <span class="ot">=</span> <span class="fu">matrix</span>(par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>], <span class="at">ncol =</span> K)</span>
+<span id="cb178-15"><a href="multinomial.html#cb178-15" aria-hidden="true" tabindex="-1"></a>  zpar <span class="ot">=</span> <span class="fu">matrix</span>(par[<span class="fu">length</span>(par)], <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb178-16"><a href="multinomial.html#cb178-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-17"><a href="multinomial.html#cb178-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calc X</span></span>
+<span id="cb178-18"><a href="multinomial.html#cb178-18" aria-hidden="true" tabindex="-1"></a>  Vx  <span class="ot">=</span> X <span class="sc">%*%</span> xpar</span>
+<span id="cb178-19"><a href="multinomial.html#cb178-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-20"><a href="multinomial.html#cb178-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calc Y (mnlogit finds N x 1 results by going through 1:N, N+1:N*2 etc; then</span></span>
+<span id="cb178-21"><a href="multinomial.html#cb178-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># makes 1 vector, then subtracts the first 1:N from whole vector, then makes</span></span>
+<span id="cb178-22"><a href="multinomial.html#cb178-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Nxk-1 matrix with N+1:end values (as 1:N are just zero)); creating the</span></span>
+<span id="cb178-23"><a href="multinomial.html#cb178-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># vector and rebuilding the matrix is unnecessary though</span></span>
+<span id="cb178-24"><a href="multinomial.html#cb178-24" aria-hidden="true" tabindex="-1"></a>  Vy <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>K, <span class="cf">function</span>(alt) </span>
+<span id="cb178-25"><a href="multinomial.html#cb178-25" aria-hidden="true" tabindex="-1"></a>    Y[respVec <span class="sc">==</span> levs[alt], , <span class="at">drop =</span> <span class="cn">FALSE</span>] <span class="sc">%*%</span> ypar[alt])</span>
+<span id="cb178-26"><a href="multinomial.html#cb178-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-27"><a href="multinomial.html#cb178-27" aria-hidden="true" tabindex="-1"></a>  Vy <span class="ot">=</span> Vy[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">-</span> Vy[,<span class="dv">1</span>]</span>
+<span id="cb178-28"><a href="multinomial.html#cb178-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-29"><a href="multinomial.html#cb178-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calc Z</span></span>
+<span id="cb178-30"><a href="multinomial.html#cb178-30" aria-hidden="true" tabindex="-1"></a>  Vz <span class="ot">=</span> Z <span class="sc">%*%</span> zpar</span>
+<span id="cb178-31"><a href="multinomial.html#cb178-31" aria-hidden="true" tabindex="-1"></a>  Vz <span class="ot">=</span> <span class="fu">matrix</span>(Vz, <span class="at">ncol =</span> <span class="dv">3</span>)</span>
+<span id="cb178-32"><a href="multinomial.html#cb178-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-33"><a href="multinomial.html#cb178-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># all Vs must fit into N x K -1 matrix where N is nobs (i.e. individuals)</span></span>
+<span id="cb178-34"><a href="multinomial.html#cb178-34" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">=</span> Vx <span class="sc">+</span> Vy <span class="sc">+</span> Vz</span>
+<span id="cb178-35"><a href="multinomial.html#cb178-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-36"><a href="multinomial.html#cb178-36" aria-hidden="true" tabindex="-1"></a>  ll0 <span class="ot">=</span> <span class="fu">crossprod</span>(<span class="fu">c</span>(V), choice[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>N)])</span>
+<span id="cb178-37"><a href="multinomial.html#cb178-37" aria-hidden="true" tabindex="-1"></a>  baseProbVec <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">rowSums</span>(<span class="fu">exp</span>(V)))</span>
+<span id="cb178-38"><a href="multinomial.html#cb178-38" aria-hidden="true" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">log</span>(baseProbVec)) <span class="sc">+</span> ll0</span>
+<span id="cb178-39"><a href="multinomial.html#cb178-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-40"><a href="multinomial.html#cb178-40" aria-hidden="true" tabindex="-1"></a>  loglik</span>
+<span id="cb178-41"><a href="multinomial.html#cb178-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb178-42"><a href="multinomial.html#cb178-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># note fitted values via</span></span>
+<span id="cb178-43"><a href="multinomial.html#cb178-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fitnonref = exp(V) * matrix(rep(baseProbVec, K-1), ncol = K-1)</span></span>
+<span id="cb178-44"><a href="multinomial.html#cb178-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fitref = 1-rowSums(fitnonref)</span></span>
+<span id="cb178-45"><a href="multinomial.html#cb178-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fits = cbind(fitref, fitnonref)</span></span>
+<span id="cb178-46"><a href="multinomial.html#cb178-46" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="multinomial.html#cb179-1" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">11</span>, <span class="sc">-</span>.<span class="dv">1</span>, .<span class="dv">1</span>)</span>
+<span id="cb179-2"><a href="multinomial.html#cb179-2" aria-hidden="true" tabindex="-1"></a>mdat  <span class="ot">=</span> <span class="fu">mnlogit</span>(fm, Fish)<span class="sc">$</span>model  <span class="co"># this data already ordered!</span></span></code></pre></div>
 <p>As <code>X</code> has a constant value across alternatives, the coefficients regard the selection of the alternative relative to reference.</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="multinomial.html#cb189-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, mdat[mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="sc">==</span> <span class="st">&#39;beach&#39;</span>, <span class="st">&#39;income&#39;</span>])</span>
-<span id="cb189-2"><a href="multinomial.html#cb189-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(X)</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="multinomial.html#cb180-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, mdat[mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="sc">==</span> <span class="st">&#39;beach&#39;</span>, <span class="st">&#39;income&#39;</span>])</span>
+<span id="cb180-2"><a href="multinomial.html#cb180-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(X)</span></code></pre></div>
 <pre><code>[1] 1182    2</code></pre>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="multinomial.html#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="multinomial.html#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code></pre></div>
 <pre><code>     [,1]     [,2]
 [1,]    1 7083.332
 [2,]    1 1250.000
@@ -1127,36 +1124,36 @@ package.</p>
 [5,]    1 4583.332
 [6,]    1 4583.332</code></pre>
 <p><code>Y</code> will use the complete data to start. Coefficients will be differences from the reference alternative coefficient.</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="multinomial.html#cb193-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">=</span> <span class="fu">as.matrix</span>(mdat[, <span class="st">&#39;catch&#39;</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
-<span id="cb193-2"><a href="multinomial.html#cb193-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(Y)</span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="multinomial.html#cb184-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">=</span> <span class="fu">as.matrix</span>(mdat[, <span class="st">&#39;catch&#39;</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb184-2"><a href="multinomial.html#cb184-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(Y)</span></code></pre></div>
 <pre><code>[1] 4728    1</code></pre>
 <p><code>Z</code> are difference scores from reference group.</p>
-<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="multinomial.html#cb195-1" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">as.matrix</span>(mdat[mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="sc">!=</span> <span class="st">&#39;beach&#39;</span>, <span class="st">&#39;price&#39;</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
-<span id="cb195-2"><a href="multinomial.html#cb195-2" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> Z <span class="sc">-</span> mdat[mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="sc">==</span> <span class="st">&#39;beach&#39;</span>, <span class="st">&#39;price&#39;</span>]</span>
-<span id="cb195-3"><a href="multinomial.html#cb195-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(Z)</span></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="multinomial.html#cb186-1" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> <span class="fu">as.matrix</span>(mdat[mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="sc">!=</span> <span class="st">&#39;beach&#39;</span>, <span class="st">&#39;price&#39;</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb186-2"><a href="multinomial.html#cb186-2" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">=</span> Z <span class="sc">-</span> mdat[mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="sc">==</span> <span class="st">&#39;beach&#39;</span>, <span class="st">&#39;price&#39;</span>]</span>
+<span id="cb186-3"><a href="multinomial.html#cb186-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(Z)</span></code></pre></div>
 <pre><code>[1] 3546    1</code></pre>
-<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="multinomial.html#cb197-1" aria-hidden="true" tabindex="-1"></a>respVec <span class="ot">=</span> mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="co"># first 10 should be 0 0 1 0 1 0 0 0 1 1 after beach dropped</span></span></code></pre></div>
-<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="multinomial.html#cb198-1" aria-hidden="true" tabindex="-1"></a><span class="fu">multinom_ml</span>(inits, X, Y, Z, respVec, <span class="at">choice =</span> mdat<span class="sc">$</span>mode)</span></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="multinomial.html#cb188-1" aria-hidden="true" tabindex="-1"></a>respVec <span class="ot">=</span> mdat<span class="sc">$</span><span class="st">`</span><span class="at">_Alt_Indx_</span><span class="st">`</span> <span class="co"># first 10 should be 0 0 1 0 1 0 0 0 1 1 after beach dropped</span></span></code></pre></div>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="multinomial.html#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">multinom_ml</span>(inits, X, Y, Z, respVec, <span class="at">choice =</span> mdat<span class="sc">$</span>mode)</span></code></pre></div>
 <pre><code>          [,1]
 [1,] -162384.5</code></pre>
-<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="multinomial.html#cb200-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
-<span id="cb200-2"><a href="multinomial.html#cb200-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">11</span>),</span>
-<span id="cb200-3"><a href="multinomial.html#cb200-3" aria-hidden="true" tabindex="-1"></a>  multinom_ml,</span>
-<span id="cb200-4"><a href="multinomial.html#cb200-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
-<span id="cb200-5"><a href="multinomial.html#cb200-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y =</span> Y,</span>
-<span id="cb200-6"><a href="multinomial.html#cb200-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z =</span> Z,</span>
-<span id="cb200-7"><a href="multinomial.html#cb200-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">respVec =</span> respVec,</span>
-<span id="cb200-8"><a href="multinomial.html#cb200-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">choice  =</span> mdat<span class="sc">$</span>mode,</span>
-<span id="cb200-9"><a href="multinomial.html#cb200-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
-<span id="cb200-10"><a href="multinomial.html#cb200-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit   =</span> <span class="dv">1000</span>,</span>
-<span id="cb200-11"><a href="multinomial.html#cb200-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol  =</span> <span class="fl">1e-12</span>,</span>
-<span id="cb200-12"><a href="multinomial.html#cb200-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ndeps   =</span> <span class="fu">rep</span>(<span class="fl">1e-8</span>, <span class="dv">11</span>),</span>
-<span id="cb200-13"><a href="multinomial.html#cb200-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace   =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb200-14"><a href="multinomial.html#cb200-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
-<span id="cb200-15"><a href="multinomial.html#cb200-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">type    =</span> <span class="dv">3</span></span>
-<span id="cb200-16"><a href="multinomial.html#cb200-16" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb200-17"><a href="multinomial.html#cb200-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&#39;BFGS&#39;</span></span>
-<span id="cb200-18"><a href="multinomial.html#cb200-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="multinomial.html#cb191-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">optim</span>(</span>
+<span id="cb191-2"><a href="multinomial.html#cb191-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">11</span>),</span>
+<span id="cb191-3"><a href="multinomial.html#cb191-3" aria-hidden="true" tabindex="-1"></a>  multinom_ml,</span>
+<span id="cb191-4"><a href="multinomial.html#cb191-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
+<span id="cb191-5"><a href="multinomial.html#cb191-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y =</span> Y,</span>
+<span id="cb191-6"><a href="multinomial.html#cb191-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z =</span> Z,</span>
+<span id="cb191-7"><a href="multinomial.html#cb191-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">respVec =</span> respVec,</span>
+<span id="cb191-8"><a href="multinomial.html#cb191-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">choice  =</span> mdat<span class="sc">$</span>mode,</span>
+<span id="cb191-9"><a href="multinomial.html#cb191-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(</span>
+<span id="cb191-10"><a href="multinomial.html#cb191-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxit   =</span> <span class="dv">1000</span>,</span>
+<span id="cb191-11"><a href="multinomial.html#cb191-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">reltol  =</span> <span class="fl">1e-12</span>,</span>
+<span id="cb191-12"><a href="multinomial.html#cb191-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ndeps   =</span> <span class="fu">rep</span>(<span class="fl">1e-8</span>, <span class="dv">11</span>),</span>
+<span id="cb191-13"><a href="multinomial.html#cb191-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace   =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb191-14"><a href="multinomial.html#cb191-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb191-15"><a href="multinomial.html#cb191-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">type    =</span> <span class="dv">3</span></span>
+<span id="cb191-16"><a href="multinomial.html#cb191-16" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb191-17"><a href="multinomial.html#cb191-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&#39;BFGS&#39;</span></span>
+<span id="cb191-18"><a href="multinomial.html#cb191-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>initial  value 1638.599935 
 iter  10 value 1253.603448
 iter  20 value 1199.143447

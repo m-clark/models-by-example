@@ -15,7 +15,7 @@ This follows the [linear regression model][Linear Regression] approach.
 
 ## Data Setup 
 
-Predictors and target.
+Predictors and target.  This follows the same approach as the linear regression example, but now draws the target variable from the binomial distribution with `size = 1`.
 
 ```{r data-setup-logreg}
 library(tidyverse)
@@ -27,7 +27,7 @@ k = 2     # number of desired predictors
 X = matrix(rnorm(N * k), ncol = k)
 
 # the linear predictor
-lp = -.5 + .2 * X[, 1] + .1 * X[, 2] # increasing N will get estimated values closer to these
+lp = -.5 + .2*X[, 1] + .5*X[, 2] # increasing N will get estimated values closer to these
 
 y = rbinom(N, size = 1, prob = plogis(lp))
 
@@ -38,13 +38,12 @@ dfXy = data.frame(X, y)
  
 A maximum likelihood approach.
 
-
 ```{r logreg_ML}
 logreg_ML <- function(par, X, y) {
-  # arguments- 
+  # Arguments
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
-  # y: response
+  # y: target
   
   # setup
   beta = par                                # coefficients
@@ -64,15 +63,14 @@ logreg_ML <- function(par, X, y) {
 ```
 
 
-
 Another approach via exponential loss function.
 
 ```{r logreg_exp}
 logreg_exp <- function(par, X, y) {
-  # arguments- 
+  # Arguments
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
-  # y: response
+  # y: target
   
   # setup
   beta = par                                   # coefficients
@@ -100,7 +98,7 @@ X = cbind(1, X)
 init = rep(0, ncol(X))
 names(init) = c('intercept', 'b1', 'b2')
 
-optlmML = optim(
+fit_ML = optim(
   par = init,
   fn  = logreg_ML,
   X   = X,
@@ -108,7 +106,7 @@ optlmML = optim(
   control = list(reltol = 1e-8)
 )
 
-optglmClass = optim(
+fit_exp = optim(
   par = init,
   fn  = logreg_exp,
   X   = X,
@@ -116,12 +114,9 @@ optglmClass = optim(
   control = list(reltol = 1e-15)
 )
 
-pars_ML  = optlmML$par
-pars_exp = optglmClass$par
+pars_ML  = fit_ML$par
+pars_exp = fit_exp$par
 ```
-
-
-
 
 
 ## Comparison
@@ -129,15 +124,18 @@ pars_exp = optglmClass$par
 Compare to `glm`.
 
 ```{r logreg-compare}
-modglm = glm(y ~ ., dfXy, family = binomial)
-
-rbind(
-  pars_ML,
-  pars_exp,
-  pars_GLM = coef(modglm)
-)
-
+fit_glm = glm(y ~ ., dfXy, family = binomial)
 ```
+
+```{r logreg-compare-show, echo=FALSE}
+rbind(
+  fit_ml  = pars_ML,
+  fit_exp = pars_exp,
+  fit_glm = coef(fit_glm)
+) %>% 
+  kable_df()
+```
+
 
 
 

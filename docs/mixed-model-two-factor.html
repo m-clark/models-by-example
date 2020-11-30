@@ -794,78 +794,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The data regards the breeding value of a set of five sires in raising pigs. Each
 sire is mated to a random group of dams, with the response being the average
 daily weight gain in pounds of two piglets in each litter.</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="mixed-model-two-factor.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb40-2"><a href="mixed-model-two-factor.html#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-3"><a href="mixed-model-two-factor.html#cb40-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">1.39</span>,<span class="fl">1.29</span>,<span class="fl">1.12</span>,<span class="fl">1.16</span>,<span class="fl">1.52</span>,<span class="fl">1.62</span>,<span class="fl">1.88</span>,<span class="fl">1.87</span>,<span class="fl">1.24</span>,<span class="fl">1.18</span>,</span>
-<span id="cb40-4"><a href="mixed-model-two-factor.html#cb40-4" aria-hidden="true" tabindex="-1"></a>      .<span class="dv">95</span>,.<span class="dv">96</span>,.<span class="dv">82</span>,.<span class="dv">92</span>,<span class="fl">1.18</span>,<span class="fl">1.20</span>,<span class="fl">1.47</span>,<span class="fl">1.41</span>,<span class="fl">1.57</span>,<span class="fl">1.65</span>)</span>
-<span id="cb40-5"><a href="mixed-model-two-factor.html#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-6"><a href="mixed-model-two-factor.html#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co"># for use in lme4, but also a more conceptual representation of the data</span></span>
-<span id="cb40-7"><a href="mixed-model-two-factor.html#cb40-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">expand.grid</span>(<span class="at">sire =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">2</span>), <span class="at">dam =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
-<span id="cb40-8"><a href="mixed-model-two-factor.html#cb40-8" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">data.frame</span>(d[<span class="fu">order</span>(d<span class="sc">$</span>sire), ], y)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="mixed-model-two-factor.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb30-2"><a href="mixed-model-two-factor.html#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="mixed-model-two-factor.html#cb30-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">1.39</span>,<span class="fl">1.29</span>,<span class="fl">1.12</span>,<span class="fl">1.16</span>,<span class="fl">1.52</span>,<span class="fl">1.62</span>,<span class="fl">1.88</span>,<span class="fl">1.87</span>,<span class="fl">1.24</span>,<span class="fl">1.18</span>,</span>
+<span id="cb30-4"><a href="mixed-model-two-factor.html#cb30-4" aria-hidden="true" tabindex="-1"></a>      .<span class="dv">95</span>,.<span class="dv">96</span>,.<span class="dv">82</span>,.<span class="dv">92</span>,<span class="fl">1.18</span>,<span class="fl">1.20</span>,<span class="fl">1.47</span>,<span class="fl">1.41</span>,<span class="fl">1.57</span>,<span class="fl">1.65</span>)</span>
+<span id="cb30-5"><a href="mixed-model-two-factor.html#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="mixed-model-two-factor.html#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># for use in lme4, but also a more conceptual representation of the data</span></span>
+<span id="cb30-7"><a href="mixed-model-two-factor.html#cb30-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">expand.grid</span>(<span class="at">sire =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">2</span>), <span class="at">dam =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb30-8"><a href="mixed-model-two-factor.html#cb30-8" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">data.frame</span>(d[<span class="fu">order</span>(d<span class="sc">$</span>sire), ], y)</span></code></pre></div>
 </div>
 <div id="function-1" class="section level2">
 <h2>Function</h2>
 <p>The function takes the log variances <code>eta</code> as input to keep positive.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="mixed-model-two-factor.html#cb41-1" aria-hidden="true" tabindex="-1"></a>two_factor_re <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, eta_alpha, eta_gamma, eta) {</span>
-<span id="cb41-2"><a href="mixed-model-two-factor.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args </span></span>
-<span id="cb41-3"><a href="mixed-model-two-factor.html#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mu: intercept </span></span>
-<span id="cb41-4"><a href="mixed-model-two-factor.html#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eta_alpha: random effect one </span></span>
-<span id="cb41-5"><a href="mixed-model-two-factor.html#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eta_gamma: random effect two</span></span>
-<span id="cb41-6"><a href="mixed-model-two-factor.html#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eta: residual variance of y</span></span>
-<span id="cb41-7"><a href="mixed-model-two-factor.html#cb41-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-8"><a href="mixed-model-two-factor.html#cb41-8" aria-hidden="true" tabindex="-1"></a>  sigma2_alpha <span class="ot">=</span> <span class="fu">exp</span>(eta_alpha)</span>
-<span id="cb41-9"><a href="mixed-model-two-factor.html#cb41-9" aria-hidden="true" tabindex="-1"></a>  sigma2_gamma <span class="ot">=</span> <span class="fu">exp</span>(eta_gamma)</span>
-<span id="cb41-10"><a href="mixed-model-two-factor.html#cb41-10" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> <span class="fu">exp</span>(eta)</span>
-<span id="cb41-11"><a href="mixed-model-two-factor.html#cb41-11" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
-<span id="cb41-12"><a href="mixed-model-two-factor.html#cb41-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-13"><a href="mixed-model-two-factor.html#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># covariance matrix of observations</span></span>
-<span id="cb41-14"><a href="mixed-model-two-factor.html#cb41-14" aria-hidden="true" tabindex="-1"></a>  Sigma <span class="ot">=</span> sigma2 <span class="sc">*</span> <span class="fu">diag</span>(n) <span class="sc">+</span> sigma2_alpha <span class="sc">*</span> <span class="fu">tcrossprod</span>(Xalpha) <span class="sc">+</span> </span>
-<span id="cb41-15"><a href="mixed-model-two-factor.html#cb41-15" aria-hidden="true" tabindex="-1"></a>    sigma2_gamma <span class="sc">*</span> <span class="fu">tcrossprod</span>(Xgamma)</span>
-<span id="cb41-16"><a href="mixed-model-two-factor.html#cb41-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-17"><a href="mixed-model-two-factor.html#cb41-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-18"><a href="mixed-model-two-factor.html#cb41-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log likelihood</span></span>
-<span id="cb41-19"><a href="mixed-model-two-factor.html#cb41-19" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="sc">-</span>n <span class="sc">/</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">2</span> <span class="sc">*</span> pi) <span class="sc">-</span> <span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">diag</span>(<span class="fu">chol</span>(Sigma)))) <span class="sc">-</span></span>
-<span id="cb41-20"><a href="mixed-model-two-factor.html#cb41-20" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">5</span> <span class="sc">*</span> <span class="fu">t</span>(y <span class="sc">-</span> mu) <span class="sc">%*%</span> <span class="fu">chol2inv</span>(<span class="fu">chol</span>(Sigma)) <span class="sc">%*%</span> (y <span class="sc">-</span> mu)</span>
-<span id="cb41-21"><a href="mixed-model-two-factor.html#cb41-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-22"><a href="mixed-model-two-factor.html#cb41-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>ll)</span>
-<span id="cb41-23"><a href="mixed-model-two-factor.html#cb41-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="mixed-model-two-factor.html#cb31-1" aria-hidden="true" tabindex="-1"></a>two_factor_re <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, eta_alpha, eta_gamma, eta) {</span>
+<span id="cb31-2"><a href="mixed-model-two-factor.html#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Args </span></span>
+<span id="cb31-3"><a href="mixed-model-two-factor.html#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mu: intercept </span></span>
+<span id="cb31-4"><a href="mixed-model-two-factor.html#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eta_alpha: random effect one </span></span>
+<span id="cb31-5"><a href="mixed-model-two-factor.html#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eta_gamma: random effect two</span></span>
+<span id="cb31-6"><a href="mixed-model-two-factor.html#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eta: residual variance of y</span></span>
+<span id="cb31-7"><a href="mixed-model-two-factor.html#cb31-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-8"><a href="mixed-model-two-factor.html#cb31-8" aria-hidden="true" tabindex="-1"></a>  sigma2_alpha <span class="ot">=</span> <span class="fu">exp</span>(eta_alpha)</span>
+<span id="cb31-9"><a href="mixed-model-two-factor.html#cb31-9" aria-hidden="true" tabindex="-1"></a>  sigma2_gamma <span class="ot">=</span> <span class="fu">exp</span>(eta_gamma)</span>
+<span id="cb31-10"><a href="mixed-model-two-factor.html#cb31-10" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> <span class="fu">exp</span>(eta)</span>
+<span id="cb31-11"><a href="mixed-model-two-factor.html#cb31-11" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">length</span>(y)</span>
+<span id="cb31-12"><a href="mixed-model-two-factor.html#cb31-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-13"><a href="mixed-model-two-factor.html#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># covariance matrix of observations</span></span>
+<span id="cb31-14"><a href="mixed-model-two-factor.html#cb31-14" aria-hidden="true" tabindex="-1"></a>  Sigma <span class="ot">=</span> sigma2 <span class="sc">*</span> <span class="fu">diag</span>(n) <span class="sc">+</span> sigma2_alpha <span class="sc">*</span> <span class="fu">tcrossprod</span>(Xalpha) <span class="sc">+</span> </span>
+<span id="cb31-15"><a href="mixed-model-two-factor.html#cb31-15" aria-hidden="true" tabindex="-1"></a>    sigma2_gamma <span class="sc">*</span> <span class="fu">tcrossprod</span>(Xgamma)</span>
+<span id="cb31-16"><a href="mixed-model-two-factor.html#cb31-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-17"><a href="mixed-model-two-factor.html#cb31-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-18"><a href="mixed-model-two-factor.html#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log likelihood</span></span>
+<span id="cb31-19"><a href="mixed-model-two-factor.html#cb31-19" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="sc">-</span>n <span class="sc">/</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">2</span> <span class="sc">*</span> pi) <span class="sc">-</span> <span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">diag</span>(<span class="fu">chol</span>(Sigma)))) <span class="sc">-</span></span>
+<span id="cb31-20"><a href="mixed-model-two-factor.html#cb31-20" aria-hidden="true" tabindex="-1"></a>    .<span class="dv">5</span> <span class="sc">*</span> <span class="fu">t</span>(y <span class="sc">-</span> mu) <span class="sc">%*%</span> <span class="fu">chol2inv</span>(<span class="fu">chol</span>(Sigma)) <span class="sc">%*%</span> (y <span class="sc">-</span> mu)</span>
+<span id="cb31-21"><a href="mixed-model-two-factor.html#cb31-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-22"><a href="mixed-model-two-factor.html#cb31-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>ll)</span>
+<span id="cb31-23"><a href="mixed-model-two-factor.html#cb31-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-3" class="section level2">
 <h2>Estimation</h2>
 <p>Starting values and test.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="mixed-model-two-factor.html#cb42-1" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb42-2"><a href="mixed-model-two-factor.html#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="fu">mean</span>(y),</span>
-<span id="cb42-3"><a href="mixed-model-two-factor.html#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_alpha =</span> <span class="fu">var</span>(<span class="fu">tapply</span>(y, d<span class="sc">$</span>sire, mean)),</span>
-<span id="cb42-4"><a href="mixed-model-two-factor.html#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_gamma =</span> <span class="fu">var</span>(y) <span class="sc">/</span> <span class="dv">3</span>,</span>
-<span id="cb42-5"><a href="mixed-model-two-factor.html#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> <span class="fu">var</span>(y) <span class="sc">/</span> <span class="dv">3</span></span>
-<span id="cb42-6"><a href="mixed-model-two-factor.html#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb42-7"><a href="mixed-model-two-factor.html#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-8"><a href="mixed-model-two-factor.html#cb42-8" aria-hidden="true" tabindex="-1"></a>Xalpha <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">5</span>) <span class="sc">%x%</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">4</span>)</span>
-<span id="cb42-9"><a href="mixed-model-two-factor.html#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-10"><a href="mixed-model-two-factor.html#cb42-10" aria-hidden="true" tabindex="-1"></a>Xgamma <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">10</span>) <span class="sc">%x%</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="mixed-model-two-factor.html#cb32-1" aria-hidden="true" tabindex="-1"></a>starts <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb32-2"><a href="mixed-model-two-factor.html#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="fu">mean</span>(y),</span>
+<span id="cb32-3"><a href="mixed-model-two-factor.html#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_alpha =</span> <span class="fu">var</span>(<span class="fu">tapply</span>(y, d<span class="sc">$</span>sire, mean)),</span>
+<span id="cb32-4"><a href="mixed-model-two-factor.html#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_gamma =</span> <span class="fu">var</span>(y) <span class="sc">/</span> <span class="dv">3</span>,</span>
+<span id="cb32-5"><a href="mixed-model-two-factor.html#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> <span class="fu">var</span>(y) <span class="sc">/</span> <span class="dv">3</span></span>
+<span id="cb32-6"><a href="mixed-model-two-factor.html#cb32-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-7"><a href="mixed-model-two-factor.html#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="mixed-model-two-factor.html#cb32-8" aria-hidden="true" tabindex="-1"></a>Xalpha <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">5</span>) <span class="sc">%x%</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">4</span>)</span>
+<span id="cb32-9"><a href="mixed-model-two-factor.html#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="mixed-model-two-factor.html#cb32-10" aria-hidden="true" tabindex="-1"></a>Xgamma <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">10</span>) <span class="sc">%x%</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span></code></pre></div>
 <p>Estimate at starting values.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="mixed-model-two-factor.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">two_factor_re</span>(</span>
-<span id="cb43-2"><a href="mixed-model-two-factor.html#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu  =</span> starts[[<span class="dv">1</span>]],</span>
-<span id="cb43-3"><a href="mixed-model-two-factor.html#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_alpha =</span> starts[[<span class="dv">2</span>]],</span>
-<span id="cb43-4"><a href="mixed-model-two-factor.html#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_gamma =</span> starts[[<span class="dv">3</span>]],</span>
-<span id="cb43-5"><a href="mixed-model-two-factor.html#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> starts[[<span class="dv">4</span>]]</span>
-<span id="cb43-6"><a href="mixed-model-two-factor.html#cb43-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="mixed-model-two-factor.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">two_factor_re</span>(</span>
+<span id="cb33-2"><a href="mixed-model-two-factor.html#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu  =</span> starts[[<span class="dv">1</span>]],</span>
+<span id="cb33-3"><a href="mixed-model-two-factor.html#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_alpha =</span> starts[[<span class="dv">2</span>]],</span>
+<span id="cb33-4"><a href="mixed-model-two-factor.html#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_gamma =</span> starts[[<span class="dv">3</span>]],</span>
+<span id="cb33-5"><a href="mixed-model-two-factor.html#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> starts[[<span class="dv">4</span>]]</span>
+<span id="cb33-6"><a href="mixed-model-two-factor.html#cb33-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>         [,1]
 [1,] 26.53887</code></pre>
 <p>Package <span class="pack" style="">bbmle</span> has an <span class="func" style="">mle2</span> function for maximum likelihood estimation based on underlying R functions like <span class="func" style="">optim</span>, and produces a nice summary table. LBFGS-B is used to place lower bounds on the variance estimates.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="mixed-model-two-factor.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bbmle)</span>
-<span id="cb45-2"><a href="mixed-model-two-factor.html#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="mixed-model-two-factor.html#cb45-3" aria-hidden="true" tabindex="-1"></a>fit_mle <span class="ot">=</span> <span class="fu">mle2</span>(two_factor_re, <span class="at">start =</span> starts,  <span class="at">method =</span> <span class="st">&#39;BFGS&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="mixed-model-two-factor.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bbmle)</span>
+<span id="cb35-2"><a href="mixed-model-two-factor.html#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="mixed-model-two-factor.html#cb35-3" aria-hidden="true" tabindex="-1"></a>fit_mle <span class="ot">=</span> <span class="fu">mle2</span>(two_factor_re, <span class="at">start =</span> starts,  <span class="at">method =</span> <span class="st">&#39;BFGS&#39;</span>)</span></code></pre></div>
 </div>
 <div id="comparison-3" class="section level2">
 <h2>Comparison</h2>
 <p>We can compare to the <span class="pack" style="">lme4</span> model result.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="mixed-model-two-factor.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="do">### lme4 comparison</span></span>
-<span id="cb46-2"><a href="mixed-model-two-factor.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb46-3"><a href="mixed-model-two-factor.html#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-4"><a href="mixed-model-two-factor.html#cb46-4" aria-hidden="true" tabindex="-1"></a>fit_mer <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> sire) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> dam<span class="sc">:</span>sire), d, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb46-5"><a href="mixed-model-two-factor.html#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-6"><a href="mixed-model-two-factor.html#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_mle)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="mixed-model-two-factor.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="do">### lme4 comparison</span></span>
+<span id="cb36-2"><a href="mixed-model-two-factor.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb36-3"><a href="mixed-model-two-factor.html#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="mixed-model-two-factor.html#cb36-4" aria-hidden="true" tabindex="-1"></a>fit_mer <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> sire) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> dam<span class="sc">:</span>sire), d, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb36-5"><a href="mixed-model-two-factor.html#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="mixed-model-two-factor.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_mle)</span></code></pre></div>
 <pre><code>Maximum likelihood estimation
 
 Call:
@@ -881,10 +881,10 @@ eta       -6.07920    0.44721 -13.5935 &lt; 2.2e-16 ***
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
 -2 log L: -23.98631 </code></pre>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="mixed-model-two-factor.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(fit_mle)[<span class="sc">-</span><span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="mixed-model-two-factor.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(fit_mle)[<span class="sc">-</span><span class="dv">1</span>])</span></code></pre></div>
 <pre><code> eta_alpha  eta_gamma        eta 
 0.05372198 0.03178996 0.00229000 </code></pre>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="mixed-model-two-factor.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_mer)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="mixed-model-two-factor.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_mer)</span></code></pre></div>
 <pre><code>Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
 Formula: y ~ (1 | sire) + (1 | dam:sire)
    Data: d

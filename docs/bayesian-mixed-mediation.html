@@ -800,110 +800,110 @@ to with Med or Main respectively.</p>
 <span class="math display">\[y \sim \alpha_{Main} + \beta_{1\_{Main}}\cdot X + \beta_{2\_{Main}}\cdot \textrm{Mediator}\]</span></p>
 <p>However, there will be random effects for a grouping variable for each coefficient, i.e. random intercepts and slopes, for both the mediator model and the outcome model.</p>
 <p>Let’s create data to this effect.</p>
-<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="bayesian-mixed-mediation.html#cb501-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb501-2"><a href="bayesian-mixed-mediation.html#cb501-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb501-3"><a href="bayesian-mixed-mediation.html#cb501-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
-<span id="cb501-4"><a href="bayesian-mixed-mediation.html#cb501-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb501-5"><a href="bayesian-mixed-mediation.html#cb501-5" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for mediator model</span></span>
-<span id="cb501-6"><a href="bayesian-mixed-mediation.html#cb501-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create cov matrix of RE etc. with no covariance between model random effects</span></span>
-<span id="cb501-7"><a href="bayesian-mixed-mediation.html#cb501-7" aria-hidden="true" tabindex="-1"></a><span class="co"># covmat_RE = matrix(c(1,-.15,0,0,0,</span></span>
-<span id="cb501-8"><a href="bayesian-mixed-mediation.html#cb501-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                       -.15,.4,0,0,0,</span></span>
-<span id="cb501-9"><a href="bayesian-mixed-mediation.html#cb501-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,1,-.1,.15,</span></span>
-<span id="cb501-10"><a href="bayesian-mixed-mediation.html#cb501-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,-.1,.3,0,</span></span>
-<span id="cb501-11"><a href="bayesian-mixed-mediation.html#cb501-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,.15,0,.2), nrow=5, byrow = T)</span></span>
-<span id="cb501-12"><a href="bayesian-mixed-mediation.html#cb501-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb501-13"><a href="bayesian-mixed-mediation.html#cb501-13" aria-hidden="true" tabindex="-1"></a><span class="co"># or with slight cov added to indirect coefficient RE; both matrices are pos def</span></span>
-<span id="cb501-14"><a href="bayesian-mixed-mediation.html#cb501-14" aria-hidden="true" tabindex="-1"></a>covmat_RE <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>( <span class="fl">1.00</span>, <span class="sc">-</span><span class="fl">0.15</span>,  <span class="fl">0.00</span>,  <span class="fl">0.00</span>,  <span class="fl">0.00</span>,</span>
-<span id="cb501-15"><a href="bayesian-mixed-mediation.html#cb501-15" aria-hidden="true" tabindex="-1"></a>                     <span class="sc">-</span><span class="fl">0.15</span>,  <span class="fl">0.64</span>,  <span class="fl">0.00</span>,  <span class="fl">0.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,</span>
-<span id="cb501-16"><a href="bayesian-mixed-mediation.html#cb501-16" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.00</span>,  <span class="fl">0.00</span>,  <span class="fl">1.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,  <span class="fl">0.15</span>,</span>
-<span id="cb501-17"><a href="bayesian-mixed-mediation.html#cb501-17" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.00</span>,  <span class="fl">0.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,  <span class="fl">0.49</span>,  <span class="fl">0.00</span>,</span>
-<span id="cb501-18"><a href="bayesian-mixed-mediation.html#cb501-18" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,  <span class="fl">0.15</span>,  <span class="fl">0.00</span>,  <span class="fl">0.25</span>), <span class="at">nrow =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb501-19"><a href="bayesian-mixed-mediation.html#cb501-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb501-20"><a href="bayesian-mixed-mediation.html#cb501-20" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect</span></span>
-<span id="cb501-21"><a href="bayesian-mixed-mediation.html#cb501-21" aria-hidden="true" tabindex="-1"></a>covmat_RE</span></code></pre></div>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="bayesian-mixed-mediation.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb489-2"><a href="bayesian-mixed-mediation.html#cb489-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb489-3"><a href="bayesian-mixed-mediation.html#cb489-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8675309</span>)</span>
+<span id="cb489-4"><a href="bayesian-mixed-mediation.html#cb489-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb489-5"><a href="bayesian-mixed-mediation.html#cb489-5" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for mediator model</span></span>
+<span id="cb489-6"><a href="bayesian-mixed-mediation.html#cb489-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create cov matrix of RE etc. with no covariance between model random effects</span></span>
+<span id="cb489-7"><a href="bayesian-mixed-mediation.html#cb489-7" aria-hidden="true" tabindex="-1"></a><span class="co"># covmat_RE = matrix(c(1,-.15,0,0,0,</span></span>
+<span id="cb489-8"><a href="bayesian-mixed-mediation.html#cb489-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                       -.15,.4,0,0,0,</span></span>
+<span id="cb489-9"><a href="bayesian-mixed-mediation.html#cb489-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,1,-.1,.15,</span></span>
+<span id="cb489-10"><a href="bayesian-mixed-mediation.html#cb489-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,-.1,.3,0,</span></span>
+<span id="cb489-11"><a href="bayesian-mixed-mediation.html#cb489-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                       0,0,.15,0,.2), nrow=5, byrow = T)</span></span>
+<span id="cb489-12"><a href="bayesian-mixed-mediation.html#cb489-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb489-13"><a href="bayesian-mixed-mediation.html#cb489-13" aria-hidden="true" tabindex="-1"></a><span class="co"># or with slight cov added to indirect coefficient RE; both matrices are pos def</span></span>
+<span id="cb489-14"><a href="bayesian-mixed-mediation.html#cb489-14" aria-hidden="true" tabindex="-1"></a>covmat_RE <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>( <span class="fl">1.00</span>, <span class="sc">-</span><span class="fl">0.15</span>,  <span class="fl">0.00</span>,  <span class="fl">0.00</span>,  <span class="fl">0.00</span>,</span>
+<span id="cb489-15"><a href="bayesian-mixed-mediation.html#cb489-15" aria-hidden="true" tabindex="-1"></a>                     <span class="sc">-</span><span class="fl">0.15</span>,  <span class="fl">0.64</span>,  <span class="fl">0.00</span>,  <span class="fl">0.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,</span>
+<span id="cb489-16"><a href="bayesian-mixed-mediation.html#cb489-16" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.00</span>,  <span class="fl">0.00</span>,  <span class="fl">1.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,  <span class="fl">0.15</span>,</span>
+<span id="cb489-17"><a href="bayesian-mixed-mediation.html#cb489-17" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.00</span>,  <span class="fl">0.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,  <span class="fl">0.49</span>,  <span class="fl">0.00</span>,</span>
+<span id="cb489-18"><a href="bayesian-mixed-mediation.html#cb489-18" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.00</span>, <span class="sc">-</span><span class="fl">0.10</span>,  <span class="fl">0.15</span>,  <span class="fl">0.00</span>,  <span class="fl">0.25</span>), <span class="at">nrow =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb489-19"><a href="bayesian-mixed-mediation.html#cb489-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb489-20"><a href="bayesian-mixed-mediation.html#cb489-20" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect</span></span>
+<span id="cb489-21"><a href="bayesian-mixed-mediation.html#cb489-21" aria-hidden="true" tabindex="-1"></a>covmat_RE</span></code></pre></div>
 <pre><code>      [,1]  [,2]  [,3]  [,4]  [,5]
 [1,]  1.00 -0.15  0.00  0.00  0.00
 [2,] -0.15  0.64  0.00  0.00 -0.10
 [3,]  0.00  0.00  1.00 -0.10  0.15
 [4,]  0.00  0.00 -0.10  0.49  0.00
 [5,]  0.00 -0.10  0.15  0.00  0.25</code></pre>
-<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="bayesian-mixed-mediation.html#cb503-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect as correlation</span></span>
-<span id="cb503-2"><a href="bayesian-mixed-mediation.html#cb503-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cov2cor</span>(covmat_RE)</span></code></pre></div>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="bayesian-mixed-mediation.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect as correlation</span></span>
+<span id="cb491-2"><a href="bayesian-mixed-mediation.html#cb491-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cov2cor</span>(covmat_RE)</span></code></pre></div>
 <pre><code>        [,1]    [,2]       [,3]       [,4]  [,5]
 [1,]  1.0000 -0.1875  0.0000000  0.0000000  0.00
 [2,] -0.1875  1.0000  0.0000000  0.0000000 -0.25
 [3,]  0.0000  0.0000  1.0000000 -0.1428571  0.30
 [4,]  0.0000  0.0000 -0.1428571  1.0000000  0.00
 [5,]  0.0000 -0.2500  0.3000000  0.0000000  1.00</code></pre>
-<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="bayesian-mixed-mediation.html#cb505-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate</span></span>
-<span id="cb505-2"><a href="bayesian-mixed-mediation.html#cb505-2" aria-hidden="true" tabindex="-1"></a>re <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">50</span>,</span>
-<span id="cb505-3"><a href="bayesian-mixed-mediation.html#cb505-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mu    =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">5</span>),</span>
-<span id="cb505-4"><a href="bayesian-mixed-mediation.html#cb505-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Sigma =</span> covmat_RE,</span>
-<span id="cb505-5"><a href="bayesian-mixed-mediation.html#cb505-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb505-6"><a href="bayesian-mixed-mediation.html#cb505-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-7"><a href="bayesian-mixed-mediation.html#cb505-7" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for mediator model</span></span>
-<span id="cb505-8"><a href="bayesian-mixed-mediation.html#cb505-8" aria-hidden="true" tabindex="-1"></a>ranef_alpha_Med <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">1</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb505-9"><a href="bayesian-mixed-mediation.html#cb505-9" aria-hidden="true" tabindex="-1"></a>ranef_beta_Med  <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">2</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb505-10"><a href="bayesian-mixed-mediation.html#cb505-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-11"><a href="bayesian-mixed-mediation.html#cb505-11" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for main model                                                 </span></span>
-<span id="cb505-12"><a href="bayesian-mixed-mediation.html#cb505-12" aria-hidden="true" tabindex="-1"></a>ranef_alpha_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">3</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb505-13"><a href="bayesian-mixed-mediation.html#cb505-13" aria-hidden="true" tabindex="-1"></a>ranef_beta1_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">4</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb505-14"><a href="bayesian-mixed-mediation.html#cb505-14" aria-hidden="true" tabindex="-1"></a>ranef_beta2_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">5</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb505-15"><a href="bayesian-mixed-mediation.html#cb505-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-16"><a href="bayesian-mixed-mediation.html#cb505-16" aria-hidden="true" tabindex="-1"></a><span class="do">## fixed effects</span></span>
-<span id="cb505-17"><a href="bayesian-mixed-mediation.html#cb505-17" aria-hidden="true" tabindex="-1"></a>alpha_Med <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb505-18"><a href="bayesian-mixed-mediation.html#cb505-18" aria-hidden="true" tabindex="-1"></a>beta_Med  <span class="ot">=</span> .<span class="dv">2</span></span>
-<span id="cb505-19"><a href="bayesian-mixed-mediation.html#cb505-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-20"><a href="bayesian-mixed-mediation.html#cb505-20" aria-hidden="true" tabindex="-1"></a>alpha_Main <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb505-21"><a href="bayesian-mixed-mediation.html#cb505-21" aria-hidden="true" tabindex="-1"></a>beta1_Main <span class="ot">=</span> .<span class="dv">3</span></span>
-<span id="cb505-22"><a href="bayesian-mixed-mediation.html#cb505-22" aria-hidden="true" tabindex="-1"></a>beta2_Main <span class="ot">=</span> <span class="sc">-</span>.<span class="dv">2</span></span>
-<span id="cb505-23"><a href="bayesian-mixed-mediation.html#cb505-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-24"><a href="bayesian-mixed-mediation.html#cb505-24" aria-hidden="true" tabindex="-1"></a><span class="co"># residual variance</span></span>
-<span id="cb505-25"><a href="bayesian-mixed-mediation.html#cb505-25" aria-hidden="true" tabindex="-1"></a>resid_Med  <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">500</span>, <span class="dv">0</span>, .<span class="dv">75</span><span class="sc">^</span><span class="dv">2</span>, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb505-26"><a href="bayesian-mixed-mediation.html#cb505-26" aria-hidden="true" tabindex="-1"></a>resid_Main <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">500</span>, <span class="dv">0</span>, .<span class="dv">50</span><span class="sc">^</span><span class="dv">2</span>, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb505-27"><a href="bayesian-mixed-mediation.html#cb505-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-28"><a href="bayesian-mixed-mediation.html#cb505-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-29"><a href="bayesian-mixed-mediation.html#cb505-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect parameters for later comparison</span></span>
-<span id="cb505-30"><a href="bayesian-mixed-mediation.html#cb505-30" aria-hidden="true" tabindex="-1"></a>params <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb505-31"><a href="bayesian-mixed-mediation.html#cb505-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Med  =</span> alpha_Med,</span>
-<span id="cb505-32"><a href="bayesian-mixed-mediation.html#cb505-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_Med   =</span> beta_Med,</span>
-<span id="cb505-33"><a href="bayesian-mixed-mediation.html#cb505-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_Med  =</span> <span class="fu">sd</span>(resid_Med),</span>
-<span id="cb505-34"><a href="bayesian-mixed-mediation.html#cb505-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Main =</span> alpha_Main,</span>
-<span id="cb505-35"><a href="bayesian-mixed-mediation.html#cb505-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta1_Main =</span> beta1_Main,</span>
-<span id="cb505-36"><a href="bayesian-mixed-mediation.html#cb505-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta2_Main =</span> beta2_Main,</span>
-<span id="cb505-37"><a href="bayesian-mixed-mediation.html#cb505-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_y    =</span> <span class="fu">sd</span>(resid_Main),</span>
-<span id="cb505-38"><a href="bayesian-mixed-mediation.html#cb505-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Med_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">1</span>]),</span>
-<span id="cb505-39"><a href="bayesian-mixed-mediation.html#cb505-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_Med_sd  =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">2</span>]),</span>
-<span id="cb505-40"><a href="bayesian-mixed-mediation.html#cb505-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">3</span>]),</span>
-<span id="cb505-41"><a href="bayesian-mixed-mediation.html#cb505-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta1_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">4</span>]),</span>
-<span id="cb505-42"><a href="bayesian-mixed-mediation.html#cb505-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta2_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">5</span>])</span>
-<span id="cb505-43"><a href="bayesian-mixed-mediation.html#cb505-43" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb505-44"><a href="bayesian-mixed-mediation.html#cb505-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb505-45"><a href="bayesian-mixed-mediation.html#cb505-45" aria-hidden="true" tabindex="-1"></a>ranefs <span class="ot">=</span>  <span class="fu">cbind</span>(</span>
-<span id="cb505-46"><a href="bayesian-mixed-mediation.html#cb505-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_alpha_Med =</span> <span class="fu">unique</span>(ranef_alpha_Med),</span>
-<span id="cb505-47"><a href="bayesian-mixed-mediation.html#cb505-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta_Med  =</span> <span class="fu">unique</span>(ranef_beta_Med),</span>
-<span id="cb505-48"><a href="bayesian-mixed-mediation.html#cb505-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_alpha =</span> <span class="fu">unique</span>(ranef_alpha_Main),</span>
-<span id="cb505-49"><a href="bayesian-mixed-mediation.html#cb505-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta1 =</span> <span class="fu">unique</span>(ranef_beta1_Main),</span>
-<span id="cb505-50"><a href="bayesian-mixed-mediation.html#cb505-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta2 =</span> <span class="fu">unique</span>(ranef_beta2_Main)</span>
-<span id="cb505-51"><a href="bayesian-mixed-mediation.html#cb505-51" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="bayesian-mixed-mediation.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate</span></span>
+<span id="cb493-2"><a href="bayesian-mixed-mediation.html#cb493-2" aria-hidden="true" tabindex="-1"></a>re <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">50</span>,</span>
+<span id="cb493-3"><a href="bayesian-mixed-mediation.html#cb493-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mu    =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">5</span>),</span>
+<span id="cb493-4"><a href="bayesian-mixed-mediation.html#cb493-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Sigma =</span> covmat_RE,</span>
+<span id="cb493-5"><a href="bayesian-mixed-mediation.html#cb493-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb493-6"><a href="bayesian-mixed-mediation.html#cb493-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-7"><a href="bayesian-mixed-mediation.html#cb493-7" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for mediator model</span></span>
+<span id="cb493-8"><a href="bayesian-mixed-mediation.html#cb493-8" aria-hidden="true" tabindex="-1"></a>ranef_alpha_Med <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">1</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb493-9"><a href="bayesian-mixed-mediation.html#cb493-9" aria-hidden="true" tabindex="-1"></a>ranef_beta_Med  <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">2</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb493-10"><a href="bayesian-mixed-mediation.html#cb493-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-11"><a href="bayesian-mixed-mediation.html#cb493-11" aria-hidden="true" tabindex="-1"></a><span class="co"># random effects for main model                                                 </span></span>
+<span id="cb493-12"><a href="bayesian-mixed-mediation.html#cb493-12" aria-hidden="true" tabindex="-1"></a>ranef_alpha_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">3</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb493-13"><a href="bayesian-mixed-mediation.html#cb493-13" aria-hidden="true" tabindex="-1"></a>ranef_beta1_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">4</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb493-14"><a href="bayesian-mixed-mediation.html#cb493-14" aria-hidden="true" tabindex="-1"></a>ranef_beta2_Main <span class="ot">=</span> <span class="fu">rep</span>(re[, <span class="dv">5</span>], <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb493-15"><a href="bayesian-mixed-mediation.html#cb493-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-16"><a href="bayesian-mixed-mediation.html#cb493-16" aria-hidden="true" tabindex="-1"></a><span class="do">## fixed effects</span></span>
+<span id="cb493-17"><a href="bayesian-mixed-mediation.html#cb493-17" aria-hidden="true" tabindex="-1"></a>alpha_Med <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb493-18"><a href="bayesian-mixed-mediation.html#cb493-18" aria-hidden="true" tabindex="-1"></a>beta_Med  <span class="ot">=</span> .<span class="dv">2</span></span>
+<span id="cb493-19"><a href="bayesian-mixed-mediation.html#cb493-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-20"><a href="bayesian-mixed-mediation.html#cb493-20" aria-hidden="true" tabindex="-1"></a>alpha_Main <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb493-21"><a href="bayesian-mixed-mediation.html#cb493-21" aria-hidden="true" tabindex="-1"></a>beta1_Main <span class="ot">=</span> .<span class="dv">3</span></span>
+<span id="cb493-22"><a href="bayesian-mixed-mediation.html#cb493-22" aria-hidden="true" tabindex="-1"></a>beta2_Main <span class="ot">=</span> <span class="sc">-</span>.<span class="dv">2</span></span>
+<span id="cb493-23"><a href="bayesian-mixed-mediation.html#cb493-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-24"><a href="bayesian-mixed-mediation.html#cb493-24" aria-hidden="true" tabindex="-1"></a><span class="co"># residual variance</span></span>
+<span id="cb493-25"><a href="bayesian-mixed-mediation.html#cb493-25" aria-hidden="true" tabindex="-1"></a>resid_Med  <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">500</span>, <span class="dv">0</span>, .<span class="dv">75</span><span class="sc">^</span><span class="dv">2</span>, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb493-26"><a href="bayesian-mixed-mediation.html#cb493-26" aria-hidden="true" tabindex="-1"></a>resid_Main <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">500</span>, <span class="dv">0</span>, .<span class="dv">50</span><span class="sc">^</span><span class="dv">2</span>, <span class="at">empirical =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb493-27"><a href="bayesian-mixed-mediation.html#cb493-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-28"><a href="bayesian-mixed-mediation.html#cb493-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-29"><a href="bayesian-mixed-mediation.html#cb493-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect parameters for later comparison</span></span>
+<span id="cb493-30"><a href="bayesian-mixed-mediation.html#cb493-30" aria-hidden="true" tabindex="-1"></a>params <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb493-31"><a href="bayesian-mixed-mediation.html#cb493-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Med  =</span> alpha_Med,</span>
+<span id="cb493-32"><a href="bayesian-mixed-mediation.html#cb493-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_Med   =</span> beta_Med,</span>
+<span id="cb493-33"><a href="bayesian-mixed-mediation.html#cb493-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_Med  =</span> <span class="fu">sd</span>(resid_Med),</span>
+<span id="cb493-34"><a href="bayesian-mixed-mediation.html#cb493-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Main =</span> alpha_Main,</span>
+<span id="cb493-35"><a href="bayesian-mixed-mediation.html#cb493-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta1_Main =</span> beta1_Main,</span>
+<span id="cb493-36"><a href="bayesian-mixed-mediation.html#cb493-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta2_Main =</span> beta2_Main,</span>
+<span id="cb493-37"><a href="bayesian-mixed-mediation.html#cb493-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_y    =</span> <span class="fu">sd</span>(resid_Main),</span>
+<span id="cb493-38"><a href="bayesian-mixed-mediation.html#cb493-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_Med_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">1</span>]),</span>
+<span id="cb493-39"><a href="bayesian-mixed-mediation.html#cb493-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_Med_sd  =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">2</span>]),</span>
+<span id="cb493-40"><a href="bayesian-mixed-mediation.html#cb493-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">3</span>]),</span>
+<span id="cb493-41"><a href="bayesian-mixed-mediation.html#cb493-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta1_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">4</span>]),</span>
+<span id="cb493-42"><a href="bayesian-mixed-mediation.html#cb493-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta2_sd =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(covmat_RE)[<span class="dv">5</span>])</span>
+<span id="cb493-43"><a href="bayesian-mixed-mediation.html#cb493-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb493-44"><a href="bayesian-mixed-mediation.html#cb493-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-45"><a href="bayesian-mixed-mediation.html#cb493-45" aria-hidden="true" tabindex="-1"></a>ranefs <span class="ot">=</span>  <span class="fu">cbind</span>(</span>
+<span id="cb493-46"><a href="bayesian-mixed-mediation.html#cb493-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_alpha_Med =</span> <span class="fu">unique</span>(ranef_alpha_Med),</span>
+<span id="cb493-47"><a href="bayesian-mixed-mediation.html#cb493-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta_Med  =</span> <span class="fu">unique</span>(ranef_beta_Med),</span>
+<span id="cb493-48"><a href="bayesian-mixed-mediation.html#cb493-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_alpha =</span> <span class="fu">unique</span>(ranef_alpha_Main),</span>
+<span id="cb493-49"><a href="bayesian-mixed-mediation.html#cb493-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta1 =</span> <span class="fu">unique</span>(ranef_beta1_Main),</span>
+<span id="cb493-50"><a href="bayesian-mixed-mediation.html#cb493-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_beta2 =</span> <span class="fu">unique</span>(ranef_beta2_Main)</span>
+<span id="cb493-51"><a href="bayesian-mixed-mediation.html#cb493-51" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Finally, we can create the data for analysis.</p>
-<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="bayesian-mixed-mediation.html#cb506-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
-<span id="cb506-2"><a href="bayesian-mixed-mediation.html#cb506-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb506-3"><a href="bayesian-mixed-mediation.html#cb506-3" aria-hidden="true" tabindex="-1"></a>Med <span class="ot">=</span> (alpha_Med <span class="sc">+</span> ranef_alpha_Med) <span class="sc">+</span> (beta_Med <span class="sc">+</span> ranef_beta_Med) <span class="sc">*</span> X <span class="sc">+</span> resid_Med[, <span class="dv">1</span>]</span>
-<span id="cb506-4"><a href="bayesian-mixed-mediation.html#cb506-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb506-5"><a href="bayesian-mixed-mediation.html#cb506-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> (alpha_Main <span class="sc">+</span> ranef_alpha_Main) <span class="sc">+</span> (beta1_Main <span class="sc">+</span> ranef_beta1_Main) <span class="sc">*</span> X <span class="sc">+</span> </span>
-<span id="cb506-6"><a href="bayesian-mixed-mediation.html#cb506-6" aria-hidden="true" tabindex="-1"></a>  (beta2_Main <span class="sc">+</span> ranef_beta2_Main) <span class="sc">*</span>  Med <span class="sc">+</span> resid_Main[, <span class="dv">1</span>]</span>
-<span id="cb506-7"><a href="bayesian-mixed-mediation.html#cb506-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb506-8"><a href="bayesian-mixed-mediation.html#cb506-8" aria-hidden="true" tabindex="-1"></a>group <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="at">e =</span> <span class="dv">10</span>)</span>
-<span id="cb506-9"><a href="bayesian-mixed-mediation.html#cb506-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb506-10"><a href="bayesian-mixed-mediation.html#cb506-10" aria-hidden="true" tabindex="-1"></a>standat <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb506-11"><a href="bayesian-mixed-mediation.html#cb506-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
-<span id="cb506-12"><a href="bayesian-mixed-mediation.html#cb506-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Med =</span> Med,</span>
-<span id="cb506-13"><a href="bayesian-mixed-mediation.html#cb506-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
-<span id="cb506-14"><a href="bayesian-mixed-mediation.html#cb506-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Group =</span> group,</span>
-<span id="cb506-15"><a href="bayesian-mixed-mediation.html#cb506-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">J =</span> <span class="fu">length</span>(<span class="fu">unique</span>(group)),</span>
-<span id="cb506-16"><a href="bayesian-mixed-mediation.html#cb506-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">length</span>(y)</span>
-<span id="cb506-17"><a href="bayesian-mixed-mediation.html#cb506-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="bayesian-mixed-mediation.html#cb494-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb494-2"><a href="bayesian-mixed-mediation.html#cb494-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb494-3"><a href="bayesian-mixed-mediation.html#cb494-3" aria-hidden="true" tabindex="-1"></a>Med <span class="ot">=</span> (alpha_Med <span class="sc">+</span> ranef_alpha_Med) <span class="sc">+</span> (beta_Med <span class="sc">+</span> ranef_beta_Med) <span class="sc">*</span> X <span class="sc">+</span> resid_Med[, <span class="dv">1</span>]</span>
+<span id="cb494-4"><a href="bayesian-mixed-mediation.html#cb494-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb494-5"><a href="bayesian-mixed-mediation.html#cb494-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> (alpha_Main <span class="sc">+</span> ranef_alpha_Main) <span class="sc">+</span> (beta1_Main <span class="sc">+</span> ranef_beta1_Main) <span class="sc">*</span> X <span class="sc">+</span> </span>
+<span id="cb494-6"><a href="bayesian-mixed-mediation.html#cb494-6" aria-hidden="true" tabindex="-1"></a>  (beta2_Main <span class="sc">+</span> ranef_beta2_Main) <span class="sc">*</span>  Med <span class="sc">+</span> resid_Main[, <span class="dv">1</span>]</span>
+<span id="cb494-7"><a href="bayesian-mixed-mediation.html#cb494-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb494-8"><a href="bayesian-mixed-mediation.html#cb494-8" aria-hidden="true" tabindex="-1"></a>group <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="at">e =</span> <span class="dv">10</span>)</span>
+<span id="cb494-9"><a href="bayesian-mixed-mediation.html#cb494-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb494-10"><a href="bayesian-mixed-mediation.html#cb494-10" aria-hidden="true" tabindex="-1"></a>standat <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb494-11"><a href="bayesian-mixed-mediation.html#cb494-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">X   =</span> X,</span>
+<span id="cb494-12"><a href="bayesian-mixed-mediation.html#cb494-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Med =</span> Med,</span>
+<span id="cb494-13"><a href="bayesian-mixed-mediation.html#cb494-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y   =</span> y,</span>
+<span id="cb494-14"><a href="bayesian-mixed-mediation.html#cb494-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Group =</span> group,</span>
+<span id="cb494-15"><a href="bayesian-mixed-mediation.html#cb494-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">J =</span> <span class="fu">length</span>(<span class="fu">unique</span>(group)),</span>
+<span id="cb494-16"><a href="bayesian-mixed-mediation.html#cb494-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">length</span>(y)</span>
+<span id="cb494-17"><a href="bayesian-mixed-mediation.html#cb494-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="model-code-4" class="section level2">
 <h2>Model Code</h2>
@@ -1036,41 +1036,41 @@ generated quantities{
 <div id="estimation-26" class="section level2">
 <h2>Estimation</h2>
 <p>Run the model and examine results. The following assumes a character string or file (<code>bayes_med_model</code>) of the previous model code.</p>
-<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="bayesian-mixed-mediation.html#cb508-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb508-2"><a href="bayesian-mixed-mediation.html#cb508-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb508-3"><a href="bayesian-mixed-mediation.html#cb508-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
-<span id="cb508-4"><a href="bayesian-mixed-mediation.html#cb508-4" aria-hidden="true" tabindex="-1"></a>  bayes_med_model,</span>
-<span id="cb508-5"><a href="bayesian-mixed-mediation.html#cb508-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> standat,</span>
-<span id="cb508-6"><a href="bayesian-mixed-mediation.html#cb508-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter    =</span> <span class="dv">3000</span>,</span>
-<span id="cb508-7"><a href="bayesian-mixed-mediation.html#cb508-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup  =</span> <span class="dv">2000</span>,</span>
-<span id="cb508-8"><a href="bayesian-mixed-mediation.html#cb508-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin    =</span> <span class="dv">4</span>,</span>
-<span id="cb508-9"><a href="bayesian-mixed-mediation.html#cb508-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores   =</span> <span class="dv">4</span>,</span>
-<span id="cb508-10"><a href="bayesian-mixed-mediation.html#cb508-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>, <span class="at">max_treedepth =</span> <span class="dv">15</span>)</span>
-<span id="cb508-11"><a href="bayesian-mixed-mediation.html#cb508-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="bayesian-mixed-mediation.html#cb496-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb496-2"><a href="bayesian-mixed-mediation.html#cb496-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb496-3"><a href="bayesian-mixed-mediation.html#cb496-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">sampling</span>(</span>
+<span id="cb496-4"><a href="bayesian-mixed-mediation.html#cb496-4" aria-hidden="true" tabindex="-1"></a>  bayes_med_model,</span>
+<span id="cb496-5"><a href="bayesian-mixed-mediation.html#cb496-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> standat,</span>
+<span id="cb496-6"><a href="bayesian-mixed-mediation.html#cb496-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter    =</span> <span class="dv">3000</span>,</span>
+<span id="cb496-7"><a href="bayesian-mixed-mediation.html#cb496-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup  =</span> <span class="dv">2000</span>,</span>
+<span id="cb496-8"><a href="bayesian-mixed-mediation.html#cb496-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin    =</span> <span class="dv">4</span>,</span>
+<span id="cb496-9"><a href="bayesian-mixed-mediation.html#cb496-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores   =</span> <span class="dv">4</span>,</span>
+<span id="cb496-10"><a href="bayesian-mixed-mediation.html#cb496-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> .<span class="dv">99</span>, <span class="at">max_treedepth =</span> <span class="dv">15</span>)</span>
+<span id="cb496-11"><a href="bayesian-mixed-mediation.html#cb496-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="comparison-31" class="section level2">
 <h2>Comparison</h2>
 <p>Main parameters include fixed and random effect standard deviation, plus those related to indirect effect.</p>
-<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb509-1"><a href="bayesian-mixed-mediation.html#cb509-1" aria-hidden="true" tabindex="-1"></a>mainpars <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb509-2"><a href="bayesian-mixed-mediation.html#cb509-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;alpha_Med&#39;</span>,</span>
-<span id="cb509-3"><a href="bayesian-mixed-mediation.html#cb509-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta_Med&#39;</span>,</span>
-<span id="cb509-4"><a href="bayesian-mixed-mediation.html#cb509-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigmaMed&#39;</span>,</span>
-<span id="cb509-5"><a href="bayesian-mixed-mediation.html#cb509-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;alpha_Main&#39;</span>,</span>
-<span id="cb509-6"><a href="bayesian-mixed-mediation.html#cb509-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta1_Main&#39;</span>,</span>
-<span id="cb509-7"><a href="bayesian-mixed-mediation.html#cb509-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta2_Main&#39;</span>,</span>
-<span id="cb509-8"><a href="bayesian-mixed-mediation.html#cb509-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigma_y&#39;</span>,</span>
-<span id="cb509-9"><a href="bayesian-mixed-mediation.html#cb509-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigma_ranef&#39;</span>,</span>
-<span id="cb509-10"><a href="bayesian-mixed-mediation.html#cb509-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;naive_ind_effect&#39;</span>,</span>
-<span id="cb509-11"><a href="bayesian-mixed-mediation.html#cb509-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;avg_ind_effect&#39;</span>,</span>
-<span id="cb509-12"><a href="bayesian-mixed-mediation.html#cb509-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;total_effect&#39;</span></span>
-<span id="cb509-13"><a href="bayesian-mixed-mediation.html#cb509-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb509-14"><a href="bayesian-mixed-mediation.html#cb509-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb509-15"><a href="bayesian-mixed-mediation.html#cb509-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb509-16"><a href="bayesian-mixed-mediation.html#cb509-16" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb509-17"><a href="bayesian-mixed-mediation.html#cb509-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
-<span id="cb509-18"><a href="bayesian-mixed-mediation.html#cb509-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>),</span>
-<span id="cb509-19"><a href="bayesian-mixed-mediation.html#cb509-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars   =</span> mainpars</span>
-<span id="cb509-20"><a href="bayesian-mixed-mediation.html#cb509-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb497-1"><a href="bayesian-mixed-mediation.html#cb497-1" aria-hidden="true" tabindex="-1"></a>mainpars <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb497-2"><a href="bayesian-mixed-mediation.html#cb497-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;alpha_Med&#39;</span>,</span>
+<span id="cb497-3"><a href="bayesian-mixed-mediation.html#cb497-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta_Med&#39;</span>,</span>
+<span id="cb497-4"><a href="bayesian-mixed-mediation.html#cb497-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigmaMed&#39;</span>,</span>
+<span id="cb497-5"><a href="bayesian-mixed-mediation.html#cb497-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;alpha_Main&#39;</span>,</span>
+<span id="cb497-6"><a href="bayesian-mixed-mediation.html#cb497-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta1_Main&#39;</span>,</span>
+<span id="cb497-7"><a href="bayesian-mixed-mediation.html#cb497-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;beta2_Main&#39;</span>,</span>
+<span id="cb497-8"><a href="bayesian-mixed-mediation.html#cb497-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigma_y&#39;</span>,</span>
+<span id="cb497-9"><a href="bayesian-mixed-mediation.html#cb497-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;sigma_ranef&#39;</span>,</span>
+<span id="cb497-10"><a href="bayesian-mixed-mediation.html#cb497-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;naive_ind_effect&#39;</span>,</span>
+<span id="cb497-11"><a href="bayesian-mixed-mediation.html#cb497-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;avg_ind_effect&#39;</span>,</span>
+<span id="cb497-12"><a href="bayesian-mixed-mediation.html#cb497-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;total_effect&#39;</span></span>
+<span id="cb497-13"><a href="bayesian-mixed-mediation.html#cb497-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb497-14"><a href="bayesian-mixed-mediation.html#cb497-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb497-15"><a href="bayesian-mixed-mediation.html#cb497-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb497-16"><a href="bayesian-mixed-mediation.html#cb497-16" aria-hidden="true" tabindex="-1"></a>  fit,</span>
+<span id="cb497-17"><a href="bayesian-mixed-mediation.html#cb497-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb497-18"><a href="bayesian-mixed-mediation.html#cb497-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs  =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">5</span>, <span class="fl">0.975</span>),</span>
+<span id="cb497-19"><a href="bayesian-mixed-mediation.html#cb497-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars   =</span> mainpars</span>
+<span id="cb497-20"><a href="bayesian-mixed-mediation.html#cb497-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Inference for Stan model: 24fc5f9a6f9e73e28a238db856680332.
 4 chains, each with iter=3000; warmup=2000; thin=4; 
 post-warmup draws per chain=250, total post-warmup draws=1000.
@@ -1097,9 +1097,9 @@ For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
 <p>We can use a piecemeal mixed model via <span class="pack">lme4</span> for initial comparison. However, it can’t directly estimate mediated effect, and it won’t pick up on correlation of random effects between models.</p>
-<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="bayesian-mixed-mediation.html#cb511-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb511-2"><a href="bayesian-mixed-mediation.html#cb511-2" aria-hidden="true" tabindex="-1"></a>mod_Med <span class="ot">=</span> <span class="fu">lmer</span>(Med <span class="sc">~</span> X <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">|</span> group))</span>
-<span id="cb511-3"><a href="bayesian-mixed-mediation.html#cb511-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_Med)</span></code></pre></div>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb499-1"><a href="bayesian-mixed-mediation.html#cb499-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb499-2"><a href="bayesian-mixed-mediation.html#cb499-2" aria-hidden="true" tabindex="-1"></a>mod_Med <span class="ot">=</span> <span class="fu">lmer</span>(Med <span class="sc">~</span> X <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">|</span> group))</span>
+<span id="cb499-3"><a href="bayesian-mixed-mediation.html#cb499-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_Med)</span></code></pre></div>
 <pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
 Formula: Med ~ X + (1 + X | group)
 
@@ -1124,8 +1124,8 @@ X             0.2197     0.1172   1.874
 Correlation of Fixed Effects:
   (Intr)
 X -0.257</code></pre>
-<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="bayesian-mixed-mediation.html#cb513-1" aria-hidden="true" tabindex="-1"></a>mod_Main <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> X <span class="sc">+</span> Med <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">+</span> Med <span class="sc">|</span> group))</span>
-<span id="cb513-2"><a href="bayesian-mixed-mediation.html#cb513-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_Main)</span></code></pre></div>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="bayesian-mixed-mediation.html#cb501-1" aria-hidden="true" tabindex="-1"></a>mod_Main <span class="ot">=</span> <span class="fu">lmer</span>(y <span class="sc">~</span> X <span class="sc">+</span> Med <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">+</span> Med <span class="sc">|</span> group))</span>
+<span id="cb501-2"><a href="bayesian-mixed-mediation.html#cb501-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_Main)</span></code></pre></div>
 <pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
 Formula: y ~ X + Med + (1 + X + Med | group)
 
@@ -1153,19 +1153,19 @@ Correlation of Fixed Effects:
     (Intr) X     
 X   -0.144       
 Med  0.218 -0.055</code></pre>
-<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="bayesian-mixed-mediation.html#cb515-1" aria-hidden="true" tabindex="-1"></a><span class="co"># should equal the naive estimate in the following code</span></span>
-<span id="cb515-2"><a href="bayesian-mixed-mediation.html#cb515-2" aria-hidden="true" tabindex="-1"></a>lme_indirect_effect <span class="ot">=</span> <span class="fu">fixef</span>(mod_Med)[<span class="st">&#39;X&#39;</span>] <span class="sc">*</span> <span class="fu">fixef</span>(mod_Main)[<span class="st">&#39;Med&#39;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="bayesian-mixed-mediation.html#cb503-1" aria-hidden="true" tabindex="-1"></a><span class="co"># should equal the naive estimate in the following code</span></span>
+<span id="cb503-2"><a href="bayesian-mixed-mediation.html#cb503-2" aria-hidden="true" tabindex="-1"></a>lme_indirect_effect <span class="ot">=</span> <span class="fu">fixef</span>(mod_Med)[<span class="st">&#39;X&#39;</span>] <span class="sc">*</span> <span class="fu">fixef</span>(mod_Main)[<span class="st">&#39;Med&#39;</span>]</span></code></pre></div>
 <p>Using the <span class="pack">mediation</span> package will provide a better estimate, and can handle this simple mixed model setting.</p>
-<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="bayesian-mixed-mediation.html#cb516-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(mediation)</span></span>
-<span id="cb516-2"><a href="bayesian-mixed-mediation.html#cb516-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb516-3"><a href="bayesian-mixed-mediation.html#cb516-3" aria-hidden="true" tabindex="-1"></a>mediation_mixed <span class="ot">=</span> mediation<span class="sc">::</span><span class="fu">mediate</span>(</span>
-<span id="cb516-4"><a href="bayesian-mixed-mediation.html#cb516-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.m  =</span> mod_Med,</span>
-<span id="cb516-5"><a href="bayesian-mixed-mediation.html#cb516-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.y  =</span> mod_Main,</span>
-<span id="cb516-6"><a href="bayesian-mixed-mediation.html#cb516-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">treat    =</span> <span class="st">&#39;X&#39;</span>,</span>
-<span id="cb516-7"><a href="bayesian-mixed-mediation.html#cb516-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mediator =</span> <span class="st">&#39;Med&#39;</span></span>
-<span id="cb516-8"><a href="bayesian-mixed-mediation.html#cb516-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb516-9"><a href="bayesian-mixed-mediation.html#cb516-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb516-10"><a href="bayesian-mixed-mediation.html#cb516-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mediation_mixed)</span></code></pre></div>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb504-1"><a href="bayesian-mixed-mediation.html#cb504-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(mediation)</span></span>
+<span id="cb504-2"><a href="bayesian-mixed-mediation.html#cb504-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb504-3"><a href="bayesian-mixed-mediation.html#cb504-3" aria-hidden="true" tabindex="-1"></a>mediation_mixed <span class="ot">=</span> mediation<span class="sc">::</span><span class="fu">mediate</span>(</span>
+<span id="cb504-4"><a href="bayesian-mixed-mediation.html#cb504-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.m  =</span> mod_Med,</span>
+<span id="cb504-5"><a href="bayesian-mixed-mediation.html#cb504-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">model.y  =</span> mod_Main,</span>
+<span id="cb504-6"><a href="bayesian-mixed-mediation.html#cb504-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">treat    =</span> <span class="st">&#39;X&#39;</span>,</span>
+<span id="cb504-7"><a href="bayesian-mixed-mediation.html#cb504-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mediator =</span> <span class="st">&#39;Med&#39;</span></span>
+<span id="cb504-8"><a href="bayesian-mixed-mediation.html#cb504-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb504-9"><a href="bayesian-mixed-mediation.html#cb504-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb504-10"><a href="bayesian-mixed-mediation.html#cb504-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mediation_mixed)</span></code></pre></div>
 <pre><code>
 Causal Mediation Analysis 
 
@@ -1190,9 +1190,9 @@ Sample Size Used: 500
 
 Simulations: 1000 </code></pre>
 <p>Extract parameters for comparison.</p>
-<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="bayesian-mixed-mediation.html#cb518-1" aria-hidden="true" tabindex="-1"></a>pars_primary <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> mainpars)[, <span class="dv">5</span>]</span>
-<span id="cb518-2"><a href="bayesian-mixed-mediation.html#cb518-2" aria-hidden="true" tabindex="-1"></a>pars_re_cov  <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> <span class="st">&#39;Omega_chol&#39;</span>)[, <span class="dv">5</span>] <span class="co"># or take &#39;cov_RE&#39; from monte carlo sim</span></span>
-<span id="cb518-3"><a href="bayesian-mixed-mediation.html#cb518-3" aria-hidden="true" tabindex="-1"></a>pars_re      <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&#39;sigma_ranef&#39;</span>))[, <span class="dv">5</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="bayesian-mixed-mediation.html#cb506-1" aria-hidden="true" tabindex="-1"></a>pars_primary <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> mainpars)[, <span class="dv">5</span>]</span>
+<span id="cb506-2"><a href="bayesian-mixed-mediation.html#cb506-2" aria-hidden="true" tabindex="-1"></a>pars_re_cov  <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> <span class="st">&#39;Omega_chol&#39;</span>)[, <span class="dv">5</span>] <span class="co"># or take &#39;cov_RE&#39; from monte carlo sim</span></span>
+<span id="cb506-3"><a href="bayesian-mixed-mediation.html#cb506-3" aria-hidden="true" tabindex="-1"></a>pars_re      <span class="ot">=</span> <span class="fu">get_posterior_mean</span>(fit, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&#39;sigma_ranef&#39;</span>))[, <span class="dv">5</span>]</span></code></pre></div>
 <p>Fixed effects and random effect variances.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1471,22 +1471,22 @@ mediation_pack
 </tbody>
 </table>
 <p>Note that you can use <span class="pack" style="">brms</span> to estimate this model as follows. The <code>i</code> allows the random effects to correlate across Mediator and outcome models. We have to convert the correlation estimate back to the covariance estimate to get the indirect value to compare to our base Stan result.</p>
-<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="bayesian-mixed-mediation.html#cb522-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb522-2"><a href="bayesian-mixed-mediation.html#cb522-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb522-3"><a href="bayesian-mixed-mediation.html#cb522-3" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> </span>
-<span id="cb522-4"><a href="bayesian-mixed-mediation.html#cb522-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bf</span>(Med <span class="sc">~</span> X <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">|</span>i<span class="sc">|</span> group)) <span class="sc">+</span></span>
-<span id="cb522-5"><a href="bayesian-mixed-mediation.html#cb522-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bf</span>(y   <span class="sc">~</span> X <span class="sc">+</span> Med <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">+</span> Med <span class="sc">|</span>i<span class="sc">|</span> group)) <span class="sc">+</span></span>
-<span id="cb522-6"><a href="bayesian-mixed-mediation.html#cb522-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_rescor</span>(<span class="cn">FALSE</span>)</span>
-<span id="cb522-7"><a href="bayesian-mixed-mediation.html#cb522-7" aria-hidden="true" tabindex="-1"></a>       </span>
-<span id="cb522-8"><a href="bayesian-mixed-mediation.html#cb522-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb522-9"><a href="bayesian-mixed-mediation.html#cb522-9" aria-hidden="true" tabindex="-1"></a>fit_brm <span class="ot">=</span> <span class="fu">brm</span>(</span>
-<span id="cb522-10"><a href="bayesian-mixed-mediation.html#cb522-10" aria-hidden="true" tabindex="-1"></a>  f,</span>
-<span id="cb522-11"><a href="bayesian-mixed-mediation.html#cb522-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> <span class="fu">data.frame</span>(X, Med, y, group),</span>
-<span id="cb522-12"><a href="bayesian-mixed-mediation.html#cb522-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb522-13"><a href="bayesian-mixed-mediation.html#cb522-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span>,</span>
-<span id="cb522-14"><a href="bayesian-mixed-mediation.html#cb522-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed  =</span> <span class="dv">1234</span></span>
-<span id="cb522-15"><a href="bayesian-mixed-mediation.html#cb522-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb523-1"><a href="bayesian-mixed-mediation.html#cb523-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_brm)</span></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="bayesian-mixed-mediation.html#cb510-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb510-2"><a href="bayesian-mixed-mediation.html#cb510-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb510-3"><a href="bayesian-mixed-mediation.html#cb510-3" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> </span>
+<span id="cb510-4"><a href="bayesian-mixed-mediation.html#cb510-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bf</span>(Med <span class="sc">~</span> X <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">|</span>i<span class="sc">|</span> group)) <span class="sc">+</span></span>
+<span id="cb510-5"><a href="bayesian-mixed-mediation.html#cb510-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bf</span>(y   <span class="sc">~</span> X <span class="sc">+</span> Med <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> X <span class="sc">+</span> Med <span class="sc">|</span>i<span class="sc">|</span> group)) <span class="sc">+</span></span>
+<span id="cb510-6"><a href="bayesian-mixed-mediation.html#cb510-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_rescor</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb510-7"><a href="bayesian-mixed-mediation.html#cb510-7" aria-hidden="true" tabindex="-1"></a>       </span>
+<span id="cb510-8"><a href="bayesian-mixed-mediation.html#cb510-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb510-9"><a href="bayesian-mixed-mediation.html#cb510-9" aria-hidden="true" tabindex="-1"></a>fit_brm <span class="ot">=</span> <span class="fu">brm</span>(</span>
+<span id="cb510-10"><a href="bayesian-mixed-mediation.html#cb510-10" aria-hidden="true" tabindex="-1"></a>  f,</span>
+<span id="cb510-11"><a href="bayesian-mixed-mediation.html#cb510-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> <span class="fu">data.frame</span>(X, Med, y, group),</span>
+<span id="cb510-12"><a href="bayesian-mixed-mediation.html#cb510-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb510-13"><a href="bayesian-mixed-mediation.html#cb510-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin  =</span> <span class="dv">4</span>,</span>
+<span id="cb510-14"><a href="bayesian-mixed-mediation.html#cb510-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed  =</span> <span class="dv">1234</span></span>
+<span id="cb510-15"><a href="bayesian-mixed-mediation.html#cb510-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="bayesian-mixed-mediation.html#cb511-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_brm)</span></code></pre></div>
 <pre><code> Family: MV(gaussian, gaussian) 
   Links: mu = identity; sigma = identity
          mu = identity; sigma = identity 
@@ -1531,12 +1531,12 @@ sigma_y       0.50      0.02     0.46     0.54 1.00      986      960
 Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
-<div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb525-1"><a href="bayesian-mixed-mediation.html#cb525-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hypothesis</span>(</span>
-<span id="cb525-2"><a href="bayesian-mixed-mediation.html#cb525-2" aria-hidden="true" tabindex="-1"></a>  fit_brm,</span>
-<span id="cb525-3"><a href="bayesian-mixed-mediation.html#cb525-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;b_y_Med*b_Med_X + cor_group__Med_X__y_Med*sd_group__Med_X*sd_group__y_Med = 0&#39;</span>,</span>
-<span id="cb525-4"><a href="bayesian-mixed-mediation.html#cb525-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> <span class="cn">NULL</span>,</span>
-<span id="cb525-5"><a href="bayesian-mixed-mediation.html#cb525-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed  =</span>  <span class="dv">1234</span></span>
-<span id="cb525-6"><a href="bayesian-mixed-mediation.html#cb525-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="bayesian-mixed-mediation.html#cb513-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hypothesis</span>(</span>
+<span id="cb513-2"><a href="bayesian-mixed-mediation.html#cb513-2" aria-hidden="true" tabindex="-1"></a>  fit_brm,</span>
+<span id="cb513-3"><a href="bayesian-mixed-mediation.html#cb513-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;b_y_Med*b_Med_X + cor_group__Med_X__y_Med*sd_group__Med_X*sd_group__y_Med = 0&#39;</span>,</span>
+<span id="cb513-4"><a href="bayesian-mixed-mediation.html#cb513-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> <span class="cn">NULL</span>,</span>
+<span id="cb513-5"><a href="bayesian-mixed-mediation.html#cb513-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed  =</span>  <span class="dv">1234</span></span>
+<span id="cb513-6"><a href="bayesian-mixed-mediation.html#cb513-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>Hypothesis Tests for class :
                 Hypothesis Estimate Est.Error CI.Lower CI.Upper Evid.Ratio Post.Prob Star
 1 (b_y_Med*b_Med_X+... = 0    -0.17      0.08    -0.33    -0.03         NA        NA    *
@@ -1548,13 +1548,13 @@ Posterior probabilities of point hypotheses assume equal prior probabilities.</c
 </div>
 <div id="visualization-2" class="section level2">
 <h2>Visualization</h2>
-<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb527-1"><a href="bayesian-mixed-mediation.html#cb527-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb527-2"><a href="bayesian-mixed-mediation.html#cb527-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb527-3"><a href="bayesian-mixed-mediation.html#cb527-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(</span>
-<span id="cb527-4"><a href="bayesian-mixed-mediation.html#cb527-4" aria-hidden="true" tabindex="-1"></a>  standat<span class="sc">$</span>y, </span>
-<span id="cb527-5"><a href="bayesian-mixed-mediation.html#cb527-5" aria-hidden="true" tabindex="-1"></a>  rstan<span class="sc">::</span><span class="fu">extract</span>(fit, <span class="at">par =</span> <span class="st">&#39;y_hat&#39;</span>)<span class="sc">$</span>y_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ], </span>
-<span id="cb527-6"><a href="bayesian-mixed-mediation.html#cb527-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">&#39;dens_overlay&#39;</span></span>
-<span id="cb527-7"><a href="bayesian-mixed-mediation.html#cb527-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="bayesian-mixed-mediation.html#cb515-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb515-2"><a href="bayesian-mixed-mediation.html#cb515-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb515-3"><a href="bayesian-mixed-mediation.html#cb515-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(</span>
+<span id="cb515-4"><a href="bayesian-mixed-mediation.html#cb515-4" aria-hidden="true" tabindex="-1"></a>  standat<span class="sc">$</span>y, </span>
+<span id="cb515-5"><a href="bayesian-mixed-mediation.html#cb515-5" aria-hidden="true" tabindex="-1"></a>  rstan<span class="sc">::</span><span class="fu">extract</span>(fit, <span class="at">par =</span> <span class="st">&#39;y_hat&#39;</span>)<span class="sc">$</span>y_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ], </span>
+<span id="cb515-6"><a href="bayesian-mixed-mediation.html#cb515-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">&#39;dens_overlay&#39;</span></span>
+<span id="cb515-7"><a href="bayesian-mixed-mediation.html#cb515-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/bayes-med-vis-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="source-29" class="section level2">

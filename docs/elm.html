@@ -796,118 +796,118 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="data-setup-20" class="section level2">
 <h2>Data Setup</h2>
 <p>One variable, complex function.</p>
-<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="elm.html#cb359-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb359-2"><a href="elm.html#cb359-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
-<span id="cb359-3"><a href="elm.html#cb359-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb359-4"><a href="elm.html#cb359-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb359-5"><a href="elm.html#cb359-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb359-6"><a href="elm.html#cb359-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">5000</span></span>
-<span id="cb359-7"><a href="elm.html#cb359-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
-<span id="cb359-8"><a href="elm.html#cb359-8" aria-hidden="true" tabindex="-1"></a><span class="co"># x = rnorm(n)</span></span>
-<span id="cb359-9"><a href="elm.html#cb359-9" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>(<span class="dv">4</span><span class="sc">*</span>x<span class="dv">-2</span>)) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>(<span class="dv">16</span><span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> ((x<span class="fl">-.5</span>)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb359-10"><a href="elm.html#cb359-10" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="fu">rnorm</span>(n, mu, .<span class="dv">3</span>)</span>
-<span id="cb359-11"><a href="elm.html#cb359-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb359-12"><a href="elm.html#cb359-12" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">data.frame</span>(x, y) </span>
-<span id="cb359-13"><a href="elm.html#cb359-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb359-14"><a href="elm.html#cb359-14" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(x, y, <span class="at">color =</span> <span class="fu">I</span>(<span class="st">&#39;#ff55001A&#39;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="elm.html#cb349-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb349-2"><a href="elm.html#cb349-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb349-3"><a href="elm.html#cb349-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb349-4"><a href="elm.html#cb349-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb349-5"><a href="elm.html#cb349-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb349-6"><a href="elm.html#cb349-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">5000</span></span>
+<span id="cb349-7"><a href="elm.html#cb349-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
+<span id="cb349-8"><a href="elm.html#cb349-8" aria-hidden="true" tabindex="-1"></a><span class="co"># x = rnorm(n)</span></span>
+<span id="cb349-9"><a href="elm.html#cb349-9" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>(<span class="dv">4</span><span class="sc">*</span>x<span class="dv">-2</span>)) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>(<span class="dv">16</span><span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> ((x<span class="fl">-.5</span>)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb349-10"><a href="elm.html#cb349-10" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">=</span> <span class="fu">rnorm</span>(n, mu, .<span class="dv">3</span>)</span>
+<span id="cb349-11"><a href="elm.html#cb349-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb349-12"><a href="elm.html#cb349-12" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">data.frame</span>(x, y) </span>
+<span id="cb349-13"><a href="elm.html#cb349-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb349-14"><a href="elm.html#cb349-14" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(x, y, <span class="at">color =</span> <span class="fu">I</span>(<span class="st">&#39;#ff55001A&#39;</span>))</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/elm-setup1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 <p>Motorcycle accident data.</p>
-<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="elm.html#cb360-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&#39;mcycle&#39;</span>, <span class="at">package =</span> <span class="st">&#39;MASS&#39;</span>)</span>
-<span id="cb360-2"><a href="elm.html#cb360-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb360-3"><a href="elm.html#cb360-3" aria-hidden="true" tabindex="-1"></a>times <span class="ot">=</span> <span class="fu">matrix</span>(mcycle<span class="sc">$</span>times, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
-<span id="cb360-4"><a href="elm.html#cb360-4" aria-hidden="true" tabindex="-1"></a>accel <span class="ot">=</span> mcycle<span class="sc">$</span>accel</span></code></pre></div>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="elm.html#cb350-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&#39;mcycle&#39;</span>, <span class="at">package =</span> <span class="st">&#39;MASS&#39;</span>)</span>
+<span id="cb350-2"><a href="elm.html#cb350-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb350-3"><a href="elm.html#cb350-3" aria-hidden="true" tabindex="-1"></a>times <span class="ot">=</span> <span class="fu">matrix</span>(mcycle<span class="sc">$</span>times, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb350-4"><a href="elm.html#cb350-4" aria-hidden="true" tabindex="-1"></a>accel <span class="ot">=</span> mcycle<span class="sc">$</span>accel</span></code></pre></div>
 </div>
 <div id="function-18" class="section level2">
 <h2>Function</h2>
-<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="elm.html#cb361-1" aria-hidden="true" tabindex="-1"></a>elm <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, <span class="at">n_hidden =</span> <span class="cn">NULL</span>, <span class="at">active_fun =</span> tanh) {</span>
-<span id="cb361-2"><a href="elm.html#cb361-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: an N observations x p features matrix</span></span>
-<span id="cb361-3"><a href="elm.html#cb361-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: the target</span></span>
-<span id="cb361-4"><a href="elm.html#cb361-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># n_hidden: the number of hidden nodes</span></span>
-<span id="cb361-5"><a href="elm.html#cb361-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># active_fun: activation function</span></span>
-<span id="cb361-6"><a href="elm.html#cb361-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb361-7"><a href="elm.html#cb361-7" aria-hidden="true" tabindex="-1"></a>  pp1 <span class="ot">=</span> <span class="fu">ncol</span>(X) <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb361-8"><a href="elm.html#cb361-8" aria-hidden="true" tabindex="-1"></a>  w0  <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(pp1<span class="sc">*</span>n_hidden), pp1, n_hidden)       <span class="co"># random weights</span></span>
-<span id="cb361-9"><a href="elm.html#cb361-9" aria-hidden="true" tabindex="-1"></a>  h   <span class="ot">=</span> <span class="fu">active_fun</span>(<span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">scale</span>(X)) <span class="sc">%*%</span> w0)            <span class="co"># compute hidden layer</span></span>
-<span id="cb361-10"><a href="elm.html#cb361-10" aria-hidden="true" tabindex="-1"></a>  B   <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">ginv</span>(h) <span class="sc">%*%</span> y                              <span class="co"># find weights for hidden layer</span></span>
-<span id="cb361-11"><a href="elm.html#cb361-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb361-12"><a href="elm.html#cb361-12" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> h <span class="sc">%*%</span> B                                          <span class="co"># fitted values</span></span>
-<span id="cb361-13"><a href="elm.html#cb361-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb361-14"><a href="elm.html#cb361-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb361-15"><a href="elm.html#cb361-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fit  =</span> fit,</span>
-<span id="cb361-16"><a href="elm.html#cb361-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> fit),</span>
-<span id="cb361-17"><a href="elm.html#cb361-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">B    =</span> B,</span>
-<span id="cb361-18"><a href="elm.html#cb361-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">w0   =</span> w0</span>
-<span id="cb361-19"><a href="elm.html#cb361-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb361-20"><a href="elm.html#cb361-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="elm.html#cb351-1" aria-hidden="true" tabindex="-1"></a>elm <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, <span class="at">n_hidden =</span> <span class="cn">NULL</span>, <span class="at">active_fun =</span> tanh) {</span>
+<span id="cb351-2"><a href="elm.html#cb351-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X: an N observations x p features matrix</span></span>
+<span id="cb351-3"><a href="elm.html#cb351-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y: the target</span></span>
+<span id="cb351-4"><a href="elm.html#cb351-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># n_hidden: the number of hidden nodes</span></span>
+<span id="cb351-5"><a href="elm.html#cb351-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># active_fun: activation function</span></span>
+<span id="cb351-6"><a href="elm.html#cb351-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb351-7"><a href="elm.html#cb351-7" aria-hidden="true" tabindex="-1"></a>  pp1 <span class="ot">=</span> <span class="fu">ncol</span>(X) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb351-8"><a href="elm.html#cb351-8" aria-hidden="true" tabindex="-1"></a>  w0  <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(pp1<span class="sc">*</span>n_hidden), pp1, n_hidden)       <span class="co"># random weights</span></span>
+<span id="cb351-9"><a href="elm.html#cb351-9" aria-hidden="true" tabindex="-1"></a>  h   <span class="ot">=</span> <span class="fu">active_fun</span>(<span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">scale</span>(X)) <span class="sc">%*%</span> w0)            <span class="co"># compute hidden layer</span></span>
+<span id="cb351-10"><a href="elm.html#cb351-10" aria-hidden="true" tabindex="-1"></a>  B   <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">ginv</span>(h) <span class="sc">%*%</span> y                              <span class="co"># find weights for hidden layer</span></span>
+<span id="cb351-11"><a href="elm.html#cb351-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb351-12"><a href="elm.html#cb351-12" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">=</span> h <span class="sc">%*%</span> B                                          <span class="co"># fitted values</span></span>
+<span id="cb351-13"><a href="elm.html#cb351-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb351-14"><a href="elm.html#cb351-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb351-15"><a href="elm.html#cb351-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fit  =</span> fit,</span>
+<span id="cb351-16"><a href="elm.html#cb351-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">crossprod</span>(y <span class="sc">-</span> fit),</span>
+<span id="cb351-17"><a href="elm.html#cb351-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">B    =</span> B,</span>
+<span id="cb351-18"><a href="elm.html#cb351-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">w0   =</span> w0</span>
+<span id="cb351-19"><a href="elm.html#cb351-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb351-20"><a href="elm.html#cb351-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="estimation-18" class="section level2">
 <h2>Estimation</h2>
-<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="elm.html#cb362-1" aria-hidden="true" tabindex="-1"></a>X_mat <span class="ot">=</span> <span class="fu">as.matrix</span>(x, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
-<span id="cb362-2"><a href="elm.html#cb362-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb362-3"><a href="elm.html#cb362-3" aria-hidden="true" tabindex="-1"></a>fit_elm <span class="ot">=</span> <span class="fu">elm</span>(X_mat, y, <span class="at">n_hidden =</span> <span class="dv">100</span>)</span>
-<span id="cb362-4"><a href="elm.html#cb362-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit_elm)</span></code></pre></div>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="elm.html#cb352-1" aria-hidden="true" tabindex="-1"></a>X_mat <span class="ot">=</span> <span class="fu">as.matrix</span>(x, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb352-2"><a href="elm.html#cb352-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb352-3"><a href="elm.html#cb352-3" aria-hidden="true" tabindex="-1"></a>fit_elm <span class="ot">=</span> <span class="fu">elm</span>(X_mat, y, <span class="at">n_hidden =</span> <span class="dv">100</span>)</span>
+<span id="cb352-4"><a href="elm.html#cb352-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit_elm)</span></code></pre></div>
 <pre><code>List of 4
  $ fit : num [1:5000, 1] -1.0239 0.7311 -0.413 0.0806 -0.4112 ...
  $ loss: num [1, 1] 442
  $ B   : num [1:100, 1] 217 -608 1408 -1433 -4575 ...
  $ w0  : num [1:2, 1:100] 0.35 0.814 -0.517 -2.692 -1.097 ...</code></pre>
-<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="elm.html#cb364-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y), <span class="at">data =</span> d) <span class="sc">+</span></span>
-<span id="cb364-2"><a href="elm.html#cb364-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&#39;#ff55001A&#39;</span>) <span class="sc">+</span> </span>
-<span id="cb364-3"><a href="elm.html#cb364-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fit_elm<span class="sc">$</span>fit), <span class="at">color =</span> <span class="st">&#39;#00aaff&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="elm.html#cb354-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y), <span class="at">data =</span> d) <span class="sc">+</span></span>
+<span id="cb354-2"><a href="elm.html#cb354-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&#39;#ff55001A&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb354-3"><a href="elm.html#cb354-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fit_elm<span class="sc">$</span>fit), <span class="at">color =</span> <span class="st">&#39;#00aaff&#39;</span>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/elm-est1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="elm.html#cb365-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_elm<span class="sc">$</span>fit[,<span class="dv">1</span>], y)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="elm.html#cb355-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_elm<span class="sc">$</span>fit[,<span class="dv">1</span>], y)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
 <pre><code>[1] 0.8862518</code></pre>
-<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="elm.html#cb367-1" aria-hidden="true" tabindex="-1"></a>fit_elm_mcycle <span class="ot">=</span> <span class="fu">elm</span>(times, accel, <span class="at">n_hidden =</span> <span class="dv">100</span>)</span>
-<span id="cb367-2"><a href="elm.html#cb367-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_elm_mcycle<span class="sc">$</span>fit[,<span class="dv">1</span>], accel)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="elm.html#cb357-1" aria-hidden="true" tabindex="-1"></a>fit_elm_mcycle <span class="ot">=</span> <span class="fu">elm</span>(times, accel, <span class="at">n_hidden =</span> <span class="dv">100</span>)</span>
+<span id="cb357-2"><a href="elm.html#cb357-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_elm_mcycle<span class="sc">$</span>fit[,<span class="dv">1</span>], accel)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
 <pre><code>[1] 0.8122349</code></pre>
 </div>
 <div id="comparison-23" class="section level2">
 <h2>Comparison</h2>
 <p>We’ll compare to a generalized additive model with gaussian process approximation.</p>
-<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="elm.html#cb369-1" aria-hidden="true" tabindex="-1"></a>fit_gam <span class="ot">=</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">&#39;gp&#39;</span>, <span class="at">k =</span> <span class="dv">20</span>), <span class="at">data =</span> d)</span>
-<span id="cb369-2"><a href="elm.html#cb369-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_gam)<span class="sc">$</span>r.sq</span></code></pre></div>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="elm.html#cb359-1" aria-hidden="true" tabindex="-1"></a>fit_gam <span class="ot">=</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">&#39;gp&#39;</span>, <span class="at">k =</span> <span class="dv">20</span>), <span class="at">data =</span> d)</span>
+<span id="cb359-2"><a href="elm.html#cb359-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_gam)<span class="sc">$</span>r.sq</span></code></pre></div>
 <pre><code>[1] 0.8856188</code></pre>
-<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="elm.html#cb371-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span></span>
-<span id="cb371-2"><a href="elm.html#cb371-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fit_elm =</span> fit_elm<span class="sc">$</span>fit,</span>
-<span id="cb371-3"><a href="elm.html#cb371-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">fit_gam =</span> <span class="fu">fitted</span>(fit_gam)) <span class="sc">%&gt;%</span></span>
-<span id="cb371-4"><a href="elm.html#cb371-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb371-5"><a href="elm.html#cb371-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(x, y), <span class="at">color =</span> <span class="st">&#39;#ff55001A&#39;</span>) <span class="sc">+</span></span>
-<span id="cb371-6"><a href="elm.html#cb371-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(x, <span class="at">y =</span> fit_elm), <span class="at">color =</span> <span class="st">&#39;#1e90ff&#39;</span>) <span class="sc">+</span></span>
-<span id="cb371-7"><a href="elm.html#cb371-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(x, <span class="at">y =</span> fit_gam), <span class="at">color =</span> <span class="st">&#39;#990024&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="elm.html#cb361-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span></span>
+<span id="cb361-2"><a href="elm.html#cb361-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fit_elm =</span> fit_elm<span class="sc">$</span>fit,</span>
+<span id="cb361-3"><a href="elm.html#cb361-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">fit_gam =</span> <span class="fu">fitted</span>(fit_gam)) <span class="sc">%&gt;%</span></span>
+<span id="cb361-4"><a href="elm.html#cb361-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb361-5"><a href="elm.html#cb361-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(x, y), <span class="at">color =</span> <span class="st">&#39;#ff55001A&#39;</span>) <span class="sc">+</span></span>
+<span id="cb361-6"><a href="elm.html#cb361-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(x, <span class="at">y =</span> fit_elm), <span class="at">color =</span> <span class="st">&#39;#1e90ff&#39;</span>) <span class="sc">+</span></span>
+<span id="cb361-7"><a href="elm.html#cb361-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(x, <span class="at">y =</span> fit_gam), <span class="at">color =</span> <span class="st">&#39;#990024&#39;</span>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/elm-compare1-1.svg" width="75%" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb372-1"><a href="elm.html#cb372-1" aria-hidden="true" tabindex="-1"></a>fit_gam_mcycle <span class="ot">=</span> <span class="fu">gam</span>(accel <span class="sc">~</span> <span class="fu">s</span>(times), <span class="at">data =</span> mcycle)</span>
-<span id="cb372-2"><a href="elm.html#cb372-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_gam_mcycle)<span class="sc">$</span>r.sq</span></code></pre></div>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="elm.html#cb362-1" aria-hidden="true" tabindex="-1"></a>fit_gam_mcycle <span class="ot">=</span> <span class="fu">gam</span>(accel <span class="sc">~</span> <span class="fu">s</span>(times), <span class="at">data =</span> mcycle)</span>
+<span id="cb362-2"><a href="elm.html#cb362-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_gam_mcycle)<span class="sc">$</span>r.sq</span></code></pre></div>
 <pre><code>[1] 0.7832988</code></pre>
-<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="elm.html#cb374-1" aria-hidden="true" tabindex="-1"></a>mcycle <span class="sc">%&gt;%</span> </span>
-<span id="cb374-2"><a href="elm.html#cb374-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(times, accel)) <span class="sc">+</span></span>
-<span id="cb374-3"><a href="elm.html#cb374-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&#39;#ff55001A&#39;</span>) <span class="sc">+</span></span>
-<span id="cb374-4"><a href="elm.html#cb374-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fit_elm_mcycle<span class="sc">$</span>fit), <span class="at">color =</span> <span class="st">&#39;#1e90ff&#39;</span>) <span class="sc">+</span></span>
-<span id="cb374-5"><a href="elm.html#cb374-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">fitted</span>(fit_gam_mcycle)), <span class="at">color =</span> <span class="st">&#39;#990024&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="elm.html#cb364-1" aria-hidden="true" tabindex="-1"></a>mcycle <span class="sc">%&gt;%</span> </span>
+<span id="cb364-2"><a href="elm.html#cb364-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(times, accel)) <span class="sc">+</span></span>
+<span id="cb364-3"><a href="elm.html#cb364-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&#39;#ff55001A&#39;</span>) <span class="sc">+</span></span>
+<span id="cb364-4"><a href="elm.html#cb364-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fit_elm_mcycle<span class="sc">$</span>fit), <span class="at">color =</span> <span class="st">&#39;#1e90ff&#39;</span>) <span class="sc">+</span></span>
+<span id="cb364-5"><a href="elm.html#cb364-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">fitted</span>(fit_gam_mcycle)), <span class="at">color =</span> <span class="st">&#39;#990024&#39;</span>)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/elm-compare2-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="supplemental-example-1" class="section level2">
 <h2>Supplemental Example</h2>
 <p>Yet another example with additional covariates.</p>
-<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="elm.html#cb375-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">gamSim</span>(<span class="at">eg =</span> <span class="dv">7</span>, <span class="at">n =</span> <span class="dv">10000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="elm.html#cb365-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">gamSim</span>(<span class="at">eg =</span> <span class="dv">7</span>, <span class="at">n =</span> <span class="dv">10000</span>)</span></code></pre></div>
 <pre><code>Gu &amp; Wahba 4 term additive model, correlated predictors</code></pre>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="elm.html#cb377-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">as.matrix</span>(d[, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>])</span>
-<span id="cb377-2"><a href="elm.html#cb377-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> d[, <span class="dv">1</span>]</span>
-<span id="cb377-3"><a href="elm.html#cb377-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb377-4"><a href="elm.html#cb377-4" aria-hidden="true" tabindex="-1"></a>n_nodes <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">100</span>, <span class="dv">250</span>, <span class="dv">500</span>, <span class="dv">1000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="elm.html#cb367-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">as.matrix</span>(d[, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>])</span>
+<span id="cb367-2"><a href="elm.html#cb367-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> d[, <span class="dv">1</span>]</span>
+<span id="cb367-3"><a href="elm.html#cb367-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb367-4"><a href="elm.html#cb367-4" aria-hidden="true" tabindex="-1"></a>n_nodes <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">100</span>, <span class="dv">250</span>, <span class="dv">500</span>, <span class="dv">1000</span>)</span></code></pre></div>
 <p>The following estimation over multiple models will take several seconds.</p>
-<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="elm.html#cb378-1" aria-hidden="true" tabindex="-1"></a>fit_elm <span class="ot">=</span> purrr<span class="sc">::</span><span class="fu">map</span>(n_nodes, <span class="cf">function</span>(n) <span class="fu">elm</span>(X, y, <span class="at">n_hidden =</span> n))</span></code></pre></div>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="elm.html#cb368-1" aria-hidden="true" tabindex="-1"></a>fit_elm <span class="ot">=</span> purrr<span class="sc">::</span><span class="fu">map</span>(n_nodes, <span class="cf">function</span>(n) <span class="fu">elm</span>(X, y, <span class="at">n_hidden =</span> n))</span></code></pre></div>
 <p>Now find the best fitting model.</p>
-<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="elm.html#cb379-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate </span></span>
-<span id="cb379-2"><a href="elm.html#cb379-2" aria-hidden="true" tabindex="-1"></a>best_loss <span class="ot">=</span> <span class="fu">which.min</span>(<span class="fu">map_dbl</span>(fit_elm, <span class="cf">function</span>(x) x<span class="sc">$</span>loss))</span>
-<span id="cb379-3"><a href="elm.html#cb379-3" aria-hidden="true" tabindex="-1"></a>fit_best  <span class="ot">=</span> fit_elm[[best_loss]]</span></code></pre></div>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="elm.html#cb369-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate </span></span>
+<span id="cb369-2"><a href="elm.html#cb369-2" aria-hidden="true" tabindex="-1"></a>best_loss <span class="ot">=</span> <span class="fu">which.min</span>(<span class="fu">map_dbl</span>(fit_elm, <span class="cf">function</span>(x) x<span class="sc">$</span>loss))</span>
+<span id="cb369-3"><a href="elm.html#cb369-3" aria-hidden="true" tabindex="-1"></a>fit_best  <span class="ot">=</span> fit_elm[[best_loss]]</span></code></pre></div>
 <p>A quick check of the fit.</p>
-<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb380-1"><a href="elm.html#cb380-1" aria-hidden="true" tabindex="-1"></a><span class="co"># str(fit_best)</span></span>
-<span id="cb380-2"><a href="elm.html#cb380-2" aria-hidden="true" tabindex="-1"></a><span class="co"># qplot(fit_best$fit[, 1], y, alpha = .2)</span></span>
-<span id="cb380-3"><a href="elm.html#cb380-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_best<span class="sc">$</span>fit[, <span class="dv">1</span>], y)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="elm.html#cb370-1" aria-hidden="true" tabindex="-1"></a><span class="co"># str(fit_best)</span></span>
+<span id="cb370-2"><a href="elm.html#cb370-2" aria-hidden="true" tabindex="-1"></a><span class="co"># qplot(fit_best$fit[, 1], y, alpha = .2)</span></span>
+<span id="cb370-3"><a href="elm.html#cb370-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fit_best<span class="sc">$</span>fit[, <span class="dv">1</span>], y)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
 <pre><code>[1] 0.7241967</code></pre>
 <p>And compare again to <span class="pack" style="">mgcv</span>. In this case, we’re comparing fit on test data of the same form.</p>
-<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="elm.html#cb382-1" aria-hidden="true" tabindex="-1"></a>fit_gam <span class="ot">=</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x0) <span class="sc">+</span> <span class="fu">s</span>(x1) <span class="sc">+</span> <span class="fu">s</span>(x2) <span class="sc">+</span> <span class="fu">s</span>(x3), <span class="at">data =</span> d)</span>
-<span id="cb382-2"><a href="elm.html#cb382-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(fit_gam)</span></code></pre></div>
+<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb372-1"><a href="elm.html#cb372-1" aria-hidden="true" tabindex="-1"></a>fit_gam <span class="ot">=</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x0) <span class="sc">+</span> <span class="fu">s</span>(x1) <span class="sc">+</span> <span class="fu">s</span>(x2) <span class="sc">+</span> <span class="fu">s</span>(x3), <span class="at">data =</span> d)</span>
+<span id="cb372-2"><a href="elm.html#cb372-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gam.check</span>(fit_gam)</span></code></pre></div>
 <p><img src="model-demos_files/figure-html/elm-compare3-1.svg" width="75%" style="display: block; margin: auto;" /></p>
 <pre><code>
 Method: GCV   Optimizer: magic
@@ -924,17 +924,17 @@ s(x0) 9.00 4.71    1.00    0.48
 s(x1) 9.00 4.89    1.00    0.35
 s(x2) 9.00 8.96    0.99    0.20
 s(x3) 9.00 1.00    1.00    0.47</code></pre>
-<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb384-1"><a href="elm.html#cb384-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_gam)<span class="sc">$</span>r.sq</span></code></pre></div>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="elm.html#cb374-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_gam)<span class="sc">$</span>r.sq</span></code></pre></div>
 <pre><code>[1] 0.6952978</code></pre>
-<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb386-1"><a href="elm.html#cb386-1" aria-hidden="true" tabindex="-1"></a>test_data0 <span class="ot">=</span> <span class="fu">gamSim</span>(<span class="at">eg =</span> <span class="dv">7</span>)  <span class="co"># default n = 400</span></span></code></pre></div>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb376-1"><a href="elm.html#cb376-1" aria-hidden="true" tabindex="-1"></a>test_data0 <span class="ot">=</span> <span class="fu">gamSim</span>(<span class="at">eg =</span> <span class="dv">7</span>)  <span class="co"># default n = 400</span></span></code></pre></div>
 <pre><code>Gu &amp; Wahba 4 term additive model, correlated predictors</code></pre>
-<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="elm.html#cb388-1" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">scale</span>(test_data0[, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>]))</span>
-<span id="cb388-2"><a href="elm.html#cb388-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-3"><a href="elm.html#cb388-3" aria-hidden="true" tabindex="-1"></a> <span class="co"># remember to use your specific activation function here</span></span>
-<span id="cb388-4"><a href="elm.html#cb388-4" aria-hidden="true" tabindex="-1"></a>elm_prediction <span class="ot">=</span> <span class="fu">tanh</span>(test_data <span class="sc">%*%</span> fit_best<span class="sc">$</span>w0) <span class="sc">%*%</span> fit_best<span class="sc">$</span>B         </span>
-<span id="cb388-5"><a href="elm.html#cb388-5" aria-hidden="true" tabindex="-1"></a>gam_prediction <span class="ot">=</span> <span class="fu">predict</span>(fit_gam, <span class="at">newdata =</span> test_data0)</span>
-<span id="cb388-6"><a href="elm.html#cb388-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-7"><a href="elm.html#cb388-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">data.frame</span>(elm_prediction, gam_prediction), test_data0<span class="sc">$</span>y)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="elm.html#cb378-1" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">=</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">scale</span>(test_data0[, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>]))</span>
+<span id="cb378-2"><a href="elm.html#cb378-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb378-3"><a href="elm.html#cb378-3" aria-hidden="true" tabindex="-1"></a> <span class="co"># remember to use your specific activation function here</span></span>
+<span id="cb378-4"><a href="elm.html#cb378-4" aria-hidden="true" tabindex="-1"></a>elm_prediction <span class="ot">=</span> <span class="fu">tanh</span>(test_data <span class="sc">%*%</span> fit_best<span class="sc">$</span>w0) <span class="sc">%*%</span> fit_best<span class="sc">$</span>B         </span>
+<span id="cb378-5"><a href="elm.html#cb378-5" aria-hidden="true" tabindex="-1"></a>gam_prediction <span class="ot">=</span> <span class="fu">predict</span>(fit_gam, <span class="at">newdata =</span> test_data0)</span>
+<span id="cb378-6"><a href="elm.html#cb378-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb378-7"><a href="elm.html#cb378-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">data.frame</span>(elm_prediction, gam_prediction), test_data0<span class="sc">$</span>y)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
 <pre><code>                    [,1]
 elm_prediction 0.6873090
 gam_prediction 0.7185687</code></pre>
