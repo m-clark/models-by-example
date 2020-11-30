@@ -5,7 +5,7 @@ The following is based on Kruschke's 2012 JEP article 'Bayesian estimation super
 
 ## Data Setup
 
-Create two groups of data. Play around with the specs if you like.
+Create two groups of data for comparison. Play around with the specs if you like.
 
 ```{r bayes-t-setup}
 library(tidyverse)

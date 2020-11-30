@@ -864,7 +864,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb853"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb853-1"><a href="supplemental.html#cb853-1" aria-hidden="true" tabindex="-1"></a>X_mm <span class="op">=</span> np.column_stack([np.repeat(<span class="dv">1</span>, N).reshape(N, <span class="dv">1</span>), X])</span>
 <span id="cb853-2"><a href="supplemental.html#cb853-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb853-3"><a href="supplemental.html#cb853-3" aria-hidden="true" tabindex="-1"></a><span class="co"># you may get warnings, they can be ignored</span></span>
-<span id="cb853-4"><a href="supplemental.html#cb853-4" aria-hidden="true" tabindex="-1"></a>result_ml <span class="op">=</span> minimize(</span>
+<span id="cb853-4"><a href="supplemental.html#cb853-4" aria-hidden="true" tabindex="-1"></a>fit_ml <span class="op">=</span> minimize(</span>
 <span id="cb853-5"><a href="supplemental.html#cb853-5" aria-hidden="true" tabindex="-1"></a>  fun <span class="op">=</span> lm_ml,</span>
 <span id="cb853-6"><a href="supplemental.html#cb853-6" aria-hidden="true" tabindex="-1"></a>  x0  <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb853-7"><a href="supplemental.html#cb853-7" aria-hidden="true" tabindex="-1"></a>  args    <span class="op">=</span> (X_mm, y),</span>
@@ -878,7 +878,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb853-15"><a href="supplemental.html#cb853-15" aria-hidden="true" tabindex="-1"></a><span class="co"># can use least_squares directly</span></span>
 <span id="cb853-16"><a href="supplemental.html#cb853-16" aria-hidden="true" tabindex="-1"></a><span class="co"># from scipy.optimize import least_squares</span></span>
 <span id="cb853-17"><a href="supplemental.html#cb853-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb853-18"><a href="supplemental.html#cb853-18" aria-hidden="true" tabindex="-1"></a>result_ls <span class="op">=</span> minimize(</span>
+<span id="cb853-18"><a href="supplemental.html#cb853-18" aria-hidden="true" tabindex="-1"></a>fit_ls <span class="op">=</span> minimize(</span>
 <span id="cb853-19"><a href="supplemental.html#cb853-19" aria-hidden="true" tabindex="-1"></a>  lm_ls,</span>
 <span id="cb853-20"><a href="supplemental.html#cb853-20" aria-hidden="true" tabindex="-1"></a>  x0   <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]),</span>
 <span id="cb853-21"><a href="supplemental.html#cb853-21" aria-hidden="true" tabindex="-1"></a>  args <span class="op">=</span> (X_mm, y), </span>
@@ -891,13 +891,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb854"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb854-1"><a href="supplemental.html#cb854-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
 <span id="cb854-2"><a href="supplemental.html#cb854-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb854-3"><a href="supplemental.html#cb854-3" aria-hidden="true" tabindex="-1"></a>model_sm_ols  <span class="op">=</span> smf.ols(<span class="st">&#39;y ~ X1 + X2&#39;</span>, data <span class="op">=</span> dfXy)</span>
-<span id="cb854-4"><a href="supplemental.html#cb854-4" aria-hidden="true" tabindex="-1"></a>result_sm_ols <span class="op">=</span> model.fit()</span>
+<span id="cb854-4"><a href="supplemental.html#cb854-4" aria-hidden="true" tabindex="-1"></a>fit_sm_ols    <span class="op">=</span> model_sm_ols.fit()</span>
 <span id="cb854-5"><a href="supplemental.html#cb854-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb854-6"><a href="supplemental.html#cb854-6" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(</span>
 <span id="cb854-7"><a href="supplemental.html#cb854-7" aria-hidden="true" tabindex="-1"></a>  [</span>
-<span id="cb854-8"><a href="supplemental.html#cb854-8" aria-hidden="true" tabindex="-1"></a>  np.append(result_ml.x[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span>, result_ml.x[<span class="dv">1</span>:]), </span>
-<span id="cb854-9"><a href="supplemental.html#cb854-9" aria-hidden="true" tabindex="-1"></a>  np.append(result_ls.fun<span class="op">/</span>(N <span class="op">-</span> X_mm.shape[<span class="dv">1</span>] <span class="op">-</span> <span class="dv">1</span>), result_ls.x), </span>
-<span id="cb854-10"><a href="supplemental.html#cb854-10" aria-hidden="true" tabindex="-1"></a>  np.append(result_sm_ols.scale, result_sm_ols.params)</span>
+<span id="cb854-8"><a href="supplemental.html#cb854-8" aria-hidden="true" tabindex="-1"></a>  np.append(fit_ml.x[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span>, fit_ml.x[<span class="dv">1</span>:]), </span>
+<span id="cb854-9"><a href="supplemental.html#cb854-9" aria-hidden="true" tabindex="-1"></a>  np.append(fit_ls.fun<span class="op">/</span>(N <span class="op">-</span> X_mm.shape[<span class="dv">1</span>] <span class="op">-</span> <span class="dv">1</span>), fit_ls.x), </span>
+<span id="cb854-10"><a href="supplemental.html#cb854-10" aria-hidden="true" tabindex="-1"></a>  np.append(fit_sm_ols.scale, fit_sm_ols.params)</span>
 <span id="cb854-11"><a href="supplemental.html#cb854-11" aria-hidden="true" tabindex="-1"></a>  ], </span>
 <span id="cb854-12"><a href="supplemental.html#cb854-12" aria-hidden="true" tabindex="-1"></a>  columns <span class="op">=</span> [<span class="st">&#39;sigma&#39;</span>,<span class="st">&#39;Int&#39;</span>, <span class="st">&#39;b_X1&#39;</span>, <span class="st">&#39;b_X2&#39;</span>], </span>
 <span id="cb854-13"><a href="supplemental.html#cb854-13" aria-hidden="true" tabindex="-1"></a>  index   <span class="op">=</span> [<span class="st">&#39;ML&#39;</span>, <span class="st">&#39;OLS&#39;</span>, <span class="st">&#39;SM&#39;</span>]</span>

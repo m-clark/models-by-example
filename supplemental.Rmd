@@ -90,7 +90,7 @@ def lm_ls(par, X, y):
 X_mm = np.column_stack([np.repeat(1, N).reshape(N, 1), X])
 
 # you may get warnings, they can be ignored
-result_ml = minimize(
+fit_ml = minimize(
   fun = lm_ml,
   x0  = [1, 0, 0, 0],
   args    = (X_mm, y),
@@ -104,7 +104,7 @@ result_ml = minimize(
 # can use least_squares directly
 # from scipy.optimize import least_squares
 
-result_ls = minimize(
+fit_ls = minimize(
   lm_ls,
   x0   = np.array([0, 0, 0]),
   args = (X_mm, y), 
@@ -119,13 +119,13 @@ result_ls = minimize(
 import statsmodels.formula.api as smf
 
 model_sm_ols  = smf.ols('y ~ X1 + X2', data = dfXy)
-result_sm_ols = model.fit()
+fit_sm_ols    = model_sm_ols.fit()
 
 pd.DataFrame(
   [
-  np.append(result_ml.x[0]**2, result_ml.x[1:]), 
-  np.append(result_ls.fun/(N - X_mm.shape[1] - 1), result_ls.x), 
-  np.append(result_sm_ols.scale, result_sm_ols.params)
+  np.append(fit_ml.x[0]**2, fit_ml.x[1:]), 
+  np.append(fit_ls.fun/(N - X_mm.shape[1] - 1), fit_ls.x), 
+  np.append(fit_sm_ols.scale, fit_sm_ols.params)
   ], 
   columns = ['sigma','Int', 'b_X1', 'b_X2'], 
   index   = ['ML', 'OLS', 'SM']
