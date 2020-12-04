@@ -20,7 +20,7 @@ lambda = .1
 ```
 
 
-## Functions
+## Function
 
 Coordinate descent function.
 
@@ -52,8 +52,8 @@ lasso <- function(
   
   while (tol < tol_curr && i < iter) {
     w_old = w 
-    a = colSums(X^2)
-    l = length(y)*lambda  # for consistency with glmnet approach
+    a  = colSums(X^2)
+    l  = length(y)*lambda  # for consistency with glmnet approach
     c_ = sapply(1:J, function(j)  sum( X[,j] * (y - X[,-j] %*% w_old[-j]) ))
     
     if (soft) {

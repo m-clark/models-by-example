@@ -69,10 +69,11 @@ penalized_ML <- function(
   # calculate likelihood
   L = dnorm(y, mean = mu, sd = sigma, log = T)   # log likelihood
   
-  PL = switch(type,
-              'L2' = -sum(L) + lambda * crossprod(beta[-1]),   # the intercept is not penalized
-              'L1' = -sum(L) + lambda * sum(abs(beta[-1]))
-              )
+  switch(
+    type,
+    'L2' = -sum(L) + lambda * crossprod(beta[-1]),    # the intercept is not penalized
+    'L1' = -sum(L) + lambda * sum(abs(beta[-1]))
+  )
 }
 ```
 
@@ -108,9 +109,10 @@ penalized_ML2 <- function(
   LP = X %*% beta                              # linear predictor
   mu = LP                                      # identity link in the glm sense
   
-  obj = switch(type,
-               'L2' = .5*crossprod(y - X %*% beta)/N + lambda * crossprod(beta[-1]),
-               'L1' = .5*crossprod(y - X %*% beta)/N + lambda * sum(abs(beta[-1]))
+  switch(
+    type,
+    'L2' = .5 * crossprod(y - X %*% beta) / N + lambda * crossprod(beta[-1]),
+    'L1' = .5 * crossprod(y - X %*% beta) / N + lambda * sum(abs(beta[-1]))
   )
 }
 ```
@@ -134,7 +136,7 @@ demonstration.
 init = c(1, rep(0, ncol(X)))
 names(init) = c('sigma2', 'intercept', 'b1', 'b2')
 
-optlmpenalized_MLL2 = optim(
+fit_l2 = optim(
   par = init,
   fn  = penalized_ML,
   X   = X,
@@ -143,7 +145,7 @@ optlmpenalized_MLL2 = optim(
   control = list(reltol = 1e-12)
 )
 
-optlmpenalized_MLL1 = optim(
+fit_l1 = optim(
   par = init,
   fn  = penalized_ML,
   X   = X,
@@ -152,9 +154,6 @@ optlmpenalized_MLL1 = optim(
   type    = 'L1',
   control = list(reltol = 1e-12)
 )
-
-parspenalized_MLL2 = optlmpenalized_MLL2$par
-parspenalized_MLL1 = optlmpenalized_MLL1$par
 ```
 
 
@@ -163,17 +162,23 @@ parspenalized_MLL1 = optlmpenalized_MLL1$par
 Compare to `lm` in base R.
 
 ```{r penalized-ml-compare}
-modlm = lm(y ~ ., dfXy)
-
-round(
-  rbind(
-    parspenalized_MLL2,
-    parspenalized_MLL1,
-    modlm = c(summary(modlm)$sigma ^ 2, coef(modlm))
-  ), 
-  digits = 4
-)
+fit_lm = lm(y ~ ., dfXy)
 ```
+
+
+```{r penalized-ml-compare-show, echo=FALSE}
+parspenalized_MLL2 = fit_l2$par
+parspenalized_MLL1 = fit_l1$par
+
+rbind(
+  fit_l2 = fit_l2$par,
+  fit_l1 = fit_l1$par,
+  fit_lm = c(summary(fit_lm)$sigma ^ 2, coef(fit_lm))
+) %>%
+  kable_df()
+```
+
+
 
 
 
