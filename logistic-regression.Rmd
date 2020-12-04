@@ -38,8 +38,8 @@ dfXy = data.frame(X, y)
  
 A maximum likelihood approach.
 
-```{r logreg_ML}
-logreg_ML <- function(par, X, y) {
+```{r logreg_ml}
+logreg_ml <- function(par, X, y) {
   # Arguments
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
@@ -98,9 +98,9 @@ X = cbind(1, X)
 init = rep(0, ncol(X))
 names(init) = c('intercept', 'b1', 'b2')
 
-fit_ML = optim(
+fit_ml = optim(
   par = init,
-  fn  = logreg_ML,
+  fn  = logreg_ml,
   X   = X,
   y   = y,
   control = list(reltol = 1e-8)
@@ -114,7 +114,7 @@ fit_exp = optim(
   control = list(reltol = 1e-15)
 )
 
-pars_ML  = fit_ML$par
+pars_ml  = fit_ml$par
 pars_exp = fit_exp$par
 ```
 
@@ -129,7 +129,7 @@ fit_glm = glm(y ~ ., dfXy, family = binomial)
 
 ```{r logreg-compare-show, echo=FALSE}
 rbind(
-  fit_ml  = pars_ML,
+  fit_ml  = pars_ml,
   fit_exp = pars_exp,
   fit_glm = coef(fit_glm)
 ) %>% 
@@ -137,7 +137,9 @@ rbind(
 ```
 
 
+## Python
 
+The above is available as a Python demo in the [supplemental section](#python-logreg).
 
 ## Source
 

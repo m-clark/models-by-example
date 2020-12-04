@@ -1,5 +1,13 @@
 # (PART\*)  Other {-}
 
+```{r suppsetup, include = FALSE, cache=FALSE}
+# pretty much nothing can be done to get bookdown to use the correct environment
+# library(reticulate)
+# use_condaenv('r-reticulate')
+knitr::opts_chunk$set(eval = F)
+```
+
+
 # Supplemental
 
 ## Other Languages
@@ -12,7 +20,10 @@ When doing some of these models and algorithms, I had some other code to work wi
 
 ##### Data Setup
 
-```{python py-linreg-setup, eval=F}
+
+
+
+```{python py-linreg-setup, eval =F}
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
@@ -25,8 +36,8 @@ np.random.seed(123) # ensures replication
 
 N = 1000 # sample size
 k = 2   # number of desired predictors
-X = np.matrix(np.random.normal(size = N * k)).reshape(N, k) 
-y = -.5 + .2*X[:, 0] + .1*X[:, 1] + np.random.normal(scale = .5, size = N).reshape(N, 1)  
+X = np.matrix(np.random.normal(size = N * k)).reshape(N, k)
+y = -.5 + .2*X[:, 0] + .1*X[:, 1] + np.random.normal(scale = .5, size = N).reshape(N, 1)
 
 dfXy = pd.DataFrame(np.column_stack([X, y]), columns = ['X1', 'X2', 'y'])
 ```
@@ -42,7 +53,7 @@ def lm_ml(par, X, y):
   # y: response
   
   # setup
-  beta   = par[1:].reshape(3, 1)             # coefficients
+  beta   = par[1:].reshape(X.shape[1], 1)    # coefficients
   sigma  = par[0]                            # error sd
   # N = X.shape[0]
   
@@ -52,11 +63,11 @@ def lm_ml(par, X, y):
   
   # calculate likelihood
 
-  L = norm.pdf(y, loc = mu, scale = sigma) # log likelihood
+  L = norm.logpdf(y, loc = mu, scale = sigma) # log likelihood; or use norm.logpdf
   
   # L =  -.5*N*log(sigma2) - .5*(1/sigma2)*crossprod(y-mu)    # alternate log likelihood form
 
-  L = -np.sum(np.log(L))       # optim by default is minimization, and we want to maximize the likelihood 
+  L = -np.sum(L)       # optim by default is minimization, and we want to maximize the likelihood 
   
   return(L)
 ```
@@ -118,8 +129,8 @@ fit_ls = minimize(
 ```{python py-linreg-compare, eval=FALSE}
 import statsmodels.formula.api as smf
 
-model_sm_ols  = smf.ols('y ~ X1 + X2', data = dfXy)
-fit_sm_ols    = model_sm_ols.fit()
+model_sm_ols = smf.ols('y ~ X1 + X2', data = dfXy)
+fit_sm_ols   = model_sm_ols.fit()
 
 pd.DataFrame(
   [
@@ -141,6 +152,238 @@ SM   0.241055 -0.494647  0.213036  0.0815
     ")
 ```
 
+
+
+#### Logistic Regression {#python-logreg}
+
+##### Data Setup
+
+```{python py-logreg-setup, eval=F}
+import numpy as np
+import pandas as pd
+from scipy.stats import logistic, binom
+from scipy.optimize import minimize
+
+np.random.seed(123) # ensures replication
+
+# predictors and response
+# increasing N will get estimated values closer to the known parameters
+
+N = 2500 # sample size
+k = 2   # number of desired predictors
+X = np.matrix(np.random.normal(size = N * k)).reshape(N, k) 
+eta = -.5 + .2*X[:, 0] + .1*X[:, 1]
+
+pi = 1/(1 + np.exp(-eta))
+
+y = np.random.binomial(1, p = pi, size = (N, 1))
+
+dfXy = pd.DataFrame(np.column_stack([X, y]), columns = ['X1', 'X2', 'y'])
+```
+
+##### Functions 
+ 
+A maximum likelihood approach.
+
+```{python py-logreg_ml, eval=F}
+def logreg_ml(par, X, y):
+  # par: parameters to be estimated
+  # X: predictor matrix with intercept column
+  # y: response
+  
+  # setup
+  beta   = par.reshape(X.shape[1], 1)             # coefficients
+  # N = X.shape[0]
+  
+  # linear predictor
+  LP = np.dot(X, beta)                              # linear predictor
+  mu = 1/(1 + np.exp(-LP))                   # logit link
+  
+  # calculate likelihood
+  L = binom.logpmf(y, 1, mu) # log likelihood
+  
+  # L =  np.multiply(y, np.log(mu)) + np.multiply(1 - y, np.log(1 - mu))    # alternate log likelihood form
+
+  L = -np.sum(L)       # optim by default is minimization, and we want to maximize the likelihood 
+  
+  return(L)
+```
+
+
+Another approach via exponential loss function.
+
+```{python py-logreg_exp, eval=F}
+def logreg_exp(par, X, y):
+  # Arguments
+  # par: parameters to be estimated
+  # X: predictor matrix with intercept column
+  # y: target
+  
+  # setup
+  beta = par.reshape(X.shape[1], 1)                                    # coefficients
+  
+  # linear predictor
+  LP = np.dot(X, beta)                              # linear predictor
+
+  # calculate exponential loss function (convert y to -1:1 from 0:1)
+  L = np.sum(np.exp(-np.multiply(np.where(y, 1, -1), LP) * .5))
+  
+  return(L)
+```
+
+
+
+
+##### Estimation
+
+Setup for use with <span class="func" style = "">optim</span>.
+
+```{python py-logreg-est, eval=F}
+X_mm = np.column_stack([np.repeat(1, N).reshape(N, 1), X])
+
+fit_ml = minimize(
+  fun = logreg_ml,
+  x0  = [0, 0, 0],
+  args    = (X_mm, y),
+  method  = 'BFGS', 
+  tol     = 1e-12, 
+  options = {'maxiter': 500}
+)
+
+fit_exp = minimize(
+  fun = logreg_exp,
+  x0  = [0, 0, 0],
+  args    = (X_mm, y),
+  method  = 'BFGS', 
+  tol     = 1e-12, 
+  options = {'maxiter': 500}
+)
+
+pars_ml  = fit_ml.x
+pars_exp = fit_exp.x
+```
+
+##### Comparison
+
+```{python py-logreg-compare, eval=FALSE}
+import statsmodels.formula.api as smf
+
+model_sm_glm = smf.logit('y ~ X1 + X2', data = dfXy)
+fit_sm_glm   = model_sm_glm.fit()
+
+pd.DataFrame(
+  [
+  pars_ml, 
+  pars_exp, 
+  fit_sm_glm.params
+  ], 
+  columns = ['Int', 'b_X1', 'b_X2'], 
+  index   = ['fit_ml', 'fit_exp', 'SM']
+  )
+```
+
+```{r py-logreg-results, echo=FALSE}
+cat("
+              Int      b_X1      b_X2
+fit_ml  -0.505637  0.234567  0.054700
+fit_exp -0.504802  0.231859  0.053134
+SM      -0.505637  0.234567  0.054700  
+    ")
+```
+
+
+
+#### Quantile Regression {#python-qreg}
+
+See the [R chapter][Quantile Regression] for details.
+
+##### Data Setup
+
+```{python py-qreg-setup, eval=FALSE}
+import pandas as pd
+import numpy as np
+
+# originally from quantreg package
+engel = pd.read_csv('data/engel.csv')
+
+X = np.column_stack([
+  np.ones((engel.shape[0],1)),
+  np.asarray(engel['income'])
+  ])
+  
+y = np.asarray(engel['foodexp'])
+```
+
+
+
+```{python py-qreg-func, eval = F}
+def qreg(par, X, y, tau):
+  lp = np.dot(X, par)
+  res = y - lp
+  loss = np.where(res < 0 , -(1 - tau)*res, tau*res)
+  
+  return(np.sum(loss))
+```
+
+
+
+##### Estimation
+
+We'll estimate the median to start. 
+
+
+```{python py-qreg-est, eval=FALSE}
+# from scipy.stats import logistic, binom
+from scipy.optimize import minimize
+
+
+minimize(
+  fun = qreg,
+  x0  = [0, 0],
+  args    = (X, y, .5),
+  method  = 'BFGS', 
+  tol     = 1e-12, 
+  options = {'maxiter': 500}
+)
+```
+
+##### Other quantiles
+
+Now we will add additional quantiles to estimate.
+
+```{python py-qreg-quants}
+pandas as pd
+
+# quantiles
+qs = [.05, .1, .25, .5, .75, .9, .95]
+fit = []
+
+for tau in qs:
+  init = minimize(
+    fun = qreg,
+    x0  = [0, 0],
+    args    = (X, y, tau),
+    method  = 'BFGS', 
+    tol     = 1e-12, 
+    options = {'maxiter': 500}
+  )
+  
+  fit.append(
+    pd.DataFrame(init.x.reshape(1,2),  columns = ['int', 'slope'])
+  )
+    
+fit_qr = pd.concat(fit)
+
+
+from plotnine import *
+
+(
+  ggplot(aes(x = 'income', y = 'foodexp'), data = engel) +
+    geom_point() +
+    geom_abline(aes(intercept = 'int', slope = 'slope', color = 'int'), 
+    data = fit_qr)
+)
+```
 
 
 

@@ -184,6 +184,10 @@ c(sqrt(pars_ML[1]), sqrt(pars_LS[1]))
 # rerun by adding 3-4 zeros to the N
 ```
 
+## Python
+
+The above is available as a Python demo in the [supplemental section](#python-linreg).
+
 ## Source
 
 Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/standard_lm.R

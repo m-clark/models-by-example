@@ -104,6 +104,10 @@ engel %>%
 ```
 
 
+## Python
+
+The above is available as a Python demo in the [supplemental section](#python-qreg).
+
 ## Source
 
 Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/quantile_regression.Rmd

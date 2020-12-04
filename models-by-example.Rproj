@@ -13,3 +13,7 @@ RnwWeave: knitr
 LaTeX: pdfLaTeX
 
 BuildType: Website
+
+PythonType: conda
+PythonVersion: 3.8.5
+PythonPath: ~/opt/anaconda3/envs/r-reticulate/bin/python
