@@ -32,34 +32,37 @@ X  = cbind(Intercept = 1, x1, x2)
 
 ## Function
 
-The estimating function.
+The estimating function using the *adagrad* approach.
 
 ```{r sgd}
 sgd <- function(
-  par,                                      # parameter estimates
-  X,                                        # model matrix
-  y,                                        # target variable
-  stepsize = 1,                             # the learning rate
-  stepsizeTau = 0,                          # if > 0, a check on the LR at early iterations
-  average = FALSE
+  par,                       # parameter estimates
+  X,                         # model matrix
+  y,                         # target variable
+  stepsize = 1,              # the learning rate
+  stepsize_tau = 0,          # if > 0, a check on the LR at early iterations
+  average = FALSE            # a variation of the approach
 ){
   
   # initialize
   beta = par
   names(beta) = colnames(X)
   betamat = matrix(0, nrow(X), ncol = length(beta))      # Collect all estimates
-  fits = NA                                              # fitted values
-  s = 0                                                  # adagrad per parameter learning rate adjustment
-  loss = NA                                              # Collect loss at each point
+  fits = NA                                      # Collect fitted values at each point
+  loss = NA                                      # Collect loss at each point
+  s = 0                                          # adagrad per parameter learning rate adjustment
+  eps  = 1e-8                                    # a smoothing term to avoid division by zero
   
   for (i in 1:nrow(X)) {
     Xi   = X[i, , drop = FALSE]
     yi   = y[i]
-    LP   = Xi %*% beta                                   # matrix operations not necessary, 
-    grad = t(Xi) %*% (LP - yi)                           # but makes consistent with the  standard gd
-    s    = s + grad^2
-    beta = beta - stepsize * grad/(stepsizeTau + sqrt(s))     # adagrad approach
+    LP   = Xi %*% beta                           # matrix operations not necessary, 
+    grad = t(Xi) %*% (LP - yi)                   # but makes consistent with standard gd func
+    s    = s + grad^2                            # adagrad approach
     
+    # update
+    beta = beta - stepsize/(stepsize_tau + sqrt(s + eps)) * grad 
+
     if (average & i > 1) {
       beta =  beta - 1/i * (betamat[i - 1, ] - beta)          # a variation
     } 
@@ -67,21 +70,20 @@ sgd <- function(
     betamat[i,] = beta
     fits[i]     = LP
     loss[i]     = (LP - yi)^2
+    grad_old = grad
   }
   
   LP = X %*% beta
   lastloss = crossprod(LP - y)
   
   list(
-    par    = beta,                                       # final estimates
-    parvec = betamat,                                    # all estimates
-    loss   = loss,                                       # observation level loss
+    par    = beta,                               # final estimates
+    par_chain = betamat,                         # estimates at each iteration
     RMSE   = sqrt(sum(lastloss)/nrow(X)),
-    fitted = fits
+    fitted = LP
   )
 }
 ```
-
 
 
 
@@ -91,7 +93,7 @@ sgd <- function(
 Set starting values.
 
 ```{r sgd-start}
-init = rep(0, 3)
+starting_values = rep(0, 3)
 ```
 
 For any particular data you might have to fiddle with the `stepsize`, perhaps
@@ -99,11 +101,11 @@ choosing one based on cross-validation with old data.
 
 ```{r sgd-est}
 fit_sgd = sgd(
-  init,
+  starting_values,
   X = X,
   y = y,
-  stepsize    = .1,
-  stepsizeTau = .5,
+  stepsize     = .1,
+  stepsize_tau = .5,
   average = FALSE
 )
 
@@ -111,7 +113,6 @@ str(fit_sgd)
 
 fit_sgd$par
 ```
-
 
 
 ## Comparison
@@ -140,7 +141,7 @@ rbind(
 ```{r sgd-visualize, echo=FALSE}
 library(tidyverse)
 
-gd = data.frame(fit_sgd$parvec) %>% 
+gd = data.frame(fit_sgd$par_chain) %>% 
   mutate(Iteration = 1:n())
 
 gd = gd %>%
@@ -176,6 +177,10 @@ data = gd) +
 
 This data includes a shift of the previous data, where the data fundamentally changes at certain times.
 
+### Data Setup
+
+We'll add data with different underlying generating processes.
+
 ```{r sgd-shift-setup}
 set.seed(1234)
 
@@ -207,11 +212,11 @@ We'll use the same function as before.
 
 ```{r sgd-est-2}
 fit_sgd2 = sgd(
-  init,
+  starting_values,
   X = X3,
   y = y3,
   stepsize    = 1,
-  stepsizeTau = 0,
+  stepsize_tau = 0,
   average = FALSE
 )
 
@@ -227,7 +232,7 @@ lm_coef = rbind(lm_part1 = coef1, lm_part2 = coef2, lm_part3 = coef3) %>%
   data.frame() %>% 
   rename(Intercept = X.Intercept.)
 
-sgd_coef = fit_sgd2$parvec[c(n, n + n2, n + n2 + n3), ] %>% 
+sgd_coef = fit_sgd2$par_chain[c(n, n + n2, n + n2 + n3), ] %>% 
   data.frame()
 
 rownames(sgd_coef) = c('sgd_part1','sgd_part2','sgd_part3')
@@ -243,7 +248,7 @@ bind_rows(lm_coef, sgd_coef) %>%
 Visualize estimates across iterations.
 
 ```{r sgd-visualize-2, echo=FALSE}
-gd = data.frame(fit_sgd2$parvec) %>% 
+gd = data.frame(fit_sgd2$par_chain) %>% 
   mutate(Iteration = 1:n())
 
 gd = gd %>% 
@@ -273,6 +278,164 @@ ggplot(aes(x = Iteration,
   scico::scale_color_scico_d(end = .75, alpha = .5)
 ```
 
+
+## Variations
+
+The above uses the *Adagrad* approach for stochastic gradient descent, but there are many variations.  A good resource can be found [here](https://ruder.io/optimizing-gradient-descent/).  We will compare the *Adagrad*, *RSMprop*, and *Adam* approaches.
+
+
+
+### Data Setup
+
+For this demo we'll bump the sample size.
+
+```{r sgd-variant-setup}
+library(tidyverse)
+
+set.seed(1234)
+
+n  = 10000
+x1 = rnorm(n)
+x2 = rnorm(n)
+y  = 1 + 1.5*x1 + 2*x2 + rnorm(n)
+X  = cbind(Intercept = 1, x1, x2)
+```
+
+
+### Function
+
+The function now takes a method as input.
+
+```{r sgd-variant-func}
+sgd <- function(
+  par,                       # parameter estimates
+  X,                         # model matrix
+  y,                         # target variable
+  stepsize = 1,              # the learning rate
+  stepsize_tau = 0,          # if > 0, a check on the LR at early iterations
+  type = 'adagrad',          # one of adagrad, rmsprop, or adam
+  average = FALSE            # a variation of the approach
+){
+  
+  # initialize
+  beta = par
+  names(beta) = colnames(X)
+  betamat = matrix(0, nrow(X), ncol = length(beta))      # Collect all estimates
+  fits = NA                                      # Collect fitted values at each point
+  loss = NA                                      # Collect loss at each point
+  v   = rep(0, length(beta))                     # per parameter learning rate adjustment
+  m   = rep(0, length(beta))                     # for adam
+  eps = 1e-8                                     # a smoothing term to avoid division by zero
+  grad_old = rep(0, length(beta))
+  
+  
+  adagrad <- function(grad) {
+    v <<- v + grad^2  
+    update = stepsize/(stepsize_tau + sqrt(v + eps)) * grad
+  }
+  
+  rmsprop <- function(grad, grad_old) {
+    v = .9 * grad_old^2 + (1 - .9) * grad^2
+    update = stepsize / sqrt(v + eps) * grad
+  }
+  
+  adam <- function(grad, b1 = 0.9, b2 = 0.999) {
+    m <<- b1 * m + (1 - b1) * grad
+    v <<- b2 * v + (1 - b2) * grad^2
+    
+    # dividing v and m by 1 - b*^i is the 'bias correction'
+    update = stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (m / (1 - b1^i))
+  }
+  
+
+  for (i in 1:nrow(X)) {
+    Xi   = X[i, , drop = FALSE]
+    yi   = y[i]
+    LP   = Xi %*% beta                           # matrix operations not necessary, 
+    grad = t(Xi) %*% (LP - yi)                   # but makes consistent with standard gd func
+
+    update <-
+      switch(
+        type,
+        adagrad = adagrad(grad),
+        rmsprop = rmsprop(grad, grad_old),
+        adam    = adam(grad)
+      )
+    
+    # update
+    beta = beta - update
+    
+    if (average & i > 1) {
+      beta = beta - 1/i * (betamat[i - 1, ] - beta)   # a variation
+    } 
+    
+    betamat[i,] = beta
+    fits[i]  = LP
+    loss[i]  = (LP - yi)^2
+    grad_old = grad
+  }
+  
+  LP = X %*% beta
+  lastloss = crossprod(LP - y)
+  
+  list(
+    par    = beta,                               # final estimates
+    par_chain = betamat,                         # estimates at each iteration
+    RMSE   = sqrt(sum(lastloss)/nrow(X)),
+    fitted = LP
+  )
+}
+```
+
+### Estimation
+
+We'll now use all three methods for estimation.
+
+```{r sgd-variant-est}
+starting_values = rep(0, ncol(X))
+
+fit_adagrad = sgd(
+  starting_values,
+  X = X,
+  y = y,
+  stepsize = .1
+)
+
+fit_rmsprop = sgd(
+  starting_values,
+  X = X,
+  y = y,
+  stepsize = 1e-3,
+  type = 'rmsprop'
+)
+
+fit_adam = sgd(
+  starting_values,
+  X = X,
+  y = y,
+  stepsize = 1e-3,
+  type = 'adam'
+)
+```
+
+### Comparison
+
+We'll compare our results to standard linear regression and the true values.
+
+```{r sgd-variant-compare, echo=FALSE}
+init = map_df(list(
+  fit_adagrad = fit_adagrad,
+  fit_rmsprop = fit_rmsprop,
+  fit_adam = fit_adam
+), function(x)
+  data.frame(t(x$par)), .id = 'fit')
+
+fit_lm = data.frame(fit = 'fit_lm', t(lm.fit(X, y)$coef))
+true = data.frame(fit = 'true', data.frame(Intercept = 1, x1 = 1.5, x2 = 2))
+
+rbind(init, fit_lm, true) %>% 
+  kable_df()
+```
 
 
 ## Source
