@@ -386,6 +386,135 @@ from plotnine import *
 ```
 
 
+#### Stochastic Gradient Descent {#python-sgd}
+
+Here we use the *adagrad* approach as in the R demo.  The dataset shift and other variants are not demonstrated.
+
+##### Data Setup
+
+Create some data for a standard linear regression.
+
+```{python py-sgd-setup}
+import numpy as np
+
+np.random.seed(1234)
+
+n = 10000
+x1 = np.random.normal(size = n)
+x2 = np.random.normal(size = n)
+y = 1 + .5*x1 + .2*x2 + np.random.normal(size = n)
+
+X = np.column_stack([np.ones(n), x1, x2])
+```
+
+##### Function
+
+The estimating function using the *adagrad* approach.
+
+```{python py-sgd-func}
+def sgd(par, X, y, stepsize, stepsize_tau = 0, average = False):
+  """
+  Estimate a linear regression via stochastic gradient descent
+  
+  par: parameter estimates
+  X: model matrix
+  y: target variable
+  stepsize: the learning rate
+  stepsize_tau: if > 0, a check on the LR at early iterations
+  average: an alternative method
+  
+  Returns a dictionary of the parameter estimates, the estimates for each iteration,
+  the loss for each iteration, the root mean square error, and the fitted values
+  using the final parameter estimates
+  
+  """
+  
+  beta = par
+  betamat = np.zeros_like(X)
+  fits = np.zeros_like(y)              # if you want these across iterations
+  loss = np.zeros_like(y)
+  s = 0
+  
+  for i in np.arange(X.shape[0]):
+    Xi = X[i]
+    yi = y[i]
+    
+    LP   = np.dot(Xi, beta)                                
+    grad = np.dot(Xi.T, LP - yi)                           
+    s    = s + grad**2
+    beta -= stepsize * grad/(stepsize_tau + np.sqrt(s)) 
+    
+    if average and i > 1:
+      beta -= 1/i * (betamat[i - 1] - beta)
+    
+    betamat[i] = beta
+    fits[i]    = LP
+    loss[i]    = (LP - yi)**2
+    
+  LP = np.dot(X, beta)
+  lastloss = np.dot(LP - y, LP - y)
+  
+  return({
+    'par': beta,                                 # final estimates
+    'par_chain': betamat,                        # all estimates
+    'loss': loss,                                # observation level loss
+    'RMSE': np.sqrt(np.sum(lastloss)/X.shape[0]),
+    'fitted': LP
+  })
+
+```
+
+Set starting values and estimate.  For any particular data you might have to fiddle with the `stepsize`, perhaps
+choosing one based on cross-validation with old data.
+
+```{python py-sgd-est}
+init = np.zeros(3)
+
+fit_sgd = sgd(
+  init, 
+  X, 
+  y,
+  stepsize = .1,
+  stepsize_tau = .5
+)
+
+fit_sgd['par'].round(4)
+fit_sgd['RMSE'].round(4)
+```
+
+```{r py-sgd-est-show, eval=T, echo=F}
+cat("
+array([1.0172, 0.4942, 0.1937])    \n
+0.9978
+    ")
+```
+
+##### Comparison
+
+We'll compare our results to standard linear regression.
+
+```{python py-sgd-compare}
+import pandas as pd
+import statsmodels.formula.api as smf
+
+df = pd.DataFrame({'x1': x1, 'x2': x2, 'y': y})
+
+lm_fit = smf.ols('y ~ x1 + x2', df).fit()
+
+lm_fit.params.round(4)
+lm_fit.scale.round(4)
+```
+
+```{r py-sgd-compare-show, eval=T, echo=F}
+cat("
+Intercept    1.0037
+x1           0.5032
+x2           0.2000
+dtype: float64   \n
+0.9955
+    ")
+```
+
 
 
 #### Nelder-Mead {#python-nelder}
