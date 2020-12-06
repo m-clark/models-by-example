@@ -211,16 +211,16 @@ y3 = c(y2, y3)
 We'll use the same function as before.
 
 ```{r sgd-est-2}
-fit_sgd2 = sgd(
+fit_sgd_shift = sgd(
   starting_values,
   X = X3,
   y = y3,
-  stepsize    = 1,
+  stepsize     = 1,
   stepsize_tau = 0,
   average = FALSE
 )
 
-str(fit_sgd2)
+str(fit_sgd_shift)
 ```
 
 ### Comparison
@@ -232,7 +232,7 @@ lm_coef = rbind(lm_part1 = coef1, lm_part2 = coef2, lm_part3 = coef3) %>%
   data.frame() %>% 
   rename(Intercept = X.Intercept.)
 
-sgd_coef = fit_sgd2$par_chain[c(n, n + n2, n + n2 + n3), ] %>% 
+sgd_coef = fit_sgd_shift$par_chain[c(n, n + n2, n + n2 + n3), ] %>% 
   data.frame()
 
 rownames(sgd_coef) = c('sgd_part1','sgd_part2','sgd_part3')
@@ -248,7 +248,7 @@ bind_rows(lm_coef, sgd_coef) %>%
 Visualize estimates across iterations.
 
 ```{r sgd-visualize-2, echo=FALSE}
-gd = data.frame(fit_sgd2$par_chain) %>% 
+gd = data.frame(fit_sgd_shift$par_chain) %>% 
   mutate(Iteration = 1:n())
 
 gd = gd %>% 
@@ -279,17 +279,17 @@ ggplot(aes(x = Iteration,
 ```
 
 
-## Variations
+## SGD Variants
 
-The above uses the *Adagrad* approach for stochastic gradient descent, but there are many variations.  A good resource can be found [here](https://ruder.io/optimizing-gradient-descent/).  We will compare the *Adagrad*, *RSMprop*, and *Adam* approaches.
+The above uses the *Adagrad* approach for stochastic gradient descent, but there are many variations.  A good resource can be found [here](https://ruder.io/optimizing-gradient-descent/), as well as this [post covering more recent developments](https://johnchenresearch.github.io/demon/).  We will compare the *Adagrad*, *RMSprop*, *Adam*, and *Nadam* approaches.
 
 
 
 ### Data Setup
 
-For this demo we'll bump the sample size.
+For this demo we'll bump the sample size. I've also made the coefficients a little different.
 
-```{r sgd-variant-setup}
+```{r sgd-variant-setup, cache.rebuild=F}
 library(tidyverse)
 
 set.seed(1234)
@@ -297,8 +297,10 @@ set.seed(1234)
 n  = 10000
 x1 = rnorm(n)
 x2 = rnorm(n)
-y  = 1 + 1.5*x1 + 2*x2 + rnorm(n)
 X  = cbind(Intercept = 1, x1, x2)
+true = c(Intercept = 1, x1 = 1, x2 = -.75)
+
+y  = X %*% true + rnorm(n)
 ```
 
 
@@ -311,9 +313,9 @@ sgd <- function(
   par,                       # parameter estimates
   X,                         # model matrix
   y,                         # target variable
-  stepsize = 1,              # the learning rate
+  stepsize = 1e-2,           # the learning rate; suggest 1e-3 for non-adagrad methods
   stepsize_tau = 0,          # if > 0, a check on the LR at early iterations
-  type = 'adagrad',          # one of adagrad, rmsprop, or adam
+  type = 'adagrad',          # one of adagrad, rmsprop, adam or nadam
   average = FALSE            # a variation of the approach
 ){
   
@@ -323,28 +325,33 @@ sgd <- function(
   betamat = matrix(0, nrow(X), ncol = length(beta))      # Collect all estimates
   fits = NA                                      # Collect fitted values at each point
   loss = NA                                      # Collect loss at each point
-  v   = rep(0, length(beta))                     # per parameter learning rate adjustment
-  m   = rep(0, length(beta))                     # for adam
-  eps = 1e-8                                     # a smoothing term to avoid division by zero
+  v    = rep(0, length(beta))                    # gradient variance (sum of squares)
+  m    = rep(0, length(beta))                    # average of gradients for n/adam
+  eps  = 1e-8                                    # a smoothing term to avoid division by zero
   grad_old = rep(0, length(beta))
-  
   
   adagrad <- function(grad) {
     v <<- v + grad^2  
-    update = stepsize/(stepsize_tau + sqrt(v + eps)) * grad
+    
+    stepsize/(stepsize_tau + sqrt(v + eps)) * grad
   }
   
   rmsprop <- function(grad, grad_old) {
     v = .9 * grad_old^2 + (1 - .9) * grad^2
-    update = stepsize / sqrt(v + eps) * grad
+    
+    stepsize / sqrt(v + eps) * grad
   }
   
-  adam <- function(grad, b1 = 0.9, b2 = 0.999) {
+  adam <- function(grad, b1 = 0.9, b2 = 0.999, type = 'adam') {
     m <<- b1 * m + (1 - b1) * grad
     v <<- b2 * v + (1 - b2) * grad^2
     
-    # dividing v and m by 1 - b*^i is the 'bias correction'
-    update = stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (m / (1 - b1^i))
+    if (type == 'adam')
+      # dividing v and m by 1 - b*^i is the 'bias correction'
+      stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (m / (1 - b1^i))
+    else 
+      # nadam
+      stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (b1 * m  +  (1 - b1)/(1 - b1^i) * grad)
   }
   
 
@@ -359,7 +366,8 @@ sgd <- function(
         type,
         adagrad = adagrad(grad),
         rmsprop = rmsprop(grad, grad_old),
-        adam    = adam(grad)
+        adam    = adam(grad),
+        nadam   = adam(grad, type = 'nadam')
       )
     
     # update
@@ -379,9 +387,9 @@ sgd <- function(
   lastloss = crossprod(LP - y)
   
   list(
-    par    = beta,                               # final estimates
-    par_chain = betamat,                         # estimates at each iteration
-    RMSE   = sqrt(sum(lastloss)/nrow(X)),
+    par = beta,                               # final estimates
+    par_chain = betamat,                      # estimates at each iteration
+    RMSE = sqrt(sum(lastloss)/nrow(X)),
     fitted = LP
   )
 }
@@ -389,16 +397,18 @@ sgd <- function(
 
 ### Estimation
 
-We'll now use all three methods for estimation.
+We'll now use all four methods for estimation.
 
-```{r sgd-variant-est}
+```{r sgd-variant-est, cache.rebuild=F}
 starting_values = rep(0, ncol(X))
+# starting_values = runif(3, min = -1)
 
 fit_adagrad = sgd(
   starting_values,
   X = X,
   y = y,
-  stepsize = .1
+  stepsize = .1,  # suggestion is .01 for many settings, but this works better here
+  average = T
 )
 
 fit_rmsprop = sgd(
@@ -416,26 +426,96 @@ fit_adam = sgd(
   stepsize = 1e-3,
   type = 'adam'
 )
+
+fit_nadam = sgd(
+  starting_values,
+  X = X,
+  y = y,
+  stepsize = 1e-3,
+  type = 'nadam'
+)
 ```
 
 ### Comparison
 
 We'll compare our results to standard linear regression and the true values.
 
-```{r sgd-variant-compare, echo=FALSE}
-init = map_df(list(
-  fit_adagrad = fit_adagrad,
-  fit_rmsprop = fit_rmsprop,
-  fit_adam = fit_adam
-), function(x)
-  data.frame(t(x$par)), .id = 'fit')
+```{r sgd-variant-compare, echo=FALSE, cache.rebuild=F}
+init = map_df(
+  list(
+    fit_adagrad = fit_adagrad,
+    fit_rmsprop = fit_rmsprop,
+    fit_adam    = fit_adam,
+    fit_nadam   = fit_nadam
+  ), 
+  function(x) data.frame(t(x$par)), 
+  .id = 'fit'
+)
 
 fit_lm = data.frame(fit = 'fit_lm', t(lm.fit(X, y)$coef))
-true = data.frame(fit = 'true', data.frame(Intercept = 1, x1 = 1.5, x2 = 2))
+true = data.frame(fit = 'true', t(c(Intercept = 1, x1 = 1, x2 = -.75)))
 
 rbind(init, fit_lm, true) %>% 
-  kable_df()
+  kable_df(digits = 5)
 ```
+
+
+### Visualize Estimates
+
+We can visualize the route of estimation for each technique. While Adagrad works well for this particular problem, in standard machine learning contexts with possibly millions of parameters, and possibly massive data, it would quickly get to a point where it is no longer updating (the denominator continues to grow).  These other techniques are attempts to get around the limitations of Adagrad. 
+
+
+```{r sgd-variant-vis, echo=F}
+bind_rows(
+  fit_adagrad = data.frame(fit_adagrad$par_chain),
+  fit_rmsprop = data.frame(fit_rmsprop$par_chain),
+  fit_adam = data.frame(fit_adam$par_chain),
+  fit_nadam = data.frame(fit_nadam$par_chain),
+  .id = 'fit'
+) %>% 
+  rename(Intercept = X1, x1 = X2, x2 = X3) %>% 
+  mutate(iter = rep(1:n, 4)) %>% 
+  pivot_longer(-c(iter, fit), names_to = 'parameter') %>% 
+  ggplot(aes(iter, value)) +
+  geom_line(aes(color = parameter)) +
+  facet_wrap(~fct_inorder(fit)) +
+  scico::scale_color_scico_d(end = .8)
+```
+
+
+```{r sgd-variant-vis-shift, eval=FALSE, echo=F}
+fit_sgd_shift_ada = sgd(
+  starting_values,
+  X = X3,
+  y = y3,
+  stepsize = .1, 
+  average = T
+)
+
+fit_sgd_shift_nadam = sgd(
+  starting_values,
+  X = X3,
+  y = y3,
+  stepsize = 1e-3,
+  type = 'nadam', 
+  average = T
+)
+
+bind_rows(
+  fit_shift_adagrad = data.frame(fit_sgd_shift_ada$par_chain),
+  fit_shift_nadam = data.frame(fit_sgd_shift_nadam$par_chain),
+  .id = 'fit'
+) %>% 
+  rename(Intercept = X1, x1 = X2, x2 = X3) %>% 
+  mutate(iter = rep(1:nrow(X3), 2)) %>% 
+  pivot_longer(-c(iter, fit), names_to = 'parameter') %>% 
+  ggplot(aes(iter, value)) +
+  geom_line(aes(color = parameter)) +
+  facet_wrap(~fct_inorder(fit)) +
+  scico::scale_color_scico_d(end = .8)
+```
+
+
 
 
 ## Source
