@@ -12,16 +12,28 @@ to with Med or Main respectively.
 The two main models are expressed conceptually as follows:
 
 $$\textrm{Mediator} \sim \alpha_{Med} + \beta_{Med}\cdot X$$
+
 $$y \sim \alpha_{Main} + \beta_{1\_{Main}}\cdot X + \beta_{2\_{Main}}\cdot \textrm{Mediator}$$
 
 However, there will be random effects for a grouping variable for each coefficient, i.e. random intercepts and slopes, for both the mediator model and the outcome model.
 
-Let's create data to this effect.
+```{r bayes-med-prelim, echo=FALSE}
+N  = 1000
+n_groups = 50
+n_per_group = N/n_groups
+```
+
+
+Let's create data to this effect. In the following we will ultimately have `r N` total observations, with `r n_groups` groups (`r n_per_group` observations each).
 
 ```{r bayes-med-setup}
 library(tidyverse)
 
 set.seed(8675309)
+
+N  = 1000
+n_groups = 50
+n_per_group = N/n_groups
 
 # random effects for mediator model
 # create cov matrix of RE etc. with no covariance between model random effects
@@ -43,21 +55,25 @@ covmat_RE
 
 # inspect as correlation
 cov2cor(covmat_RE)
+colnames(covmat_RE) = rownames(covmat_RE) = 
+  c('alpha_Med', 'beta_Med', 'alpha_Main', 'beta1_Main', 'beta2_Main')
 
-# simulate
-re = MASS::mvrnorm(50,
-                   mu    = rep(0, 5),
-                   Sigma = covmat_RE,
-                   empirical = TRUE)
+# simulate random effects
+re = MASS::mvrnorm(
+  n_groups,
+  mu    = rep(0, 5),
+  Sigma = covmat_RE,
+  empirical = TRUE
+)
 
 # random effects for mediator model
-ranef_alpha_Med = rep(re[, 1], e = 10)
-ranef_beta_Med  = rep(re[, 2], e = 10)
+ranef_alpha_Med = rep(re[, 'alpha_Med'], e = n_per_group)
+ranef_beta_Med  = rep(re[, 'beta_Med'],  e = n_per_group)
 
 # random effects for main model                                                 
-ranef_alpha_Main = rep(re[, 3], e = 10)
-ranef_beta1_Main = rep(re[, 4], e = 10)
-ranef_beta2_Main = rep(re[, 5], e = 10)
+ranef_alpha_Main = rep(re[, 'alpha_Main'], e = n_per_group)
+ranef_beta1_Main = rep(re[, 'beta1_Main'], e = n_per_group)
+ranef_beta2_Main = rep(re[, 'beta2_Main'], e = n_per_group)
 
 ## fixed effects
 alpha_Med = 2
@@ -68,8 +84,8 @@ beta1_Main = .3
 beta2_Main = -.2
 
 # residual variance
-resid_Med  = MASS::mvrnorm(500, 0, .75^2, empirical = TRUE)
-resid_Main = MASS::mvrnorm(500, 0, .50^2, empirical = TRUE)
+resid_Med  = MASS::mvrnorm(N, 0, .75^2, empirical = TRUE)
+resid_Main = MASS::mvrnorm(N, 0, .50^2, empirical = TRUE)
 
 
 # Collect parameters for later comparison
@@ -97,17 +113,17 @@ ranefs =  cbind(
 )
 ```
 
-Finally, we can create the data for analysis.
+Finally, we can create the data for analysis.  
 
 ```{r bayes-med-setup2}
-X = rnorm(500, sd = 2)
+X = rnorm(N, sd = 2)
 
 Med = (alpha_Med + ranef_alpha_Med) + (beta_Med + ranef_beta_Med) * X + resid_Med[, 1]
 
 y = (alpha_Main + ranef_alpha_Main) + (beta1_Main + ranef_beta1_Main) * X + 
   (beta2_Main + ranef_beta2_Main) *  Med + resid_Main[, 1]
 
-group = rep(1:50, e = 10)
+group = rep(1:n_groups, e = n_per_group)
 
 standat = list(
   X   = X,
@@ -123,7 +139,7 @@ standat = list(
 ## Model Code
 
 
-In the following, the cholesky decomposition of the RE covariance matrix is used for efficiency.  As a rough guide, the default data where `N = 500` took about 5 min to run for the main model with `iter=12000` and `warmup = 2000`.
+In the following, the cholesky decomposition of the RE covariance matrix is used for efficiency.  As a rough guide, the default data with `r `N` observations took about a minute or so to run.
 
 
 
@@ -188,7 +204,7 @@ model {
   // for scale params the cauchy is a little more informative here due 
   // to the nature of the data
   sigma_alpha_Med ~ cauchy(0, 1);                
-  sigma_beta_Med ~ cauchy(0, 1);
+  sigma_beta_Med  ~ cauchy(0, 1);
   alpha_Med ~ normal(0, sigma_alpha_Med);   
   beta_Med  ~ normal(0, sigma_beta_Med);
 
@@ -200,9 +216,9 @@ model {
   sigma_alpha ~ cauchy(0, 1);
   sigma_beta1 ~ cauchy(0, 1);
   sigma_beta2 ~ cauchy(0, 1);
-  alpha_Main ~ normal(0, sigma_alpha);      
-  beta1_Main ~ normal(0, sigma_beta1);
-  beta2_Main ~ normal(0, sigma_beta2);
+  alpha_Main  ~ normal(0, sigma_alpha);      
+  beta1_Main  ~ normal(0, sigma_beta1);
+  beta2_Main  ~ normal(0, sigma_beta2);
 
   // residual scale
   sigma_y ~ cauchy(0, 1);
@@ -243,8 +259,8 @@ generated quantities{
   cov_RE = diag_matrix(sigma_ranef) * tcrossprod(Omega_chol) * diag_matrix(sigma_ranef);
 
   naive_ind_effect = beta_Med*beta2_Main;
-  avg_ind_effect   = beta_Med*beta2_Main + cov_RE[2,5];
-  total_effect     = avg_ind_effect + beta1_Main;
+  avg_ind_effect   = beta_Med*beta2_Main + cov_RE[2,5];    // add cov of random slopes for mediator effects
+  total_effect     = avg_ind_effect + beta1_Main; 
   
   for (n in 1:N){
     y_hat[n]   = alpha_Main + gamma_alpha[Group[n]] + 
@@ -404,10 +420,10 @@ Compare indirect effects
 ```{r bayes-med-compare-ind, echo=FALSE}
 tibble(
   true = beta_Med * beta2_Main + covmat_RE[2, 5],
-  est  = get_posterior_mean(fit, 'avg_ind_effect')[, 5],
-  naiveBayes = get_posterior_mean(fit, 'naive_ind_effect')[, 5],
-  naiveLme   = lme_indirect_effect,
-  mediation_pack    = mediation_mixed$d0
+  est_bayes   = get_posterior_mean(fit, 'avg_ind_effect')[, 5],
+  naive_bayes = get_posterior_mean(fit, 'naive_ind_effect')[, 5],
+  naive_lmer  = lme_indirect_effect,
+  mediation_pack = mediation_mixed$d0
 ) %>% 
   kable_df()
 ```
@@ -428,7 +444,8 @@ fit_brm = brm(
   data  = data.frame(X, Med, y, group),
   cores = 4,
   thin  = 4,
-  seed  = 1234
+  seed  = 1234,
+  control = list(adapt_delta = .99, max_treedepth = 15)
 )
 ```
 
