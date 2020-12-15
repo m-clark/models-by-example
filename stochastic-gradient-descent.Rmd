@@ -306,7 +306,7 @@ y  = X %*% true + rnorm(n)
 
 ### Function
 
-The function now takes a method as input.
+For this we'll add a functional component to the primary function.  We create a [function factory](https://adv-r.hadley.nz/function-factories.html) `update_ff` that, based on the input will create an appropriate update step (`update`) for use each iteration.  This is mostly is just a programming exercise, but might allow you to add additional components arguments or methods more easily.
 
 ```{r sgd-variant-func}
 sgd <- function(
@@ -314,72 +314,72 @@ sgd <- function(
   X,                         # model matrix
   y,                         # target variable
   stepsize = 1e-2,           # the learning rate; suggest 1e-3 for non-adagrad methods
-  stepsize_tau = 0,          # if > 0, a check on the LR at early iterations
   type = 'adagrad',          # one of adagrad, rmsprop, adam or nadam
-  average = FALSE            # a variation of the approach
+  average = FALSE,           # a variation of the approach
+  ...                        # arguments to pass to an updating function, e.g. gamma in rmsprop
 ){
   
   # initialize
   beta = par
   names(beta) = colnames(X)
   betamat = matrix(0, nrow(X), ncol = length(beta))      # Collect all estimates
-  fits = NA                                      # Collect fitted values at each point
-  loss = NA                                      # Collect loss at each point
   v    = rep(0, length(beta))                    # gradient variance (sum of squares)
   m    = rep(0, length(beta))                    # average of gradients for n/adam
   eps  = 1e-8                                    # a smoothing term to avoid division by zero
   grad_old = rep(0, length(beta))
   
-  adagrad <- function(grad) {
-    v <<- v + grad^2  
+  update_ff <- function(type, ...) {
     
-    stepsize/(stepsize_tau + sqrt(v + eps)) * grad
-  }
-  
-  rmsprop <- function(grad, grad_old) {
-    v = .9 * grad_old^2 + (1 - .9) * grad^2
+    # if stepsize_tau > 0, a check on the LR at early iterations
+    adagrad <- function(grad, stepsize_tau = 0) {
+      v <<- v + grad^2  
+      
+      stepsize/(stepsize_tau + sqrt(v + eps)) * grad
+    }
     
-    stepsize / sqrt(v + eps) * grad
-  }
-  
-  adam <- function(grad, b1 = 0.9, b2 = 0.999, type = 'adam') {
-    m <<- b1 * m + (1 - b1) * grad
-    v <<- b2 * v + (1 - b2) * grad^2
+    rmsprop <- function(grad, grad_old, gamma = .9) {
+      v = gamma * grad_old^2 + (1 - gamma) * grad^2
+      
+      stepsize / sqrt(v + eps) * grad
+    }
     
-    if (type == 'adam')
-      # dividing v and m by 1 - b*^i is the 'bias correction'
-      stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (m / (1 - b1^i))
-    else 
-      # nadam
-      stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (b1 * m  +  (1 - b1)/(1 - b1^i) * grad)
+    adam <- function(grad, b1 = .9, b2 = .999) {
+      m <<- b1 * m + (1 - b1) * grad
+      v <<- b2 * v + (1 - b2) * grad^2
+      
+      if (type == 'adam')
+        # dividing v and m by 1 - b*^i is the 'bias correction'
+        stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (m / (1 - b1^i))
+      else 
+        # nadam
+        stepsize/(sqrt(v / (1 - b2^i)) + eps) *  (b1 * m  +  (1 - b1)/(1 - b1^i) * grad)
+    }
+    
+    switch(
+      type,
+      adagrad = function(grad, ...) adagrad(grad, ...),
+      rmsprop = function(grad, ...) rmsprop(grad, grad_old, ...),
+      adam    = function(grad, ...) adam(grad, ...),
+      nadam   = function(grad, ...) adam(grad, ...)
+    )
   }
-  
 
+  update = update_ff(type, ...)
+  
   for (i in 1:nrow(X)) {
     Xi   = X[i, , drop = FALSE]
     yi   = y[i]
     LP   = Xi %*% beta                           # matrix operations not necessary, 
     grad = t(Xi) %*% (LP - yi)                   # but makes consistent with standard gd func
-
-    update <-
-      switch(
-        type,
-        adagrad = adagrad(grad),
-        rmsprop = rmsprop(grad, grad_old),
-        adam    = adam(grad),
-        nadam   = adam(grad, type = 'nadam')
-      )
     
     # update
-    beta = beta - update
+    beta = beta - update(grad, ...)
     
     if (average & i > 1) {
       beta = beta - 1/i * (betamat[i - 1, ] - beta)   # a variation
     } 
     
     betamat[i,] = beta
-    fits[i]  = LP
-    loss[i]  = (LP - yi)^2
     grad_old = grad
   }
   
@@ -407,8 +407,7 @@ fit_adagrad = sgd(
   starting_values,
   X = X,
   y = y,
-  stepsize = .1,  # suggestion is .01 for many settings, but this works better here
-  average = T
+  stepsize = .1  # suggestion is .01 for many settings, but this works better here
 )
 
 fit_rmsprop = sgd(
