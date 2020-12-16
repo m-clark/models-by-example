@@ -1,0 +1,13 @@
+# Mixed Models
+
+
+This chapter regards mixed models, a flexible expansion of standard regression methods to account for some covariance among the observations.  
+
+```{r child='mixed-model-one-factor.Rmd'}
+```
+
+```{r child='mixed-model-two-factor.Rmd'}
+```
+
+```{r child='mixed-model-ML.Rmd'}
+```

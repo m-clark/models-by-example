@@ -1,6 +1,4 @@
-# One-factor Mixed Model
-
-
+## One-factor Mixed Model
 
 The following is an approach for one factor random effects model via maximum
 likelihood in R (and Matlab and Julia in the [Supplemental
@@ -10,9 +8,7 @@ Matlab and R code on their website, though the R code here is a little cleaner
 and has comments. 
 
 
-
-
-## Data Setup
+### Data Setup
 
 The data regards crop yield from 10 randomly selected
 locations and three collections at each location.
@@ -34,7 +30,7 @@ y = matrix(c(22.6, 20.5, 20.8,
 ```
 
 
-## Function 
+### Function 
 
 The estimating function.
 
@@ -66,7 +62,7 @@ one_factor_re <- function(mu, sigma2_mu, sigma2){
 ```
 
 
-## Estimation 
+### Estimation 
 
 Starting values.
 
@@ -107,7 +103,7 @@ fit_mle = mle2(
 ```
 
 
-## Comparison
+### Comparison
 
 
 We can compare to the <span class="pack" style = "">lme4</span> model result.
@@ -131,6 +127,6 @@ summary(fit_mer)
 ```
 
 
-## Source
+### Source
 
 Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/Mixed%20Models/one_factor_RE.R

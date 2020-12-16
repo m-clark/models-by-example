@@ -1,11 +1,8 @@
-# Mixed Model via ML
+## Mixed Model via ML
 
-## Introduction
+### Introduction
 
 The following is based on the Wood text (Generalized Additive Models, 1st ed.) on additive models, chapter 6 in particular. It assumes familiarity with standard regression from a matrix perspective and at least passing familiarity with mixed models. The full document this chapter is  based on can be found [here](https://m-clark.github.io/docs/mixedModels/mixedModelML.html), and contains more detail and exposition.  See also the comparison of additive and mixed models [here](https://m-clark.github.io/generalized-additive-models/appendix.html#a-comparison-to-mixed-models).
-
-
-## Maximum Likelihood Estimation
 
 For this we'll use the <span class="objclass" style = "">sleepstudy</span> data from the <span class="pack" style = "">lme4</span> package. The data has reaction times for 18 individuals over 10 days each (see the help file for the <span class="objclass" style = "">sleepstudy</span> object for more details).
 
@@ -53,7 +50,7 @@ mixed_ll <- function(y, X, Z, theta) {
 ```
 
 
-Here is an alternative function using a multivariate normal approach that doesn't use the transformation to independent, and might provide additional perspective.
+Here is an alternative function using a multivariate normal approach that doesn't use the transformation to independence, and might provide additional perspective.  In this case, `y` is just one large multivariate draw with mu mean vector and N x N covariance matrix e.
 
 ```{r mixed-ml-func-mv}
 mixed_ll_mv <- function(y, X, Z, theta) {
@@ -99,6 +96,8 @@ fit_mv = optim(
 )
 ```
 
+### Comparison
+
 ```{r mixed-ml-est-show, echo=FALSE}
 bind_rows(
   c(exp(fit$par), negLogLik = fit$value, coef(lm(y ~ X - 1))),
@@ -142,9 +141,9 @@ data.frame(
 
 
 
-### Issues with ML estimation
+#### Issues with ML estimation
 
-Situations arise in which using maximum likelihood for mixed models would result in notably biased estimates (e.g. small N, lots of fixed effects), and so it is typically not used.  Standard software usually defaults to *restricted* maximum likelihood.  However, our purpose here has been served, so we will not dwell further on mixed model estimation.
+Situations arise in which using maximum likelihood for mixed models would result in notably biased estimates (e.g. small N, lots of fixed effects), and so it is typically not used.  Standard software usually defaults to *restricted* maximum likelihood.  However, our purpose here has been served.
 
 
 ### Link with penalized regression
@@ -159,7 +158,7 @@ We can now see mixed models as a penalized technique.  If we knew $\sigma$ and $
 
 $$ \frac{1}{\sigma^2}\lVert y - X\beta - Zg \rVert^2 + g^\intercal\psi_\theta^{-1}g $$
 
-## Source
+### Source
 
 Main doc found at https://m-clark.github.io/docs/mixedModels/mixedModelML.html
 
