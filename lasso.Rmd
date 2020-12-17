@@ -1,10 +1,10 @@
-# L1 (lasso) regularization
+## L1 (lasso) regularization
 
 See Tibshirani (1996) for the original paper, or Murphy PML (2012) for a nice
-overview (watch for typos in depictions). A more conceptual depiction of the
-lasso can be found in the [penalized ML chapter][Penalized Maximum Likelihood].
+overview (watch for typos in depictions). 
 
-## Data Setup
+
+### Data Setup
 
 ```{r lasso-setup}
 library(tidyverse)
@@ -20,7 +20,7 @@ lambda = .1
 ```
 
 
-## Function
+### Function
 
 Coordinate descent function.
 
@@ -80,7 +80,7 @@ lasso <- function(
 
 
 
-## Estimation
+### Estimation
 
 Note, if `lambda = 0`, i.e. no penalty, the result is the same as what you would get from the base R  <span class="func" style = "">lm.fit</span>.
 
@@ -137,7 +137,7 @@ fit_ls = lassoshooting(
 
 
 
-## Comparison
+### Comparison
 
 We can now compare the coefficients of all our results.
 
@@ -158,6 +158,6 @@ data.frame(
 
 
 
-## Source
+### Source
 
 Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/lasso.R

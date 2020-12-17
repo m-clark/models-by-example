@@ -1,6 +1,7 @@
 # Penalized Maximum Likelihood
 
 
+## Introduction
 
 This demonstration regards a standard regression model via penalized likelihood.
 See the [Maximum Likelihood chapter][Maximum Likelihood] for a starting point. Here
@@ -11,7 +12,7 @@ regression, Tikhonov regularization), another using the L1 norm (aka lasso)
 which has the possibility of penalizing coefficients to zero, and thus can serve
 as a model selection procedure. I have more technical approaches to the lasso
 and ridge in the [lasso][L1 (lasso) regularization] and [ridge][L2 (ridge)
-regularization] chapters.
+regularization] sections.
 
 Note that both L2 and L1 approaches can be seen as maximum a posteriori (MAP)
 estimates for a Bayesian regression with a specific prior on the
@@ -21,7 +22,7 @@ L1 is akin to a zero mean Laplace prior.  See the [Bayesian regression chapter][
 
 
 
-##  Data Setup
+###  Data Setup
 
 ```{r pml-data-setup}
 library(tidyverse)
@@ -38,7 +39,7 @@ dfXy = data.frame(X,y)
 ```
 
 
-## Functions
+### Functions
 
 A straightforward function to estimate the log likelihood.
 
@@ -119,7 +120,7 @@ penalized_ML2 <- function(
 
 
 
-## Estimation
+### Estimation
 
 Setup the model matrix for use with <span class="func" style = "">optim</span>.
 
@@ -157,7 +158,7 @@ fit_l1 = optim(
 ```
 
 
-## Comparison
+### Comparison
 
 Compare to `lm` in base R.
 
@@ -177,8 +178,6 @@ rbind(
 ) %>%
   kable_df()
 ```
-
-
 
 
 
@@ -238,9 +237,18 @@ rbind(
   kable_df(digits = 4)
 ```
 
+See the subsequent chapters for an additional look at both lasso and ridge regression approaches.
 
 
-
-## Source
+### Source
 
 Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/penalized_ML.R
+
+
+
+```{r child='lasso.Rmd'}
+```
+
+```{r child='ridge.Rmd'}
+```
+

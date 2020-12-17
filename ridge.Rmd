@@ -1,9 +1,9 @@
-# L2 (ridge) regularization
+## L2 (ridge) regularization
 
 
-Compare to the [lasso chapter][L1 (lasso) regularization].  A more conceptual depiction of the both can be found in the [penalized ML chapter][Penalized Maximum Likelihood].
+Compare to the [lasso section][L1 (lasso) regularization]. 
 
-## Data Setup
+### Data Setup
 
 ```{r ridge-setup}
 library(tidyverse)
@@ -19,7 +19,7 @@ y = scale(X %*% b + rnorm(N, sd = .5))
 
 
 
-## Function
+### Function
 
 ```{r ridge-function}
 ridge <- function(w, X, y, lambda = .1) {
@@ -34,7 +34,7 @@ ridge <- function(w, X, y, lambda = .1) {
 
 
 
-## Estimation
+### Estimation
 
 Note, if `lambda = 0`, i.e. no penalty, the result is the same as what you would get from the base R  <span class="func" style = "">lm.fit</span>.
 
@@ -94,7 +94,7 @@ fit_glmnet = coef(
 ```
 
 
-## Comparison
+### Comparison
 
 We can now compare the coefficients of all our results.
 
@@ -112,6 +112,6 @@ data.frame(
 
 
 
-## Source
+### Source
 
 Original code available at https://github.com/m-clark/Miscellaneous-R-Code/blob/master/ModelFitting/ridge.R
