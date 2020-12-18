@@ -12,9 +12,7 @@ rmd_files: [
   # Models
   linear-regression.Rmd,
   logistic-regression.Rmd,
-  mixed-model-one-factor.Rmd,
-  mixed-model-two-factor.Rmd,
-  mixed-model-ML.Rmd,
+  mixed-models.Rmd,
   probit.Rmd,
   heckman-selection.Rmd,
   marginal-structural.Rmd,
@@ -54,8 +52,8 @@ rmd_files: [
   # Algos
   maximum-likelihood.Rmd,
   penalized-maximum-likelihood.Rmd,
-  lasso.Rmd,
-  ridge.Rmd,
+  # lasso.Rmd,
+  # ridge.Rmd,
   newton-irls.Rmd,
   nelder-mead.Rmd,
   em.Rmd,
@@ -63,7 +61,6 @@ rmd_files: [
   stochastic-gradient-descent.Rmd,
   metropolis-hastings.Rmd,
   hamiltonian-monte-carlo.Rmd,
-
   
   # Other
   supplemental.Rmd

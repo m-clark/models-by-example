@@ -455,7 +455,7 @@ fit_lm = data.frame(fit = 'fit_lm', t(lm.fit(X, y)$coef))
 true = data.frame(fit = 'true', t(c(Intercept = 1, x1 = 1, x2 = -.75)))
 
 rbind(init, fit_lm, true) %>% 
-  kable_df(digits = 5)
+  kable_df(digits = 4)
 ```
 
 
