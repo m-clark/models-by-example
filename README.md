@@ -17,6 +17,9 @@ language demos as well.
 
 At present the topics covered are:
 
+\* Python
+** Stan
+
 
 ##### Models
 
@@ -69,13 +72,13 @@ At present the topics covered are:
 - L1 (lasso) regularization
 - L2 (ridge) regularization
 - Newton and IRLS
-- Nelder-Mead*
+- Nelder-Mead *
 - Expectation-Maximization
 - Gradient Descent
-- Stochastic Gradient Descent
+- Stochastic Gradient Descent *
 - Metropolis Hastings
 - Hamiltonian Monte Carlo
 
 
-* Python
+\* Python
 ** Stan
