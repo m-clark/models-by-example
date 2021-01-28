@@ -14,16 +14,16 @@ knitr::opts_chunk$set(eval = F)
 
 When doing some of these models and algorithms, I had some other code to work with in another language, or, at the time, just wanted to try it in that language. There is not a whole lot here, but it still may be useful to some.  Refer to the corresponding chapter of R code for context.
 
-### Python Demos
+## Python Demos
 
-#### Linear Regression {#python-linreg}
+### Linear Regression {#python-linreg}
 
-##### Data Setup
-
-
+#### Data Setup
 
 
-```{python py-linreg-setup, eval =F}
+
+
+```{python py-linreg-setup, eval=F}
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
@@ -42,11 +42,11 @@ y = -.5 + .2*X[:, 0] + .1*X[:, 1] + np.random.normal(scale = .5, size = N).resha
 dfXy = pd.DataFrame(np.column_stack([X, y]), columns = ['X1', 'X2', 'y'])
 ```
 
-##### Functions
+#### Functions
 
 A maximum likelihood approach.
 
-```{python py-linreg-ml, eval=FALSE}
+```{python py-linreg-ml, eval=F}
 def lm_ml(par, X, y):
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
@@ -74,7 +74,7 @@ def lm_ml(par, X, y):
 
 An approach via least squares loss function.
 
-```{python py-linreg-ls, eval=FALSE}
+```{python py-linreg-ls, eval=F}
 def lm_ls(par, X, y):
   # par: parameters to be estimated
   # X: predictor matrix with intercept column
@@ -95,9 +95,9 @@ def lm_ls(par, X, y):
 ```
 
 
-##### Estimation
+#### Estimation
 
-```{python linreg-est, eval=FALSE}
+```{python linreg-est, eval=F}
 X_mm = np.column_stack([np.repeat(1, N).reshape(N, 1), X])
 
 # you may get warnings, they can be ignored
@@ -124,9 +124,9 @@ fit_ls = minimize(
 )
 ```
 
-##### Comparison
+#### Comparison
 
-```{python py-linreg-compare, eval=FALSE}
+```{python py-linreg-compare, eval=F}
 import statsmodels.formula.api as smf
 
 model_sm_ols = smf.ols('y ~ X1 + X2', data = dfXy)
@@ -143,7 +143,7 @@ pd.DataFrame(
   )
 ```
 
-```{r py-linreg-results, echo=FALSE}
+```{r py-linreg-results, eval=T, echo=FALSE}
 cat("
         sigma       Int      b_X1    b_X2
 ML   0.240332 -0.494647  0.213036  0.0815
@@ -154,9 +154,9 @@ SM   0.241055 -0.494647  0.213036  0.0815
 
 
 
-#### Logistic Regression {#python-logreg}
+### Logistic Regression {#python-logreg}
 
-##### Data Setup
+#### Data Setup
 
 ```{python py-logreg-setup, eval=F}
 import numpy as np
@@ -181,7 +181,7 @@ y = np.random.binomial(1, p = pi, size = (N, 1))
 dfXy = pd.DataFrame(np.column_stack([X, y]), columns = ['X1', 'X2', 'y'])
 ```
 
-##### Functions 
+#### Functions 
  
 A maximum likelihood approach.
 
@@ -234,7 +234,7 @@ def logreg_exp(par, X, y):
 
 
 
-##### Estimation
+#### Estimation
 
 Setup for use with <span class="func" style = "">optim</span>.
 
@@ -263,7 +263,7 @@ pars_ml  = fit_ml.x
 pars_exp = fit_exp.x
 ```
 
-##### Comparison
+#### Comparison
 
 ```{python py-logreg-compare, eval=FALSE}
 import statsmodels.formula.api as smf
@@ -282,7 +282,7 @@ pd.DataFrame(
   )
 ```
 
-```{r py-logreg-results, echo=FALSE}
+```{r py-logreg-results, eval=T, echo=FALSE}
 cat("
               Int      b_X1      b_X2
 fit_ml  -0.505637  0.234567  0.054700
@@ -293,11 +293,11 @@ SM      -0.505637  0.234567  0.054700
 
 
 
-#### Quantile Regression {#python-qreg}
+### Quantile Regression {#python-qreg}
 
 See the [R chapter][Quantile Regression] for details.
 
-##### Data Setup
+#### Data Setup
 
 ```{python py-qreg-setup, eval=FALSE}
 import pandas as pd
@@ -327,7 +327,7 @@ def qreg(par, X, y, tau):
 
 
 
-##### Estimation
+#### Estimation
 
 We'll estimate the median to start. 
 
@@ -347,7 +347,7 @@ minimize(
 )
 ```
 
-##### Other quantiles
+#### Other quantiles
 
 Now we will add additional quantiles to estimate.
 
@@ -386,11 +386,12 @@ from plotnine import *
 ```
 
 
-#### Stochastic Gradient Descent {#python-sgd}
+
+### Stochastic Gradient Descent {#python-sgd}
 
 Here we use the *adagrad* approach as in the R demo.  The dataset shift and other variants are not demonstrated.
 
-##### Data Setup
+#### Data Setup
 
 Create some data for a standard linear regression.
 
@@ -407,7 +408,7 @@ y = 1 + .5*x1 + .2*x2 + np.random.normal(size = n)
 X = np.column_stack([np.ones(n), x1, x2])
 ```
 
-##### Function
+#### Function
 
 The estimating function using the *adagrad* approach.
 
@@ -489,7 +490,7 @@ array([1.0172, 0.4942, 0.1937])    \n
     ")
 ```
 
-##### Comparison
+#### Comparison
 
 We'll compare our results to standard linear regression.
 
@@ -517,7 +518,7 @@ dtype: float64   \n
 
 
 
-#### Nelder-Mead {#python-nelder}
+### Nelder-Mead {#python-nelder}
 
 ```{python py-nelder-mead, eval = FALSE}
 import copy
@@ -651,7 +652,7 @@ nelder_mead(f, np.array([0., 0., 0.]))
 
 
 
-#### HMM {#python-hmm}
+### HMM {#python-hmm}
 
 ```{python py-hmm, eval = FALSE}
 #!/usr/bin/env python3
@@ -744,13 +745,13 @@ viterbi(obs,states,start_p,trans_p,emit_p)
 
 
 
-### Julia Demos
+## Julia Demos
 
 I haven't played with Julia in a very long time, but briefly hacked the old code to get something that worked.  As Julia has gone though notable changes, it's doubtful these are very good as far as Julia programming standards go, though conceptually they may still provide some utility.  Perhaps at some point I'll reteach myself the basics and come back to these. In any case the code did run on a [Jupyter notebook](https://jupyter.org/). 
 
-####  Mixed Models
+###  Mixed Models
 
-##### One-factor
+#### One-factor
 
 
 ```{julia jl-one-factor-func, eval = FALSE}
@@ -878,7 +879,7 @@ cat('62.30661224610756')
 ```
 
 
-##### Two-factor
+#### Two-factor
 
 
 ```{julia  jl-two-factor-func, eval = FALSE}
@@ -991,13 +992,13 @@ cat(
 ```
 
 
-### Matlab Demos
+## Matlab Demos
 
-I don't code in Matlab, nor have any particular desire to, so this is provided here just for reference.
+I don't code in Matlab, nor have any particular desire to, so this is provided here just for reference because I happened to have the code.
 
-#### Mixed Models
+### Mixed Models
 
-##### One-factor
+#### One-factor
 
 ```{Matlab ml-one-fac, eval = FALSE}
 % matlab from Statistical Modeling and Computation (2014 p 311).  See the 
@@ -1033,7 +1034,7 @@ thetahat = fminsearch(f, theta0);
 ```
 
 
-##### Two-factor
+#### Two-factor
 
 ```{Matlab ml-two-fac, eval = FALSE}
 % matlab from Statistical Modeling and Computation (2014 p 314). See the 
@@ -1065,7 +1066,7 @@ thetahat = fminsearch(f, theta0)
 ```
 
 
-#### Gaussian Processes {#matlab-gp}
+### Gaussian Processes {#matlab-gp}
 
 Any updates on the following can be found at the [repo](https://github.com/probml/pmtk3).
 
