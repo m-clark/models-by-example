@@ -2,6 +2,8 @@
 
 [![Lifecycle Status](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://www.tidyverse.org/lifecycle/)
 
+To see this in action, check out the book repo - [Models Demystified](https://github.com/m-clark/book-of-models)!
+
 This is the repo for the document found
 [here](https://m-clark.github.io/models-by-example/), based on the raw code
 repo- [Miscellaneous R Code](https://github.com/m-clark/Miscellaneous-R-Code/).
